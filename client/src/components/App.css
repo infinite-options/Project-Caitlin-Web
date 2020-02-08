@@ -1,0 +1,147 @@
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #09d3ac;
+} */
+
+
+/*!
+ * FullCalendar v3.9.0
+ * Docs & License: https://fullcalendar.io/
+ * (c) 2018 Adam Shaw
+ */
+
+
+h2{
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 26px;
+
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #002147;
+  margin-bottom: 20px;
+}
+
+.fancytext{
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #002147;
+  margin-bottom: 20px;
+}
+
+.bigfancytext{
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #002147;
+  margin-bottom: 20px;
+}
+
+
+.bigfancytitle{
+  margin-left: 5%;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 55px;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #002147;
+  margin-bottom: 20px;
+}
+
+/*
+The ones below are just for the Title
+*/
+h1 {
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: black;
+  text-shadow: 0 1px 2px rgba(rgb(206, 23, 23),.15);
+  text-shadow: 2px 2px #FFFFFF;
+
+}
+
+.X:hover{
+  color: CornflowerBlue;
+}
+
+.numberCircle {
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  padding-top: 4px;
+  padding-left:1px;
+  background: #fff;
+  border: 2px solid #666;
+  color: #666;
+  text-align: center;
+}
+
+.boxItem {
+  border-radius: 50%;
+  width: 53px;
+  height: 47px;
+  padding-top: 4.5px;
+  padding-left:2px;
+  background: #fff;
+  border: 2px solid #666;
+  color: #666;
+  text-align: center;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+
+/* this class below is for centering specific items */
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
