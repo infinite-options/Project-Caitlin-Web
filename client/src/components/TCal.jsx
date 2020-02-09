@@ -57,7 +57,10 @@ export default class TylersCalendarv1 extends React.Component {
                         value={j}
                         onClick={this.onEventClick}
                         className="btn btn-sm" style={{
-                            fontSize: '13px', color: "white",
+                            padding: '3px',
+                            paddingLeft:'4px',
+                            paddingRight:'4px',
+                            fontSize: '9px', color: "white",
                             borderRadius: '4px', background: "rgb(66, 184, 221)",
                             textShadow: "0 1px 1px rgba(0, 0, 0, 0.2)", marginBottom: "3px"
                         }} >{this.props.originalEvents[j].summary}</button><br /></div>);
@@ -77,8 +80,11 @@ export default class TylersCalendarv1 extends React.Component {
                         value={j}
                         onClick={ this.onEventClick }
                         className="btn btn-sm" style={{
-                            fontSize: '13px', color: "white",
-                            borderRadius: '4px', background: "CornflowerBlue",
+                            padding: '3px',
+                            paddingLeft:'4px',
+                            paddingRight:'4px',
+                            fontSize: '9px', color: "white",
+                            borderRadius: '3px', background: "CornflowerBlue",
                             textShadow: "0 1px 1px rgba(0, 0, 0, 0.2), ", marginBottom: "3px"
                         }} >{this.props.originalEvents[j].summary}</button><br /></div>);
                 }
@@ -135,7 +141,7 @@ export default class TylersCalendarv1 extends React.Component {
             daysInMonth.push(
                 <td key={d}  onClick={ this.onDayClick.bind(this, d)}>
                     
-                    <div style={{ height: '150px', width: "150px", overflow: 'auto' }}>
+                    <div style={{padding:'0', margin: '0', height: '110px', width: "100px", overflow: 'auto' }}>
                       {
                           // eslint-disable-next-line max-len
                       }
@@ -169,18 +175,18 @@ export default class TylersCalendarv1 extends React.Component {
         });
 
         var daysinmonth = rows.map((data, i) => {
-            return <tr key={i * 11}>{data}</tr>;
+            return <tr style= {{padding: '0px'}} key={i * 11}>{data}</tr>;
         });
 
         return (
             <div>
-                <table  className="table" style ={{  tableLayout: 'fixed', width: '1200px'}}>
+                <table  className="table" style ={{ height:'450px', tableLayout: 'fixed', width: '900px'}}>
                     <thead>
                         <tr>
                             {weekdays}
                         </tr>
                     </thead>
-                    <tbody  style ={{width: '700px'}}>
+                    <tbody  style ={{height:'450px',width: '600px'}}>
                         {daysinmonth}
                     </tbody>
                 </table>

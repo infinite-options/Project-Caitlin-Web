@@ -29,8 +29,11 @@ export default class FirebaseV2 extends React.Component {
             arr: [],
             fbPath: null
         },
+        modalWidth: '350px',
         addNewGRModalShow: false,
         addNewATModalShow: false,
+        thumbnailWidth: '200px',
+        thumbnailHeight: '100px',
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
 
@@ -169,7 +172,7 @@ export default class FirebaseV2 extends React.Component {
                     <ListGroup.Item action onClick={() => { this.ATonClickEvent(tempTitle, tempID) }} variant="light" style={{ marginBottom: '3px' }}>
                         <p className="fancytext">{tempTitle}</p>
 
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height="150" width="200" className="center" />) : (<div></div>))}
+                        {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
 
                     </ListGroup.Item>
                 </div>
@@ -205,7 +208,7 @@ export default class FirebaseV2 extends React.Component {
                 <div key={'IS' + i} >
                     <ListGroup.Item action onClick={() => { this.ISonClickEvent(tempTitle) }} variant="light" style={{ marginBottom: '3px' }}>
                         <p className="fancytext">{tempTitle}</p>
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height="150" width="200" className="center" />) : (<div></div>))}
+                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
                     </ListGroup.Item>
                 </div>
             )
@@ -295,10 +298,8 @@ export default class FirebaseV2 extends React.Component {
 
     }
 
-    render() {
-        console.log('ran render firebasev2')
-        var displayRoutines = [];
-        var displayGoals = [];
+    getRoutines = () => {
+        let displayRoutines = [];
         if (this.state.routines.length !== 0) {//Check to make sure routines exists
             for (let i = 0; i < this.state.routines.length; i++) {
                 let tempTitle = this.state.routines[i]['title'];
@@ -307,15 +308,31 @@ export default class FirebaseV2 extends React.Component {
                 displayRoutines.push(
                     <div key={'test0' + i} >
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
-                            <p className="fancytext">{this.state.routines[i]['title']}</p>
+                            <Row>
 
-                            {(this.state.routines[i]['photo'] ? (<img src={this.state.routines[i]['photo']} alt="Routine" height="150" width="200" className="center" />) : (<div></div>))}
+                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
+                                <p className="fancytext">{this.state.routines[i]['title']}</p>
 
+                                    {(this.state.routines[i]['photo'] ? (<img src={this.state.routines[i]['photo']} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+
+                                </Col>
+                                <Col>
+                                    <p>Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
+                                    <p> Description: None Yet </p>
+                                    {/* <Row style={{margin:'0'}}><p className="fancytext">Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </p> */}
+                                    {/* </Row> */}
+                                </Col>
+                            </Row>
                         </ListGroup.Item>
                     </div>
                 )
             }
         }
+        return displayRoutines;
+    }
+
+    getGoals = () => {
+        let displayGoals = [];
 
         if (this.state.goals.length != null) {//Check to make sure routines exists
             for (let i = 0; i < this.state.goals.length; i++) {
@@ -326,36 +343,68 @@ export default class FirebaseV2 extends React.Component {
                 displayGoals.push(
                     <div key={'test1' + i} >
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
-                            <p className="fancytext"> {this.state.goals[i]['title']} </p>
-                            {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" height="150" width="200" className="center" />) : (<div></div>))}
+                            <Row>
+
+                                <Col sm="auto" md="auto" lg="auto" style={{ margin: '0', width: '100%', height: "100%" }}>
+                                <p className="fancytext"> {this.state.goals[i]['title']} </p>
+
+                                    {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
+
+                                </Col>
+                                <Col>
+                                    <p>Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
+                                    <p> Description: None Yet </p>
+                                    {/* <Row style={{margin:'0'}}><p className="fancytext">Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </p> */}
+                                    {/* </Row> */}
+                                </Col>
+                            </Row>
+
                         </ListGroup.Item>
+
+
+
                     </div>
                 )
             }
         }
 
+        return displayGoals;
+    }
+
+    render() {
+        console.log('ran render firebasev2')
+        var displayRoutines = this.getRoutines();
+        var displayGoals = this.getGoals();
+
+
         return (
-            <div style= {{marginTop: '0'}} >
-            {/* <Row style={{ marginTop: '1%' }}> */}
-                <Col style= {{ marginTop: '0'}} sm="auto" md="auto" lg="auto" >
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
-                    </div>
-                </Col>
-                
-                {/* 
-                <Col style= {{ marginTop: '0'}} sm="auto" md="auto" lg="auto" >
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {this.abstractedRoutineList(displayRoutines)}
-                    </div>
-                </Col>
+            <div style={{ marginTop: '0' }} >
 
-                <Col style= {{ marginTop: '0'}} sm="auto" md="auto" lg="auto" >
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {this.abstractedGoalsList(displayGoals)}
-                    </div>
-                </Col> */}
+                {
+                    (this.props.showRoutineGoalModal) ?
+                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                                {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
+                            </div>
+                        </Col>) : <div> </div>
+                }
 
+                {
+                    (this.props.showRoutine) ?
+                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                                {this.abstractedRoutineList(displayRoutines)}
+                            </div>
+                        </Col>) : <div> </div>
+                }
+                {
+                    (this.props.showGoal) ? (
+                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                                {this.abstractedGoalsList(displayGoals)}
+                            </div>
+                        </Col>) : <div> </div>
+                }
 
                 <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
@@ -363,11 +412,11 @@ export default class FirebaseV2 extends React.Component {
                     </div>
                 </Col>
 
-                <Col sm="auto" md="auto" lg="auto">
+                {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
-                </Col>
+                </Col> */}
 
                 <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
@@ -375,68 +424,81 @@ export default class FirebaseV2 extends React.Component {
                     </div>
                 </Col>
 
-                <Col sm="auto" md="auto" lg="auto">
+                {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
                     </div>
-                </Col>
-            {/* </Row> */}
+                </Col> */}
+                {/* </Row> */}
             </div>
         )
     }
 
 
-        /*
-    abstractedRoutineGoalsList: 
-    shows entire list of goals and routines
-    */
-   abstractedGoalsList = (displayGoals) => {
-    return (
-        <Modal.Dialog style={{ marginTop:"0", width: '200px', marginLeft: '0' }}>
-            <Modal.Header closeButton>
-                <Modal.Title><h2>Goals</h2> </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            
-                <ListGroup>
-                    {displayGoals}
-                    {/* Button to add new Goal */}
-                    <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button>
-                </ListGroup>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary">Close</Button>
-                <Button variant="info">Save changes</Button>
-            </Modal.Footer>
-        </Modal.Dialog>)
-}
+    /*
+abstractedGoalsList: 
+shows entire list of goals and routines
+*/
+    abstractedGoalsList = (displayGoals) => {
+        return (
+            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+                <Modal.Header onClick={this.props.closeGoal} closeButton>
+                    <Modal.Title><h5 className="normalfancytext">Goals</h5> </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {/**
+                     * To allow for the Modals to pop up in front of one another
+                     * I have inserted the IS and AT lists inside the RT Goal Modal */ }
+                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
+                    </div>
+
+                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
+                    </div>
+                    <ListGroup>
+                        {displayGoals}
+                        {/* Button to add new Goal */}
+                    </ListGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button>
+                </Modal.Footer>
+            </Modal.Dialog>)
+    }
 
 
 
     /*
-    abstractedRoutineGoalsList: 
+    abstractedRoutineList: 
     shows entire list of routines
     */
-   abstractedRoutineList = (displayRoutines) => {
-    return (
-        <Modal.Dialog style={{ marginTop:"0", width: '500px', marginLeft: '0' }}>
-            <Modal.Header closeButton>
-                <Modal.Title> <h2 >Routines</h2> </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <ListGroup>
-                    {displayRoutines}
-                    <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
-                </ListGroup>
-                {/* Button To add new Routine */}
-                <h2 style={{ marginTop: '50px' }}>Goals</h2>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary">Close</Button>
-                <Button variant="info">Save changes</Button>
-            </Modal.Footer>
-        </Modal.Dialog>)
-}
+    abstractedRoutineList = (displayRoutines) => {
+        return (
+            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+                <Modal.Header onClick={this.props.closeRoutine} closeButton>
+                    <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {/**
+                     * To allow for the Modals to pop up in front of one another
+                     * I have inserted the IS and AT lists inside the RT Goal Modal */ }
+                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
+                    </div>
+                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
+                    </div>
+                    <ListGroup>
+                        {displayRoutines}
+                    </ListGroup>
+                    {/* Button To add new Routine */}
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
+                </Modal.Footer>
+            </Modal.Dialog>)
+    }
 
 
 
@@ -445,9 +507,12 @@ export default class FirebaseV2 extends React.Component {
      * returns a modal showing us a slot to add a new Goal/Routine
     */
     AddNewGRModalAbstracted = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: '900px', }}>
+        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
             <Modal.Header closeButton onClick={() => { this.setState({ addNewGRModalShow: false }) }}>
-                <Modal.Title><h2>Add New {(this.state.isRoutine ? "Routine" : "Goal")}</h2> </Modal.Title>
+                <Modal.Title>
+
+                    <h5 className="normalfancytext">
+                        Add New {(this.state.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <AddNewGRItem refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
@@ -473,9 +538,9 @@ export default class FirebaseV2 extends React.Component {
      * 
     */
     abstractedInstructionsAndStepsList = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: '900px', }}>
+        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
             <Modal.Header closeButton onClick={() => { this.setState({ singleAT: { show: false } }) }}>
-                <Modal.Title><h2>{this.state.singleAT.title}</h2> </Modal.Title>
+                <Modal.Title><h5 className="normalfancytext">{this.state.singleAT.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <ListGroup>
@@ -498,12 +563,17 @@ export default class FirebaseV2 extends React.Component {
      * goal/ routine
     */
     abstractedActionsAndTaskList = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: '1000px' }}>
+        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth }}>
             <Modal.Header closeButton onClick={() => { this.setState({ singleGR: { show: false } }) }} >
-                <Modal.Title><h2>{this.state.singleGR.type + " : " + this.state.singleGR.title}</h2> </Modal.Title>
+                <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.type + " : " + this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
+                {/**
+                 * Here Below, the IS list will pop up inside the AT list
+                  */}
+                <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
+                </div>
                 <ListGroup >
                     <div style={{ height: '500px', overflow: 'scroll' }}>
                         {this.state.singleGR.arr}
@@ -538,25 +608,27 @@ export default class FirebaseV2 extends React.Component {
     */
     abstractedRoutineGoalsList = (displayRoutines, displayGoals) => {
         return (
-            <Modal.Dialog style={{ marginTop:"0", width: '500px', marginLeft: '0' }}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Current Goals/Routines: </Modal.Title>
+            <Modal.Dialog style={{ padding: '0', marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+                <Modal.Header closeButton onClick={this.props.closeRoutineGoalModal}>
+                    <Modal.Title> <h5 className="normalfancytext">Goals/Routines: </h5> </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h2 >Routines</h2>
+                    <h2 className="normalfancytext">Routines</h2>
+
+                    {/**
+                     * To allow for the Modals to pop up in front of one another
+                     * I have inserted the IS and AT lists inside the RT Goal Modal */ }
+
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
+                        {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.singleGR.show ) ? this.abstractedActionsAndTaskList() : (<div></div>)}
-                    </div>
-                    
+
                     <ListGroup>
                         {displayRoutines}
                         <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
                     </ListGroup>
                     {/* Button To add new Routine */}
-                    <h2 style={{ marginTop: '50px' }}>Goals</h2>
+                    <h2 className="normalfancytext" style={{ marginTop: '50px' }}>Goals</h2>
                     <ListGroup>
                         {displayGoals}
                         {/* Button to add new Goal */}
@@ -564,8 +636,6 @@ export default class FirebaseV2 extends React.Component {
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary">Close</Button>
-                    <Button variant="info">Save changes</Button>
                 </Modal.Footer>
             </Modal.Dialog>)
     }
@@ -574,7 +644,7 @@ export default class FirebaseV2 extends React.Component {
 
     addNewGoalInputBox = () => {
         return (
-            <InputGroup size="lg" style={{ marginTop: '20px' }} className="mb-3">
+            <InputGroup size="lg" style={{ marginTop: '20px', width: this.state.modalWidth }} className="mb-3">
                 <FormControl onChange={() => { console.log("addNewGoalInputBox") }}
                     placeholder="place holder!!"
                 />

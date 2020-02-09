@@ -12,17 +12,21 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 export default class MainPage extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = { //Saved variables
       originalEvents: [],
       showRoutineGoalModal: false,
+      showGoalModal: false,
+      showRoutineModal: false,
       dayEventSelected: false,  //use to show modal to create new event
-      modelSelected: true, // use to display the routine/goals modal
+      modelSelected: false, // use to display the routine/goals modal
       newEventID: '',
       newEventName: '',
       newEventStart: '',
+      newEventStart0: new Date(),
+      newEventEnd0: new Date(),
       newEventEnd: '',
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       masterdateFB: null,
@@ -31,7 +35,7 @@ export default class MainPage extends React.Component {
       todayDateObject: moment(),
       selectedDay: null,
       // organizedData: null
-      
+
     }
   }
 
@@ -92,6 +96,8 @@ export default class MainPage extends React.Component {
       newEventID: A.id,
       newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
       newEventEnd: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)).toISOString(),
+      newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
+      newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
       newEventName: A.summary,
       dayEventSelected: true,
       isEvent: true
@@ -118,6 +124,8 @@ export default class MainPage extends React.Component {
       newEventID: '',
       newEventStart: newStart.toString(),
       newEventEnd: newEnd.toString(),
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
       newEventName: 'New Event Title',
       dayEventSelected: true,
       isEvent: false
@@ -187,8 +195,8 @@ submits the data to be passed up to be integrated into google calendar
       extra: this.state.originalEvents[index],
       ID: this.state.newEventID,
       title: this.state.newEventName,
-      start: newStart,
-      end: newEnd
+      start: this.state.newEventStart0.toISOString(),
+      end: this.state.newEventEnd0.toISOString()
     })
       .then((response) => {
         console.log('update return');
@@ -198,7 +206,9 @@ submits the data to be passed up to be integrated into google calendar
             dayEventSelected: false,
             newEventName: '',
             newEventStart: '',
-            newEventEnd: ''
+            newEventEnd: '',
+            newEventStart0: new Date(),
+            newEventEnd0: new Date()
           });
         this.updateEventsArray();
       })
@@ -260,8 +270,8 @@ submits the data to be passed up to be integrated into google calendar
 
     axios.post('/createNewEvent', {
       title: newTitle,
-      start: newStart,
-      end: newEnd
+      start: this.state.newEventStart0.toISOString(),
+      end: this.state.newEventEnd0.toISOString()
     })
       .then((response) => {
         console.log(response);
@@ -324,54 +334,100 @@ submits the data to be passed up to be integrated into google calendar
 
   render() {
     console.log("Main Render")
-    return (  
+
+    //The variable below will help decide whether to center the Calendar object or not
+    var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal &&
+      !this.state.dayEventSelected;
+    return (
       //width and height is fixed now but should be by % percentage later on 
-      <div style={{ marginLeft: '2%', marginTop: '3%', height: "2000px", width: '100%' }}>
-        <p className="bigfancytitle" style= {{textDecoration: 'underline'}}> Infinite Options: Project Caitlin </p>
-        <Container fluid style={{  marginLeft: '2%' }}  >
+      <div style={{ marginLeft: '0px', marginTop: '5px', height: "2000px", width: '2000px' }}>
+        <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-          
-          <hr style={{ backgroundColor: 'white', marginLeft: "90px" }} className="brace" />
-          <Row style={{marginLeft: "0 "}}>
-{this.abstractedMainEventGRShowButtons()}
-          </Row>
-          <Row >
+          {this.abstractedMainEventGRShowButtons()}
+
+          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
+
+          <Row>
 
             {/* the modal for routine/goal is called Firebasev2 currently */}
-          {this.state.showRoutineGoalModal ? <Firebasev2 /> : <div></div> }
-          
-            <Col sm="auto" md="auto" lg="auto" style={{ marginLeft: '0px' }}>
-              {this.calendarAbstracted()}
-            </Col>
-            {this.eventFormAbstracted()}
-          </Row>
-         
-        
+            {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
 
+            <Firebasev2
+              closeRoutineGoalModal={() => { this.setState({ showRoutineGoalModal: false }) }}
+              showRoutineGoalModal={this.state.showRoutineGoalModal}
+              closeGoal={() => { this.setState({ showGoalModal: false }) }}
+              closeRoutine={() => { this.setState({ showRoutineModal: false }) }}
+              showRoutine={this.state.showRoutineModal}
+              showGoal={this.state.showGoalModal} />
+            <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '25px' }}  >
+              {this.calendarAbstracted()}
+              {/* <Row>
+                {this.eventFormAbstractedHorizontalVersion()}
+              </Row> */}
+            </Col>
+            <Col stlye={{ marginLeft: '0' }}>
+              {this.eventFormAbstracted()}
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
+            <Col>
+              Dedicated to Caitlin Little
+            </Col>
+          </Row>
         </Container>
       </div>
     )
   }
 
+  toggleShowRoutine = () => {
+    this.setState({
+      showRoutineModal: !this.state.showRoutineModal,
+      showGoalModal: false,
+      showRoutineGoalModal: false
+    })
+  }
 
-abstractedMainEventGRShowButtons = () => {
-return(<div>
-  <Button style ={{margin: "10px" ,padding: "22px" }} variant="outline-primary"
-          onClick={() => {
-            this.setState({showRoutineGoalModal: !this.state.showRoutineGoalModal})
-          }}
-          >Create New Routine/Goal</Button>
-          <Button style ={{margin: "10px",padding: "22px"}} variant="outline-primary"
-           onClick={() => {this.setState({dayEventSelected: !this.state.dayEventSelected})   } }
-           >Create New Event</Button>
-           </div>)
-}
+  toggleShowGoal = () => {
+    this.setState({
+      showGoalModal: !this.state.showGoalModal,
+      showRoutineModal: false,
+      showRoutineGoalModal: false
+    })
+  }
+
+  abstractedMainEventGRShowButtons = () => {
+    return (<div>
+
+      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+        onClick={() => { this.setState({ dayEventSelected: !this.state.dayEventSelected }) }}
+      >Create New Event</Button>
+
+      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+        onClick={this.toggleShowRoutine}
+      >Routines</Button>
+
+      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+        onClick={this.toggleShowGoal}
+      >Goals</Button>
+
+      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+        onClick={() => {
+          this.setState({
+            showRoutineGoalModal: !this.state.showRoutineGoalModal,
+            showGoalModal: false,
+            showRoutine: false
+          })
+        }}
+      >Goals and Routines</Button>
+
+    </div>)
+  }
 
   calendarAbstracted = () => {
     return (
-      <div style={{ backgroundColor: 'white', width: '1300px', marginLeft: '0px', padding: '45px', boxShadow: '0 12px 18px 0 rgba(0, 0, 0, 0.2), 0 12px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+      <div style={{ backgroundColor: 'white', width: '1000px', marginLeft: '0px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
-          <Row style={{ marginTop: '2%' }}>
+          <Row style={{ marginTop: '0px' }}>
             <Col >
               <div>
                 <FontAwesomeIcon style={{ marginLeft: '2.5%' }} icon={faChevronLeft} size="2x" className="X"
@@ -394,118 +450,107 @@ return(<div>
 
   eventFormAbstractedHorizontalVersion = () => {
     return (
-      <Col style={{}}> {/* start of new Event Form */}
-        <div style={this.state.dayEventSelected ? { fontSize: "small" } : { display: 'none' }}>
-          <Row style={{ marginLeft: '0' }}>
-            <Col >
-              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '500px', height: '900px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                <div style={{ marginTop: '50px' }}>
-                  <h3 style={{ textAlign: 'center' }}>Event Information</h3>
-                  {/* <p>ID: {this.state.newEventID}</p> */}
-                  {/* <Container> */}
-                  <Form onSubmit={this.handleSubmit} style={{ marginLeft: '15%', width: '850px', }} >
-                    <Row>
-                      <Col>
-                        <div style={{ width: '300px' }}>
+      // style={{ marginLeft: '0', width: '1200px', height: '550px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}
 
-                          <Form.Group >
-                            <Form.Label>Event Name</Form.Label>
-                            <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
-                              type="text" placeholder="Title" />
-                          </Form.Group>
+      <Row style={this.state.dayEventSelected ? {
+        fontSize: "small", marginTop: '15px',
+        marginLeft: '15px', width: '1300px', height: '550px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+      } : { display: 'none' }}>
+        <Col >
+          <div style={{ marginTop: '50px' }}>
+            <h3 style={{ textAlign: 'center' }} >Event Information</h3>
+            {/* <p>ID: {this.state.newEventID}</p> */}
+            {/* <Container> */}
+            <Form onSubmit={this.handleSubmit} style={{ marginLeft: '15%', width: '850px', }} >
+              <Row>
+                <Col>
+                  <div style={{ width: '300px' }}>
 
-                          <Form.Group value={this.state.newEventStart} controlId="Y" >
-                            <Form.Label>Start Time</Form.Label>
-                            <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
-                              type="text" placeholder="Start Time" />
-                            {this.startTimePicker()}
-                          </Form.Group>
-                          
-                          <Form.Group value={this.state.newEventEnd} controlId="X" >
-                            <Form.Label>End Time</Form.Label>
-                            <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
-                              type="text" placeholder="End Time" />
-                            {this.startTimePicker()}
-                          </Form.Group>
+                    <Form.Group >
+                      <Form.Label>Event Name</Form.Label>
+                      <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
+                        type="text" placeholder="Title" />
+                    </Form.Group>
 
-                          </div>
-                      </Col>
+                    <Form.Group value={this.state.newEventStart} controlId="Y" >
+                      <Form.Label>Start Time</Form.Label>
+                      <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
+                        type="text" placeholder="Start Time" />
 
+                    </Form.Group>
+                    {this.startTimePicker()}
+                    <Form.Group value={this.state.newEventEnd} controlId="X" >
+                      <Form.Label>End Time</Form.Label>
+                      <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
+                        type="text" placeholder="End Time" />
 
-
-                      <Col>
-                        <div style={{ width: '300px' }}>
-                          <Form.Group value={"Extra Slot"} >
-                            <Form.Label>More Data</Form.Label>
-                            <Form.Control value={"Extra Slow"}
-                              type="text" placeholder="End" />
-                          </Form.Group>
-                          <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
-                            <Form.Label>Location:</Form.Label>
-                            <Form.Control value={"Location"}
-                              type="text" placeholder="Location" />
-                          </Form.Group>
-                          <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
-                            <Form.Label>Description:</Form.Label>
-                            <Form.Control as="textarea" rows="3" value={"Description"}
-                              type="text" placeholder="Description" />
-                          </Form.Group>
-                          <Form.Group value={"Extra Slot"} >
-                            <Form.Label>More Data</Form.Label>
-                            <Form.Control value={"Extra Slow"}
-                              type="text" placeholder="End" />
-                          </Form.Group>
-
-                          </div>
-                      </Col>
-                        
-                    </Row>
-                    <Row>
-                      <Row>
-                        <Col style={this.state.isEvent ? { display: 'none' } : {}} >
-                          <Button variant="info" type="submit"> Submit </Button>
-                        </Col>
-                        <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
-                          <Button onClick={this.updateEventClick} className="btn btn-info">
-                            Update
+                    </Form.Group>
+                    {this.startTimePicker()}
+                  </div>
+                </Col>
+                <Col>
+                  <div style={{ width: '300px' }}>
+                    <Form.Group value={"Guest"} >
+                      <Form.Label>More Data</Form.Label>
+                      <Form.Control value={"Invite Guests"}
+                        type="text" placeholder="End" />
+                    </Form.Group>
+                    <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
+                      <Form.Label>Location:</Form.Label>
+                      <Form.Control value={"Location"}
+                        type="text" placeholder="Location" />
+                    </Form.Group>
+                    <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
+                      <Form.Label>Description:</Form.Label>
+                      <Form.Control as="textarea" rows="3" value={"Description"}
+                        type="text" placeholder="Description" />
+                    </Form.Group>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Row>
+                  <Col style={this.state.isEvent ? { display: 'none' } : {}} >
+                    <Button variant="info" type="submit"> Submit </Button>
+                  </Col>
+                  <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
+                    <Button onClick={this.updateEventClick} className="btn btn-info">
+                      Update
                     </Button>
-                        </Col>
-                        <Col>
-                          <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
-                        </Col>
-                      </Row>
-                      <Row style={{ marginLeft: '10px' }} >
-                        <Col>
-                          <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
-                        </Col>
-                        <Col>
-                          <Button style={this.state.isEvent ? {} : { display: 'none' }} onClick={this.handleModalClicked} className="btn btn-info">
-                            Modal
+                  </Col>
+                  <Col>
+                    <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
+                  </Col>
+                </Row>
+                <Row style={{ marginLeft: '10px' }} >
+                  <Col>
+                    <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
+                  </Col>
+                  <Col>
+                    <Button style={this.state.isEvent ? {} : { display: 'none' }} onClick={this.handleModalClicked} className="btn btn-info">
+                      Modal
                     </Button>
-                        </Col>
-                      </Row>
-                    </Row>
-                  </Form>
-                  {/* </Container> */}
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      </Col>
+                  </Col>
+                </Row>
+              </Row>
+            </Form>
+            {/* </Container> */}
+          </div>
+        </Col>
+      </Row>
 
     )
   }
 
   eventFormAbstracted = () => {
     return (
-      <Col style={{}}> {/* start of new Event Form */}
-        <div style={this.state.dayEventSelected ? { fontSize: "small" } : { display: 'none' }}>
+      <Col > {/* start of new Event Form */}
+        <div style={this.state.dayEventSelected ? {} : { display: 'none' }}>
           <Row style={{ marginLeft: '0' }}>
             <Col >
-              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '500px', height: '900px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <div style={{ marginTop: '50px' }}>
-                  <h3 style={{ textAlign: 'center' }}>Event Information</h3>
+                  <h3 style={{ textAlign: 'center' }} className="bigfancytext">Event Information</h3>
                   {/* <p>ID: {this.state.newEventID}</p> */}
                   {/* <Container> */}
                   <Form onSubmit={this.handleSubmit} style={{ marginLeft: '15%', width: '850px', }} >
@@ -520,21 +565,24 @@ return(<div>
                           </Form.Group>
 
                           <Form.Group value={this.state.newEventStart} controlId="Y" >
-                            <Form.Label>Start Time</Form.Label>
-                            <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
-                              type="text" placeholder="Start Time" />
+                            <Form.Label>Start Time</Form.Label> <br />
+                            {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
+                              type="text" placeholder="Start Time" /> */}
                             {this.startTimePicker()}
                           </Form.Group>
-                          
+
                           <Form.Group value={this.state.newEventEnd} controlId="X" >
-                            <Form.Label>End Time</Form.Label>
-                            <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
-                              type="text" placeholder="End Time" />
-                            {this.startTimePicker()}
+                            <Form.Label>End Time</Form.Label><br />
+                            {/* <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
+                              type="text" placeholder="End Time" /> */}
+                            {this.endTimePicker()}
+
                           </Form.Group>
+
+
                           <Form.Group value={"Extra Slot"} >
-                            <Form.Label>More Data</Form.Label>
-                            <Form.Control value={"Extra Slow"}
+                            <Form.Label>Guests</Form.Label>
+                            <Form.Control value={"Invite Guest"}
                               type="text" placeholder="End" />
                           </Form.Group>
                           <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
@@ -546,11 +594,6 @@ return(<div>
                             <Form.Label>Description:</Form.Label>
                             <Form.Control as="textarea" rows="3" value={"Description"}
                               type="text" placeholder="Description" />
-                          </Form.Group>
-                          <Form.Group value={"Extra Slot"} >
-                            <Form.Label>More Data</Form.Label>
-                            <Form.Control value={"Extra Slow"}
-                              type="text" placeholder="End" />
                           </Form.Group>
                         </div>
                       </Col>
@@ -595,9 +638,14 @@ return(<div>
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
     return (
-      <DatePicker style={{ textSize: "12sp" }}
-        selected={new Date()}
-        onChange={date => console.log(date)}
+      <DatePicker class="form-control form-control-lg" type="text" style={{ width: '100%' }}
+        selected={this.state.newEventStart0}
+        onChange={(date) => {
+          this.setState({
+            newEventStart0: date
+          }, () => { console.log(this.state.newEventStart0) })
+
+        }}
         showTimeSelect
         timeFormat="HH:mm"
         timeIntervals={15}
@@ -607,6 +655,26 @@ return(<div>
     );
   };
 
+
+  endTimePicker = () => {
+    // const [startDate, setStartDate] = useState(new Date());
+    return (
+      <DatePicker class="form-control form-control-lg" type="text" style={{ width: '100%' }}
+        selected={this.state.newEventEnd0}
+        onChange={(date) => {
+          this.setState({
+            newEventEnd0: date
+          }, () => { console.log(this.state.newEventEnd0) })
+
+        }}
+        showTimeSelect
+        timeFormat="HH:mm"
+        timeIntervals={15}
+        timeCaption="time"
+        dateFormat="MMMM d, yyyy h:mm aa"
+      />
+    );
+  };
   /*
   getYear:
   returns the year based on year format
@@ -686,7 +754,7 @@ when there is a change in the event form
           originalEvents: events
         }, () => {
           console.log("New Events Arrived")
-          
+
           // console.log(events.data);
           // this.createOrganizeData(start0, end0);
           //Call function to prep data for Monthly View
