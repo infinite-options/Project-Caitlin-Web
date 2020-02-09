@@ -33,7 +33,7 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-"engines": {
+  "engines": {
     "node": "8"
   },
   "author": "",
