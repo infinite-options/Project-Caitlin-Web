@@ -180,9 +180,12 @@ The below is styling for the react date picker
     width: 200px;
 }
 
-
 .modal-content  {
   -webkit-border-radius: 15px ;
   -moz-border-radius: 15px ;
   border-radius: 15px ; 
+}
+
+.border-radius-2 div {
+  border-radius: 2px !important;
 }

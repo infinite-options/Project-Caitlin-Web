@@ -372,7 +372,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
                             </div>
                         </Col>) : <div> </div>
@@ -381,7 +381,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showRoutine) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{ borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
                         </Col>) : <div> </div>
@@ -389,7 +389,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showGoal) ? (
                         <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedGoalsList(displayGoals)}
                             </div>
                         </Col>) : <div> </div>
@@ -407,11 +407,11 @@ export default class FirebaseV2 extends React.Component {
                     </div>
                 </Col> */}
 
-                <Col sm="auto" md="auto" lg="auto">
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                {/* <Col sm="auto" md="auto" lg="auto">
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewATModalShow) ? <AddNewATItem /> : (<div></div>)}
                     </div>
-                </Col>
+                </Col> */}
 
                 {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
@@ -438,11 +438,11 @@ shows entire list of goals and routines
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
 
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
@@ -464,7 +464,7 @@ shows entire list of goals and routines
     */
     abstractedRoutineList = (displayRoutines) => {
         return (
-            <Modal.Dialog style={{  marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+            <Modal.Dialog style={{  borderRadius:'15px',  marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
                 <Modal.Header onClick={this.props.closeRoutine} closeButton>
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
@@ -472,10 +472,10 @@ shows entire list of goals and routines
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
@@ -557,13 +557,13 @@ shows entire list of goals and routines
                 <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.type + " : " + this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+            <div style={{  borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewATModalShow) ? <AddNewATItem hideNewATModal= {() => {this.setState({addNewATModalShow : false})}} width={this.state.modalWidth} /> : (<div></div>)}
                     </div>
                 {/**
                  * Here Below, the IS list will pop up inside the AT list
                   */}
-                <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                     {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
                 </div>
                 <ListGroup >
@@ -611,7 +611,7 @@ shows entire list of goals and routines
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
 
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
 

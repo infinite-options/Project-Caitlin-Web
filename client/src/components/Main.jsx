@@ -395,11 +395,35 @@ submits the data to be passed up to be integrated into google calendar
     })
   }
 
+  showEventsFormbyCreateNewEventButton = () => {
+    var newStart = new Date();
+    newStart.setHours(0, 0, 0, 0);
+    var newEnd = new Date();
+    newEnd.setHours(23, 59, 59, 59);
+    console.log(newStart);
+    console.log(newEnd)
+    this.setState({
+      newEventID: '',
+      newEventStart: newStart.toString(),
+      newEventEnd: newEnd.toString(),
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
+      newEventName: 'New Event Title',
+      isEvent: false,
+      dayEventSelected: !this.state.dayEventSelected 
+    });
+  }
+
   abstractedMainEventGRShowButtons = () => {
     return (<div>
 
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
-        onClick={() => { this.setState({ dayEventSelected: !this.state.dayEventSelected }) }}
+        onClick={() => { 
+          
+          
+          this.showEventsFormbyCreateNewEventButton()
+        
+        }}
       >Create New Event</Button>
 
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
@@ -548,7 +572,7 @@ submits the data to be passed up to be integrated into google calendar
         <div style={this.state.dayEventSelected ? {} : { display: 'none' }}>
           <Row style={{ marginLeft: '0' }}>
             <Col >
-              <div className="modal-content" role="document" style={{borderRadius: '2%', marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <div style={{ marginTop: '50px' }}>
                   <h3 style={{ textAlign: 'center' }} className="bigfancytext">Event Information</h3>
                   {/* <p>ID: {this.state.newEventID}</p> */}
@@ -615,11 +639,6 @@ submits the data to be passed up to be integrated into google calendar
                       <Row style={{ marginLeft: '10px' }} >
                         <Col>
                           <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
-                        </Col>
-                        <Col>
-                          <Button style={this.state.isEvent ? {} : { display: 'none' }} onClick={this.handleModalClicked} className="btn btn-info">
-                            Modal
-                    </Button>
                         </Col>
                       </Row>
                     </Row>
