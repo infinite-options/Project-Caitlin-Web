@@ -11,7 +11,7 @@ export default class AddNewATItem extends Component {
 
     state = {
         atArr: [], //goal, routine original array 
-        newItem: { //Object to hold new Routine/Goal
+        newItem: { //Object to hold new Action/Task
             title: "",
         }
     }
@@ -42,19 +42,19 @@ export default class AddNewATItem extends Component {
     render() {
         return (
 
-            <Modal.Dialog style={{ marginLeft: '0', width: '900px', }}>
-            <Modal.Header closeButton onClick={() => {console.log("closed button clicked")}   }>
-                <Modal.Title><h2>Add New Task/Action</h2> </Modal.Title>
+            <Modal.Dialog style={{ marginLeft: '0', width: this.props.modalWidth }}>
+            <Modal.Header closeButton onClick={() => {this.props.hideNewATModal(); console.log("closed button clicked")}   }>
+                <Modal.Title><h2 className="normalfancytext">Add New Task/Action</h2> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {/* <AddNewGRItem refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} /> */}
                 <div className="input-group mb-3" >
-                    <input placeholder="Enter Title" value={this.state.newItem.title} onChange={this.handleInputChange} />
+                    <input style= {{ width:'200px'}} placeholder="Enter Title" value={this.state.newItem.title} onChange={this.handleInputChange} />
                 </div >
                 </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => {console.log("closed button clicked")}  }>Close</Button>
-                <Button variant="info" onClick={() => { console.log("closed button clicked")}  }>Save changes</Button>
+                <Button variant="secondary" onClick={() => { this.props.hideNewATModal(); console.log("closed button clicked")}  }>Close</Button>
+                <Button variant="info" onClick={() => { this.props.hideNewATModal(); console.log("closed button clicked")}  }>Save changes</Button>
             </Modal.Footer>
         </Modal.Dialog>
 

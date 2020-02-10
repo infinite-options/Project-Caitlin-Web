@@ -311,16 +311,10 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
 
                                 <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                <p className="fancytext">{this.state.routines[i]['title']}</p>
+                                <p className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
 
                                     {(this.state.routines[i]['photo'] ? (<img src={this.state.routines[i]['photo']} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
 
-                                </Col>
-                                <Col>
-                                    <p>Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
-                                    <p> Description: None Yet </p>
-                                    {/* <Row style={{margin:'0'}}><p className="fancytext">Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </p> */}
-                                    {/* </Row> */}
                                 </Col>
                             </Row>
                         </ListGroup.Item>
@@ -346,17 +340,12 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
 
                                 <Col sm="auto" md="auto" lg="auto" style={{ margin: '0', width: '100%', height: "100%" }}>
-                                <p className="fancytext"> {this.state.goals[i]['title']} </p>
+                                <p className="fancytext"> {this.state.goals[i]['title']}<br/> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
 
                                     {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
 
                                 </Col>
-                                <Col>
-                                    <p>Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
-                                    <p> Description: None Yet </p>
-                                    {/* <Row style={{margin:'0'}}><p className="fancytext">Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, </p> */}
-                                    {/* </Row> */}
-                                </Col>
+                               
                             </Row>
 
                         </ListGroup.Item>
@@ -406,11 +395,11 @@ export default class FirebaseV2 extends React.Component {
                         </Col>) : <div> </div>
                 }
 
-                <Col sm="auto" md="auto" lg="auto">
+                {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
-                </Col>
+                </Col> */}
 
                 {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
@@ -475,7 +464,7 @@ shows entire list of goals and routines
     */
     abstractedRoutineList = (displayRoutines) => {
         return (
-            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+            <Modal.Dialog style={{  marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
                 <Modal.Header onClick={this.props.closeRoutine} closeButton>
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
@@ -568,6 +557,9 @@ shows entire list of goals and routines
                 <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.type + " : " + this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {(this.state.addNewATModalShow) ? <AddNewATItem hideNewATModal= {() => {this.setState({addNewATModalShow : false})}} width={this.state.modalWidth} /> : (<div></div>)}
+                    </div>
                 {/**
                  * Here Below, the IS list will pop up inside the AT list
                   */}

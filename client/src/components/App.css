@@ -179,3 +179,10 @@ The below is styling for the react date picker
     display: block;
     width: 200px;
 }
+
+
+.modal-content  {
+  -webkit-border-radius: 15px ;
+  -moz-border-radius: 15px ;
+  border-radius: 15px ; 
+}

@@ -425,7 +425,7 @@ submits the data to be passed up to be integrated into google calendar
 
   calendarAbstracted = () => {
     return (
-      <div style={{ backgroundColor: 'white', width: '1000px', marginLeft: '0px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '0px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
           <Row style={{ marginTop: '0px' }}>
             <Col >
@@ -548,7 +548,7 @@ submits the data to be passed up to be integrated into google calendar
         <div style={this.state.dayEventSelected ? {} : { display: 'none' }}>
           <Row style={{ marginLeft: '0' }}>
             <Col >
-              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+              <div className="modal-content" role="document" style={{borderRadius: '2%', marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <div style={{ marginTop: '50px' }}>
                   <h3 style={{ textAlign: 'center' }} className="bigfancytext">Event Information</h3>
                   {/* <p>ID: {this.state.newEventID}</p> */}
