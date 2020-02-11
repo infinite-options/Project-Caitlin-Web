@@ -148,7 +148,14 @@ submits the data to be passed up to be integrated into google calendar
     var start = new Date(this.state.newEventStart).toISOString();
     var end = new Date(this.state.newEventEnd).toISOString();
     console.log("submit clicked with ", start, end);
+
+    /**
+     * 
+     * all variables within form need to be accessible up to this point
+    */
+
     this.createEvent(this.state.newEventName, start, end);
+  
   }
 
   updateEventClick = (event) => {
@@ -449,7 +456,7 @@ submits the data to be passed up to be integrated into google calendar
 
   calendarAbstracted = () => {
     return (
-      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '0px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '20px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
           <Row style={{ marginTop: '0px' }}>
             <Col >
@@ -566,6 +573,10 @@ submits the data to be passed up to be integrated into google calendar
     )
   }
 
+  /**
+   * This is where the event form is made
+   * 
+  */
   eventFormAbstracted = () => {
     return (
       <Col > {/* start of new Event Form */}
@@ -581,29 +592,23 @@ submits the data to be passed up to be integrated into google calendar
                     <Row>
                       <Col>
                         <div style={{ width: '300px' }}>
-
                           <Form.Group >
                             <Form.Label>Event Name</Form.Label>
                             <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
                               type="text" placeholder="Title" />
                           </Form.Group>
-
                           <Form.Group value={this.state.newEventStart} controlId="Y" >
                             <Form.Label>Start Time</Form.Label> <br />
                             {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
                               type="text" placeholder="Start Time" /> */}
                             {this.startTimePicker()}
                           </Form.Group>
-
                           <Form.Group value={this.state.newEventEnd} controlId="X" >
                             <Form.Label>End Time</Form.Label><br />
                             {/* <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
                               type="text" placeholder="End Time" /> */}
                             {this.endTimePicker()}
-
                           </Form.Group>
-
-
                           <Form.Group value={"Extra Slot"} >
                             <Form.Label>Guests</Form.Label>
                             <Form.Control value={"Invite Guest"}
@@ -643,14 +648,12 @@ submits the data to be passed up to be integrated into google calendar
                       </Row>
                     </Row>
                   </Form>
-                  {/* </Container> */}
                 </div>
               </div>
             </Col>
           </Row>
         </div>
       </Col>
-
     )
   }
 

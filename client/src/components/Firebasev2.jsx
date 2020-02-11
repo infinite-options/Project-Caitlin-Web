@@ -27,18 +27,41 @@ export default class FirebaseV2 extends React.Component {
             photo: '',
             id: null,
             arr: [],
-            fbPath: null
+            fbPath: null,
+
         },
+        singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
         modalWidth: '350px',
+
+        //Use to decided whether to show GR and AT Modals
         addNewGRModalShow: false,
         addNewATModalShow: false,
-        thumbnailWidth: '200px',
+
+        //used to determine thumbnail picture size
+        thumbnailWidth: '200px', 
         thumbnailHeight: '100px',
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
-
         //isRoutine is to check whether we clicked on add routine or add goal
         isRoutine: true
+    }
+
+    refreshATItem = (arr) => {
+        let resArr = this.createListofAT(arr);
+                //assemble singleGR template here:
+                let singleGR = {
+                    show: this.state.singleGR.show,
+                    type: this.state.singleGR.type,
+                    title: this.state.singleGR.title,
+                    id: this.state.singleGR.id,
+                    arr: resArr, //array of current action/task in this singular Routine
+                    fbPath: this.state.singleGR.fbPath
+                }
+        this.setState({
+            singleGR:singleGR
+        })
+
+       console.log('called refreshATItem')
     }
 
     constructor(props) { // serves almost no purpose currently
@@ -105,7 +128,7 @@ export default class FirebaseV2 extends React.Component {
     //modal for the action/task 
     getATList = (id, title, persist) => {
         const db = firebase.firestore();
-        console.log('getATList component did mount id : ' + id);
+        console.log('getATList function with id : ' + id);
         let docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy')
             .collection('goals&routines').doc(id);
         docRef.get().then((doc) => {
@@ -122,10 +145,11 @@ export default class FirebaseV2 extends React.Component {
                         title: title,
                         id: id,
                         arr: [],
-                        fbPath: null
+                        fbPath: docRef
                     }
                     this.setState({
-                        singleGR: singleGR
+                        singleGR: singleGR,
+                        singleATitemArr: []
                     })
                     return;
                 }
@@ -136,12 +160,13 @@ export default class FirebaseV2 extends React.Component {
                     type: (persist) ? "Routine" : "Goal",
                     title: title,
                     id: id,
-                    arr: resArr,
+                    arr: resArr, //array of current action/task in this singular Routine
                     fbPath: docRef
                 }
 
                 this.setState({
-                    singleGR: singleGR
+                    singleGR: singleGR,
+                    singleATitemArr: x 
                 })
 
             } else {
@@ -234,9 +259,9 @@ export default class FirebaseV2 extends React.Component {
 
 
     /**
-     * This needs to be done tomorrow, we are passed in the action/task id and title
+     * we are passed in the action/task id and title
      * and we will need to grab all steps/Instructions related to this action/task,
-     * do this ASAP TODO 
+     * 
     */
     ATonClickEvent = (title, id) => {
 
@@ -274,7 +299,7 @@ export default class FirebaseV2 extends React.Component {
                 // console.log(doc.data());
                 var x = doc.data();
                 x = x['instructions&steps'];
-                if (x === null) {
+                if (x == null) {
                     this.setState(
                         { singleAT: temp }
                     )
@@ -294,8 +319,6 @@ export default class FirebaseV2 extends React.Component {
             console.log("Error getting document:", error);
             alert("Error getting document:", error);
         });
-
-
     }
 
     getRoutines = () => {
@@ -380,7 +403,7 @@ export default class FirebaseV2 extends React.Component {
 
                 {
                     (this.props.showRoutine) ?
-                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                        (<Col style={{  width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
                             <div style={{ borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
@@ -468,7 +491,9 @@ shows entire list of goals and routines
                 <Modal.Header onClick={this.props.closeRoutine} closeButton>
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body >
+
+
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
@@ -496,21 +521,11 @@ shows entire list of goals and routines
      * returns a modal showing us a slot to add a new Goal/Routine
     */
     AddNewGRModalAbstracted = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
-            <Modal.Header closeButton onClick={() => { this.setState({ addNewGRModalShow: false }) }}>
-                <Modal.Title>
-
-                    <h5 className="normalfancytext">
-                        Add New {(this.state.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <AddNewGRItem refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => { this.setState({ addNewGRModalShow: false }) }}>Close</Button>
-                <Button variant="info" onClick={() => { this.setState({ addNewGRModalShow: false }) }}>Save changes</Button>
-            </Modal.Footer>
-        </Modal.Dialog>)
+        return (
+       
+                <AddNewGRItem closeModal={() => { this.setState({ addNewGRModalShow: false })}} refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
+          
+        )
     }
 
 
@@ -554,11 +569,11 @@ shows entire list of goals and routines
     abstractedActionsAndTaskList = () => {
         return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth }}>
             <Modal.Header closeButton onClick={() => { this.setState({ singleGR: { show: false } }) }} >
-                <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.type + " : " + this.state.singleGR.title}</h5> </Modal.Title>
+                <Modal.Title><h5 className="normalfancytext">{ this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <div style={{  borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.addNewATModalShow) ? <AddNewATItem hideNewATModal= {() => {this.setState({addNewATModalShow : false})}} width={this.state.modalWidth} /> : (<div></div>)}
+                        {(this.state.addNewATModalShow) ? <AddNewATItem refresh={this.refreshATItem} ATArray={this.state.singleATitemArr} ATItem= {this.state.singleGR} hideNewATModal= {() => {this.setState({addNewATModalShow : false})}} width={this.state.modalWidth} /> : (<div></div>)}
                     </div>
                 {/**
                  * Here Below, the IS list will pop up inside the AT list

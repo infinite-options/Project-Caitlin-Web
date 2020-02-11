@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase from "./firebase";
-// import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Button, Modal} from 'react-bootstrap';
 
 export default class AddNewGRItem extends Component {
 
@@ -20,7 +20,7 @@ export default class AddNewGRItem extends Component {
     }
 
     componentDidMount() {
-            (this.props.isRoutine) ? console.log("Routine Input") : console.log("Goal Input")
+        (this.props.isRoutine) ? console.log("Routine Input") : console.log("Goal Input")
 
         this.getGRDataFromFB();
     }
@@ -100,7 +100,7 @@ export default class AddNewGRItem extends Component {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
                 this.getGRDataFromFB();
-                if(this.props != null){
+                if (this.props != null) {
                     console.log("refreshing FireBasev2 from AddNewGRItem");
                     this.props.refresh();
                 }
@@ -110,17 +110,30 @@ export default class AddNewGRItem extends Component {
 
 
     render() {
-   
+
 
         return (
-            <div>
-                < div className="input-group mb-3" >
-                    <input placeholder="Enter Title" value={this.state.newItem.title} onChange={this.handleInputChange} />
-                    <div className="input-group-append">
-        <button onClick={this.newInputSubmit} className="btn btn-outline-secondary" type="button">Add {this.props.isRoutine ? "Routine" : "Goal" }</button>
+
+            <Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
+                <Modal.Header closeButton onClick={this.props.closeModal}>
+                    <Modal.Title>
+
+                        <h5 className="normalfancytext">
+                            Add New {(this.state.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        < div className="input-group mb-3" >
+                            <input placeholder="Enter Title" value={this.state.newItem.title} onChange={this.handleInputChange} />
+                        </div >
                     </div>
-                </div >
-            </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={this.props.closeModal}>Close</Button>
+                    <Button variant="info" onClick={  this.newInputSubmit}>Save changes</Button>
+                </Modal.Footer>
+            </Modal.Dialog>
+
         )
     }
 }
