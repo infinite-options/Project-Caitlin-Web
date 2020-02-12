@@ -118,10 +118,10 @@ h1 {
   border-radius: 50%;
   width: 32px;
   height: 32px;
-  padding-top: 0px;
+  padding-top: 1px;
   padding-left:1px;
   background: #fff;
-  border: 2px solid #666;
+  border: 2px solid rgb(0, 20, 6);
   color: #666;
   text-align: center;
 }

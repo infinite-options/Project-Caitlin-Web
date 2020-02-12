@@ -3,6 +3,7 @@ import firebase from "./firebase";
 import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import AddNewGRItem from './addNewGRItem.jsx'
 import AddNewATItem from './addNewATItem.jsx'
+import AddNewISItem from './addNewISItem.jsx'
 export default class FirebaseV2 extends React.Component {
 
     state = {
@@ -10,6 +11,7 @@ export default class FirebaseV2 extends React.Component {
         originalGoalsAndRoutineArr: [],
         goals: [], //array to hold all  goals  
         routines: [], // array to hold all routines 
+        //This single GR item is passed to AddNewATItem to help processed the new item
         singleGR: { //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
             show: false,
             type: "None",
@@ -19,6 +21,41 @@ export default class FirebaseV2 extends React.Component {
             arr: [],
             fbPath: null
         },
+
+        /**
+         * 
+         * the singleAT item basically holds all the IS for this item,
+         * this will be helpful in crafting a addNewISItem Later on
+         * As a matter of fact, 2/11/2020:
+         * 
+         * 1. create addNewISItem.jsx
+         * 
+         * Within addNewISItem: 
+         * 2. generate form box to add new title 
+         * 3. add that form to the exisiting doc arr
+         * 4. refresh the data here with createListofIS
+         * 
+         * 5. 
+        refreshATItem = (arr) => {
+        let resArr = this.createListofIS(arr);
+                //assemble singleAT template here:
+                let singleAT = {
+                    show: this.state.singleAT.show,
+                    type: this.state.singleAT.type,
+                    title: this.state.singleAT.title,
+                    id: this.state.singleAT.id,
+                    arr: resArr, //array of current action/task in this singular Routine
+                    fbPath: this.state.singleAT.fbPath
+                }
+        this.setState({
+            singleAT:singleAt
+        })
+
+       console.log('called refreshATItem')
+    }
+         * 
+         * 
+        */
         singleAT: { //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
             //with the task
             show: false,
@@ -30,15 +67,17 @@ export default class FirebaseV2 extends React.Component {
             fbPath: null,
 
         },
-        singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
+        singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
+        singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
         modalWidth: '350px',
 
         //Use to decided whether to show GR and AT Modals
         addNewGRModalShow: false,
         addNewATModalShow: false,
+        addNewISModalShow: false,
 
         //used to determine thumbnail picture size
-        thumbnailWidth: '200px', 
+        thumbnailWidth: '200px',
         thumbnailHeight: '100px',
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
@@ -48,20 +87,36 @@ export default class FirebaseV2 extends React.Component {
 
     refreshATItem = (arr) => {
         let resArr = this.createListofAT(arr);
-                //assemble singleGR template here:
-                let singleGR = {
-                    show: this.state.singleGR.show,
-                    type: this.state.singleGR.type,
-                    title: this.state.singleGR.title,
-                    id: this.state.singleGR.id,
-                    arr: resArr, //array of current action/task in this singular Routine
-                    fbPath: this.state.singleGR.fbPath
-                }
+        //assemble singleGR template here:
+        let singleGR = {
+            show: this.state.singleGR.show,
+            type: this.state.singleGR.type,
+            title: this.state.singleGR.title,
+            id: this.state.singleGR.id,
+            arr: resArr, //array of current action/task in this singular Routine
+            fbPath: this.state.singleGR.fbPath
+        }
         this.setState({
-            singleGR:singleGR
+            singleGR: singleGR
         })
 
-       console.log('called refreshATItem')
+        console.log('called refreshATItem')
+    }
+
+    refreshISItem = (arr) => {
+        let resArr = this.createListofIS(arr);
+        let singleAt = {
+            show: this.state.singleAT.show,
+            type: this.state.singleAT.type,
+            title: this.state.singleAT.title,
+            id: this.state.singleAT.id,
+            arr: resArr, //array of current action/task in this singular Routine
+            fbPath: this.state.singleAT.fbPath
+        }
+        this.setState({
+            singleAT: singleAt
+        })
+
     }
 
     constructor(props) { // serves almost no purpose currently
@@ -166,7 +221,7 @@ export default class FirebaseV2 extends React.Component {
 
                 this.setState({
                     singleGR: singleGR,
-                    singleATitemArr: x 
+                    singleATitemArr: x
                 })
 
             } else {
@@ -205,6 +260,9 @@ export default class FirebaseV2 extends React.Component {
         }
         return res;
     }
+
+
+
 
 
     /**
@@ -308,7 +366,10 @@ export default class FirebaseV2 extends React.Component {
                 console.log(x);
                 temp.arr = this.createListofIS(x);
                 this.setState(
-                    { singleAT: temp }
+                    {
+                        singleAT: temp,
+                        singleISitemArr: x
+                    }
                 )
 
             } else {
@@ -334,7 +395,7 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
 
                                 <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                <p className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
+                                    <p className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
 
                                     {(this.state.routines[i]['photo'] ? (<img src={this.state.routines[i]['photo']} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
 
@@ -363,12 +424,12 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
 
                                 <Col sm="auto" md="auto" lg="auto" style={{ margin: '0', width: '100%', height: "100%" }}>
-                                <p className="fancytext"> {this.state.goals[i]['title']}<br/> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
+                                    <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
 
                                     {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
 
                                 </Col>
-                               
+
                             </Row>
 
                         </ListGroup.Item>
@@ -395,7 +456,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
                             </div>
                         </Col>) : <div> </div>
@@ -403,8 +464,8 @@ export default class FirebaseV2 extends React.Component {
 
                 {
                     (this.props.showRoutine) ?
-                        (<Col style={{  width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
                         </Col>) : <div> </div>
@@ -412,7 +473,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showGoal) ? (
                         <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedGoalsList(displayGoals)}
                             </div>
                         </Col>) : <div> </div>
@@ -461,11 +522,11 @@ shows entire list of goals and routines
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
 
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
@@ -487,7 +548,7 @@ shows entire list of goals and routines
     */
     abstractedRoutineList = (displayRoutines) => {
         return (
-            <Modal.Dialog style={{  borderRadius:'15px',  marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+            <Modal.Dialog style={{ borderRadius: '15px', marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
                 <Modal.Header onClick={this.props.closeRoutine} closeButton>
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
@@ -497,10 +558,10 @@ shows entire list of goals and routines
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
@@ -522,9 +583,9 @@ shows entire list of goals and routines
     */
     AddNewGRModalAbstracted = () => {
         return (
-       
-                <AddNewGRItem closeModal={() => { this.setState({ addNewGRModalShow: false })}} refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
-          
+
+            <AddNewGRItem closeModal={() => { this.setState({ addNewGRModalShow: false }) }} refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
+
         )
     }
 
@@ -535,6 +596,8 @@ shows entire list of goals and routines
     currently only shows the single Action/Task Title with no steps 
     */
 
+
+
     /**
      * abstractedInstructionsAndStepsList:
      * Shows a single Task / Action as Title with
@@ -542,20 +605,35 @@ shows entire list of goals and routines
      * 
     */
     abstractedInstructionsAndStepsList = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
-            <Modal.Header closeButton onClick={() => { this.setState({ singleAT: { show: false } }) }}>
-                <Modal.Title><h5 className="normalfancytext">{this.state.singleAT.title}</h5> </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <ListGroup>
-                    {this.state.singleAT.arr}
-                </ListGroup>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={() => { this.setState({ singleAT: { show: false } }) }}>Close</Button>
-                <Button variant="info" onClick={() => { this.setState({ singleAT: { show: false } }) }}>Save changes</Button>
-            </Modal.Footer>
-        </Modal.Dialog>)
+        return (
+
+            <Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
+                <Modal.Header closeButton onClick={() => { this.setState({ singleAT: { show: false } }) }}>
+                    <Modal.Title><h5 className="normalfancytext">{this.state.singleAT.title}</h5> </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        {
+                            (this.state.addNewISModalShow) ?
+                                <AddNewISItem
+                                    ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                                    ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
+                                    refresh= {this.refreshISItem}
+                                    hideNewISModal={//function to hide the modal 
+                                        () => 
+                                        { this.setState({ addNewISModalShow: false }) }} 
+                                    width={this.state.modalWidth} /> : (<div></div>)}
+                    </div>
+                    <ListGroup>
+                        {this.state.singleAT.arr}
+                    </ListGroup>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewISModalShow: true }) }} >Add Step</button>
+                </Modal.Footer>
+            </Modal.Dialog>
+
+        )
     }
 
 
@@ -569,28 +647,26 @@ shows entire list of goals and routines
     abstractedActionsAndTaskList = () => {
         return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth }}>
             <Modal.Header closeButton onClick={() => { this.setState({ singleGR: { show: false } }) }} >
-                <Modal.Title><h5 className="normalfancytext">{ this.state.singleGR.title}</h5> </Modal.Title>
+                <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <div style={{  borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.addNewATModalShow) ? <AddNewATItem refresh={this.refreshATItem} ATArray={this.state.singleATitemArr} ATItem= {this.state.singleGR} hideNewATModal= {() => {this.setState({addNewATModalShow : false})}} width={this.state.modalWidth} /> : (<div></div>)}
-                    </div>
+                <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    {(this.state.addNewATModalShow) ? <AddNewATItem refresh={this.refreshATItem} ATArray={this.state.singleATitemArr} ATItem={this.state.singleGR} hideNewATModal={() => { this.setState({ addNewATModalShow: false }) }} width={this.state.modalWidth} /> : (<div></div>)}
+                </div>
                 {/**
                  * Here Below, the IS list will pop up inside the AT list
                   */}
-                <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                     {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
                 </div>
                 <ListGroup >
                     <div style={{ height: '500px', overflow: 'scroll' }}>
                         {this.state.singleGR.arr}
                     </div>
-                    <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewATModalShow: true }) }} >Add Action/Task</button>
                 </ListGroup>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => { this.setState({ singleGR: { show: false } }) }} >Close</Button>
-                <Button variant="info" onClick={() => { this.setState({ singleGR: { show: false } }) }} >Save changes</Button>
+                <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewATModalShow: true }) }} >Add Action/Task</button>
             </Modal.Footer>
         </Modal.Dialog>)
     }
@@ -626,7 +702,7 @@ shows entire list of goals and routines
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
 
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
 

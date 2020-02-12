@@ -180,7 +180,7 @@ export default class TylersCalendarv1 extends React.Component {
 
         return (
             <div>
-                <table  className="table" style ={{ height:'450px', tableLayout: 'fixed', width: '900px'}}>
+                <table  className="table" style ={{ height:'450px', tableLayout: 'fixed', width: '910px'}}>
                     <thead>
                         <tr>
                             {weekdays}

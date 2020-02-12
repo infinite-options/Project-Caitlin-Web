@@ -10,7 +10,6 @@ export default class AddNewATItem extends Component {
     }
 
     state = {
-        atArr: [], //goal, routine original array 
         newActionTitle: '',
     }
 

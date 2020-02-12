@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
 import './calendar.css';
 import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
@@ -155,7 +155,7 @@ submits the data to be passed up to be integrated into google calendar
     */
 
     this.createEvent(this.state.newEventName, start, end);
-  
+
   }
 
   updateEventClick = (event) => {
@@ -373,7 +373,7 @@ submits the data to be passed up to be integrated into google calendar
               </Row> */}
             </Col>
             <Col stlye={{ marginLeft: '0' }}>
-              {this.eventFormAbstracted()}
+              {this.state.dayEventSelected ? this.eventFormAbstracted() : <div> </div>}
             </Col>
           </Row>
           <Row style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
@@ -417,7 +417,7 @@ submits the data to be passed up to be integrated into google calendar
       newEventEnd0: newEnd,
       newEventName: 'New Event Title',
       isEvent: false,
-      dayEventSelected: !this.state.dayEventSelected 
+      dayEventSelected: !this.state.dayEventSelected
     });
   }
 
@@ -425,11 +425,11 @@ submits the data to be passed up to be integrated into google calendar
     return (<div>
 
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
-        onClick={() => { 
-          
-          
+        onClick={() => {
+
+
           this.showEventsFormbyCreateNewEventButton()
-        
+
         }}
       >Create New Event</Button>
 
@@ -579,81 +579,81 @@ submits the data to be passed up to be integrated into google calendar
   */
   eventFormAbstracted = () => {
     return (
-      <Col > {/* start of new Event Form */}
-        <div style={this.state.dayEventSelected ? {} : { display: 'none' }}>
-          <Row style={{ marginLeft: '0' }}>
-            <Col >
-              <div className="modal-content" role="document" style={{ marginLeft: '0', width: '450px', height: '850px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                <div style={{ marginTop: '50px' }}>
-                  <h3 style={{ textAlign: 'center' }} className="bigfancytext">Event Information</h3>
-                  {/* <p>ID: {this.state.newEventID}</p> */}
-                  {/* <Container> */}
-                  <Form onSubmit={this.handleSubmit} style={{ marginLeft: '15%', width: '850px', }} >
-                    <Row>
-                      <Col>
-                        <div style={{ width: '300px' }}>
-                          <Form.Group >
-                            <Form.Label>Event Name</Form.Label>
-                            <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
-                              type="text" placeholder="Title" />
-                          </Form.Group>
-                          <Form.Group value={this.state.newEventStart} controlId="Y" >
-                            <Form.Label>Start Time</Form.Label> <br />
-                            {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
-                              type="text" placeholder="Start Time" /> */}
-                            {this.startTimePicker()}
-                          </Form.Group>
-                          <Form.Group value={this.state.newEventEnd} controlId="X" >
-                            <Form.Label>End Time</Form.Label><br />
-                            {/* <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
-                              type="text" placeholder="End Time" /> */}
-                            {this.endTimePicker()}
-                          </Form.Group>
-                          <Form.Group value={"Extra Slot"} >
-                            <Form.Label>Guests</Form.Label>
-                            <Form.Control value={"Invite Guest"}
-                              type="text" placeholder="End" />
-                          </Form.Group>
-                          <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
-                            <Form.Label>Location:</Form.Label>
-                            <Form.Control value={"Location"}
-                              type="text" placeholder="Location" />
-                          </Form.Group>
-                          <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
-                            <Form.Label>Description:</Form.Label>
-                            <Form.Control as="textarea" rows="3" value={"Description"}
-                              type="text" placeholder="Description" />
-                          </Form.Group>
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Row>
-                        <Col style={this.state.isEvent ? { display: 'none' } : {}} >
-                          <Button variant="info" type="submit"> Submit </Button>
-                        </Col>
-                        <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
-                          <Button onClick={this.updateEventClick} className="btn btn-info">
-                            Update
-                    </Button>
-                        </Col>
-                        <Col>
-                          <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
-                        </Col>
-                      </Row>
-                      <Row style={{ marginLeft: '10px' }} >
-                        <Col>
-                          <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
-                        </Col>
-                      </Row>
-                    </Row>
-                  </Form>
-                </div>
-              </div>
-            </Col>
+      <Modal.Dialog style={{ marginLeft: '0', width: '350px' ,  marginTop: "0"}}>
+        <Modal.Header closeButton onClick={() => { this.setState({ dayEventSelected: false }) }} >
+          <Modal.Title><h5 className="normalfancytext">Event Form</h5> </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {this.eventFormInputArea()}
+        </Modal.Body>
+        <Modal.Footer>
+          <Row>
+            <Row>
+              <Col style={this.state.isEvent ? { display: 'none' } : {}} >
+                <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
+              </Col>
+              <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
+                <Button onClick={this.updateEventClick} className="btn btn-info">
+                  Update
+    </Button>
+              </Col>
+              <Col>
+                <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
+              </Col>
+            </Row>
+            <Row style={{ marginLeft: '10px' }} >
+              <Col>
+                <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
+              </Col>
+            </Row>
           </Row>
-        </div>
-      </Col>
+        </Modal.Footer>
+      </Modal.Dialog>
+    )
+  }
+
+  eventFormInputArea = () => {
+    return (
+      <Form  >
+        <Row>
+          <Col>
+            <div style={{ width: '300px' }}>
+              <Form.Group >
+                <Form.Label>Event Name</Form.Label>
+                <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
+                  type="text" placeholder="Title" />
+              </Form.Group>
+              <Form.Group value={this.state.newEventStart} controlId="Y" >
+                <Form.Label>Start Time</Form.Label> <br />
+                {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
+              type="text" placeholder="Start Time" /> */}
+                {this.startTimePicker()}
+              </Form.Group>
+              <Form.Group value={this.state.newEventEnd} controlId="X" >
+                <Form.Label>End Time</Form.Label><br />
+                {/* <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
+              type="text" placeholder="End Time" /> */}
+                {this.endTimePicker()}
+              </Form.Group>
+              <Form.Group value={"Extra Slot"} >
+                <Form.Label>Guests</Form.Label>
+                <Form.Control value={"Invite Guest"}
+                  type="text" placeholder="End" />
+              </Form.Group>
+              <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
+                <Form.Label>Location:</Form.Label>
+                <Form.Control value={"Location"}
+                  type="text" placeholder="Location" />
+              </Form.Group>
+              <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
+                <Form.Label>Description:</Form.Label>
+                <Form.Control as="textarea" rows="3" value={"Description"}
+                  type="text" placeholder="Description" />
+              </Form.Group>
+            </div>
+          </Col>
+        </Row>
+      </Form>
     )
   }
 
