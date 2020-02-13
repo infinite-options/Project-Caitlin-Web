@@ -4,6 +4,10 @@ import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'rea
 import AddNewGRItem from './addNewGRItem.jsx'
 import AddNewATItem from './addNewATItem.jsx'
 import AddNewISItem from './addNewISItem.jsx'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import DeleteISItem from './DeleteISItem.jsx'
+
 export default class FirebaseV2 extends React.Component {
 
     state = {
@@ -26,7 +30,7 @@ export default class FirebaseV2 extends React.Component {
          * 
          * the singleAT item basically holds all the IS for this item,
          * this will be helpful in crafting a addNewISItem Later on
-         * As a matter of fact, 2/11/2020:
+         * As a matter of fact, 2/ 11/2020:
          * 
          * 1. create addNewISItem.jsx
          * 
@@ -71,10 +75,11 @@ export default class FirebaseV2 extends React.Component {
         singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
         modalWidth: '350px',
 
-        //Use to decided whether to show GR and AT Modals
+        //Use to decided whether to show the respective modals 
         addNewGRModalShow: false,
         addNewATModalShow: false,
         addNewISModalShow: false,
+        deleteISModalShow: false,
 
         //used to determine thumbnail picture size
         thumbnailWidth: '200px',
@@ -104,6 +109,11 @@ export default class FirebaseV2 extends React.Component {
     }
 
     refreshISItem = (arr) => {
+        console.log("refreshISItem new arr")
+        console.log(arr)
+        this.setState({
+            singleISitemArr:arr
+        })
         let resArr = this.createListofIS(arr);
         let singleAt = {
             show: this.state.singleAT.show,
@@ -113,9 +123,11 @@ export default class FirebaseV2 extends React.Component {
             arr: resArr, //array of current action/task in this singular Routine
             fbPath: this.state.singleAT.fbPath
         }
+
         this.setState({
             singleAT: singleAt
-        })
+        }
+        )
 
     }
 
@@ -288,10 +300,28 @@ export default class FirebaseV2 extends React.Component {
             console.log("IS index " + i + " photo url :" + tempPhoto);
             let tempTitle = A[i]['title'];
             res.push(
-                <div key={'IS' + i} >
-                    <ListGroup.Item action onClick={() => { this.ISonClickEvent(tempTitle) }} variant="light" style={{ marginBottom: '3px' }}>
-                        <p className="fancytext">{tempTitle}</p>
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+                <div key={'IS' + i} style={{ width: '100%' }} >
+                    <ListGroup.Item action onClick={() => { this.ISonClickEvent(tempTitle) }}
+                        variant="light" style={{ width: '100%', marginBottom: '3px' }}>
+
+                        <Row lg={8}
+                            style={{ width: '100%' }}>
+
+                            <Col>
+                                <div className="fancytext" >{tempTitle}</div>
+                            </Col>
+
+
+                            <DeleteISItem
+                                deleteIndex={i}
+                                ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                                ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
+                                refresh={this.refreshISItem}
+                                />
+
+                        </Row>
+                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight}
+                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
                     </ListGroup.Item>
                 </div>
             )
@@ -364,13 +394,13 @@ export default class FirebaseV2 extends React.Component {
                     return;
                 }
                 console.log(x);
+                //Below is a fix for fbPath Null when we pass it
+                //createListofIS and DeleteISItem.jsx, we need a path 
+                //to delete the item, so we set the path then create the
+                //the array and reset it. 
+                this.setState( {singleAT: temp,singleISitemArr: x})    
                 temp.arr = this.createListofIS(x);
-                this.setState(
-                    {
-                        singleAT: temp,
-                        singleISitemArr: x
-                    }
-                )
+                this.setState({singleAT: temp,singleISitemArr: x})
 
             } else {
                 // doc.data() will be undefined in this case
@@ -411,7 +441,6 @@ export default class FirebaseV2 extends React.Component {
 
     getGoals = () => {
         let displayGoals = [];
-
         if (this.state.goals.length != null) {//Check to make sure routines exists
             for (let i = 0; i < this.state.goals.length; i++) {
                 // console.log(this.state.goals[i]['title'])
@@ -427,15 +456,9 @@ export default class FirebaseV2 extends React.Component {
                                     <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
 
                                     {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
-
                                 </Col>
-
                             </Row>
-
                         </ListGroup.Item>
-
-
-
                     </div>
                 )
             }
@@ -448,7 +471,7 @@ export default class FirebaseV2 extends React.Component {
         console.log('ran render firebasev2')
         var displayRoutines = this.getRoutines();
         var displayGoals = this.getGoals();
-
+        (this.state.deleteISModalShow) ? console.log("deleteISModalShow is true") : console.log("deleteISModalShow is false")
 
         return (
             <div style={{ marginTop: '0' }} >
@@ -583,9 +606,10 @@ shows entire list of goals and routines
     */
     AddNewGRModalAbstracted = () => {
         return (
-
-            <AddNewGRItem closeModal={() => { this.setState({ addNewGRModalShow: false }) }} refresh={this.grabFireBaseRoutinesGoalsData} isRoutine={this.state.isRoutine} />
-
+            <AddNewGRItem
+                closeModal={() => { this.setState({ addNewGRModalShow: false }) }}
+                refresh={this.grabFireBaseRoutinesGoalsData}
+                isRoutine={this.state.isRoutine} />
         )
     }
 
@@ -606,8 +630,7 @@ shows entire list of goals and routines
     */
     abstractedInstructionsAndStepsList = () => {
         return (
-
-            <Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
+            <Modal.Dialog style={{ marginTop: '0', marginLeft: '0', width: this.state.modalWidth, }}>
                 <Modal.Header closeButton onClick={() => { this.setState({ singleAT: { show: false } }) }}>
                     <Modal.Title><h5 className="normalfancytext">{this.state.singleAT.title}</h5> </Modal.Title>
                 </Modal.Header>
@@ -618,10 +641,9 @@ shows entire list of goals and routines
                                 <AddNewISItem
                                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
-                                    refresh= {this.refreshISItem}
+                                    refresh={this.refreshISItem}
                                     hideNewISModal={//function to hide the modal 
-                                        () => 
-                                        { this.setState({ addNewISModalShow: false }) }} 
+                                        () => { this.setState({ addNewISModalShow: false }) }}
                                     width={this.state.modalWidth} /> : (<div></div>)}
                     </div>
                     <ListGroup>
@@ -645,7 +667,7 @@ shows entire list of goals and routines
      * goal/ routine
     */
     abstractedActionsAndTaskList = () => {
-        return (<Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth }}>
+        return (<Modal.Dialog style={{ marginTop: '0', marginLeft: '0', width: this.state.modalWidth }}>
             <Modal.Header closeButton onClick={() => { this.setState({ singleGR: { show: false } }) }} >
                 <Modal.Title><h5 className="normalfancytext">{this.state.singleGR.title}</h5> </Modal.Title>
             </Modal.Header>

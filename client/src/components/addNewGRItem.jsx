@@ -119,7 +119,7 @@ export default class AddNewGRItem extends Component {
                     <Modal.Title>
 
                         <h5 className="normalfancytext">
-                            Add New {(this.state.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
+                            Add New {(this.props.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div>

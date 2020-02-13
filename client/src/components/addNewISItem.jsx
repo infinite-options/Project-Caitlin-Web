@@ -2,6 +2,12 @@ import React, { Component } from 'react'
 // import firebase from "./firebase";
 import { Button, Modal } from 'react-bootstrap';
 
+/**
+ * 
+ * This class is responsible for adding a new elemnt to the
+ * firebase database. If it becomes successful then we update
+ * the view on the firebasev2
+*/
 export default class AddNewISItem extends Component {
 
     constructor(props) {
