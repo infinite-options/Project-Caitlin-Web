@@ -372,7 +372,7 @@ submits the data to be passed up to be integrated into google calendar
                 {this.eventFormAbstractedHorizontalVersion()}
               </Row> */}
             </Col>
-            <Col stlye={{ marginLeft: '0' }}>
+            <Col style={{ marginLeft: '0' }}>
               {this.state.dayEventSelected ? this.eventFormAbstracted() : <div> </div>}
             </Col>
           </Row>
@@ -579,7 +579,7 @@ submits the data to be passed up to be integrated into google calendar
   */
   eventFormAbstracted = () => {
     return (
-      <Modal.Dialog style={{ marginLeft: '0', width: '350px' ,  marginTop: "0"}}>
+      <Modal.Dialog style={{ borderRadius: "15px",boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' ,marginLeft: '0', width: '350px' ,  marginTop: "0"}}>
         <Modal.Header closeButton onClick={() => { this.setState({ dayEventSelected: false }) }} >
           <Modal.Title><h5 className="normalfancytext">Event Form</h5> </Modal.Title>
         </Modal.Header>

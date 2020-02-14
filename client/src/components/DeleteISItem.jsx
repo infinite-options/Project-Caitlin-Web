@@ -54,7 +54,7 @@ export default class DeleteISItem extends Component {
                         onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
                         onMouseOut ={event => {event.target.style.color = "#000000";}}
                         style ={{color:  "#000000" }}
-                        onClick={()=>{this.submitRequest()}}
+                        onClick={(e)=>{e.stopPropagation(); this.submitRequest()}}
                         icon={faTrashAlt} size="1x" 
                         />
                 {/* <FontAwesomeIcon

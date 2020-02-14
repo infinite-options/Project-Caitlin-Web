@@ -4,9 +4,10 @@ import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'rea
 import AddNewGRItem from './addNewGRItem.jsx'
 import AddNewATItem from './addNewATItem.jsx'
 import AddNewISItem from './addNewISItem.jsx'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import DeleteISItem from './DeleteISItem.jsx'
+import DeleteAT from './deleteAT.jsx'
+import DeleteGR from './deleteGR.jsx'
+import EditGR from './editGR.jsx'
 
 export default class FirebaseV2 extends React.Component {
 
@@ -17,7 +18,7 @@ export default class FirebaseV2 extends React.Component {
         routines: [], // array to hold all routines 
         //This single GR item is passed to AddNewATItem to help processed the new item
         singleGR: { //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
-            show: false,
+            show: false, // Show the modal 
             type: "None",
             title: 'GR Name',
             photo: "",
@@ -26,49 +27,15 @@ export default class FirebaseV2 extends React.Component {
             fbPath: null
         },
 
-        /**
-         * 
-         * the singleAT item basically holds all the IS for this item,
-         * this will be helpful in crafting a addNewISItem Later on
-         * As a matter of fact, 2/ 11/2020:
-         * 
-         * 1. create addNewISItem.jsx
-         * 
-         * Within addNewISItem: 
-         * 2. generate form box to add new title 
-         * 3. add that form to the exisiting doc arr
-         * 4. refresh the data here with createListofIS
-         * 
-         * 5. 
-        refreshATItem = (arr) => {
-        let resArr = this.createListofIS(arr);
-                //assemble singleAT template here:
-                let singleAT = {
-                    show: this.state.singleAT.show,
-                    type: this.state.singleAT.type,
-                    title: this.state.singleAT.title,
-                    id: this.state.singleAT.id,
-                    arr: resArr, //array of current action/task in this singular Routine
-                    fbPath: this.state.singleAT.fbPath
-                }
-        this.setState({
-            singleAT:singleAt
-        })
-
-       console.log('called refreshATItem')
-    }
-         * 
-         * 
-        */
         singleAT: { //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
             //with the task
-            show: false,
-            type: "None",
-            title: 'AT Name',
+            show: false, // Show the model 
+            type: "None", // Action or Task 
+            title: 'AT Name', //Title of action task 
             photo: '',
-            id: null,
-            arr: [],
-            fbPath: null,
+            id: null, //id of Action Task 
+            arr: [], //array of instruction/steps formatted to display as a list
+            fbPath: null, //Firebase direction to the arr
 
         },
         singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
@@ -90,45 +57,43 @@ export default class FirebaseV2 extends React.Component {
         isRoutine: true
     }
 
+    /**
+     * refreshATItem:
+     * Given a array, it will replace the current array of singleGR which holds the layout 
+     * list of all action task under it and singleATitemArr which just holds the raw data.
+     * 
+    */
     refreshATItem = (arr) => {
-        let resArr = this.createListofAT(arr);
-        //assemble singleGR template here:
-        let singleGR = {
-            show: this.state.singleGR.show,
-            type: this.state.singleGR.type,
-            title: this.state.singleGR.title,
-            id: this.state.singleGR.id,
-            arr: resArr, //array of current action/task in this singular Routine
-            fbPath: this.state.singleGR.fbPath
-        }
-        this.setState({
-            singleGR: singleGR
-        })
+        console.log("refreshATItem was called")
 
-        console.log('called refreshATItem')
+        this.setState({ singleATitemArr: arr })
+        let resArr = this.createListofAT(arr);
+        let singleGR = this.state.singleGR;
+        singleGR.arr = resArr;
+        this.setState({ singleGR: singleGR })
+
     }
 
+    /**
+     * 
+     * refreshISItem - given A array item,
+     * this method will take those items,
+     * put it in the list form to present
+     * as a list of instructions and the
+     * it will also update the array of
+     * the normal list of instructions with 
+     * the one passed in.
+    */
     refreshISItem = (arr) => {
         console.log("refreshISItem new arr")
         console.log(arr)
         this.setState({
-            singleISitemArr:arr
+            singleISitemArr: arr
         })
         let resArr = this.createListofIS(arr);
-        let singleAt = {
-            show: this.state.singleAT.show,
-            type: this.state.singleAT.type,
-            title: this.state.singleAT.title,
-            id: this.state.singleAT.id,
-            arr: resArr, //array of current action/task in this singular Routine
-            fbPath: this.state.singleAT.fbPath
-        }
-
-        this.setState({
-            singleAT: singleAt
-        }
-        )
-
+        let singleAt = this.state.singleAT;
+        singleAt.arr = resArr;
+        this.setState({ singleAT: singleAt })
     }
 
     constructor(props) { // serves almost no purpose currently
@@ -141,36 +106,37 @@ export default class FirebaseV2 extends React.Component {
         this.grabFireBaseRoutinesGoalsData();
     }
 
+
+    /**
+     * grabFireBaseRoutinesGoalsData: 
+     * this function grabs the goals&routines array from the path located in this function
+     * which will then popular the goals, routines,originalGoalsAndRoutineArr array 
+     * separately. The arrays will be used for display and data manipulation later.
+     * 
+    */
     grabFireBaseRoutinesGoalsData = () => {
         const db = firebase.firestore();
         console.log('FirebaseV2 component did mount');
         const docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy');
         docRef.get().then((doc) => {
             if (doc.exists) {
-                console.log('CHeck')
                 console.log(doc.data());
                 var x = doc.data();
                 console.log(x['goals&routines']);
                 x = x['goals&routines'];
-                let routine = []
-                let goal = []
-                // console.log(x);
+                let routine = [];
+                let goal = [];
                 for (let i = 0; i < x.length; ++i) {
-                    if (x[i]['is_persistent']) {
-                        console.log("routine " + x[i]['title'])
-                        routine.push(x[i])
+                    if (!x[i]['deleted'] && x[i]['is_persistent']) {
+                        console.log("routine " + x[i]['title']);
+                        routine.push(x[i]);
                     }
-                    else {
-                        console.log("not routine " + x[i]['title'])
-                        goal.push(x[i])
+                    else if (!x[i]['deleted'] && !x[i]['is_persistent']) {
+                        console.log("not routine " + x[i]['title']);
+                        goal.push(x[i]);
                     }
                 }
-                this.setState({
-                    originalGoalsAndRoutineArr: x,
-                    goals: goal,
-                    routines: routine
-                })
-
+                this.setState({ originalGoalsAndRoutineArr: x, goals: goal, routines: routine })
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -188,8 +154,6 @@ export default class FirebaseV2 extends React.Component {
         const inputField = e.target.value;
         console.log('FirebaseV2.jsx :: onInputChange :: ' + inputField);
     }
-
-
     //This function essentially grabs all action/tasks
     //for the routine or goal passed in and pops open the
     //modal for the action/task 
@@ -220,9 +184,25 @@ export default class FirebaseV2 extends React.Component {
                     })
                     return;
                 }
+
+                let singleGR = { //initialise without list to pass fbPath to child
+                    show: true,
+                    type: (persist) ? "Routine" : "Goal",
+                    title: title,
+                    id: id,
+                    arr: [], //array of current action/task in this singular Routine
+                    fbPath: docRef
+                }
+
+                this.setState({
+                    singleGR: singleGR,
+                    singleATitemArr: x
+                })
+
                 let resArr = this.createListofAT(x);
                 //assemble singleGR template here:
-                let singleGR = {
+
+                singleGR = {
                     show: true,
                     type: (persist) ? "Routine" : "Goal",
                     title: title,
@@ -232,8 +212,7 @@ export default class FirebaseV2 extends React.Component {
                 }
 
                 this.setState({
-                    singleGR: singleGR,
-                    singleATitemArr: x
+                    singleGR: singleGR
                 })
 
             } else {
@@ -255,6 +234,9 @@ export default class FirebaseV2 extends React.Component {
                 console.log('missing photo, title, or id at index : ' + i);
                 return []
             }
+            if (A[i]['deleted']) { //item is "deleted" and should not be shown...
+                continue;
+            }
             let tempID = A[i]['id'];
             let tempPhoto = A[i]['photo'];
             console.log(tempPhoto);
@@ -262,8 +244,19 @@ export default class FirebaseV2 extends React.Component {
             res.push(
                 <div key={'AT' + i} >
                     <ListGroup.Item action onClick={() => { this.ATonClickEvent(tempTitle, tempID) }} variant="light" style={{ marginBottom: '3px' }}>
-                        <p className="fancytext">{tempTitle}</p>
 
+                        <Row>
+                            <Col>
+                                <div className="fancytext">{tempTitle}</div>
+                            </Col>
+                            <DeleteAT
+                                deleteIndex={i}
+                                type={'actions&tasks'}
+                                Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                                Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
+                                refresh={this.refreshATItem}
+                            />
+                        </Row>
                         {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
 
                     </ListGroup.Item>
@@ -272,8 +265,6 @@ export default class FirebaseV2 extends React.Component {
         }
         return res;
     }
-
-
 
 
 
@@ -291,11 +282,6 @@ export default class FirebaseV2 extends React.Component {
              * Some of these here don't have IDs, so we need to 
              * ignore it for now
             */
-            // if (!A[i]['id'] || !A[i]['title']) {
-            //     console.log('missing photo, title, or id at index : ' + i);
-            //     return res
-            // }
-            // let tempID = A[i]['id'];
             let tempPhoto = A[i]['photo'];
             console.log("IS index " + i + " photo url :" + tempPhoto);
             let tempTitle = A[i]['title'];
@@ -303,22 +289,18 @@ export default class FirebaseV2 extends React.Component {
                 <div key={'IS' + i} style={{ width: '100%' }} >
                     <ListGroup.Item action onClick={() => { this.ISonClickEvent(tempTitle) }}
                         variant="light" style={{ width: '100%', marginBottom: '3px' }}>
-
                         <Row lg={8}
                             style={{ width: '100%' }}>
-
                             <Col>
                                 <div className="fancytext" >{tempTitle}</div>
                             </Col>
-
 
                             <DeleteISItem
                                 deleteIndex={i}
                                 ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                                 ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                                 refresh={this.refreshISItem}
-                                />
-
+                            />
                         </Row>
                         {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight}
                             width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
@@ -353,23 +335,6 @@ export default class FirebaseV2 extends React.Component {
     */
     ATonClickEvent = (title, id) => {
 
-        /**
-         * Steps to procede:
-         * 1. singleGR = get its id, and the current ID 
-         * 2. We have 2 ids and we know the name of the collection is 'actions&tasks'
-         * 3. stepsInstructionArrayPath = firebaseRootPath.collection('goals&routines').doc(this.state.singleGR.id).collection('actions&tasks').doc(id);
-         * 4. once we received the doc information, we go to grab the arr['instructions&steps']
-         * 
-         * 
-         * 
-         *  show: false,
-            type: "None",
-            title: 'AT Name',
-            photo: '',
-            id: null,
-            arr: []
-        */
-        // 
         let stepsInstructionArrayPath = this.state.firebaseRootPath.collection('goals&routines').doc(this.state.singleGR.id).collection('actions&tasks').doc(id);
 
         console.log(id, title);
@@ -380,7 +345,7 @@ export default class FirebaseV2 extends React.Component {
             id: id,
             arr: [],
             fbPath: stepsInstructionArrayPath
-        }
+        };
         stepsInstructionArrayPath.get().then((doc) => {
             if (doc.exists) {
                 console.log('Grabbing steps/instructions data:')
@@ -398,9 +363,9 @@ export default class FirebaseV2 extends React.Component {
                 //createListofIS and DeleteISItem.jsx, we need a path 
                 //to delete the item, so we set the path then create the
                 //the array and reset it. 
-                this.setState( {singleAT: temp,singleISitemArr: x})    
+                this.setState({ singleAT: temp, singleISitemArr: x })
                 temp.arr = this.createListofIS(x);
-                this.setState({singleAT: temp,singleISitemArr: x})
+                this.setState({ singleAT: temp, singleISitemArr: x })
 
             } else {
                 // doc.data() will be undefined in this case
@@ -412,6 +377,20 @@ export default class FirebaseV2 extends React.Component {
         });
     }
 
+    /**
+     * findIndexByID:
+     * given a id, it will loop through the original goals and routine array to 
+     * return the index with the corresonding id 
+    */
+    findIndexByID = (id) => {
+        let originalGoalsAndRoutineArr = this.state.originalGoalsAndRoutineArr;
+        for (let i = 0; i < originalGoalsAndRoutineArr.length; i++) {
+            if (id === originalGoalsAndRoutineArr[i].id) {
+                return i;
+            }
+        }
+        return -1;
+    }
     getRoutines = () => {
         let displayRoutines = [];
         if (this.state.routines.length !== 0) {//Check to make sure routines exists
@@ -423,13 +402,27 @@ export default class FirebaseV2 extends React.Component {
                     <div key={'test0' + i} >
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
                             <Row>
-
-                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                    <p className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</p>
-
-                                    {(this.state.routines[i]['photo'] ? (<img src={this.state.routines[i]['photo']} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+                                <Col>
+                                    <div className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</div>
 
                                 </Col>
+                                <EditGR />
+
+                                <DeleteGR
+                                    deleteIndex={this.findIndexByID(tempID)}
+                                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    Item={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData}
+                                />
+                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
+                                    {(this.state.routines[i]['photo'] ?
+                                        (<img src={this.state.routines[i]['photo']}
+                                            alt="Routine"
+                                            height={this.state.thumbnailHeight}
+                                            width={this.state.thumbnailWidth}
+                                            className="center" />) : (<div></div>))}
+                                </Col>
+
                             </Row>
                         </ListGroup.Item>
                     </div>
@@ -451,13 +444,25 @@ export default class FirebaseV2 extends React.Component {
                     <div key={'test1' + i} >
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
                             <Row>
-
-                                <Col sm="auto" md="auto" lg="auto" style={{ margin: '0', width: '100%', height: "100%" }}>
+                                <Col >
                                     <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
+                                </Col>
+                                <EditGR />
 
+                                <DeleteGR
+                                    deleteIndex={this.findIndexByID(tempID)}
+                                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData}
+                                />
+
+                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
                                     {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
+
                                 </Col>
                             </Row>
+
+
                         </ListGroup.Item>
                     </div>
                 )
@@ -472,10 +477,8 @@ export default class FirebaseV2 extends React.Component {
         var displayRoutines = this.getRoutines();
         var displayGoals = this.getGoals();
         (this.state.deleteISModalShow) ? console.log("deleteISModalShow is true") : console.log("deleteISModalShow is false")
-
         return (
             <div style={{ marginTop: '0' }} >
-
                 {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
