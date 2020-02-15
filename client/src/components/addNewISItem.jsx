@@ -52,7 +52,7 @@ export default class AddNewISItem extends Component {
     //This function will below will essentially take in a array and have a key map to it 
     updateEntireArray = (newArr) => {
         // 2. update adds to the document
-
+        
         this.props.ISItem.fbPath.update({ 'instructions&steps': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')

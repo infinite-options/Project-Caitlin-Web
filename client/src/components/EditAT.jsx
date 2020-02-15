@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
 
 
-export default class editGR extends Component {
+export default class editAT extends Component {
 
     constructor(props) {
         super(props)
@@ -20,16 +20,16 @@ export default class editGR extends Component {
     }
 
     newInputSubmit = () => {
-        console.log("submitting GR edited formed to firebase");
+        console.log("submitting edited formed to firebase");
         let newArr  = this.props.ATArray;
         newArr[this.props.i] = this.state.itemToEdit;
 
-        this.props.FBPath.update({ 'goals&routines': newArr }).then(
+        this.props.FBPath.update({ 'actions&tasks': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from updating GR ITEM ");
+                    console.log("refreshing FireBasev2 from updating ISItem");
                     this.props.refresh(newArr);
                 }
                 else{

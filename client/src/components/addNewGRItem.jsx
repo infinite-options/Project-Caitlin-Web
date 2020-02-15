@@ -110,14 +110,10 @@ export default class AddNewGRItem extends Component {
 
 
     render() {
-
-
         return (
-
             <Modal.Dialog style={{ marginLeft: '0', width: this.state.modalWidth, }}>
                 <Modal.Header closeButton onClick={this.props.closeModal}>
                     <Modal.Title>
-
                         <h5 className="normalfancytext">
                             Add New {(this.props.isRoutine ? "Routine" : "Goal")}</h5> </Modal.Title>
                 </Modal.Header>

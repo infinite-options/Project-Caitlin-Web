@@ -7,7 +7,9 @@ import AddNewISItem from './addNewISItem.jsx'
 import DeleteISItem from './DeleteISItem.jsx'
 import DeleteAT from './deleteAT.jsx'
 import DeleteGR from './deleteGR.jsx'
-import EditGR from './editGR.jsx'
+import EditGR from './editGR.jsx';
+import EditIS from './editIS.jsx';
+import EditAT from './EditAT.jsx'
 
 export default class FirebaseV2 extends React.Component {
 
@@ -249,6 +251,12 @@ export default class FirebaseV2 extends React.Component {
                             <Col>
                                 <div className="fancytext">{tempTitle}</div>
                             </Col>
+                            <EditAT 
+                                i={i} //index to edit
+                                ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                                FBPath={this.state.singleGR.fbPath} //holds the path to the array data
+                                refresh={this.refreshATItem} //function to refresh AT data
+                            />
                             <DeleteAT
                                 deleteIndex={i}
                                 type={'actions&tasks'}
@@ -294,6 +302,13 @@ export default class FirebaseV2 extends React.Component {
                             <Col>
                                 <div className="fancytext" >{tempTitle}</div>
                             </Col>
+
+                            <EditIS
+                                i={i} //index to edit
+                                ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                                FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
+                                refresh={this.refreshISItem} //function to refresh IS data
+                            />
 
                             <DeleteISItem
                                 deleteIndex={i}
@@ -406,7 +421,12 @@ export default class FirebaseV2 extends React.Component {
                                     <div className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</div>
 
                                 </Col>
-                                <EditGR />
+                                <EditGR
+                                    i={this.findIndexByID(tempID)} //index to edit
+                                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                                />
 
                                 <DeleteGR
                                     deleteIndex={this.findIndexByID(tempID)}
@@ -447,7 +467,12 @@ export default class FirebaseV2 extends React.Component {
                                 <Col >
                                     <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
                                 </Col>
-                                <EditGR />
+                                <EditGR
+                                    i={this.findIndexByID(tempID)} //index to edit
+                                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                                />
 
                                 <DeleteGR
                                     deleteIndex={this.findIndexByID(tempID)}
@@ -479,14 +504,14 @@ export default class FirebaseV2 extends React.Component {
         (this.state.deleteISModalShow) ? console.log("deleteISModalShow is true") : console.log("deleteISModalShow is false")
         return (
             <div style={{ marginTop: '0' }} >
-                {
+                {/* {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
                             <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
                             </div>
                         </Col>) : <div> </div>
-                }
+                } */}
 
                 {
                     (this.props.showRoutine) ?

@@ -60,8 +60,8 @@ export default class MainPage extends React.Component {
     })
       .then(response => {
         console.log('normal gCal data')
-        console.log(response);
         var events = response.data;
+        console.log(events);
         this.setState({ originalEvents: events }, () => {
           console.log("New Events Arrived")
           // console.log(events.data);
@@ -343,14 +343,15 @@ submits the data to be passed up to be integrated into google calendar
     console.log("Main Render")
 
     //The variable below will help decide whether to center the Calendar object or not
-    var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal &&
-      !this.state.dayEventSelected;
+    var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
       //width and height is fixed now but should be by % percentage later on 
       <div style={{ marginLeft: '0px', marginTop: '5px', height: "2000px", width: '2000px' }}>
         <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-          {this.abstractedMainEventGRShowButtons()}
+          <div style={{ marginLeft: '38%' }}>
+            {this.abstractedMainEventGRShowButtons()}
+          </div>
 
           <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
 
@@ -366,21 +367,21 @@ submits the data to be passed up to be integrated into google calendar
               closeRoutine={() => { this.setState({ showRoutineModal: false }) }}
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal} />
-            <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '25px' }}  >
+            <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '35px' }}  >
               {this.calendarAbstracted()}
               {/* <Row>
                 {this.eventFormAbstractedHorizontalVersion()}
               </Row> */}
+              <div style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
+                Dedicated to Caitlin Little
+        </div>
+
             </Col>
             <Col style={{ marginLeft: '0' }}>
               {this.state.dayEventSelected ? this.eventFormAbstracted() : <div> </div>}
             </Col>
           </Row>
-          <Row style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
-            <Col>
-              Dedicated to Caitlin Little
-            </Col>
-          </Row>
+
         </Container>
       </div>
     )
@@ -426,10 +427,7 @@ submits the data to be passed up to be integrated into google calendar
 
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
-
-
           this.showEventsFormbyCreateNewEventButton()
-
         }}
       >Create New Event</Button>
 
@@ -441,7 +439,7 @@ submits the data to be passed up to be integrated into google calendar
         onClick={this.toggleShowGoal}
       >Goals</Button>
 
-      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
             showRoutineGoalModal: !this.state.showRoutineGoalModal,
@@ -449,7 +447,7 @@ submits the data to be passed up to be integrated into google calendar
             showRoutine: false
           })
         }}
-      >Goals and Routines</Button>
+      >Goals and Routines</Button> */}
 
     </div>)
   }
@@ -475,6 +473,8 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </div>
         <TylersCalendarv1 eventClick={this.handleEventClick} handleDateClick={this.handleDateClick} originalEvents={this.state.originalEvents} dateObject={this.state.todayDateObject} today={this.state.today} dateContext={this.state.dateContext} selectedDay={this.state.selectedDay} />
+
+
       </div>
     )
   }
@@ -579,7 +579,7 @@ submits the data to be passed up to be integrated into google calendar
   */
   eventFormAbstracted = () => {
     return (
-      <Modal.Dialog style={{ borderRadius: "15px",boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' ,marginLeft: '0', width: '350px' ,  marginTop: "0"}}>
+      <Modal.Dialog style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)', marginLeft: '0', width: '350px', marginTop: "0" }}>
         <Modal.Header closeButton onClick={() => { this.setState({ dayEventSelected: false }) }} >
           <Modal.Title><h5 className="normalfancytext">Event Form</h5> </Modal.Title>
         </Modal.Header>
