@@ -16,32 +16,28 @@ export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { //Saved variables
-      originalEvents: [],
+      originalEvents: [], //holds the google events data in it's original JSON form
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
       dayEventSelected: false,  //use to show modal to create new event
       modelSelected: false, // use to display the routine/goals modal
-      newEventID: '',
-      newEventName: '',
-      newEventStart: '',
+      newEventID: '', //save the event ID for possible future use 
+      newEventName: '', 
+      newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
+      newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(),
       newEventEnd0: new Date(),
-      newEventEnd: '',
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
-      masterdateFB: null,
       //////////New additions for new calendar
-      dateContext: moment(),
-      todayDateObject: moment(),
-      selectedDay: null,
-      // organizedData: null
-
+      dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
+      todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
+      selectedDay: null, // Any use of this variable should be deleted in future revisions
     }
   }
 
   componentDidUpdate() {
-    console.log("Main.js && componentDidUpdate()");
-
+    console.log("Main.jsx::componentDidUpdate()");
   }
 
   componentDidMount() {
@@ -49,11 +45,11 @@ export default class MainPage extends React.Component {
   }
   /*
   getThisMonthEvents:
+  By passing in a empty interval, this method will get a response from the server with
+  the current month's events
   */
   getThisMonthEvents = () => {
-    // var x = new Date().getFullYear();
-    // var y = x - 20;
-    // var z = x + 20
+
     axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
       params: {
       }
@@ -81,8 +77,8 @@ export default class MainPage extends React.Component {
   /*
   handleEventClick:
   when a event on the calendar is clicked, the function below
-  will execute and save the clicked event to this.state and passed
-  that into the form where the user can edit that data
+  will execute and save the clicked event varibles to this.state and
+  passed that into the form where the user can edit that data
   */
   handleEventClick = (i) => { // bind with an arrow function
     console.log('Inside handleEventClick')
@@ -328,10 +324,10 @@ submits the data to be passed up to be integrated into google calendar
   updateEventsArray = () => { //The month view has transferred to a different month
     let startObject = this.state.dateContext.clone()
     let endObject = this.state.dateContext.clone()
-    let k = startObject.startOf('month')
-    let kk = endObject.endOf('month')
-    let startDate = new Date(k.format("MM/DD/YYYY"))
-    let endDate = new Date(kk.format("MM/DD/YYYY"))
+    let startDay = startObject.startOf('month')
+    let endDay = endObject.endOf('month')
+    let startDate = new Date(startDay.format("MM/DD/YYYY"))
+    let endDate = new Date(endDay.format("MM/DD/YYYY"))
     startDate.setHours(0, 0, 0)
     endDate.setHours(23, 59, 59)
     console.log("getting intervals")
@@ -479,99 +475,7 @@ submits the data to be passed up to be integrated into google calendar
     )
   }
 
-  eventFormAbstractedHorizontalVersion = () => {
-    return (
-      // style={{ marginLeft: '0', width: '1200px', height: '550px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}
 
-      <Row style={this.state.dayEventSelected ? {
-        fontSize: "small", marginTop: '15px',
-        marginLeft: '15px', width: '1300px', height: '550px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-      } : { display: 'none' }}>
-        <Col >
-          <div style={{ marginTop: '50px' }}>
-            <h3 style={{ textAlign: 'center' }} >Event Information</h3>
-            {/* <p>ID: {this.state.newEventID}</p> */}
-            {/* <Container> */}
-            <Form onSubmit={this.handleSubmit} style={{ marginLeft: '15%', width: '850px', }} >
-              <Row>
-                <Col>
-                  <div style={{ width: '300px' }}>
-
-                    <Form.Group >
-                      <Form.Label>Event Name</Form.Label>
-                      <Form.Control value={this.state.newEventName} onChange={this.handleNameChange}
-                        type="text" placeholder="Title" />
-                    </Form.Group>
-
-                    <Form.Group value={this.state.newEventStart} controlId="Y" >
-                      <Form.Label>Start Time</Form.Label>
-                      <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
-                        type="text" placeholder="Start Time" />
-
-                    </Form.Group>
-                    {this.startTimePicker()}
-                    <Form.Group value={this.state.newEventEnd} controlId="X" >
-                      <Form.Label>End Time</Form.Label>
-                      <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
-                        type="text" placeholder="End Time" />
-
-                    </Form.Group>
-                    {this.startTimePicker()}
-                  </div>
-                </Col>
-                <Col>
-                  <div style={{ width: '300px' }}>
-                    <Form.Group value={"Guest"} >
-                      <Form.Label>More Data</Form.Label>
-                      <Form.Control value={"Invite Guests"}
-                        type="text" placeholder="End" />
-                    </Form.Group>
-                    <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
-                      <Form.Label>Location:</Form.Label>
-                      <Form.Control value={"Location"}
-                        type="text" placeholder="Location" />
-                    </Form.Group>
-                    <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
-                      <Form.Label>Description:</Form.Label>
-                      <Form.Control as="textarea" rows="3" value={"Description"}
-                        type="text" placeholder="Description" />
-                    </Form.Group>
-                  </div>
-                </Col>
-              </Row>
-              <Row>
-                <Row>
-                  <Col style={this.state.isEvent ? { display: 'none' } : {}} >
-                    <Button variant="info" type="submit"> Submit </Button>
-                  </Col>
-                  <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
-                    <Button onClick={this.updateEventClick} className="btn btn-info">
-                      Update
-                    </Button>
-                  </Col>
-                  <Col>
-                    <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
-                  </Col>
-                </Row>
-                <Row style={{ marginLeft: '10px' }} >
-                  <Col>
-                    <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
-                  </Col>
-                  <Col>
-                    <Button style={this.state.isEvent ? {} : { display: 'none' }} onClick={this.handleModalClicked} className="btn btn-info">
-                      Modal
-                    </Button>
-                  </Col>
-                </Row>
-              </Row>
-            </Form>
-            {/* </Container> */}
-          </div>
-        </Col>
-      </Row>
-
-    )
-  }
 
   /**
    * This is where the event form is made
