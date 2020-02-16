@@ -23,7 +23,7 @@ export default class MainPage extends React.Component {
       dayEventSelected: false,  //use to show modal to create new event
       modelSelected: false, // use to display the routine/goals modal
       newEventID: '', //save the event ID for possible future use 
-      newEventName: '', 
+      newEventName: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(),
@@ -342,27 +342,29 @@ submits the data to be passed up to be integrated into google calendar
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
       //width and height is fixed now but should be by % percentage later on 
-      <div style={{ marginLeft: '0px', marginTop: '5px', height: "2000px", width: '2000px' }}>
+      <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
+        <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
+            <div style={{ marginLeft: '38%' }}>
+            
+            {this.abstractedMainEventGRShowButtons()}
+
+            </div>
+          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
+          </div>
         <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-          <div style={{ marginLeft: '38%' }}>
-            {this.abstractedMainEventGRShowButtons()}
-          </div>
-
-          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
-
+          
           <Row>
-
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
-
             <Firebasev2
               closeRoutineGoalModal={() => { this.setState({ showRoutineGoalModal: false }) }}
               showRoutineGoalModal={this.state.showRoutineGoalModal}
               closeGoal={() => { this.setState({ showGoalModal: false }) }}
               closeRoutine={() => { this.setState({ showRoutineModal: false }) }}
               showRoutine={this.state.showRoutineModal}
-              showGoal={this.state.showGoalModal} />
+              showGoal={this.state.showGoalModal}
+            />
             <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '35px' }}  >
               {this.calendarAbstracted()}
               {/* <Row>
@@ -373,7 +375,7 @@ submits the data to be passed up to be integrated into google calendar
         </div>
 
             </Col>
-            <Col style={{ marginLeft: '0' }}>
+            <Col style={{ marginLeft: '25px' }}>
               {this.state.dayEventSelected ? this.eventFormAbstracted() : <div> </div>}
             </Col>
           </Row>
@@ -419,19 +421,18 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div>
-
-      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+    return (<div >
+      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
         }}
-      >Create New Event</Button>
+      >New Event</Button>
 
-      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowRoutine}
       >Routines</Button>
 
-      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}
       >Goals</Button>
 
@@ -455,7 +456,7 @@ submits the data to be passed up to be integrated into google calendar
           <Row style={{ marginTop: '0px' }}>
             <Col >
               <div>
-                <FontAwesomeIcon style={{ marginLeft: '2.5%' }} icon={faChevronLeft} size="2x" className="X"
+                <FontAwesomeIcon style={{ marginLeft: '50%' }} icon={faChevronLeft} size="2x" className="X"
                   onClick={(e) => { this.prevMonth() }} />
               </div>
             </Col>
@@ -463,7 +464,7 @@ submits the data to be passed up to be integrated into google calendar
               <p>{this.getMonth()} {this.getYear()}</p>
             </Col>
             <Col>
-              <FontAwesomeIcon style={{ marginLeft: '90%' }} icon={faChevronRight} size="2x" className="X"
+              <FontAwesomeIcon style={{ marginLeft: '50%' }} icon={faChevronRight} size="2x" className="X"
                 onClick={(e) => { this.nextMonth() }} />
             </Col>
           </Row>
@@ -564,7 +565,7 @@ submits the data to be passed up to be integrated into google calendar
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
     return (
-      <DatePicker class="form-control form-control-lg" type="text" style={{ width: '100%' }}
+      <DatePicker class="form-control form-control-lg" type="text"
         selected={this.state.newEventStart0}
         onChange={(date) => {
           this.setState({

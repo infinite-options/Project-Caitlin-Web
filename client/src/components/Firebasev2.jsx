@@ -56,7 +56,7 @@ export default class FirebaseV2 extends React.Component {
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
         //isRoutine is to check whether we clicked on add routine or add goal
-        isRoutine: true
+        isRoutine: true,
     }
 
     /**
@@ -251,7 +251,7 @@ export default class FirebaseV2 extends React.Component {
                             <Col>
                                 <div className="fancytext">{tempTitle}</div>
                             </Col>
-                            <EditAT 
+                            <EditAT
                                 i={i} //index to edit
                                 ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                                 FBPath={this.state.singleGR.fbPath} //holds the path to the array data
@@ -349,9 +349,7 @@ export default class FirebaseV2 extends React.Component {
      * 
     */
     ATonClickEvent = (title, id) => {
-
         let stepsInstructionArrayPath = this.state.firebaseRootPath.collection('goals&routines').doc(this.state.singleGR.id).collection('actions&tasks').doc(id);
-
         console.log(id, title);
         let temp = {
             show: true,
@@ -417,11 +415,14 @@ export default class FirebaseV2 extends React.Component {
                     <div key={'test0' + i} >
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
                             <Row>
-                                <Col>
+                                <Col >
                                     <div className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</div>
-
                                 </Col>
+
                                 <EditGR
+
+                                    // ATArray should actually be named GR Array but the code with EditGT
+                                    // and EditAT was so similar that it was copied that pasted
                                     i={this.findIndexByID(tempID)} //index to edit
                                     ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                                     FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
@@ -431,17 +432,18 @@ export default class FirebaseV2 extends React.Component {
                                 <DeleteGR
                                     deleteIndex={this.findIndexByID(tempID)}
                                     Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                                    Item={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                                     refresh={this.grabFireBaseRoutinesGoalsData}
                                 />
-                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                    {(this.state.routines[i]['photo'] ?
-                                        (<img src={this.state.routines[i]['photo']}
-                                            alt="Routine"
-                                            height={this.state.thumbnailHeight}
-                                            width={this.state.thumbnailWidth}
-                                            className="center" />) : (<div></div>))}
-                                </Col>
+
+                                {/* <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}> */}
+                                {(this.state.routines[i]['photo'] ?
+                                    (<img src={this.state.routines[i]['photo']}
+                                        alt="Routine"
+                                        height={this.state.thumbnailHeight}
+                                        width={this.state.thumbnailWidth}
+                                        className="center" />) : (<div></div>))}
+                                {/* </Col> */}
 
                             </Row>
                         </ListGroup.Item>
@@ -521,6 +523,7 @@ export default class FirebaseV2 extends React.Component {
                             </div>
                         </Col>) : <div> </div>
                 }
+
                 {
                     (this.props.showGoal) ? (
                         <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
@@ -621,7 +624,7 @@ shows entire list of goals and routines
                     {/* Button To add new Routine */}
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
+                    <button type="button" className="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
                 </Modal.Footer>
             </Modal.Dialog>)
     }

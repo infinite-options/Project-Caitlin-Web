@@ -7,6 +7,7 @@ export default class deleteGR extends Component {
     constructor(props) {
         super(props)
         console.log('Delete AT constructor');  
+       
     }
 
     submitRequest = () => {
@@ -62,6 +63,17 @@ export default class deleteGR extends Component {
         )
     }
 
+    confirmation = () => {
+        const r = window.confirm("Confirm Delete"); 
+        if(r == true){ 
+            console.log("Delete Confirm")
+            this.submitRequest();
+            return;
+        }
+        console.log("Delete Not Confirm")
+    }
+
+
     render() {
         return (
             <Col lg={2} >
@@ -69,7 +81,7 @@ export default class deleteGR extends Component {
                     onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut ={event => {event.target.style.color = "#000000";}}
                     style ={{color:  "#000000" }}
-                    onClick={(e)=>{ e.stopPropagation(); this.submitRequest()}}
+                    onClick={(e)=>{ e.stopPropagation(); this.confirmation()}}
                     icon={faTrashAlt} size="1x" 
                     />
         </Col>

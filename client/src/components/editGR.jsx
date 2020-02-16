@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faCheck, faTimes  } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
@@ -29,6 +29,7 @@ export default class editGR extends Component {
             (doc) => {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
+                this.setState({ showEditModal: false }) 
                 if (this.props != null) {
                     console.log("refreshing FireBasev2 from updating GR ITEM ");
                     this.props.refresh(newArr);
@@ -159,6 +160,23 @@ export default class editGR extends Component {
                         }} />
                 </div >
                 
+                {/* <Row>
+                    <FontAwesomeIcon
+                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                    onMouseOut={event => { event.target.style.color = "#000000"; }}
+                    style={{ color: "#00FF00" }}
+                    onClick={(e) => { e.stopPropagation();  this.newInputSubmit(); }}
+                    icon={faCheck} size="2x"
+                />
+                 <FontAwesomeIcon
+                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                    onMouseOut={event => { event.target.style.color = "#000000"; }}
+                    style={{ color: "#FF0000" }}
+                    onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}
+                    icon={faTimes} size="2x"
+                />
+                    
+                    </Row> */}
 
                 <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
                 <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
@@ -166,17 +184,28 @@ export default class editGR extends Component {
         )
     }
 
-    render() {
+    
+    showIcon = () => {
         return (
-            <div onClick={(e) => { e.stopPropagation(); }}>
-                {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
-                <FontAwesomeIcon
+            <div>
+            <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
                     icon={faEdit} size="1x"
                 />
+                </div>
+        )
+    }
+
+    render() {
+        return (
+            
+            <div onClick={(e) => { e.stopPropagation(); }}>
+                {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
+                {  (this.state.showEditModal) ? <div> </div> : this.showIcon()}
+
             </div>
         )
     }
