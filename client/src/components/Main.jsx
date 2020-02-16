@@ -94,6 +94,14 @@ export default class MainPage extends React.Component {
     let A = this.state.originalEvents[i];
     console.log('setting new Data: ');
     console.log(A);
+
+    //Guest list erroneously includes owner's email as well
+    var guestList = ''
+    if(A.attendees) {
+      guestList = A.attendees.reduce((guestList,nextGuest) => {
+        return guestList.email + ' ' + nextGuest.email;
+      });
+    }
     this.setState({
       newEventID: A.id,
       newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
@@ -101,6 +109,7 @@ export default class MainPage extends React.Component {
       newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
       newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
       newEventName: A.summary,
+      newEventGuests: guestList,
       newEventLocation: (A.location) ? A.location : '',
       newEventDescription: (A.description) ? A.description : '',
       dayEventSelected: true,
@@ -132,6 +141,7 @@ export default class MainPage extends React.Component {
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: 'New Event Title',
+      newEventGuests: '',
       newEventLocation: '',
       newEventDescription: '',
       dayEventSelected: true,
@@ -267,9 +277,29 @@ submits the data to be passed up to be integrated into google calendar
      *
      */
     const guests = this.state.newEventGuests;
-    //Match regex for email
-    const emailList = guests.match();
-    console.log(emailList)
+    /*
+     * https://tools.ietf.org/html/rfc3696 for what is valid email addresses
+     *
+     * local-part@domain-part
+     * local-part: alphanumeric, symbols ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ with restriction no two . in a row
+     * localWord = [a-zA-Z!#$%&'*+\-/=?^_`{|}~]+
+     * localPart = localWord (\.localWord)*
+     * domain-part:
+     * domains: alphanumeric, symbol - with restriction - not at beginning or end
+     * dot separate domains, top level domain can have optional . at end
+     * domain = [a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?
+     * domainPart = domain(\.domain)*\.domain(\.)?
+     * email: localPart@domainPart
+     */
+    //Note: This works, but does not email the guests that they are invited to the event
+    const emailList = guests.match(/[a-zA-Z!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+    var formattedEmail = emailList.map((guests) => {
+      return {
+        email: guests,
+        responseStatus: 'needsAction',
+      };
+    });
+    console.log(emailList);
 
      var event = {
       'summary': this.state.newEventName,
@@ -283,7 +313,7 @@ submits the data to be passed up to be integrated into google calendar
         'dateTime': this.state.newEventEnd0.toISOString(),
         'timeZone': 'America/Los_Angeles',
       },
-      'attendees': emailList
+      'attendees': formattedEmail,
     };
 
     console.log("Create Event:",event);
@@ -651,7 +681,7 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   /*
-All 3 functions below will change a variables
+All functions below will change a variables
 when there is a change in the event form
 */
 
