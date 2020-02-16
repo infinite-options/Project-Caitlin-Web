@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase from "./firebase";
-import { Button, Modal} from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 export default class AddNewGRItem extends Component {
 
@@ -13,7 +13,24 @@ export default class AddNewGRItem extends Component {
         grArr: [], //goal, routine original array 
         newItem: { //Object to hold new Routine/Goal
             title: "",
+            id: "",
+            is_persistent: this.props.isRoutine,
+            photo: "",
+            is_complete: false,
+            is_available: true,
+            available_end_time: "23:59:59",
+            available_start_time: "00:00:00",
         },
+        itemToEdit: {
+            title: "",
+            id: "",
+            is_persistent: this.props.isRoutine,
+            photo: "",
+            is_complete: false,
+            is_available: true,
+            available_end_time: "23:59:59",
+            available_start_time: "00:00:00",
+        }, //this is essentially the new item 
         //below are references to firebase directories
         routineDocsPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy').collection('goals&routines'),
         arrPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy')
@@ -62,17 +79,17 @@ export default class AddNewGRItem extends Component {
     }
 
     newInputSubmit = () => {
-        if (this.state.newItem.title === "") {
+        if (this.state.itemToEdit.title === "") {
             alert('Invalid Input');
             return;
         }
         this.addNewDoc();
-        console.log("Submitting Input: " + this.state.newItem.title)
     }
 
     addNewDoc = () => {
         this.state.routineDocsPath.add({
-            'title': this.state.newItem.title,
+            'title': this.state.itemToEdit.title,
+            'actions&tasks': []
         }).then(
             ref => {
                 if (ref.id === null) {
@@ -80,12 +97,7 @@ export default class AddNewGRItem extends Component {
                     return;
                 }
                 console.log('Added document with ID: ', ref.id);
-                let newElement = {
-                    title: this.state.newItem.title,
-                    id: ref.id,
-                    is_persistent: this.props.isRoutine
-                }
-                this.state.grArr.push(newElement);
+                this.state.grArr.push(this.state.itemToEdit);
                 this.updateEntireArray();
             }
         );
@@ -119,14 +131,98 @@ export default class AddNewGRItem extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div>
-                        < div className="input-group mb-3" >
-                            <input placeholder="Enter Title" value={this.state.newItem.title} onChange={this.handleInputChange} />
+                        <label>Title</label>
+                        <div className="input-group mb-3" >
+                            <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
+                                (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({ itemToEdit: temp }) }
+                            } />
+                        </div >
+
+                        <label>Photo URL</label>
+                        <div className="input-group mb-3" >
+                            <input style={{ width: '200px' }} placeholder="Enter Photo URL " value={this.state.itemToEdit.photo} onChange={
+                                (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.photo = e.target.value; this.setState({ itemToEdit: temp }) }
+                            } />
+                        </div >
+
+                        <label>Available Start Time</label>
+                        <div className="input-group mb-3" >
+                            <input style={{ width: '200px' }} placeholder="HH:MM:SS (ex: 08:20:00) " value={this.state.itemToEdit.available_start_time} onChange={
+                                (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.available_start_time = e.target.value; this.setState({ itemToEdit: temp }) }
+                            } />
+                        </div >
+
+                        <label>Available End Time</label>
+                        <div className="input-group mb-3" >
+                            <input style={{ width: '200px' }} placeholder="HH:MM:SS (ex: 16:20:00) " value={this.state.itemToEdit.available_end_time} onChange={
+                                (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.available_end_time = e.target.value; this.setState({ itemToEdit: temp }) }
+                            } />
+                        </div >
+
+                        <label>Available to Caitlin?</label>
+                        <div className="input-group mb-3" >
+                            <input
+                                name="Available"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.is_available}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.is_available)
+                                    temp.is_available = !temp.is_available;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <label>Time?</label>
+                        <div className="input-group mb-3" >
+                            <input
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.is_timed}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.is_timed)
+                                    temp.is_timed = !temp.is_timed;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <label>Notify TA?</label>
+                        <div className="input-group mb-3" >
+                            <input
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.notifies_ta}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.notifies_ta)
+                                    temp.notifies_ta = !temp.notifies_ta;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <label>Remind User</label>
+                        <div className="input-group mb-3" >
+                            <input
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.reminds_user}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.reminds_user)
+                                    temp.reminds_user = !temp.reminds_user;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
                         </div >
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={this.props.closeModal}>Close</Button>
-                    <Button variant="info" onClick={  this.newInputSubmit}>Save changes</Button>
+                    <Button variant="info" onClick={this.newInputSubmit}>Save changes</Button>
                 </Modal.Footer>
             </Modal.Dialog>
 

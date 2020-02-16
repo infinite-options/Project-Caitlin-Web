@@ -30,6 +30,7 @@ export default class editAT extends Component {
                 console.log(doc);
                 if (this.props != null) {
                     console.log("refreshing FireBasev2 from updating ISItem");
+                    this.setState({ showEditModal: false })
                     this.props.refresh(newArr);
                 }
                 else{
@@ -41,23 +42,113 @@ export default class editAT extends Component {
 
     editISForm = () => {
         return (
-            <Modal.Dialog style={{ marginLeft: '0', width: this.props.modalWidth }}>
-                <Modal.Header closeButton onClick={(e) => {e.stopPropagation();  this.setState({ showEditModal: false }); console.log("closed button clicked") }}>
-                    <Modal.Title><h2 className="normalfancytext">Edit</h2> </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <label>Title</label>
-                    <div className="input-group mb-3" >
-                        <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
-                            (e) => {e.stopPropagation();  let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({itemToEdit:temp})  }
-                            } />
-                    </div >
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={(e) => {e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
-                    <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
-                </Modal.Footer>
-            </Modal.Dialog>
+            <div>
+                <label>Title</label>
+                <div className="input-group mb-3" >
+                    <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
+                        (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({ itemToEdit: temp }) }
+                    } />
+                </div >
+
+                <label>Photo URL</label>
+                <div className="input-group mb-3" >
+                    <input style={{ width: '200px' }} placeholder="Enter Photo URL " value={this.state.itemToEdit.photo} onChange={
+                        (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.photo = e.target.value; this.setState({ itemToEdit: temp }) }
+                    } />
+                </div >
+
+                <label>Available Start Time</label>
+                <div className="input-group mb-3" >
+                    <input style={{ width: '200px' }} placeholder="HH:MM:SS (ex: 08:20:00) " value={this.state.itemToEdit.available_start_time} onChange={
+                        (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.available_start_time = e.target.value; this.setState({ itemToEdit: temp }) }
+                    } />
+                </div >
+
+                <label>Available End Time</label>
+                <div className="input-group mb-3" >
+                    <input style={{ width: '200px' }} placeholder="HH:MM:SS (ex: 16:20:00) " value={this.state.itemToEdit.available_end_time} onChange={
+                        (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.available_end_time = e.target.value; this.setState({ itemToEdit: temp }) }
+                    } />
+                </div >
+
+                <label>Available to Caitlin?</label>
+                <div className="input-group mb-3" >
+                    <input
+                        name="Available"
+                        type="checkbox"
+                        checked={this.state.itemToEdit.is_available}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            let temp = this.state.itemToEdit;
+                            console.log(temp.is_available)
+                            temp.is_available = !temp.is_available;
+                            this.setState({ itemToEdit: temp })
+                        }} />
+                </div >
+
+                {/* <label>Time Event?</label>
+                <div className="input-group mb-3" >
+                    <input
+                        name="Timed"
+                        type="checkbox"
+                        checked={this.state.itemToEdit.is_timed}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            let temp = this.state.itemToEdit;
+                            console.log(temp.is_timed)
+                            temp.is_timed = !temp.is_timed;
+                            this.setState({ itemToEdit: temp })
+                        }} />
+                </div >
+
+                <label>Notify TA?</label>
+                <div className="input-group mb-3" >
+                    <input
+                        name="Timed"
+                        type="checkbox"
+                        checked={this.state.itemToEdit.notifies_ta}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            let temp = this.state.itemToEdit;
+                            console.log(temp.notifies_ta)
+                            temp.notifies_ta = !temp.notifies_ta;
+                            this.setState({ itemToEdit: temp })
+                        }} />
+                </div >
+
+                <label>Remind User</label>
+                <div className="input-group mb-3" >
+                    <input
+                        name="Timed"
+                        type="checkbox"
+                        checked={this.state.itemToEdit.reminds_user}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            let temp = this.state.itemToEdit;
+                            console.log(temp.reminds_user)
+                            temp.reminds_user = !temp.reminds_user;
+                            this.setState({ itemToEdit: temp })
+                        }} />
+                </div > */}
+                
+
+                <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
+                <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
+            </div>
+        )
+    }
+
+    showIcon = () => {
+        return (
+            <div>
+          <FontAwesomeIcon
+                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                    onMouseOut={event => { event.target.style.color = "#000000"; }}
+                    style={{ color: "#000000" }}
+                    onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
+                    icon={faEdit} size="1x"
+                />
+                </div>
         )
     }
 
@@ -65,13 +156,8 @@ export default class editAT extends Component {
         return (
             <div onClick={(e) => { e.stopPropagation();}}>
                 {(this.state.showEditModal ? this.editISForm() : <div> </div>)}
-                <FontAwesomeIcon
-                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                    onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: "#000000" }}
-                    onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
-                    icon={faEdit} size="1x"
-                />
+                {  (this.state.showEditModal) ? <div> </div> : this.showIcon()}
+
             </div>
         )
     }
