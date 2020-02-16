@@ -41,23 +41,19 @@ export default class editIS extends Component {
 
     editISForm = () => {
         return (
-            <Modal.Dialog style={{ marginLeft: '0', width: this.props.modalWidth }}>
-                <Modal.Header closeButton onClick={(e) => {e.stopPropagation();  this.setState({ showEditModal: false }); console.log("closed button clicked") }}>
-                    <Modal.Title><h2 className="normalfancytext">Edit</h2> </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
+                    <div>
                     <label>Title</label>
                     <div className="input-group mb-3" >
                         <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
                             (e) => { let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({itemToEdit:temp})  }
                             } />
                     </div >
-                </Modal.Body>
-                <Modal.Footer>
+
+                    
+
                     <Button variant="secondary" onClick={(e) => {e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
                     <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
-                </Modal.Footer>
-            </Modal.Dialog>
+               </div>
         )
     }
 

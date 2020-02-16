@@ -43,7 +43,12 @@ export default class AddNewISItem extends Component {
         }
         console.log("Submitting Input: " + this.state.newInstructionTitle)
         let newElement = {
-            'title': this.state.newInstructionTitle
+            'title': this.state.newInstructionTitle,
+            'photo': "",
+            'is_available': true,
+            'available_end_time': "23:59:59",
+            'available_start_time': "00:00:00",
+            'is_complete': false
         }
         this.props.ISArray.push(newElement)
         this.updateEntireArray(this.props.ISArray);
