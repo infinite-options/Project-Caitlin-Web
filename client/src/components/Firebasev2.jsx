@@ -10,6 +10,7 @@ import DeleteGR from './deleteGR.jsx'
 import EditGR from './editGR.jsx';
 import EditIS from './editIS.jsx';
 import EditAT from './EditAT.jsx'
+import moment from 'moment';
 
 export default class FirebaseV2 extends React.Component {
 
@@ -416,7 +417,9 @@ export default class FirebaseV2 extends React.Component {
                         <ListGroup.Item action onClick={() => { this.GRonClickEvent(tempTitle, tempID, tempPersist) }} variant="light" style={{ marginBottom: '3px' }}>
                             <Row>
                                 <Col >
-                                    <div className="fancytext">{this.state.routines[i]['title']} <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes</div>
+                                    <div className="fancytext">{this.state.routines[i]['title']}
+                                        <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes
+                                    </div>
                                 </Col>
 
                                 <EditGR
@@ -444,6 +447,16 @@ export default class FirebaseV2 extends React.Component {
                                         width={this.state.thumbnailWidth}
                                         className="center" />) : (<div></div>))}
                                 {/* </Col> */}
+                                <div style={{ fontSize: '12px' }}>
+
+                                    {(this.state.routines[i]['datetime_started']) ?
+
+                                        <div style={{ marginTop: '3px' }} >{"Previous Start Time: " + this.state.routines[i]['datetime_started']} </div> : <div> </div>}
+
+
+                                    {(this.state.routines[i]['datetime_completed']) ?
+                                        <div>{"Previous Completed Time: " + this.state.routines[i]['datetime_completed']} </div> : <div> </div>}
+                                </div>
 
                             </Row>
                         </ListGroup.Item>
@@ -458,7 +471,6 @@ export default class FirebaseV2 extends React.Component {
         let displayGoals = [];
         if (this.state.goals.length != null) {//Check to make sure routines exists
             for (let i = 0; i < this.state.goals.length; i++) {
-                // console.log(this.state.goals[i]['title'])
                 let tempTitle = this.state.goals[i]['title'];
                 let tempID = this.state.goals[i]['id'];
                 let tempPersist = this.state.goals[i]['is_persistent'];
@@ -468,6 +480,7 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
                                 <Col >
                                     <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
+
                                 </Col>
                                 <EditGR
                                     i={this.findIndexByID(tempID)} //index to edit
@@ -487,6 +500,16 @@ export default class FirebaseV2 extends React.Component {
                                     {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
 
                                 </Col>
+                                <div style={{ fontSize: '12px' }}>
+                                    {(this.state.goals[i]['datetime_started']) ?
+
+                                        <div  style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
+
+
+                                    {(this.state.goals[i]['datetime_completed']) ?
+                                        <div>{"Previous Completed Time: " + this.state.goals[i]['datetime_completed']} </div> : <div> </div>}
+                                </div>
+
                             </Row>
 
 
@@ -607,11 +630,10 @@ shows entire list of goals and routines
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
                 <Modal.Body >
-
-
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
+
                     <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
