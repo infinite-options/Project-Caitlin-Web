@@ -86,7 +86,7 @@ export default class editAT extends Component {
                         }} />
                 </div >
 
-                <label>Time Event?</label>
+                {/* <label>Time Event?</label>
                 <div className="input-group mb-3" >
                     <input
                         name="Timed"
@@ -129,7 +129,7 @@ export default class editAT extends Component {
                             temp.reminds_user = !temp.reminds_user;
                             this.setState({ itemToEdit: temp })
                         }} />
-                </div >
+                </div > */}
                 
 
                 <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>

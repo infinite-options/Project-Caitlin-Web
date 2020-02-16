@@ -344,7 +344,7 @@ submits the data to be passed up to be integrated into google calendar
       //width and height is fixed now but should be by % percentage later on 
       <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
         <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
-            <div style={{ marginLeft: '38%' }}>
+            <div >
             
             {this.abstractedMainEventGRShowButtons()}
 
@@ -421,8 +421,9 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div >
-      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+    return (<div style={{width:'100%',fontSize: '20px' }}>
+
+<Button style={{ marginLeft: '50%', marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
         }}
@@ -435,6 +436,10 @@ submits the data to be passed up to be integrated into google calendar
       <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}
       >Goals</Button>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
+    
+
+Infinte Options: Project Caitlin   
 
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {

@@ -233,7 +233,7 @@ export default class FirebaseV2 extends React.Component {
         for (let i = 0; i < A.length; i++) {
             console.log(A[i]['title']);
             if (!A[i]['id'] || !A[i]['title']) {
-                console.log('missing photo, title, or id at index : ' + i);
+                console.log('missing title, or id at index : ' + i);
                 return []
             }
             if (A[i]['deleted']) { //item is "deleted" and should not be shown...
@@ -719,7 +719,7 @@ shows entire list of goals and routines
                 </ListGroup>
             </Modal.Body>
             <Modal.Footer>
-                <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewATModalShow: true }) }} >Add Action/Task</button>
+                <button type="button" className="btn btn-info btn-md" onClick={() => { this.setState({ addNewATModalShow: true }) }} >Add Action/Task</button>
             </Modal.Footer>
         </Modal.Dialog>)
     }

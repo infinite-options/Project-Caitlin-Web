@@ -114,7 +114,7 @@ export default class editGR extends Component {
                             this.setState({ itemToEdit: temp })
                         }} />
                 </div >
-
+{/* 
                 <label>Time?</label>
                 <div className="input-group mb-3" >
                     <input
@@ -158,7 +158,7 @@ export default class editGR extends Component {
                             temp.reminds_user = !temp.reminds_user;
                             this.setState({ itemToEdit: temp })
                         }} />
-                </div >
+                </div > */}
                 
                 {/* <Row>
                     <FontAwesomeIcon
