@@ -304,16 +304,9 @@ and delete it.
 */
 app.post("/updateEvent", function (req, result) {
   console.log("update request recieved");
-  console.log(req.body.ID);
-  console.log(req.body.title);
-  console.log(req.body.start);
-  console.log(req.body.end);
   console.log(req.body.extra);
 
   let newEvent = req.body.extra;
-  newEvent.summary = req.body.title;
-  newEvent.start.dateTime = req.body.start;
-  newEvent.end.dateTime = req.body.end;
 
   calendar.events.update({calendarId: calendarID, eventId: req.body.ID, resource: newEvent}
     , (err, res) => {

@@ -214,13 +214,16 @@ submits the data to be passed up to be integrated into google calendar
      * and other parameters
      *
     */
+    let updatedEvent = this.state.originalEvents[index];
+    updatedEvent.summary = this.state.newEventName;
+    updatedEvent.location = this.state.newEventLocation;
+    updatedEvent.description = this.state.newEventDescription;
+    updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
+    updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
 
     axios.post('/updateEvent', {
-      extra: this.state.originalEvents[index],
+      extra: updatedEvent,
       ID: this.state.newEventID,
-      title: this.state.newEventName,
-      start: this.state.newEventStart0.toISOString(),
-      end: this.state.newEventEnd0.toISOString()
     })
       .then((response) => {
         console.log('update return');
