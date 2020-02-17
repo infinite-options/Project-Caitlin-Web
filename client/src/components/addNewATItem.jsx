@@ -121,9 +121,11 @@ export default class AddNewATItem extends Component {
                             } />
                         </div >
 
-                        <label>Available to Caitlin?</label>
+
                         <div className="input-group mb-3" >
+                            <label class="form-check-label">Available to Caitlin?</label>
                             <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Available"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.is_available}
@@ -134,11 +136,63 @@ export default class AddNewATItem extends Component {
                                     temp.is_available = !temp.is_available;
                                     this.setState({ itemToEdit: temp })
                                 }} />
+
+
                         </div >
 
-                     
-                    </div>
 
+                        <div className="input-group mb-3" >
+                            <label class="form-check-label">Time?</label>
+
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.is_timed}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.is_timed)
+                                    temp.is_timed = !temp.is_timed;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <div className="input-group mb-3" >
+                            <label class="form-check-label">Notify TA?</label>
+
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.notifies_ta}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.notifies_ta)
+                                    temp.notifies_ta = !temp.notifies_ta;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <div className="input-group mb-3" >
+                            <label class="form-check-label">Remind User? </label>
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.reminds_user}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.reminds_user)
+                                    temp.reminds_user = !temp.reminds_user;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => { this.props.hideNewATModal(); console.log("closed button clicked") }}>Close</Button>

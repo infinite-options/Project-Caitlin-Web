@@ -52,7 +52,7 @@ export default class FirebaseV2 extends React.Component {
         deleteISModalShow: false,
 
         //used to determine thumbnail picture size
-        thumbnailWidth: '190px',
+        thumbnailWidth: '150px',
         thumbnailHeight: '100px',
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
@@ -448,12 +448,8 @@ export default class FirebaseV2 extends React.Component {
                                         className="center" />) : (<div></div>))}
                                 {/* </Col> */}
                                 <div style={{ fontSize: '12px' }}>
-
                                     {(this.state.routines[i]['datetime_started']) ?
-
                                         <div style={{ marginTop: '3px' }} >{"Previous Start Time: " + this.state.routines[i]['datetime_started']} </div> : <div> </div>}
-
-
                                     {(this.state.routines[i]['datetime_completed']) ?
                                         <div>{"Previous Completed Time: " + this.state.routines[i]['datetime_completed']} </div> : <div> </div>}
                                 </div>
@@ -480,7 +476,6 @@ export default class FirebaseV2 extends React.Component {
                             <Row>
                                 <Col >
                                     <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
-
                                 </Col>
                                 <EditGR
                                     i={this.findIndexByID(tempID)} //index to edit

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase from "./firebase";
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Row } from 'react-bootstrap';
 
 export default class AddNewGRItem extends Component {
 
@@ -11,16 +11,6 @@ export default class AddNewGRItem extends Component {
 
     state = {
         grArr: [], //goal, routine original array 
-        newItem: { //Object to hold new Routine/Goal
-            title: "",
-            id: "",
-            is_persistent: this.props.isRoutine,
-            photo: "",
-            is_complete: false,
-            is_available: true,
-            available_end_time: "23:59:59",
-            available_start_time: "00:00:00",
-        },
         itemToEdit: {
             title: "",
             id: "",
@@ -67,17 +57,6 @@ export default class AddNewGRItem extends Component {
         });
     }
 
-    handleInputChange = (e) => {
-        console.log(e.target.value);
-        this.setState(
-            {
-                newItem: {
-                    title: e.target.value
-                }
-            }
-        )
-    }
-
     newInputSubmit = () => {
         if (this.state.itemToEdit.title === "") {
             alert('Invalid Input');
@@ -112,7 +91,7 @@ export default class AddNewGRItem extends Component {
     updateEntireArray = (newArr) => {
         // 2. update adds to the document
         let db = this.state.arrPath;
-        db.update({ 'goals&routines': newArr}).then(
+        db.update({ 'goals&routines': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
@@ -164,9 +143,11 @@ export default class AddNewGRItem extends Component {
                             } />
                         </div >
 
-                        <label>Available to Caitlin?</label>
+
                         <div className="input-group mb-3" >
+                            <label class="form-check-label">Available to Caitlin?</label>
                             <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Available"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.is_available}
@@ -177,11 +158,17 @@ export default class AddNewGRItem extends Component {
                                     temp.is_available = !temp.is_available;
                                     this.setState({ itemToEdit: temp })
                                 }} />
+
+
                         </div >
 
-                        <label>Time?</label>
+
                         <div className="input-group mb-3" >
+                            <label class="form-check-label">Time?</label>
+
                             <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
                                 name="Timed"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.is_timed}
@@ -194,9 +181,12 @@ export default class AddNewGRItem extends Component {
                                 }} />
                         </div >
 
-                        <label>Notify TA?</label>
                         <div className="input-group mb-3" >
+                            <label class="form-check-label">Notify TA?</label>
+
                             <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
                                 name="Timed"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.notifies_ta}
@@ -209,9 +199,10 @@ export default class AddNewGRItem extends Component {
                                 }} />
                         </div >
 
-                        <label>Remind User</label>
                         <div className="input-group mb-3" >
+                            <label class="form-check-label">Remind User? </label>
                             <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Timed"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.reminds_user}
