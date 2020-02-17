@@ -60,7 +60,6 @@ export default class AddNewATItem extends Component {
                 newArr.push(temp);
                 console.log(newArr);
                 console.log("adding new item")
-
                 this.updateEntireArray(newArr);
             }
         );
