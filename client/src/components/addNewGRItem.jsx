@@ -96,18 +96,23 @@ export default class AddNewGRItem extends Component {
                     alert('Fail to add new routine / goal item')
                     return;
                 }
+
+                let newArr = this.props.ATArray
+                let temp = this.state.itemToEdit;
+                temp.id = ref.id;
                 console.log('Added document with ID: ', ref.id);
-                this.state.grArr.push(this.state.itemToEdit);
-                this.updateEntireArray();
+                // this.state.grArr.push(temp);
+                newArr.push(temp);
+                this.updateEntireArray(newArr);
             }
         );
     }
 
     //This function will below will essentially take in a array and have a key map to it 
-    updateEntireArray = () => {
+    updateEntireArray = (newArr) => {
         // 2. update adds to the document
         let db = this.state.arrPath;
-        db.update({ 'goals&routines': this.state.grArr }).then(
+        db.update({ 'goals&routines': newArr}).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
                 console.log(doc);

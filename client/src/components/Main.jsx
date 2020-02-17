@@ -29,8 +29,8 @@ export default class MainPage extends React.Component {
       newEventDescription: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
-      newEventStart0: new Date(),
-      newEventEnd0: new Date(),
+      newEventStart0: new Date(), //start and end for a event... it's currently set to today
+      newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
       dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
@@ -469,7 +469,7 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div style={{width:'100%',fontSize: '20px' }}>
+    return (<div style={{       width:'100%',fontSize: '20px' }}>
 
 <Button style={{ marginLeft: '50%', marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
@@ -486,9 +486,9 @@ submits the data to be passed up to be integrated into google calendar
       >Goals</Button>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
     
-
+< b style={{ paddingTop:'5px', textDecoration: 'underline overline'}}>
 Infinte Options: Project Caitlin   
-
+</b >
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
