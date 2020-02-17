@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 export default class deleteAT extends Component {
 
     constructor(props) {
