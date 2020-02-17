@@ -99,8 +99,9 @@ export default class MainPage extends React.Component {
     var guestList = ''
     if(A.attendees) {
       guestList = A.attendees.reduce((guestList,nextGuest) => {
-        return guestList.email + ' ' + nextGuest.email;
-      });
+        return guestList + ' ' + nextGuest.email;
+      },'');
+      console.log("Guest List:",A.attendees,guestList);
     }
     this.setState({
       newEventID: A.id,
@@ -140,7 +141,7 @@ export default class MainPage extends React.Component {
       newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
-      newEventName: 'New Event Title',
+      newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
       newEventDescription: '',
@@ -215,12 +216,29 @@ submits the data to be passed up to be integrated into google calendar
      *
     */
 
+    const guests = this.state.newEventGuests;
+    var formattedEmail = null;
+    const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+    if(emailList){
+      var formattedEmail = emailList.map((guests) => {
+        return {
+          email: guests,
+          responseStatus: 'needsAction',
+        };
+      });
+    }
+
+    let updatedEvent = this.state.originalEvents[index];
+    updatedEvent.summary = this.state.newEventName;
+    updatedEvent.attendees = formattedEmail;
+    updatedEvent.location = this.state.newEventLocation;
+    updatedEvent.description = this.state.newEventDescription;
+    updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
+    updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
+
     axios.post('/updateEvent', {
-      extra: this.state.originalEvents[index],
+      extra: updatedEvent,
       ID: this.state.newEventID,
-      title: this.state.newEventName,
-      start: this.state.newEventStart0.toISOString(),
-      end: this.state.newEventEnd0.toISOString()
     })
       .then((response) => {
         console.log('update return');
@@ -271,10 +289,8 @@ submits the data to be passed up to be integrated into google calendar
   */
   createEvent = (newTitle, newStart, newEnd) => {
 
-    /**
-     * TODO: add in the other attributes
-     * here and pass it in as 1 single object
-     *
+    /*
+     * TODO: Replace formatting email with function
      */
     const guests = this.state.newEventGuests;
     /*
@@ -292,14 +308,16 @@ submits the data to be passed up to be integrated into google calendar
      * email: localPart@domainPart
      */
     //Note: This works, but does not email the guests that they are invited to the event
-    const emailList = guests.match(/[a-zA-Z!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
-    var formattedEmail = emailList.map((guests) => {
-      return {
-        email: guests,
-        responseStatus: 'needsAction',
-      };
-    });
-    console.log(emailList);
+    var formattedEmail = null;
+    const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+      if(emailList){
+      var formattedEmail = emailList.map((guests) => {
+        return {
+          email: guests,
+          responseStatus: 'needsAction',
+        };
+      });
+    }
 
      var event = {
       'summary': this.state.newEventName,
@@ -307,11 +325,9 @@ submits the data to be passed up to be integrated into google calendar
       'description': this.state.newEventDescription,
       'start': {
         'dateTime': this.state.newEventStart0.toISOString(),
-        'timeZone': 'America/Los_Angeles',
       },
       'end': {
         'dateTime': this.state.newEventEnd0.toISOString(),
-        'timeZone': 'America/Los_Angeles',
       },
       'attendees': formattedEmail,
     };
@@ -389,7 +405,7 @@ submits the data to be passed up to be integrated into google calendar
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
-      //width and height is fixed now but should be by % percentage later on 
+      //width and height is fixed now but should be by % percentage later on
       <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
         <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
             <div >
@@ -401,7 +417,7 @@ submits the data to be passed up to be integrated into google calendar
           </div>
         <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-          
+
           <Row>
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
@@ -462,7 +478,11 @@ submits the data to be passed up to be integrated into google calendar
       newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
-      newEventName: 'New Event Title',
+      newEventName: '',
+      newEventGuests: '',
+      newEventLocation: '',
+      newEventDescription: '',
+      dayEventSelected: true,
       isEvent: false,
       dayEventSelected: !this.state.dayEventSelected
     });
