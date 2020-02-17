@@ -265,8 +265,6 @@ given a start and a end date from req, it will query those In the
 google calendar and return events between those dates
 */
 app.post("/getEventsByInterval", function (req, result) {
-  // console.log('tyler says: ' + req.body.time.start);
-  // console.log('tyler says: ' + req.body);
   if (!req.body.time.start || !req.body.time.end) { //If no parameters is passed, we return the current months events
     var date = new Date();
     var startParam = new Date(date.getFullYear(), date.getMonth(), 1);
