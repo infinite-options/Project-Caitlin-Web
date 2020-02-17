@@ -401,7 +401,6 @@ submits the data to be passed up to be integrated into google calendar
 
   render() {
     console.log("Main Render")
-
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
@@ -409,9 +408,7 @@ submits the data to be passed up to be integrated into google calendar
       <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
         <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
             <div >
-
               {this.abstractedMainEventGRShowButtons()}
-
             </div>
           <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
           </div>
@@ -489,7 +486,7 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div style={{       width:'100%',fontSize: '20px' }}>
+    return (<div style={{ width:'100%',fontSize: '20px' }}>
 
 <Button style={{ marginLeft: '50%', marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
@@ -502,13 +499,12 @@ submits the data to be passed up to be integrated into google calendar
       >Routines</Button>
 
       <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
-        onClick={this.toggleShowGoal}
-      >Goals</Button>
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
+        onClick={this.toggleShowGoal}> Goals </Button>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
     
-< b style={{ paddingTop:'5px', textDecoration: 'underline overline'}}>
-Infinte Options: Project Caitlin   
-</b >
+  <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
+    Infinte Options: Project Caitlin   
+  </b>
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
@@ -566,24 +562,24 @@ Infinte Options: Project Caitlin
         </Modal.Body>
         <Modal.Footer>
           <Row>
-            <Row>
+       
               <Col style={this.state.isEvent ? { display: 'none' } : {}} >
                 <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
               </Col>
               <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
                 <Button onClick={this.updateEventClick} className="btn btn-info">
                   Update
-    </Button>
+                </Button>
               </Col>
               <Col>
                 <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
               </Col>
-            </Row>
-            <Row style={{ marginLeft: '10px' }} >
+          
+          
               <Col>
                 <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
               </Col>
-            </Row>
+            
           </Row>
         </Modal.Footer>
       </Modal.Dialog>
