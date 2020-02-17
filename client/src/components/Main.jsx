@@ -292,14 +292,16 @@ submits the data to be passed up to be integrated into google calendar
      * email: localPart@domainPart
      */
     //Note: This works, but does not email the guests that they are invited to the event
-    const emailList = guests.match(/[a-zA-Z!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
-    var formattedEmail = emailList.map((guests) => {
-      return {
-        email: guests,
-        responseStatus: 'needsAction',
-      };
-    });
-    console.log(emailList);
+    var formattedEmail = null;
+    const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+      if(emailList){
+      var formattedEmail = emailList.map((guests) => {
+        return {
+          email: guests,
+          responseStatus: 'needsAction',
+        };
+      });
+    }
 
      var event = {
       'summary': this.state.newEventName,
@@ -307,11 +309,9 @@ submits the data to be passed up to be integrated into google calendar
       'description': this.state.newEventDescription,
       'start': {
         'dateTime': this.state.newEventStart0.toISOString(),
-        'timeZone': 'America/Los_Angeles',
       },
       'end': {
         'dateTime': this.state.newEventEnd0.toISOString(),
-        'timeZone': 'America/Los_Angeles',
       },
       'attendees': formattedEmail,
     };
@@ -389,7 +389,7 @@ submits the data to be passed up to be integrated into google calendar
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
-      //width and height is fixed now but should be by % percentage later on 
+      //width and height is fixed now but should be by % percentage later on
       <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
         <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
             <div >
@@ -401,7 +401,7 @@ submits the data to be passed up to be integrated into google calendar
           </div>
         <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-          
+
           <Row>
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
@@ -484,10 +484,10 @@ submits the data to be passed up to be integrated into google calendar
       <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}
       >Goals</Button>
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
-    
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 
-Infinte Options: Project Caitlin   
+
+Infinte Options: Project Caitlin
 
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
