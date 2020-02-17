@@ -99,8 +99,9 @@ export default class MainPage extends React.Component {
     var guestList = ''
     if(A.attendees) {
       guestList = A.attendees.reduce((guestList,nextGuest) => {
-        return guestList.email + ' ' + nextGuest.email;
-      });
+        return guestList + ' ' + nextGuest.email;
+      },'');
+      console.log("Guest List:",A.attendees,guestList);
     }
     this.setState({
       newEventID: A.id,
