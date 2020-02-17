@@ -477,7 +477,11 @@ submits the data to be passed up to be integrated into google calendar
       newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
-      newEventName: 'New Event Title',
+      newEventName: '',
+      newEventGuests: '',
+      newEventLocation: '',
+      newEventDescription: '',
+      dayEventSelected: true,
       isEvent: false,
       dayEventSelected: !this.state.dayEventSelected
     });
