@@ -12,6 +12,7 @@ export default class AddNewATItem extends Component {
     state = {
         newActionTitle: '', //Old delete Later
         itemToEdit: {
+            id:"",
             title: "",
             photo: "",
             is_complete: false,
@@ -53,8 +54,7 @@ export default class AddNewATItem extends Component {
                     return;
                 }
                 console.log('Added document with ID: ', ref.id);
-                
-                let newArr = this.props.ATArray
+                let newArr = this.props.ATArray;
                 let temp = this.state.itemToEdit;
                 temp.id = ref.id;
                 newArr.push(temp);

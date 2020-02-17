@@ -661,6 +661,7 @@ shows entire list of goals and routines
         return (
             <AddNewGRItem
                 closeModal={() => { this.setState({ addNewGRModalShow: false }) }}
+                ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                 refresh={this.grabFireBaseRoutinesGoalsData}
                 isRoutine={this.state.isRoutine} />
         )
