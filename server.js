@@ -13,7 +13,7 @@ The Month calendar is showing decent.
 Bugs
 -----------
 1.For the events, if the event we are current looking at doesn't have
-a time, it will mess up the calendar display. 
+a time, it will mess up the calendar display.
 */
 
 var express = require("express");
@@ -30,18 +30,18 @@ const readline = require('readline');
 const { google } = require('googleapis');
 var calenAuth = null, calendar = null;
 var calendarID = 'iodevcalendar@gmail.com';  //Change here for some else's calendar
-//Required code for any of the above to work 
+//Required code for any of the above to work
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = 'token.json';
-setUpAuth(); //sets all the necessary authentication and vars "calenAuth", and "calendar" 
+setUpAuth(); //sets all the necessary authentication and vars "calenAuth", and "calendar"
 //end of calendar API stuff
 
 
-// Jerms Code : 
+// Jerms Code :
 /////////
 /////////
 /////////
@@ -57,7 +57,7 @@ var db = admin.firestore();
 
 app.get("/firebaseGet", function(req, result){
   console.log("FB GET ROUTE")
-   
+
   result.send("FB GET ROUTE");
 })
 
@@ -105,7 +105,7 @@ app.get("/fullCalByInterval", function (req, result) {
     singleEvents: true,
     orderBy: 'startTime',
   }, (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) {
       return result.send('The post request returned an error: ' + err);
     }
@@ -160,7 +160,7 @@ app.get("/", function (req, result) {
     singleEvents: true,
     orderBy: 'startTime',
   }, (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) return console.log('The API returned an error: ' + err);
     events = res.data.items;
     result.render("month", { events: events });
@@ -170,11 +170,11 @@ app.get("/", function (req, result) {
 
 
 /*
-TEST FUNCTION 
+TEST FUNCTION
 This function below is just to test whether our
 get requests previously worked will need to be deleted
 in the future.
-example for getting all the data for the month 
+example for getting all the data for the month
 http://localhost:5000/getmonth?foo1=bar1&foo2=bar2
 */
 app.get("/getMonth", function (req, result) {
@@ -223,7 +223,7 @@ app.get("/getEventsByInterval", function (req, result) {
     singleEvents: true,
     orderBy: 'startTime',
   }, (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) {
       return result.send('The post request returned an error: ' + err);
     }
@@ -244,13 +244,13 @@ app.get("/temp", function (req, result) {
 /*
 Delete ROUTE:
 Given the event's id, it look send it up to google calendar API
-and delete it. 
+and delete it.
 */
 app.post("/deleteEvent", function (req, result) {
   console.log(req.body.ID);
   calendar.events.delete({calendarId: calendarID, eventId: req.body.ID}, req.body.ID
     , (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) {
       return result.send('The post request returned an error: ' + err);
     }
@@ -287,7 +287,7 @@ app.post("/getEventsByInterval", function (req, result) {
     singleEvents: true,
     orderBy: 'startTime',
   }, (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) {
       return result.send('The post request returned an error: ' + err);
     }
@@ -300,7 +300,7 @@ app.post("/getEventsByInterval", function (req, result) {
 /*
 UPDATE ROUTE:
 Given the event's id, it look send it up to google calendar API
-and delete it. 
+and delete it.
 */
 app.post("/updateEvent", function (req, result) {
   console.log("update request recieved");
@@ -314,10 +314,10 @@ app.post("/updateEvent", function (req, result) {
   newEvent.summary = req.body.title;
   newEvent.start.dateTime = req.body.start;
   newEvent.end.dateTime = req.body.end;
-  
+
   calendar.events.update({calendarId: calendarID, eventId: req.body.ID, resource: newEvent}
     , (err, res) => {
-    //CallBack 
+    //CallBack
     if (err) {
       return result.send('The post request returned an error: ' + err);
     }
@@ -345,6 +345,7 @@ app.post("/createNewEvent", function (req, res) {
   // console.log((new Date()).toISOString());
   console.log("inside create event route")
 
+/*
   var event = {
     'summary': req.body.title,
     // 'location': '800 Howard St., San Francisco, CA 94103',
@@ -358,12 +359,14 @@ app.post("/createNewEvent", function (req, res) {
       'timeZone': 'America/Los_Angeles',
     }
   };
+*/
+  var event = req.body.newEvent;
 
   calendar.events.insert({
     auth: calenAuth,
     // calendarId: 'iodevcalendar@gmail.com',
     calendarId: calendarID,
-    resource: event,
+    resource: req.body.newEvent,
   }, function (err, event) {
     if (err) {
       console.log('There was an error contacting the Calendar service: ' + err);

@@ -22,8 +22,11 @@ export default class MainPage extends React.Component {
       showRoutineModal: false,
       dayEventSelected: false,  //use to show modal to create new event
       modelSelected: false, // use to display the routine/goals modal
-      newEventID: '', //save the event ID for possible future use 
+      newEventID: '', //save the event ID for possible future use
       newEventName: '',
+      newEventGuests: '',
+      newEventLocation: '',
+      newEventDescription: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
@@ -80,6 +83,9 @@ export default class MainPage extends React.Component {
   will execute and save the clicked event varibles to this.state and
   passed that into the form where the user can edit that data
   */
+  /*
+    TODO: Set New Event Location, description, guests, ...
+  */
   handleEventClick = (i) => { // bind with an arrow function
     console.log('Inside handleEventClick')
     console.log(i)
@@ -88,6 +94,14 @@ export default class MainPage extends React.Component {
     let A = this.state.originalEvents[i];
     console.log('setting new Data: ');
     console.log(A);
+
+    //Guest list erroneously includes owner's email as well
+    var guestList = ''
+    if(A.attendees) {
+      guestList = A.attendees.reduce((guestList,nextGuest) => {
+        return guestList.email + ' ' + nextGuest.email;
+      });
+    }
     this.setState({
       newEventID: A.id,
       newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
@@ -95,8 +109,11 @@ export default class MainPage extends React.Component {
       newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
       newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
       newEventName: A.summary,
+      newEventGuests: guestList,
+      newEventLocation: (A.location) ? A.location : '',
+      newEventDescription: (A.description) ? A.description : '',
       dayEventSelected: true,
-      isEvent: true
+      isEvent: true,
     }, () => {
       console.log('callback from handEventClick')
     });
@@ -107,6 +124,7 @@ export default class MainPage extends React.Component {
   This will trigger when a date is clicked, it will present
   the user with a new form to create a event
   */
+  //TODO: Initialize Date, set other properties to empty
   handleDateClick = (arg) => { // bind with an arrow function
     console.log('Inside Main, HandleDateClick')
     console.log(arg);
@@ -123,6 +141,9 @@ export default class MainPage extends React.Component {
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: 'New Event Title',
+      newEventGuests: '',
+      newEventLocation: '',
+      newEventDescription: '',
       dayEventSelected: true,
       isEvent: false
     });
@@ -146,7 +167,7 @@ submits the data to be passed up to be integrated into google calendar
     console.log("submit clicked with ", start, end);
 
     /**
-     * 
+     *
      * all variables within form need to be accessible up to this point
     */
 
@@ -178,20 +199,20 @@ submits the data to be passed up to be integrated into google calendar
 
   /*
   updateRequest:
-  updates the google calendar based  on 
+  updates the google calendar based  on
   */
   updateRequest = (index, newStart, newEnd) => {
 
     /**
      * TODO:
      * instead of individually passing original item, id
-     * title, start and end, 
+     * title, start and end,
      * pass in just extra as follows
-     * let temp = this.state.originalEvents[index] 
+     * let temp = this.state.originalEvents[index]
      * temp.start.dateTime = newStart
-     * temp.end.dateTime = newEnd 
-     * and other parameters 
-     * 
+     * temp.end.dateTime = newEnd
+     * and other parameters
+     *
     */
 
     axios.post('/updateEvent', {
@@ -221,7 +242,7 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   /*
-  calls the backend API to delete a item with a particular eventID 
+  calls the backend API to delete a item with a particular eventID
   */
   deleteSubmit = () => {
     if (this.state.newEventID === '') {
@@ -251,27 +272,54 @@ submits the data to be passed up to be integrated into google calendar
   createEvent = (newTitle, newStart, newEnd) => {
 
     /**
-     * TODO: add in the other attributes 
+     * TODO: add in the other attributes
      * here and pass it in as 1 single object
-     *   
-     * 
-     var event = {
-    'summary': newTitle
-    'location': newLocation,
-    'description': newDescription,
-    'start': {
-      'dateTime': newStart,
-      'timeZone': 'America/Los_Angeles',
-    },
-    'end': {
-      'dateTime': newEnd,
-      'timeZone': 'America/Los_Angeles',
-    }
-  };
-    */
+     *
+     */
+    const guests = this.state.newEventGuests;
+    /*
+     * https://tools.ietf.org/html/rfc3696 for what is valid email addresses
+     *
+     * local-part@domain-part
+     * local-part: alphanumeric, symbols ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ with restriction no two . in a row
+     * localWord = [a-zA-Z!#$%&'*+\-/=?^_`{|}~]+
+     * localPart = localWord (\.localWord)*
+     * domain-part:
+     * domains: alphanumeric, symbol - with restriction - not at beginning or end
+     * dot separate domains, top level domain can have optional . at end
+     * domain = [a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?
+     * domainPart = domain(\.domain)*\.domain(\.)?
+     * email: localPart@domainPart
+     */
+    //Note: This works, but does not email the guests that they are invited to the event
+    const emailList = guests.match(/[a-zA-Z!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+    var formattedEmail = emailList.map((guests) => {
+      return {
+        email: guests,
+        responseStatus: 'needsAction',
+      };
+    });
+    console.log(emailList);
 
+     var event = {
+      'summary': this.state.newEventName,
+      'location': this.state.newEventLocation,
+      'description': this.state.newEventDescription,
+      'start': {
+        'dateTime': this.state.newEventStart0.toISOString(),
+        'timeZone': 'America/Los_Angeles',
+      },
+      'end': {
+        'dateTime': this.state.newEventEnd0.toISOString(),
+        'timeZone': 'America/Los_Angeles',
+      },
+      'attendees': formattedEmail,
+    };
+
+    console.log("Create Event:",event);
 
     axios.post('/createNewEvent', {
+      newEvent: event,
       title: newTitle,
       start: this.state.newEventStart0.toISOString(),
       end: this.state.newEventEnd0.toISOString()
@@ -345,8 +393,8 @@ submits the data to be passed up to be integrated into google calendar
       <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
         <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
             <div >
-            
-            {this.abstractedMainEventGRShowButtons()}
+
+              {this.abstractedMainEventGRShowButtons()}
 
             </div>
           <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
@@ -485,7 +533,7 @@ Infinte Options: Project Caitlin
 
   /**
    * This is where the event form is made
-   * 
+   *
   */
   eventFormAbstracted = () => {
     return (
@@ -547,17 +595,17 @@ Infinte Options: Project Caitlin
               </Form.Group>
               <Form.Group value={"Extra Slot"} >
                 <Form.Label>Guests</Form.Label>
-                <Form.Control value={"Invite Guest"}
-                  type="text" placeholder="End" />
+                <Form.Control value={this.state.newEventGuests} onChange={this.handleGuestChange}
+                  type="email" placeholder="example@gmail.com" />
               </Form.Group>
-              <Form.Group controlId="Location" onChange={this.handleDateEndchange}>
+              <Form.Group controlId="Location">
                 <Form.Label>Location:</Form.Label>
-                <Form.Control value={"Location"}
+                <Form.Control value={this.state.newEventLocation} onChange={this.handleLocationChange}
                   type="text" placeholder="Location" />
               </Form.Group>
-              <Form.Group controlId="Description" onChange={this.handleDateEndchange}>
+              <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
-                <Form.Control as="textarea" rows="3" value={"Description"}
+                <Form.Control as="textarea" rows="3" value={this.state.newEventDescription} onChange={this.handleDescriptionChange}
                   type="text" placeholder="Description" />
               </Form.Group>
             </div>
@@ -639,7 +687,7 @@ Infinte Options: Project Caitlin
   }
 
   /*
-All 3 functions below will change a variables
+All functions below will change a variables
 when there is a change in the event form
 */
 
@@ -655,9 +703,21 @@ when there is a change in the event form
     this.setState({ newEventEnd: event.target.value });
   }
 
+  handleGuestChange = (event) => {
+    this.setState({ newEventGuests: event.target.value });
+  }
+
+  handleLocationChange = (event) =>  {
+    this.setState({ newEventLocation: event.target.value});
+  }
+
+  handleDescriptionChange = (event) => {
+    this.setState({ newEventDescription: event.target.value });
+  }
+
   /*
   *
-  getEvents: 
+  getEvents:
   this essentially gets the events data from google calendar and puts it
   into the proper state variables. Currently the parsed data for full calendar
   is used but the unfiltered data from google calendar API is not used but
