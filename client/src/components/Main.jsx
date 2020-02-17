@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
-import './calendar.css';
+
 import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
 import moment from 'moment';
@@ -520,7 +520,7 @@ submits the data to be passed up to be integrated into google calendar
 
   calendarAbstracted = () => {
     return (
-      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '20px', padding: '45px', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '20px', padding: '45px', paddingBottom: "10px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
           <Row style={{ marginTop: '0px' }}>
             <Col >
