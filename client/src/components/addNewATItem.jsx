@@ -59,6 +59,8 @@ export default class AddNewATItem extends Component {
                 temp.id = ref.id;
                 newArr.push(temp);
                 console.log(newArr);
+                console.log("adding new item")
+
                 this.updateEntireArray(newArr);
             }
         );

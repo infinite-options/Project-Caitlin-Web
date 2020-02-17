@@ -52,7 +52,7 @@ export default class FirebaseV2 extends React.Component {
         deleteISModalShow: false,
 
         //used to determine thumbnail picture size
-        thumbnailWidth: '200px',
+        thumbnailWidth: '190px',
         thumbnailHeight: '100px',
         //We will need similar data for the IS: instruction/steps
         //in which we be able to alter each step/ instruction as needed.
