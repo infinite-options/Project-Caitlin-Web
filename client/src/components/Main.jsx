@@ -140,7 +140,7 @@ export default class MainPage extends React.Component {
       newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
-      newEventName: 'New Event Title',
+      newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
       newEventDescription: '',
@@ -214,8 +214,22 @@ submits the data to be passed up to be integrated into google calendar
      * and other parameters
      *
     */
+
+    const guests = this.state.newEventGuests;
+    var formattedEmail = null;
+    const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
+    if(emailList){
+      var formattedEmail = emailList.map((guests) => {
+        return {
+          email: guests,
+          responseStatus: 'needsAction',
+        };
+      });
+    }
+
     let updatedEvent = this.state.originalEvents[index];
     updatedEvent.summary = this.state.newEventName;
+    updatedEvent.attendees = formattedEmail;
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
     updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
@@ -274,10 +288,8 @@ submits the data to be passed up to be integrated into google calendar
   */
   createEvent = (newTitle, newStart, newEnd) => {
 
-    /**
-     * TODO: add in the other attributes
-     * here and pass it in as 1 single object
-     *
+    /*
+     * TODO: Replace formatting email with function
      */
     const guests = this.state.newEventGuests;
     /*
