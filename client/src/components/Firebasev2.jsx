@@ -423,7 +423,8 @@ export default class FirebaseV2 extends React.Component {
                                 </Col>
 
                                 <EditGR
-
+                                    
+                                    // onKeyPress={(e)=> { console.log("keyprsees"); e.preventDefault()}}
                                     // ATArray should actually be named GR Array but the code with EditGT
                                     // and EditAT was so similar that it was copied that pasted
                                     i={this.findIndexByID(tempID)} //index to edit
@@ -498,7 +499,7 @@ export default class FirebaseV2 extends React.Component {
                                 <div style={{ fontSize: '12px' }}>
                                     {(this.state.goals[i]['datetime_started']) ?
 
-                                        <div  style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
+                                        <div style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
 
 
                                     {(this.state.goals[i]['datetime_completed']) ?
@@ -602,7 +603,10 @@ shows entire list of goals and routines
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
-                        {displayGoals}
+                        <div style={{ height: '650px', overflow: 'scroll' }}>
+
+                            {displayGoals}
+                        </div>
                         {/* Button to add new Goal */}
                     </ListGroup>
                 </Modal.Body>
@@ -636,7 +640,10 @@ shows entire list of goals and routines
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
                     </div>
                     <ListGroup>
-                        {displayRoutines}
+                        <div style={{ height: '650px', overflow: 'scroll' }}>
+
+                            {displayRoutines}
+                        </div>
                     </ListGroup>
                     {/* Button To add new Routine */}
                 </Modal.Body>

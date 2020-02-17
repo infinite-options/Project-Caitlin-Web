@@ -47,7 +47,18 @@ export default class editAT extends Component {
                         <div className="input-group mb-3" >
                             <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
                                 (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({ itemToEdit: temp }) }
-                            } />
+                            } 
+                            
+                            //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
+                    onKeyDown={
+                        (e) => {
+                            if (e.keyCode == 32) {
+                                 
+                                let temp = this.state.itemToEdit; temp.title = e.target.value + " "; this.setState({ itemToEdit: temp })
+                                e.preventDefault(); e.stopPropagation()
+                            }
+                        }}
+                            />
                         </div >
 
                         <label>Photo URL</label>
