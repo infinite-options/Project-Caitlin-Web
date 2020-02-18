@@ -91,7 +91,7 @@ export default class deleteAT extends Component {
 
     render() {
         return (
-            <Col lg={1} >
+            <div style={{ marginLeft: "5px" }} >
                 <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
@@ -99,7 +99,7 @@ export default class deleteAT extends Component {
                     onClick={(e) => { e.stopPropagation(); this.confirmation() }}
                     icon={faTrashAlt} size="1x"
                 />
-            </Col>
+            </div>
         )
     }
 }

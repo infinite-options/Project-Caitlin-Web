@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {  Col } from 'react-bootstrap';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 export default class deleteGR extends Component {
@@ -76,15 +76,16 @@ export default class deleteGR extends Component {
 
     render() {
         return (
-            <Col lg={2} >
+            <div  style={{ marginLeft: "5px" }}>
             <FontAwesomeIcon 
+            title = "Delete Item"
                     onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut ={event => {event.target.style.color = "#000000";}}
                     style ={{color:  "#000000" }}
                     onClick={(e)=>{ e.stopPropagation(); this.confirmation()}}
                     icon={faTrashAlt} size="1x" 
                     />
-        </Col>
+        </div>
         )
     }
 }

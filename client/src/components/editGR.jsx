@@ -73,7 +73,7 @@ export default class editGR extends Component {
 
     editGRForm = () => {
         return (
-            <div>
+            <div style={{width: "290px", padding: "30px", background:"pink"}}>
                 <label>Title</label>
                 <div className="input-group mb-3" >
                     <input style={{ width: '200px' }} placeholder="Enter Title"  value={this.state.itemToEdit.title} onChange={
@@ -210,8 +210,9 @@ export default class editGR extends Component {
 
     showIcon = () => {
         return (
-            <div>
+            <div style={{ marginLeft: "5px" }} >
                 <FontAwesomeIcon
+                    title="Edit Item"
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
@@ -225,7 +226,7 @@ export default class editGR extends Component {
     render() {
         return (
 
-            <div onClick={(e) => { e.stopPropagation(); }}>
+            <div  onClick={(e) => { e.stopPropagation(); }}>
                 {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
                 {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
 

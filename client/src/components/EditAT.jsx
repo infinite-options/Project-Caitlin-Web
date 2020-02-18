@@ -176,7 +176,7 @@ export default class editAT extends Component {
 
     render() {
         return (
-            <div onClick={(e) => { e.stopPropagation();}}>
+            <div style={{ marginLeft: "5px" }} onClick={(e) => { e.stopPropagation();}}>
                 {(this.state.showEditModal ? this.editISForm() : <div> </div>)}
                 {  (this.state.showEditModal) ? <div> </div> : this.showIcon()}
 

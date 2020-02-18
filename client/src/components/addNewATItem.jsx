@@ -7,20 +7,21 @@ export default class AddNewATItem extends Component {
     constructor(props) {
         super(props)
         console.log('AddNewATItem constructor');
-    }
-
-    state = {
-        newActionTitle: '', //Old delete Later
-        itemToEdit: {
-            id:"",
-            title: "",
-            photo: "",
-            is_complete: false,
-            is_available: true,
-            available_end_time: "23:59:59",
-            available_start_time: "00:00:00",
+        this.state = {
+            newActionTitle: '', //Old delete Later
+            itemToEdit: {
+                id:"",
+                title: "",
+                photo: "",
+                is_complete: false,
+                is_available: true,
+                available_end_time: "23:59:59",
+                available_start_time: "00:00:00",
+            }
         }
     }
+
+  
 
     componentDidMount() {
         console.log('AddNewATItem did mount')
@@ -123,7 +124,7 @@ export default class AddNewATItem extends Component {
 
 
                         <div className="input-group mb-3" >
-                            <label class="form-check-label">Available to Caitlin?</label>
+                            <label className="form-check-label">Available to Caitlin?</label>
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Available"
@@ -142,7 +143,7 @@ export default class AddNewATItem extends Component {
 
 
                         <div className="input-group mb-3" >
-                            <label class="form-check-label">Time?</label>
+                            <label className="form-check-label">Time?</label>
 
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -160,7 +161,7 @@ export default class AddNewATItem extends Component {
                         </div >
 
                         <div className="input-group mb-3" >
-                            <label class="form-check-label">Notify TA?</label>
+                            <label className="form-check-label">Notify TA?</label>
 
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -178,7 +179,7 @@ export default class AddNewATItem extends Component {
                         </div >
 
                         <div className="input-group mb-3" >
-                            <label class="form-check-label">Remind User? </label>
+                            <label className="form-check-label">Remind User? </label>
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Timed"
