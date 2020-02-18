@@ -17,6 +17,9 @@ export default class AddNewATItem extends Component {
                 is_available: true,
                 available_end_time: "23:59:59",
                 available_start_time: "00:00:00",
+                datetime_completed: false,
+                is_timed: false,
+
             }
         }
     }

@@ -22,11 +22,12 @@ a time, it will mess up the calendar display.
 
 var express = require("express");
 var app = express();
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/build'));
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly
 
+const port = process.env.PORT || 5000 
 app.set("view engine", "ejs");
 //start of google calendar API stuff
 const fs = require('fs');
@@ -117,12 +118,16 @@ app.get("/fullCalByInterval", function (req, result) {
 }
 );
 
+
+app.get('/x', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 //Landing Page
 /*
 The below does a query to the google calendar API and gets all the events of the current
 month and then renders them On the month template
 */
-app.get("/", function (req, result) {
+app.get("/a", function (req, result) {
   var date = new Date();
   var firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -139,21 +144,6 @@ app.get("/", function (req, result) {
     events = res.data.items;
     result.render("month", { events: events });
   });
-}
-);
-
-
-/*
-TEST FUNCTION
-This function below is just to test whether our
-get requests previously worked will need to be deleted
-in the future.
-example for getting all the data for the month
-http://localhost:5000/getmonth?foo1=bar1&foo2=bar2
-*/
-app.get("/getMonth", function (req, result) {
-  console.log("passed in params " + req.query.ID);
-  result.json({ result: "recieved" });
 }
 );
 
@@ -207,12 +197,6 @@ app.get("/getEventsByInterval", function (req, result) {
 
 
 
-/*
-Delete later, temp is a sample template to use for a calendar
-*/
-app.get("/temp", function (req, result) {
-  result.render("temp");
-})
 
 
 /*
@@ -292,13 +276,12 @@ app.post("/updateEvent", function (req, result) {
 })
 
 
-
 /*
 app.listen(3001, function):
 sets up the localhost with port 3001 as default address
 for testing
 */
-app.listen(5000, function () {
+app.listen(port, function () {
   console.log('Webpage listening on port 5000, Time: ' + new Date());
 });
 

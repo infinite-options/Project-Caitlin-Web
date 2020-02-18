@@ -8,6 +8,7 @@ import { Button, Modal } from 'react-bootstrap';
  * firebase database. If it becomes successful then we update
  * the view on the firebasev2
 */
+
 export default class AddNewISItem extends Component {
 
     constructor(props) {
@@ -26,6 +27,7 @@ export default class AddNewISItem extends Component {
             is_available: true,
             available_end_time: "23:59:59",
             available_start_time: "00:00:00",
+            datetime_completed: false
         }
     }
 
@@ -129,7 +131,58 @@ export default class AddNewISItem extends Component {
                                 }} />
                         </div >
 
-                     
+                    
+                        <div className="input-group mb-3" >
+                            <label className="form-check-label">Time?</label>
+
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.is_timed}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.is_timed)
+                                    temp.is_timed = !temp.is_timed;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <div className="input-group mb-3" >
+                            <label className="form-check-label">Notify TA?</label>
+
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.notifies_ta}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.notifies_ta)
+                                    temp.notifies_ta = !temp.notifies_ta;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
+
+                        <div className="input-group mb-3" >
+                            <label className="form-check-label">Remind User? </label>
+                            <input
+                                style={{ marginTop: '5px', marginLeft: '5px' }}
+                                name="Timed"
+                                type="checkbox"
+                                checked={this.state.itemToEdit.reminds_user}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    let temp = this.state.itemToEdit;
+                                    console.log(temp.reminds_user)
+                                    temp.reminds_user = !temp.reminds_user;
+                                    this.setState({ itemToEdit: temp })
+                                }} />
+                        </div >
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
