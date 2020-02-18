@@ -1,6 +1,10 @@
 /*
-Project Caitlin Calendar API v.02
+Project Caitlin Calendar API v.08
 ---------------------------------------------------------------------------------
+
+Feb 17, 2020:
+This file only serves as a API now which is to perform API calls to Google Calendar
+to complete CRUD functionality
 
 Jan 12, 2020:
 Alpha stages, we can grab data from google calendar API
@@ -39,36 +43,6 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = 'token.json';
 setUpAuth(); //sets all the necessary authentication and vars "calenAuth", and "calendar"
 //end of calendar API stuff
-
-
-// Jerms Code :
-/////////
-/////////
-/////////
-
-
-const admin = require('firebase-admin');
-var serviceAccount = require('./ServiceAccountKey.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-var db = admin.firestore();
-
-
-app.get("/firebaseGet", function(req, result){
-  console.log("FB GET ROUTE")
-
-  result.send("FB GET ROUTE");
-})
-
-
-//End of Jerms code
-/////////
-/////////
-/////////
-/////////
-/////////
-
 
 
 
