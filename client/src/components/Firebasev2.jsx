@@ -505,8 +505,8 @@ export default class FirebaseV2 extends React.Component {
                                     <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
                                             title="Available to Cailin"
-                                            onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                            onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                             icon={faUser} size="1x"
@@ -514,8 +514,8 @@ export default class FirebaseV2 extends React.Component {
                                     : <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
                                             title="Unavailable to Cailin"
-                                            onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                            onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: "#000000" }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
                                             icon={faUserAltSlash} size="1x"
@@ -586,8 +586,8 @@ export default class FirebaseV2 extends React.Component {
                                     <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
                                             title="Available to Cailin"
-                                            onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                            onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                             icon={faUser} size="1x"
@@ -595,8 +595,8 @@ export default class FirebaseV2 extends React.Component {
                                     : <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
                                             title="Unavailable to Cailin"
-                                            onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                            onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: "#000000" }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
                                             icon={faUserAltSlash} size="1x"
