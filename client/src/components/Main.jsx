@@ -13,6 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 export default class MainPage extends React.Component {
 
   constructor(props) {
+
     super(props);
     this.state = { //Saved variables
       originalEvents: [], //holds the google events data in it's original JSON form
@@ -692,8 +693,7 @@ submits the data to be passed up to be integrated into google calendar
   Hides the create/edit events form when a date or event is clicked
   */
   hideEventForm = (e) => {
-    console.log(e);
-
+    console.log("Tyler says: Hello")
     this.setState({
       dayEventSelected: false
     });

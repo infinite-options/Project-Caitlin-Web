@@ -182,6 +182,7 @@ The below is styling for the react date picker
   border-radius: 2px !important;
 }
 
+/* Force all image to be rounded off */
 img {
   border-radius: 15px;
 }
