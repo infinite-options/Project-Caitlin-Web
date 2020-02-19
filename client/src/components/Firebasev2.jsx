@@ -77,6 +77,7 @@ export default class FirebaseV2 extends React.Component {
 
         //isRoutine is to check whether we clicked on add routine or add goal
         isRoutine: true,
+        availabilityColorCode : "#D6A34C"
     }
 
     /**
@@ -280,17 +281,17 @@ export default class FirebaseV2 extends React.Component {
                                 <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
                                         title="Available to Cailin"
-                                        onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                        onMouseOut={event => { event.target.style.color = "#000000"; }}
-                                        style={{ color: "#000000" }}
+                                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                        style={{ color: this.state.availabilityColorCode }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                         icon={faUser} size="1x"
                                     /> </div>
                                 : <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
                                         title="Unavailable to Cailin"
-                                        onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                                        onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                         style={{ color: "#000000" }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
                                         icon={faUserAltSlash} size="1x"
@@ -363,7 +364,7 @@ export default class FirebaseV2 extends React.Component {
                                         title="Available to Cailin"
                                         onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                         onMouseOut={event => { event.target.style.color = "#000000"; }}
-                                        style={{ color: "#000000" }}
+                                        style={{ color: this.state.availabilityColorCode }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                         icon={faUser} size="1x"
                                     /> </div>
@@ -391,6 +392,7 @@ export default class FirebaseV2 extends React.Component {
                                 FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                                 refresh={this.refreshISItem} //function to refresh IS data
                             />
+                            
                         </Row>
                         <Row lg={8}
                             style={{ width: '100%' }}>
@@ -505,7 +507,7 @@ export default class FirebaseV2 extends React.Component {
                                             title="Available to Cailin"
                                             onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                             onMouseOut={event => { event.target.style.color = "#000000"; }}
-                                            style={{ color: "#000000" }}
+                                            style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                             icon={faUser} size="1x"
                                         /> </div>
@@ -586,7 +588,7 @@ export default class FirebaseV2 extends React.Component {
                                             title="Available to Cailin"
                                             onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                             onMouseOut={event => { event.target.style.color = "#000000"; }}
-                                            style={{ color: "#000000" }}
+                                            style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
                                             icon={faUser} size="1x"
                                         /> </div>
