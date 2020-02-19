@@ -1,13 +1,12 @@
 import React from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
-
 import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
 import moment from 'moment';
 import TylersCalendarv1 from './TCal.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
