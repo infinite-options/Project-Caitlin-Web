@@ -181,3 +181,7 @@ The below is styling for the react date picker
 .border-radius-2 div {
   border-radius: 2px !important;
 }
+
+img {
+  border-radius: 25px;
+}

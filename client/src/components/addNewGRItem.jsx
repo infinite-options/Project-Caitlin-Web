@@ -20,6 +20,8 @@ export default class AddNewGRItem extends Component {
             is_available: true,
             available_end_time: "23:59:59",
             available_start_time: "00:00:00",
+            datetime_completed: false,
+            is_timed: false,
         }, //this is essentially the new item 
         //below are references to firebase directories
         routineDocsPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy').collection('goals&routines'),
