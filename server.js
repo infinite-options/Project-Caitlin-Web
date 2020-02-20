@@ -22,7 +22,7 @@ a time, it will mess up the calendar display.
 
 var express = require("express");
 var app = express();
-app.use(express.static(__dirname + '/build'));
+app.use(express.static(__dirname + '/client/build')); //REACTJS
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly

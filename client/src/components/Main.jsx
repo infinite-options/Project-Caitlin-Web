@@ -37,6 +37,8 @@ export default class MainPage extends React.Component {
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
     }
+
+    console.log("Lyman Says Hello")
   }
 
   componentDidUpdate() {
