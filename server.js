@@ -22,12 +22,13 @@ a time, it will mess up the calendar display.
 
 var express = require("express");
 var app = express();
-app.use(express.static(__dirname + '/build')); //REC
+var path = require('path');
+app.use(express.static(path.join(__dirname,'client/build'))); //REC
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly
 
-const port = process.env.PORT || 5000 
+const port = process.env.PORT || 5000
 app.set("view engine", "ejs");
 //start of google calendar API stuff
 const fs = require('fs');
