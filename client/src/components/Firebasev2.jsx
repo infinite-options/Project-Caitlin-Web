@@ -13,18 +13,18 @@ import EditAT from './EditAT.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserAltSlash } from '@fortawesome/free-solid-svg-icons';
 /**
- * Notes from Tyler: 
+ * Notes from Tyler:
  * 2/17/2020
- * TODOs: 
- * 
+ * TODOs:
+ *
  * 1.Times from GR are not passed down to AT and times from AT are not passed
  * to IS
- * 
+ *
  * 2.Clicking on the Goal and Routine at the top level should closed previous
- * AT and IS Modals. 
- * 
- * 
- * 
+ * AT and IS Modals.
+ *
+ *
+ *
 */
 
 
@@ -33,11 +33,11 @@ export default class FirebaseV2 extends React.Component {
     state = {
         firebaseRootPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy'),
         originalGoalsAndRoutineArr: [],
-        goals: [], //array to hold all  goals  
-        routines: [], // array to hold all routines 
+        goals: [], //array to hold all  goals
+        routines: [], // array to hold all routines
         //This single GR item is passed to AddNewATItem to help processed the new item
         singleGR: { //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
-            show: false, // Show the modal 
+            show: false, // Show the modal
             type: "None",
             title: 'GR Name',
             photo: "",
@@ -50,13 +50,13 @@ export default class FirebaseV2 extends React.Component {
 
         singleAT: { //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
             //with the task
-            show: false, // Show the model 
-            type: "None", // Action or Task 
+            show: false, // Show the model
+            type: "None", // Action or Task
             title: 'AT Name', //Title of action task ,
             available_end_time:"", //TODO get these used
             available_start_time:"", //TODO get these used
             photo: '',
-            id: null, //id of Action Task 
+            id: null, //id of Action Task
             arr: [], //array of instruction/steps formatted to display as a list
             fbPath: null, //Firebase direction to the arr
 
@@ -65,7 +65,7 @@ export default class FirebaseV2 extends React.Component {
         singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
         modalWidth: '350px', //primary width size for all modals
 
-        //Use to decided whether to show the respective modals 
+        //Use to decided whether to show the respective modals
         addNewGRModalShow: false,
         addNewATModalShow: false,
         addNewISModalShow: false,
@@ -73,7 +73,7 @@ export default class FirebaseV2 extends React.Component {
         //used to determine thumbnail picture size
         thumbnailWidth: '150px',
         thumbnailHeight: '100px',
- 
+
 
         //isRoutine is to check whether we clicked on add routine or add goal
         isRoutine: true,
@@ -82,9 +82,9 @@ export default class FirebaseV2 extends React.Component {
 
     /**
      * refreshATItem:
-     * Given a array, it will replace the current array of singleGR which holds the layout 
+     * Given a array, it will replace the current array of singleGR which holds the layout
      * list of all action task under it and singleATitemArr which just holds the raw data.
-     * 
+     *
     */
     refreshATItem = (arr) => {
         console.log("refreshATItem was called")
@@ -98,13 +98,13 @@ export default class FirebaseV2 extends React.Component {
     }
 
     /**
-     * 
+     *
      * refreshISItem - given A array item,
      * this method will take those items,
      * put it in the list form to present
      * as a list of instructions and the
      * it will also update the array of
-     * the normal list of instructions with 
+     * the normal list of instructions with
      * the one passed in.
     */
     refreshISItem = (arr) => {
@@ -125,17 +125,17 @@ export default class FirebaseV2 extends React.Component {
         // this.state = {date: new Date()};
     }
 
-    componentDidMount() { //Grab the 
+    componentDidMount() { //Grab the
         this.grabFireBaseRoutinesGoalsData();
     }
 
 
     /**
-     * grabFireBaseRoutinesGoalsData: 
+     * grabFireBaseRoutinesGoalsData:
      * this function grabs the goals&routines array from the path located in this function
-     * which will then popular the goals, routines,originalGoalsAndRoutineArr array 
+     * which will then popular the goals, routines,originalGoalsAndRoutineArr array
      * separately. The arrays will be used for display and data manipulation later.
-     * 
+     *
     */
     grabFireBaseRoutinesGoalsData = () => {
         const db = firebase.firestore();
@@ -184,7 +184,7 @@ export default class FirebaseV2 extends React.Component {
     }
     //This function essentially grabs all action/tasks
     //for the routine or goal passed in and pops open the
-    //modal for the action/task 
+    //modal for the action/task
     getATList = (id, title, persist) => {
         const db = firebase.firestore();
         console.log('getATList function with id : ' + id);
@@ -253,7 +253,7 @@ export default class FirebaseV2 extends React.Component {
     }
 
     //Creates a array of all actions/task for get getATList function
-    //getATList stands for get all action/task 
+    //getATList stands for get all action/task
     createListofAT = (A) => {
         let res = []
         for (let i = 0; i < A.length; i++) {
@@ -343,7 +343,7 @@ export default class FirebaseV2 extends React.Component {
             console.log(A[i]['id']);
             /**
              * TODO: notify jeremy of this issue:
-             * Some of these here don't have IDs, so we need to 
+             * Some of these here don't have IDs, so we need to
              * ignore it for now
             */
             let tempPhoto = A[i]['photo'];
@@ -392,7 +392,7 @@ export default class FirebaseV2 extends React.Component {
                                 FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                                 refresh={this.refreshISItem} //function to refresh IS data
                             />
-                            
+
                         </Row>
                         <Row lg={8}
                             style={{ width: '100%' }}>
@@ -419,7 +419,7 @@ export default class FirebaseV2 extends React.Component {
     /**
      * In this function we are passed in the id title and persist property of the incoming routine/goal
      * and we need to make return a viewable list of all the actions/tasks for this routine/goal
-     * which is done in getATList function 
+     * which is done in getATList function
     */
     GRonClickEvent = (title, id, persist) => {
         console.log(id, title, persist);
@@ -431,7 +431,7 @@ export default class FirebaseV2 extends React.Component {
     /**
      * we are passed in the action/task id and title
      * and we will need to grab all steps/Instructions related to this action/task,
-     * 
+     *
     */
     ATonClickEvent = (title, id) => {
         let stepsInstructionArrayPath = this.state.firebaseRootPath.collection('goals&routines').doc(this.state.singleGR.id).collection('actions&tasks').doc(id);
@@ -458,9 +458,9 @@ export default class FirebaseV2 extends React.Component {
                 }
                 console.log(x);
                 //Below is a fix for fbPath Null when we pass it
-                //createListofIS and DeleteISItem.jsx, we need a path 
+                //createListofIS and DeleteISItem.jsx, we need a path
                 //to delete the item, so we set the path then create the
-                //the array and reset it. 
+                //the array and reset it.
                 this.setState({ singleAT: temp, singleISitemArr: x })
                 temp.arr = this.createListofIS(x);
                 this.setState({ singleAT: temp, singleISitemArr: x })
@@ -477,8 +477,8 @@ export default class FirebaseV2 extends React.Component {
 
     /**
      * findIndexByID:
-     * given a id, it will loop through the original goals and routine array to 
-     * return the index with the corresonding id 
+     * given a id, it will loop through the original goals and routine array to
+     * return the index with the corresonding id
     */
     findIndexByID = (id) => {
         let originalGoalsAndRoutineArr = this.state.originalGoalsAndRoutineArr;
@@ -645,7 +645,7 @@ export default class FirebaseV2 extends React.Component {
                 )
             }
         }
-
+        //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
         return displayGoals;
     }
 
@@ -728,7 +728,7 @@ shows entire list of goals and routines
                     <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
                     </div>
-                    
+
 
                     <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
@@ -829,7 +829,7 @@ shows entire list of goals and routines
                                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                                     refresh={this.refreshISItem}
-                                    hideNewISModal={//function to hide the modal 
+                                    hideNewISModal={//function to hide the modal
                                         () => { this.setState({ addNewISModalShow: false }) }}
                                     width={this.state.modalWidth} /> : (<div></div>)}
                     </div>
@@ -860,12 +860,12 @@ shows entire list of goals and routines
             </Modal.Header>
             <Modal.Body>
                 <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                    {(this.state.addNewATModalShow) ? 
-                    <AddNewATItem 
-                     refresh={this.refreshATItem} //refreshes the list of AT 
-                     ATArray={this.state.singleATitemArr} 
-                     ATItem={this.state.singleGR}  //The parent item 
-                     hideNewATModal={() => { this.setState({ addNewATModalShow: false }) }} 
+                    {(this.state.addNewATModalShow) ?
+                    <AddNewATItem
+                     refresh={this.refreshATItem} //refreshes the list of AT
+                     ATArray={this.state.singleATitemArr}
+                     ATItem={this.state.singleGR}  //The parent item
+                     hideNewATModal={() => { this.setState({ addNewATModalShow: false }) }}
                      width={this.state.modalWidth} /> : (<div></div>)}
                 </div>
                 {/**

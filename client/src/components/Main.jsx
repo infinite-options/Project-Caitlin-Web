@@ -26,6 +26,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
+      newEventNotification: null,
       newEventDescription: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
@@ -97,6 +98,19 @@ export default class MainPage extends React.Component {
     console.log('setting new Data: ');
     console.log(A);
 
+/*
+'reminders': {
+  'useDefault': false,
+  'sequence': 0,
+  'overrides': [
+    {
+      method: 'popup',
+      minutes: minutesNotification,
+    }
+  ],
+},
+*/
+
     //Guest list erroneously includes owner's email as well
     var guestList = ''
     if(A.attendees) {
@@ -114,6 +128,7 @@ export default class MainPage extends React.Component {
       newEventName: A.summary,
       newEventGuests: guestList,
       newEventLocation: (A.location) ? A.location : '',
+      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : null,
       newEventDescription: (A.description) ? A.description : '',
       dayEventSelected: true,
       isEvent: true,
@@ -146,6 +161,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
+      newEventNotification: null,
       newEventDescription: '',
       dayEventSelected: true,
       isEvent: false
@@ -237,6 +253,14 @@ submits the data to be passed up to be integrated into google calendar
     updatedEvent.description = this.state.newEventDescription;
     updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
     updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
+    updatedEvent.reminders = {
+      overrides: [{
+        method: 'popup',
+        minutes: this.state.newEventNotification,
+      }],
+      'useDefault': false,
+      'sequence': 0,
+    }
 
     axios.post('/updateEvent', {
       extra: updatedEvent,
@@ -321,10 +345,24 @@ submits the data to be passed up to be integrated into google calendar
       });
     }
 
+    var minutesNotification = 30;
+    if(this.state.newEventNotification) {
+      minutesNotification = this.state.newEventNotification;
+    }
      var event = {
       'summary': this.state.newEventName,
       'location': this.state.newEventLocation,
       'description': this.state.newEventDescription,
+      'reminders': {
+        'useDefault': false,
+        'sequence': 0,
+        'overrides': [
+          {
+            method: 'popup',
+            minutes: minutesNotification,
+          }
+        ],
+      },
       'start': {
         'dateTime': this.state.newEventStart0.toISOString(),
       },
@@ -502,10 +540,10 @@ submits the data to be passed up to be integrated into google calendar
 
       <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}> Goals </Button>
-    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 
-    
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+
   <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
-    Infinte Options: Project Caitlin   
+    Infinte Options: Project Caitlin
   </b>
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
@@ -564,7 +602,7 @@ submits the data to be passed up to be integrated into google calendar
         </Modal.Body>
         <Modal.Footer>
           <Row>
-       
+
               <Col style={this.state.isEvent ? { display: 'none' } : {}} >
                 <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
               </Col>
@@ -576,12 +614,10 @@ submits the data to be passed up to be integrated into google calendar
               <Col>
                 <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
               </Col>
-          
-          
               <Col>
                 <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
               </Col>
-            
+
           </Row>
         </Modal.Footer>
       </Modal.Dialog>
@@ -620,6 +656,14 @@ submits the data to be passed up to be integrated into google calendar
                 <Form.Label>Location:</Form.Label>
                 <Form.Control value={this.state.newEventLocation} onChange={this.handleLocationChange}
                   type="text" placeholder="Location" />
+              </Form.Group>
+              <Form.Group controlId="Notification">
+                <Form.Label>Notification:</Form.Label>
+                <Row>
+                  <Col> <Form.Control value={this.state.newEventNotification} onChange={this.handleNotificationChange}
+                    defaultValue="30" type="number" placeholder=""/> </Col>
+                  <Col> <Form.Text> Minutes </Form.Text> </Col>
+                </Row>
               </Form.Group>
               <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
@@ -726,6 +770,10 @@ when there is a change in the event form
 
   handleLocationChange = (event) =>  {
     this.setState({ newEventLocation: event.target.value});
+  }
+
+  handleNotificationChange = (event) => {
+    this.setState({ newEventNotification: event.target.value});
   }
 
   handleDescriptionChange = (event) => {
