@@ -389,7 +389,7 @@ export default class FirebaseV2 extends React.Component {
                         </Row>
 
                         <Row
-                            style={{ textAlign:"center", width: '100%' }}>
+                            style={{ textAlign: "center", width: '100%' }}>
                             <Col>
                                 <div className="fancytext" >{tempTitle}</div>
                             </Col>
@@ -540,7 +540,7 @@ export default class FirebaseV2 extends React.Component {
 
 
                             </Row>
-                            <Row>
+                            <Row style={{ margin: '0' }} className="d-flex flex-row-center" >
                                 <Col >
                                     <div className="fancytext">{this.state.routines[i]['title']}
                                         <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes
@@ -551,11 +551,13 @@ export default class FirebaseV2 extends React.Component {
                                     {(this.state.routines[i]['photo'] ?
                                         (<img src={this.state.routines[i]['photo']}
                                             alt="Routine"
+                                            className="center"
                                             height={this.state.thumbnailHeight}
-                                            width={this.state.thumbnailWidth}
-                                            className="center" />) : (<div></div>))}
+                                            width={this.state.thumbnailWidth} />) : (<div></div>))}
                                 </Col>
                             </Row>
+
+
 
                             <Row style={{
                                 margin: '0', display: "flex",
@@ -637,7 +639,12 @@ export default class FirebaseV2 extends React.Component {
                                     <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div>
                                 </Col>
                                 <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                    {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
+                                    {(this.state.goals[i]['photo'] ? 
+                                    (<img src={this.state.goals[i]['photo']}
+                                        alt="Goals"
+                                        className="center"
+                                        height={this.state.thumbnailHeight}
+                                        width={this.state.thumbnailWidth} />) : (<div></div>))}
 
                                 </Col>
                             </Row>
@@ -701,7 +708,7 @@ export default class FirebaseV2 extends React.Component {
                 {
                     (this.props.showRoutine) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '0' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius: "15px", background:"pink", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
                         </Col>) : <div> </div>
