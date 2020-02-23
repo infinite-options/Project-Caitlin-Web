@@ -12,6 +12,7 @@ import EditIS from './editIS.jsx';
 import EditAT from './EditAT.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserAltSlash } from '@fortawesome/free-solid-svg-icons';
+import moment from 'moment'
 /**
  * Notes from Tyler:
  * 2/17/2020
@@ -176,6 +177,12 @@ export default class FirebaseV2 extends React.Component {
 
     componentWillUnmount() {
         console.log(' FirebaseV2 will unmount web');
+    }
+
+    formatDateTime(str) {
+      const formattedStr = str.replace(/\//g,'-');
+      const time = moment(formattedStr);
+      return time.format("YYYY MMM DD HH:m");
     }
 
     onInputChange = (e) => {
@@ -597,9 +604,9 @@ export default class FirebaseV2 extends React.Component {
 
                                 <div style={{ fontSize: '12px' }}>
                                     {(this.state.routines[i]['datetime_started']) ?
-                                        <div style={{ marginTop: '3px' }} >{"Previous Start Time: " + this.state.routines[i]['datetime_started']} </div> : <div> </div>}
+                                        <div style={{ marginTop: '3px' }} >{"Previous Start Time: " + this.formatDateTime(this.state.routines[i]['datetime_started'])} </div> : <div> </div>}
                                     {(this.state.routines[i]['datetime_completed']) ?
-                                        <div>{"Previous Completed Time: " + this.state.routines[i]['datetime_completed']} </div> : <div> </div>}
+                                        <div>{"Previous Completed Time: " + this.formatDateTime(this.state.routines[i]['datetime_completed'])} </div> : <div> </div>}
                                 </div>
 
                             </Row>
@@ -684,11 +691,11 @@ export default class FirebaseV2 extends React.Component {
                             <div style={{ fontSize: '12px' }}>
                                 {(this.state.goals[i]['datetime_started']) ?
 
-                                    <div style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
+                                    <div style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.formatDateTime(this.state.goals[i]['datetime_started'])} </div> : <div> </div>}
 
 
                                 {(this.state.goals[i]['datetime_completed']) ?
-                                    <div>{"Previous Completed Time: " + this.state.goals[i]['datetime_completed']} </div> : <div> </div>}
+                                    <div>{"Previous Completed Time: " + this.formatDateTime(this.state.goals[i]['datetime_completed'])} </div> : <div> </div>}
                             </div>
 
 

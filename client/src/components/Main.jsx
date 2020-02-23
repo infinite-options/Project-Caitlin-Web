@@ -26,7 +26,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
-      newEventNotification: null,
+      newEventNotification: '',
       newEventDescription: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
@@ -128,7 +128,7 @@ export default class MainPage extends React.Component {
       newEventName: A.summary,
       newEventGuests: guestList,
       newEventLocation: (A.location) ? A.location : '',
-      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : null,
+      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : '',
       newEventDescription: (A.description) ? A.description : '',
       dayEventSelected: true,
       isEvent: true,
@@ -161,7 +161,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
-      newEventNotification: null,
+      newEventNotification: '',
       newEventDescription: '',
       dayEventSelected: true,
       isEvent: false
@@ -238,7 +238,7 @@ submits the data to be passed up to be integrated into google calendar
     var formattedEmail = null;
     const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
     if(emailList){
-      var formattedEmail = emailList.map((guests) => {
+      formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
           responseStatus: 'needsAction',
@@ -337,7 +337,7 @@ submits the data to be passed up to be integrated into google calendar
     var formattedEmail = null;
     const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
       if(emailList){
-      var formattedEmail = emailList.map((guests) => {
+        formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
           responseStatus: 'needsAction',
