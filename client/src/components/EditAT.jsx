@@ -42,7 +42,7 @@ export default class editAT extends Component {
 
     editISForm = () => {
         return (
-            <div style={{width: "290px", padding: "30px"}}>
+            <div style={{background: "pink", padding:'0', margin: '0', width: "315px", padding:'20px'}}>
                   <label>Title</label>
                         <div className="input-group mb-3" >
                             <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={

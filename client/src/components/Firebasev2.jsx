@@ -274,7 +274,6 @@ export default class FirebaseV2 extends React.Component {
                 <div key={'AT' + i} >
                     <ListGroup.Item action onClick={() => { this.ATonClickEvent(tempTitle, tempID) }} variant="light" style={{ marginBottom: '3px' }}>
                         <Row style={{ margin: '0' }} className="d-flex flex-row-reverse">
-
                             {tempAvailable ?
                                 <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
@@ -298,14 +297,22 @@ export default class FirebaseV2 extends React.Component {
 
                         </Row>
 
-                        <Row>
+                        <Row style={{ margin: '0' }} className="d-flex flex-row-center">
                             <Col>
                                 <div className="fancytext">{tempTitle}</div>
                             </Col>
 
+                            <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
+                                {(tempPhoto ? (<img src={tempPhoto}
+                                    alt="Routine"
+                                    height={this.state.thumbnailHeight}
+                                    width={this.state.thumbnailWidth}
+                                    className="center" />) : (<div></div>))}
+                            </Col>
+
                         </Row>
 
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+
 
                         <Row style={{
                             margin: '0', display: "flex",
@@ -388,17 +395,21 @@ export default class FirebaseV2 extends React.Component {
 
                         </Row>
 
-                        <Row
-                            style={{ textAlign: "center", width: '100%' }}>
+                        <Row className="d-flex flex-row-center"
+                            style={{ margin: '0', textAlign: "center", width: '100%' }}>
                             <Col>
                                 <div className="fancytext" >{tempTitle}</div>
                             </Col>
+                            <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
 
+                            {(tempPhoto ? (<img src={tempPhoto} 
+                            alt="Instruction/Step" 
+                            height={this.state.thumbnailHeight}
+                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+                            </Col>
 
                         </Row>
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight}
-                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
-
+                    
                         <Row style={{
                             margin: '0', display: "flex",
                             justifyContent: "center",
@@ -639,12 +650,12 @@ export default class FirebaseV2 extends React.Component {
                                     <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div>
                                 </Col>
                                 <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                    {(this.state.goals[i]['photo'] ? 
-                                    (<img src={this.state.goals[i]['photo']}
-                                        alt="Goals"
-                                        className="center"
-                                        height={this.state.thumbnailHeight}
-                                        width={this.state.thumbnailWidth} />) : (<div></div>))}
+                                    {(this.state.goals[i]['photo'] ?
+                                        (<img src={this.state.goals[i]['photo']}
+                                            alt="Goals"
+                                            className="center"
+                                            height={this.state.thumbnailHeight}
+                                            width={this.state.thumbnailWidth} />) : (<div></div>))}
 
                                 </Col>
                             </Row>
