@@ -60,20 +60,20 @@ export default class DeleteISItem extends Component {
 
     render() {
         return (
-            <Col lg={1} >
+            < div>
                 <FontAwesomeIcon 
                         onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
                         onMouseOut ={event => {event.target.style.color = "#000000";}}
-                        style ={{color:  "#000000" }}
+                        style ={{color:  "#000000", marginRight:"15px" }}
                         onClick={(e)=>{e.stopPropagation(); this.confirmation()}}
-                        icon={faTrashAlt} size="1x" 
+                        icon={faTrashAlt} size="lg" 
                         />
                 {/* <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={() => { console.log("delete confirm") }}
-                    icon={faCheck} size="1x"
+                    icon={faCheck} size="lg"
                 />
 
                 <FontAwesomeIcon
@@ -81,10 +81,10 @@ export default class DeleteISItem extends Component {
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={() => { console.log("delete cancel") }}
-                    icon={faTimes} size="1x"
+                    icon={faTimes} size="lg"
                 /> */}
 
-            </Col>
+            </div>
         )
     }
 }

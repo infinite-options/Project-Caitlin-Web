@@ -41,8 +41,8 @@ export default class FirebaseV2 extends React.Component {
             type: "None",
             title: 'GR Name',
             photo: "",
-            available_end_time:"", //TODO get these used
-            available_start_time:"", //TODO get these used
+            available_end_time: "", //TODO get these used
+            available_start_time: "", //TODO get these used
             id: null,
             arr: [],
             fbPath: null
@@ -53,8 +53,8 @@ export default class FirebaseV2 extends React.Component {
             show: false, // Show the model
             type: "None", // Action or Task
             title: 'AT Name', //Title of action task ,
-            available_end_time:"", //TODO get these used
-            available_start_time:"", //TODO get these used
+            available_end_time: "", //TODO get these used
+            available_start_time: "", //TODO get these used
             photo: '',
             id: null, //id of Action Task
             arr: [], //array of instruction/steps formatted to display as a list
@@ -77,7 +77,7 @@ export default class FirebaseV2 extends React.Component {
 
         //isRoutine is to check whether we clicked on add routine or add goal
         isRoutine: true,
-        availabilityColorCode : "#D6A34C"
+        availabilityColorCode: "#D6A34C"
     }
 
     /**
@@ -273,8 +273,6 @@ export default class FirebaseV2 extends React.Component {
             res.push(
                 <div key={'AT' + i} >
                     <ListGroup.Item action onClick={() => { this.ATonClickEvent(tempTitle, tempID) }} variant="light" style={{ marginBottom: '3px' }}>
-
-
                         <Row style={{ margin: '0' }} className="d-flex flex-row-reverse">
 
                             {tempAvailable ?
@@ -285,20 +283,37 @@ export default class FirebaseV2 extends React.Component {
                                         // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                         style={{ color: this.state.availabilityColorCode }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
-                                        icon={faUser} size="1x"
+                                        icon={faUser} size="lg"
                                     /> </div>
                                 : <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
-                                        title="Unavailable to Cailin"
+                                        title="Unavailable to Caitlin"
                                         // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                         // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                         style={{ color: "#000000" }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
-                                        icon={faUserAltSlash} size="1x"
+                                        icon={faUserAltSlash} size="lg"
                                     />
                                 </div>}
 
+                        </Row>
 
+                        <Row>
+                            <Col>
+                                <div className="fancytext">{tempTitle}</div>
+                            </Col>
+
+                        </Row>
+
+                        {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+
+                        <Row style={{
+                            margin: '0', display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: "10px",
+                            marginBottom: "10px"
+                        }}>
                             <DeleteAT
                                 deleteIndex={i}
                                 type={'actions&tasks'}
@@ -314,15 +329,6 @@ export default class FirebaseV2 extends React.Component {
                                 refresh={this.refreshATItem} //function to refresh AT data
                             />
                         </Row>
-
-                        <Row>
-                            <Col>
-                                <div className="fancytext">{tempTitle}</div>
-                            </Col>
-
-                        </Row>
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Routine" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
-
                     </ListGroup.Item>
                 </div>
             )
@@ -357,7 +363,7 @@ export default class FirebaseV2 extends React.Component {
                     <ListGroup.Item action onClick={() => { this.ISonClickEvent(tempTitle) }}
                         variant="light" style={{ width: '100%', marginBottom: '3px' }}>
 
-                        <Row style={{ margin: '0' }} className="d-flex flex-row-reverse">
+                        <Row className="d-flex flex-row-reverse">
                             {tempAvailable ?
                                 <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
@@ -366,19 +372,38 @@ export default class FirebaseV2 extends React.Component {
                                         // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                         style={{ color: this.state.availabilityColorCode }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
-                                        icon={faUser} size="1x"
+                                        icon={faUser} size="lg"
                                     /> </div>
                                 : <div style={{ marginLeft: "5px" }}>
                                     <FontAwesomeIcon
-                                        title="Unavailable to Cailin"
+                                        title="Unavailable to Caitlin"
                                         // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                         // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                         style={{ color: "#000000" }}
                                         onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
-                                        icon={faUserAltSlash} size="1x"
+                                        icon={faUserAltSlash} size="lg"
                                     />
                                 </div>}
 
+
+                        </Row>
+
+                        <Row
+                            style={{ textAlign:"center", width: '100%' }}>
+                            <Col>
+                                <div className="fancytext" >{tempTitle}</div>
+                            </Col>
+
+
+                        </Row>
+                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight}
+                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+
+                        <Row style={{
+                            margin: '0', display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }} >
                             <DeleteISItem
                                 deleteIndex={i}
                                 ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
@@ -394,16 +419,7 @@ export default class FirebaseV2 extends React.Component {
                             />
 
                         </Row>
-                        <Row lg={8}
-                            style={{ width: '100%' }}>
-                            <Col>
-                                <div className="fancytext" >{tempTitle}</div>
-                            </Col>
 
-
-                        </Row>
-                        {(tempPhoto ? (<img src={tempPhoto} alt="Instruction/Step" height={this.state.thumbnailHeight}
-                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
                     </ListGroup.Item>
                 </div>
             )
@@ -509,36 +525,21 @@ export default class FirebaseV2 extends React.Component {
                                             // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
-                                            icon={faUser} size="1x"
+                                            icon={faUser} size="lg"
                                         /> </div>
                                     : <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
-                                            title="Unavailable to Cailin"
+                                            title="Unavailable to Caitlin"
                                             // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                             // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: "#000000" }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
-                                            icon={faUserAltSlash} size="1x"
+                                            icon={faUserAltSlash} size="lg"
                                         />
                                     </div>}
 
 
-                                <DeleteGR
-                                    deleteIndex={this.findIndexByID(tempID)}
-                                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                                    refresh={this.grabFireBaseRoutinesGoalsData}
-                                />
-                                <EditGR
-                                    // ATArray should actually be named GR Array but the code with EditGT
-                                    // and EditAT was so similar that it was copied that pasted
-                                    i={this.findIndexByID(tempID)} //index to edit
-                                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                                />
                             </Row>
-
                             <Row>
                                 <Col >
                                     <div className="fancytext">{this.state.routines[i]['title']}
@@ -554,6 +555,33 @@ export default class FirebaseV2 extends React.Component {
                                             width={this.state.thumbnailWidth}
                                             className="center" />) : (<div></div>))}
                                 </Col>
+                            </Row>
+
+                            <Row style={{
+                                margin: '0', display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginTop: "10px",
+                                marginBottom: "10px"
+                            }}>
+                                <DeleteGR
+                                    deleteIndex={this.findIndexByID(tempID)}
+                                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData}
+                                />
+                                <EditGR
+                                    // ATArray should actually be named GR Array but the code with EditGT
+                                    // and EditAT was so similar that it was copied that pasted
+                                    i={this.findIndexByID(tempID)} //index to edit
+                                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                                />
+
+                            </Row>
+                            <Row>
+
                                 <div style={{ fontSize: '12px' }}>
                                     {(this.state.routines[i]['datetime_started']) ?
                                         <div style={{ marginTop: '3px' }} >{"Previous Start Time: " + this.state.routines[i]['datetime_started']} </div> : <div> </div>}
@@ -590,19 +618,38 @@ export default class FirebaseV2 extends React.Component {
                                             // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: this.state.availabilityColorCode }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is Availble to Caitlin") }}
-                                            icon={faUser} size="1x"
+                                            icon={faUser} size="lg"
                                         /> </div>
                                     : <div style={{ marginLeft: "5px" }}>
                                         <FontAwesomeIcon
-                                            title="Unavailable to Cailin"
+                                            title="Unavailable to Caitlin"
                                             // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                                             // onMouseOut={event => { event.target.style.color = "#000000"; }}
                                             style={{ color: "#000000" }}
                                             onClick={(e) => { e.stopPropagation(); alert("Item Is NOT Availble to Caitlin") }}
-                                            icon={faUserAltSlash} size="1x"
+                                            icon={faUserAltSlash} size="lg"
                                         />
                                     </div>}
+                            </Row>
+                            <Row style={{ margin: '0' }} className="d-flex flex-row-center"  >
+                                <Col style={{ textAlign: "center", width: "100%" }}>
+                                    <div className="fancytext"> {this.state.goals[i]['title']}</div>
+                                    <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div>
+                                </Col>
+                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
+                                    {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
+
+                                </Col>
+                            </Row>
+                            <Row className="d-flex flex-row-center" style={{
+                                margin: '0', display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginTop: "10px",
+                                marginBottom: "10px"
+                            }}>
                                 <DeleteGR
+
                                     deleteIndex={this.findIndexByID(tempID)}
                                     Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                                     Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
@@ -614,30 +661,17 @@ export default class FirebaseV2 extends React.Component {
                                     FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                                     refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                                 />
-
                             </Row>
 
-                            <Row>
-                                <Col >
-                                    <p className="fancytext"> {this.state.goals[i]['title']}<br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </p>
-                                </Col>
+                            <div style={{ fontSize: '12px' }}>
+                                {(this.state.goals[i]['datetime_started']) ?
+
+                                    <div style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
 
 
-                                <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
-                                    {(this.state.goals[i]['photo'] ? (<img src={this.state.goals[i]['photo']} alt="Routine" className="center" height={this.state.thumbnailHeight} width={this.state.thumbnailWidth} />) : (<div></div>))}
-
-                                </Col>
-                                <div style={{ fontSize: '12px' }}>
-                                    {(this.state.goals[i]['datetime_started']) ?
-
-                                        <div style={{ marginTop: '3px' }}>{"Previous Start Time: " + this.state.goals[i]['datetime_started']} </div> : <div> </div>}
-
-
-                                    {(this.state.goals[i]['datetime_completed']) ?
-                                        <div>{"Previous Completed Time: " + this.state.goals[i]['datetime_completed']} </div> : <div> </div>}
-                                </div>
-
-                            </Row>
+                                {(this.state.goals[i]['datetime_completed']) ?
+                                    <div>{"Previous Completed Time: " + this.state.goals[i]['datetime_completed']} </div> : <div> </div>}
+                            </div>
 
 
                         </ListGroup.Item>
@@ -666,8 +700,8 @@ export default class FirebaseV2 extends React.Component {
 
                 {
                     (this.props.showRoutine) ?
-                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '0' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ borderRadius: "15px", background:"pink", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
                         </Col>) : <div> </div>
@@ -675,7 +709,7 @@ export default class FirebaseV2 extends React.Component {
 
                 {
                     (this.props.showGoal) ? (
-                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '0' }} sm="auto" md="auto" lg="auto" >
                             <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                                 {this.abstractedGoalsList(displayGoals)}
                             </div>
@@ -861,12 +895,12 @@ shows entire list of goals and routines
             <Modal.Body>
                 <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                     {(this.state.addNewATModalShow) ?
-                    <AddNewATItem
-                     refresh={this.refreshATItem} //refreshes the list of AT
-                     ATArray={this.state.singleATitemArr}
-                     ATItem={this.state.singleGR}  //The parent item
-                     hideNewATModal={() => { this.setState({ addNewATModalShow: false }) }}
-                     width={this.state.modalWidth} /> : (<div></div>)}
+                        <AddNewATItem
+                            refresh={this.refreshATItem} //refreshes the list of AT
+                            ATArray={this.state.singleATitemArr}
+                            ATItem={this.state.singleGR}  //The parent item
+                            hideNewATModal={() => { this.setState({ addNewATModalShow: false }) }}
+                            width={this.state.modalWidth} /> : (<div></div>)}
                 </div>
                 {/**
                  * Here Below, the IS list will pop up inside the AT list

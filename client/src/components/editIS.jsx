@@ -40,7 +40,7 @@ export default class editIS extends Component {
 
     editISForm = () => {
         return (
-            <div>
+            <div style={{width: "290px", padding: "30px"}}>
             <label>Title</label>
             <div className="input-group mb-3" >
                 <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
@@ -142,7 +142,7 @@ export default class editIS extends Component {
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
-                    icon={faEdit} size="1x"
+                    icon={faEdit} size="lg"
                 />
 
                 </div>
@@ -152,9 +152,9 @@ export default class editIS extends Component {
     render() {
         return (
             <div>
+                {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
                 {(this.state.showEditModal ? this.editISForm() : <div> </div>)}
              
-             {  (this.state.showEditModal) ? <div> </div> : this.showIcon()}
             </div>
         )
     }

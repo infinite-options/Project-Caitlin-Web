@@ -42,7 +42,7 @@ export default class editAT extends Component {
 
     editISForm = () => {
         return (
-            <div>
+            <div style={{width: "290px", padding: "30px"}}>
                   <label>Title</label>
                         <div className="input-group mb-3" >
                             <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
@@ -168,7 +168,7 @@ export default class editAT extends Component {
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
-                    icon={faEdit} size="1x"
+                    icon={faEdit} size="lg"
                 />
                 </div>
         )
