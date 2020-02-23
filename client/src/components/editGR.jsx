@@ -217,7 +217,7 @@ export default class editGR extends Component {
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
-                    icon={faEdit} size="1x"
+                    icon={faEdit} size="lg"
                 />
             </div>
         )

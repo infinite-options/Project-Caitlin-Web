@@ -49,6 +49,14 @@ h2{
   color: #002147;
 }
 
+.fancytextsmall{
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #002147;
+}
+
 
 .midfancytext{
   text-transform: uppercase;

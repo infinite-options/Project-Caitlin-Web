@@ -542,9 +542,9 @@ submits the data to be passed up to be integrated into google calendar
         onClick={this.toggleShowGoal}> Goals </Button>
     &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 
-  <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
+  {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
     Infinte Options: Project Caitlin
-  </b>
+  </b> */}
       {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
@@ -560,7 +560,7 @@ submits the data to be passed up to be integrated into google calendar
 
   calendarAbstracted = () => {
     return (
-      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '20px', padding: '45px', paddingBottom: "10px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+      <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '10px', padding: '45px', paddingBottom: "10px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
           <Row style={{ marginTop: '0px' }}>
             <Col >
