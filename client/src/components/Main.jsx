@@ -6,7 +6,7 @@ import './App.css'
 import moment from 'moment';
 import TylersCalendarv1 from './TCal.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -26,7 +26,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
-      newEventNotification: '',
+      newEventNotification: 30,
       newEventDescription: '',
       newEventStart: '', //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: '',//this variable and any use of it in the code should be DELETED in future revisions
@@ -98,26 +98,26 @@ export default class MainPage extends React.Component {
     console.log('setting new Data: ');
     console.log(A);
 
-/*
-'reminders': {
-  'useDefault': false,
-  'sequence': 0,
-  'overrides': [
-    {
-      method: 'popup',
-      minutes: minutesNotification,
-    }
-  ],
-},
-*/
+    /*
+    'reminders': {
+      'useDefault': false,
+      'sequence': 0,
+      'overrides': [
+        {
+          method: 'popup',
+          minutes: minutesNotification,
+        }
+      ],
+    },
+    */
 
     //Guest list erroneously includes owner's email as well
     var guestList = ''
-    if(A.attendees) {
-      guestList = A.attendees.reduce((guestList,nextGuest) => {
+    if (A.attendees) {
+      guestList = A.attendees.reduce((guestList, nextGuest) => {
         return guestList + ' ' + nextGuest.email;
-      },'');
-      console.log("Guest List:",A.attendees,guestList);
+      }, '');
+      console.log("Guest List:", A.attendees, guestList);
     }
     this.setState({
       newEventID: A.id,
@@ -161,7 +161,7 @@ export default class MainPage extends React.Component {
       newEventName: '',
       newEventGuests: '',
       newEventLocation: '',
-      newEventNotification: '',
+      newEventNotification: 30,
       newEventDescription: '',
       dayEventSelected: true,
       isEvent: false
@@ -237,7 +237,7 @@ submits the data to be passed up to be integrated into google calendar
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
-    if(emailList){
+    if (emailList) {
       formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
@@ -336,8 +336,8 @@ submits the data to be passed up to be integrated into google calendar
     //Note: This works, but does not email the guests that they are invited to the event
     var formattedEmail = null;
     const emailList = guests.match(/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g);
-      if(emailList){
-        formattedEmail = emailList.map((guests) => {
+    if (emailList) {
+      formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
           responseStatus: 'needsAction',
@@ -346,22 +346,22 @@ submits the data to be passed up to be integrated into google calendar
     }
 
     var minutesNotification = 30;
-    if(this.state.newEventNotification) {
+    if (this.state.newEventNotification) {
       minutesNotification = this.state.newEventNotification;
     }
-     var event = {
+    var event = {
       'summary': this.state.newEventName,
       'location': this.state.newEventLocation,
       'description': this.state.newEventDescription,
-      'reminders': {
-        'useDefault': false,
-        'sequence': 0,
-        'overrides': [
+      reminders: {
+        useDefault: false,
+        sequence: 0,
+        overrides: [
           {
             method: 'popup',
             minutes: minutesNotification,
           }
-        ],
+        ]
       },
       'start': {
         'dateTime': this.state.newEventStart0.toISOString(),
@@ -370,12 +370,14 @@ submits the data to be passed up to be integrated into google calendar
         'dateTime': this.state.newEventEnd0.toISOString(),
       },
       'attendees': formattedEmail,
+
     };
 
-    console.log("Create Event:",event);
+    console.log("Create Event:", event);
 
     axios.post('/createNewEvent', {
       newEvent: event,
+      reminderTime: minutesNotification,
       title: newTitle,
       start: this.state.newEventStart0.toISOString(),
       end: this.state.newEventEnd0.toISOString()
@@ -445,13 +447,13 @@ submits the data to be passed up to be integrated into google calendar
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
       //width and height is fixed now but should be by % percentage later on
-      <div className="normalfancytext" style={{ marginLeft: '0px',  height: "2000px", width: '2000px' }}>
-        <div style={{background:'white', margin: '0', padding:'0', width: '100%'}}>
-            <div >
-              {this.abstractedMainEventGRShowButtons()}
-            </div>
-          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
+      <div className="normalfancytext" style={{ marginLeft: '0px', height: "2000px", width: '2000px' }}>
+        <div style={{ background: 'white', margin: '0', padding: '0', width: '100%' }}>
+          <div >
+            {this.abstractedMainEventGRShowButtons()}
           </div>
+          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
+        </div>
         <Container fluid style={{ marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
 
@@ -521,31 +523,31 @@ submits the data to be passed up to be integrated into google calendar
       newEventDescription: '',
       dayEventSelected: true,
       isEvent: false,
-      dayEventSelected: !this.state.dayEventSelected
+      // dayEventSelected: !this.state.dayEventSelected deleted by tyler on 2/22/2020
     });
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div style={{ width:'100%',fontSize: '20px' }}>
+    return (<div style={{ width: '100%', fontSize: '20px' }}>
 
-<Button style={{ marginLeft: '50%', marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{ marginLeft: '50%', marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
         }}
       >New Event</Button>
 
-      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowRoutine}
       >Routines</Button>
 
-      <Button style={{marginTop:'0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}> Goals </Button>
-    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+  
   {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
     Infinte Options: Project Caitlin
   </b> */}
-      {/* <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
             showRoutineGoalModal: !this.state.showRoutineGoalModal,
@@ -553,7 +555,7 @@ submits the data to be passed up to be integrated into google calendar
             showRoutine: false
           })
         }}
-      >Goals and Routines</Button> */}
+      >Current Status</Button>
 
     </div>)
   }
@@ -603,20 +605,20 @@ submits the data to be passed up to be integrated into google calendar
         <Modal.Footer>
           <Row>
 
-              <Col style={this.state.isEvent ? { display: 'none' } : {}} >
-                <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
-              </Col>
-              <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
-                <Button onClick={this.updateEventClick} className="btn btn-info">
-                  Update
+            <Col style={this.state.isEvent ? { display: 'none' } : {}} >
+              <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
+            </Col>
+            <Col style={this.state.isEvent ? { marginTop: '0px' } : { display: 'none' }}>
+              <Button onClick={this.updateEventClick} className="btn btn-info">
+                Update
                 </Button>
-              </Col>
-              <Col>
-                <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
-              </Col>
-              <Col>
-                <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
-              </Col>
+            </Col>
+            <Col>
+              <Button variant="secondary" onClick={this.hideEventForm}>Cancel</Button>
+            </Col>
+            <Col>
+              <Button style={this.state.isEvent ? {} : { display: 'none' }} variant="danger" onClick={this.deleteSubmit} > Delete</Button>
+            </Col>
 
           </Row>
         </Modal.Footer>
@@ -661,7 +663,7 @@ submits the data to be passed up to be integrated into google calendar
                 <Form.Label>Notification:</Form.Label>
                 <Row>
                   <Col> <Form.Control value={this.state.newEventNotification} onChange={this.handleNotificationChange}
-                    defaultValue="30" type="number" placeholder=""/> </Col>
+                    type="number" placeholder="" /> </Col>
                   <Col> <Form.Text> Minutes </Form.Text> </Col>
                 </Row>
               </Form.Group>
@@ -768,12 +770,12 @@ when there is a change in the event form
     this.setState({ newEventGuests: event.target.value });
   }
 
-  handleLocationChange = (event) =>  {
-    this.setState({ newEventLocation: event.target.value});
+  handleLocationChange = (event) => {
+    this.setState({ newEventLocation: event.target.value });
   }
 
   handleNotificationChange = (event) => {
-    this.setState({ newEventNotification: event.target.value});
+    this.setState({ newEventNotification: event.target.value });
   }
 
   handleDescriptionChange = (event) => {

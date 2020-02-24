@@ -308,8 +308,6 @@ app.post("/createNewEvent", function (req, res) {
     }
   };
 */
-  var event = req.body.newEvent;
-
   calendar.events.insert({
     auth: calenAuth,
     // calendarId: 'iodevcalendar@gmail.com',

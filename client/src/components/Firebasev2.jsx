@@ -11,7 +11,7 @@ import EditGR from './editGR.jsx';
 import EditIS from './editIS.jsx';
 import EditAT from './EditAT.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserAltSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faUserAltSlash, faTrophy, faRunning } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment'
 /**
  * Notes from Tyler:
@@ -180,9 +180,9 @@ export default class FirebaseV2 extends React.Component {
     }
 
     formatDateTime(str) {
-      const formattedStr = str.replace(/\//g,'-');
-      const time = moment(formattedStr);
-      return time.format("YYYY MMM DD HH:m");
+        const formattedStr = str.replace(/\//g, '-');
+        const time = moment(formattedStr);
+        return time.format("YYYY MMM DD HH:m");
     }
 
     onInputChange = (e) => {
@@ -409,14 +409,14 @@ export default class FirebaseV2 extends React.Component {
                             </Col>
                             <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
 
-                            {(tempPhoto ? (<img src={tempPhoto} 
-                            alt="Instruction/Step" 
-                            height={this.state.thumbnailHeight}
-                            width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
+                                {(tempPhoto ? (<img src={tempPhoto}
+                                    alt="Instruction/Step"
+                                    height={this.state.thumbnailHeight}
+                                    width={this.state.thumbnailWidth} className="center" />) : (<div></div>))}
                             </Col>
 
                         </Row>
-                    
+
                         <Row style={{
                             margin: '0', display: "flex",
                             justifyContent: "center",
@@ -708,25 +708,140 @@ export default class FirebaseV2 extends React.Component {
         return displayGoals;
     }
 
+
+
+    getGoalsStatus = () => {
+        let displayGoals = [];
+        if (this.state.goals.length != null) {//Check to make sure routines exists
+            for (let i = 0; i < this.state.goals.length; i++) {
+                let tempTitle = this.state.goals[i]['title'];
+                let tempID = this.state.goals[i]['id'];
+                let isComplete = this.state.goals[i]['is_complete'];
+                if (!this.state.goals[i]['is_available']) {
+                    continue; //skip if not available
+                }
+                displayGoals.push(
+                    <div key={'goalStatus' + i} >
+                        <ListGroup.Item
+                            action variant="light" style={{ width: '100%', marginBottom: '3px' }}>
+
+                            <Row style={{ margin: '0' }} className="d-flex flex-row-center"  >
+                                <Col style={{ textAlign: "center", width: "100%" }}>
+                                    <div className="fancytext"> {tempTitle}</div>
+                                </Col>
+                            </Row>
+                            <Row style={{
+                                margin: '0', display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }} >
+                                {(isComplete) ?
+                                    <div>
+                                        <FontAwesomeIcon
+                                            title="Completed Item"
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            style={{ color: this.state.availabilityColorCode }}
+                                            onClick={(e) => { e.stopPropagation(); alert("Item Is Completed") }}
+                                            icon={faTrophy} size="lg"
+                                        /> </div>
+                                    : <div>
+                                        <FontAwesomeIcon
+                                            title="Not Completed Item"
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            style={{ color: 'black' }}
+                                            onClick={(e) => { e.stopPropagation(); alert("Item Is Not Completed") }}
+                                            icon={faRunning} size="lg"
+                                        />
+                                    </div>
+                                }
+
+                            </Row>
+                        </ListGroup.Item>
+                    </div>
+                )
+            }
+        }
+        //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
+        return displayGoals;
+    }
+
+    getRoutinesStatus = () => {
+        let displayRoutines = [];
+        if (this.state.routines.length != null) {//Check to make sure routines exists
+            for (let i = 0; i < this.state.routines.length; i++) {
+                let tempTitle = this.state.routines[i]['title'];
+                // let tempID = this.state.routines[i]['id'];
+                let isComplete = this.state.routines[i]['is_complete'];
+                if (!this.state.routines[i]['is_available']) {
+                    continue; //skip if not available
+                }
+                displayRoutines.push(
+                    <div key={'goalStatus' + i} >
+                        <ListGroup.Item action variant="light" style={{ marginBottom: '3px' }}>
+                            <Row style={{ margin: '0' }} className="d-flex flex-row-center"  >
+                                <Col style={{ textAlign: "center", width: "100%" }}>
+                                    <div className="fancytext"> {tempTitle}</div>
+                                </Col>
+                            </Row>
+                            <Row style={{
+                                margin: '0', display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
+                            }} >
+                                {(isComplete) ?
+                                    <div>
+                                        <FontAwesomeIcon
+                                            title="Completed Item"
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            style={{ color: this.state.availabilityColorCode }}
+                                            onClick={(e) => { e.stopPropagation(); alert("Item Is Completed") }}
+                                            icon={faTrophy} size="lg"
+                                        /> </div>
+                                    : <div>
+                                        <FontAwesomeIcon
+                                            title="Not Completed Item"
+                                            // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                                            // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                                            style={{ color: 'black' }}
+                                            onClick={(e) => { e.stopPropagation(); alert("Item Is Not Completed") }}
+                                            icon={faRunning} size="lg"
+                                        />
+                                    </div>
+                                }
+                            </Row>
+                        </ListGroup.Item>
+                    </div>
+                )
+            }
+        }
+        //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
+        return displayRoutines;
+    }
+
     render() {
         console.log('ran render firebasev2')
         var displayRoutines = this.getRoutines();
         var displayGoals = this.getGoals();
+        var displayCompletedGoals = this.getGoalsStatus();
+        var displayCompletedRoutines = this.getRoutinesStatus();
         return (
             <div style={{ marginTop: '0' }} >
-                {/* {
+                {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
                             <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                                {this.abstractedRoutineGoalsList(displayRoutines, displayGoals)}
+                                {this.abstractedRoutineGoalsList(displayCompletedRoutines, displayCompletedGoals)}
                             </div>
                         </Col>) : <div> </div>
-                } */}
+                }
 
                 {
                     (this.props.showRoutine) ?
-                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '0' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ borderRadius: "15px" }}>
                                 {this.abstractedRoutineList(displayRoutines)}
                             </div>
                         </Col>) : <div> </div>
@@ -734,8 +849,17 @@ export default class FirebaseV2 extends React.Component {
 
                 {
                     (this.props.showGoal) ? (
-                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '0' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ borderRadius: "15px" }}>
+                                {this.abstractedGoalsList(displayGoals)}
+                            </div>
+                        </Col>) : <div> </div>
+                }
+
+                {
+                    (this.props.showGoal) ? (
+                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
+                            <div style={{ borderRadius: "15px" }}>
                                 {this.abstractedGoalsList(displayGoals)}
                             </div>
                         </Col>) : <div> </div>
@@ -776,7 +900,7 @@ shows entire list of goals and routines
 */
     abstractedGoalsList = (displayGoals) => {
         return (
-            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <Modal.Header onClick={this.props.closeGoal} closeButton>
                     <Modal.Title><h5 className="normalfancytext">Goals</h5> </Modal.Title>
                 </Modal.Header>
@@ -814,7 +938,7 @@ shows entire list of goals and routines
     */
     abstractedRoutineList = (displayRoutines) => {
         return (
-            <Modal.Dialog style={{ borderRadius: '15px', marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
+            <Modal.Dialog style={{ borderRadius: '15px', marginTop: "0", width: this.state.modalWidth, marginLeft: '0', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <Modal.Header onClick={this.props.closeRoutine} closeButton>
                     <Modal.Title> <h5 className="normalfancytext">Routines</h5> </Modal.Title>
                 </Modal.Header>
@@ -893,7 +1017,10 @@ shows entire list of goals and routines
                                     width={this.state.modalWidth} /> : (<div></div>)}
                     </div>
                     <ListGroup>
-                        {this.state.singleAT.arr}
+                        <div style={{ height: '500px', overflow: 'scroll' }}>
+
+                            {this.state.singleAT.arr}
+                        </div>
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
@@ -966,30 +1093,28 @@ shows entire list of goals and routines
     abstractedRoutineGoalsList = (displayRoutines, displayGoals) => {
         return (
             <Modal.Dialog style={{ padding: '0', marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
-                <Modal.Header closeButton onClick={this.props.closeRoutineGoalModal}>
-                    <Modal.Title> <h5 className="normalfancytext">Goals/Routines: </h5> </Modal.Title>
-                </Modal.Header>
+      
                 <Modal.Body>
-                    <h2 className="normalfancytext">Routines</h2>
+                    <h2 className="normalfancytext">Routines Status</h2>
 
                     {/**
                      * To allow for the Modals to pop up in front of one another
                      * I have inserted the IS and AT lists inside the RT Goal Modal */ }
 
-                    <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                    {/* <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
-                    </div>
+                    </div> */}
 
-                    <ListGroup>
+                    <ListGroup style={{ height: '350px', overflow: 'scroll' }}>
                         {displayRoutines}
-                        <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button>
-                    </ListGroup>
+                        {/* <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button> */}
+                    </ListGroup >
                     {/* Button To add new Routine */}
-                    <h2 className="normalfancytext" style={{ marginTop: '50px' }}>Goals</h2>
-                    <ListGroup>
+                    <h2 className="normalfancytext" style={{ marginTop: '50px' }}>Goals Status</h2>
+                    <ListGroup style={{ height: '300px', overflow: 'scroll' }}>
                         {displayGoals}
                         {/* Button to add new Goal */}
-                        <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button>
+                        {/* <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button> */}
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
