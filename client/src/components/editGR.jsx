@@ -24,7 +24,11 @@ export default class editGR extends Component {
         console.log("submitting GR edited formed to firebase");
         let newArr = this.props.ATArray;
         newArr[this.props.i] = this.state.itemToEdit;
-
+        
+        if(!newArr[this.props.i]['datetime_completed']){
+            newArr[this.props.i]['datetime_completed'] = '2020/02/03T08:32:42';
+        }
+        
         this.props.FBPath.update({ 'goals&routines': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
