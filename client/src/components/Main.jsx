@@ -452,12 +452,12 @@ submits the data to be passed up to be integrated into google calendar
           <div >
             {this.abstractedMainEventGRShowButtons()}
           </div>
-          <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" />
+          {/* <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" /> */}
         </div>
-        <Container fluid style={{ marginLeft: '0%' }}  >
+        <Container fluid style={{ marginTop:"15px", marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
 
-          <Row>
+          <Row style={{ marginTop:"0"}}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
             <Firebasev2
@@ -528,9 +528,9 @@ submits the data to be passed up to be integrated into google calendar
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div style={{ width: '100%', fontSize: '20px' }}>
+    return (<div style={{ marginLeft:'33%', width: '100%', fontSize: '20px' }}>
 
-      <Button style={{ marginLeft: '50%', marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{  marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
         }}
@@ -542,8 +542,7 @@ submits the data to be passed up to be integrated into google calendar
 
       <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}> Goals </Button>
-      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-  
+
   {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
     Infinte Options: Project Caitlin
   </b> */}
@@ -552,7 +551,7 @@ submits the data to be passed up to be integrated into google calendar
           this.setState({
             showRoutineGoalModal: !this.state.showRoutineGoalModal,
             showGoalModal: false,
-            showRoutine: false
+            showRoutineModal: false,
           })
         }}
       >Current Status</Button>

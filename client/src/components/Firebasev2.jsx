@@ -833,7 +833,7 @@ export default class FirebaseV2 extends React.Component {
                     (this.props.showRoutineGoalModal) ?
                         (<Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
                             <div style={{ borderRadius: "15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                                {this.abstractedRoutineGoalsList(displayCompletedRoutines, displayCompletedGoals)}
+                                {this.abstractedRoutineGoalStatusList(displayCompletedRoutines, displayCompletedGoals)}
                             </div>
                         </Col>) : <div> </div>
                 }
@@ -1087,15 +1087,18 @@ shows entire list of goals and routines
 
 
     /*
-    abstractedRoutineGoalsList:
+    abstractedRoutineGoalStatusList:
     shows entire list of goals and routines
     */
-    abstractedRoutineGoalsList = (displayRoutines, displayGoals) => {
+    abstractedRoutineGoalStatusList = (displayRoutines, displayGoals) => {
         return (
-            <Modal.Dialog style={{ padding: '0', marginTop: "0", width: this.state.modalWidth, marginLeft: '0' }}>
-      
+            <Modal.Dialog style={{ borderRadius: '15px', marginTop: "0", width: this.state.modalWidth, marginLeft: '0', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+                <Modal.Header  onClick={this.props.closeRoutineGoalModal} closeButton>
+                <Modal.Title> <h5 className="normalfancytext">Current Status</h5> </Modal.Title>
+
+                </Modal.Header>
                 <Modal.Body>
-                    <h2 className="normalfancytext">Routines Status</h2>
+                    <h2 className="normalfancytext">Routines:</h2>
 
                     {/**
                      * To allow for the Modals to pop up in front of one another
@@ -1110,8 +1113,8 @@ shows entire list of goals and routines
                         {/* <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: true }) }} >Add Routine</button> */}
                     </ListGroup >
                     {/* Button To add new Routine */}
-                    <h2 className="normalfancytext" style={{ marginTop: '50px' }}>Goals Status</h2>
-                    <ListGroup style={{ height: '300px', overflow: 'scroll' }}>
+                    <h2 className="normalfancytext" style={{ marginTop: '50px' }}>Goals:</h2>
+                    <ListGroup style={{ height: '250px', overflow: 'scroll' }}>
                         {displayGoals}
                         {/* Button to add new Goal */}
                         {/* <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button> */}
