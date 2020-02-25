@@ -27,7 +27,10 @@ export default class AddNewISItem extends Component {
             is_available: true,
             available_end_time: "23:59:59",
             available_start_time: "00:00:00",
-            datetime_completed: false
+            datetime_completed: 'Sun, 23 Feb 2020 00:08:43 GMT',
+            datetime_started: 'Sun, 23 Feb 2020 00:08:43 GMT',
+            audio:"",
+            is_timed:false
         }
     }
 
@@ -67,6 +70,7 @@ export default class AddNewISItem extends Component {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
                 if (this.props != null) {
+                    this.props.hideNewISModal();
                     console.log("refreshing FireBasev2 from ISItem");
                     this.props.refresh(newArr);
                 }
@@ -134,10 +138,8 @@ export default class AddNewISItem extends Component {
                     
                         <div className="input-group mb-3" >
                             <label className="form-check-label">Time?</label>
-
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
-
                                 name="Timed"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.is_timed}

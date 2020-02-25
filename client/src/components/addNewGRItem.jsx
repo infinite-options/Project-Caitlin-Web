@@ -20,7 +20,9 @@ export default class AddNewGRItem extends Component {
             is_available: true,
             available_end_time: "23:59:59",
             available_start_time: "00:00:00",
-            datetime_completed: '',
+            datetime_completed: 'Sun, 23 Feb 2020 00:08:43 GMT',
+            datetime_started: 'Sun, 23 Feb 2020 00:08:43 GMT',
+            audio:"",
             is_timed: false,
         }, //this is essentially the new item 
         //below are references to firebase directories

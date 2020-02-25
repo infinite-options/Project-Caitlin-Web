@@ -23,6 +23,16 @@ export default class editAT extends Component {
         console.log("submitting edited formed to firebase");
         let newArr  = this.props.ATArray;
         newArr[this.props.i] = this.state.itemToEdit;
+        if(!newArr[this.props.i]['datetime_completed']){
+            newArr[this.props.i]['datetime_completed'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
+        }
+        if(!newArr[this.props.i]['audio']){
+            newArr[this.props.i]['audio'] = '';
+        }
+
+        if(!newArr[this.props.i]['datetime_started']){
+            newArr[this.props.i]['datetime_started'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
+        }
 
         this.props.FBPath.update({ 'actions&tasks': newArr }).then(
             (doc) => {

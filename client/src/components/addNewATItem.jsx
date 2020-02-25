@@ -13,12 +13,14 @@ export default class AddNewATItem extends Component {
                 id:"",
                 title: "",
                 photo: "",
+                audio:"",
                 is_complete: false,
                 is_available: true,
                 available_end_time: "23:59:59",
                 available_start_time: "00:00:00",
-                datetime_completed: false,
+                datetime_completed: 'Sun, 23 Feb 2020 00:08:43 GMT',
                 is_timed: false,
+                datetime_started: 'Sun, 23 Feb 2020 00:08:43 GMT',
                 
             }
         }
@@ -77,6 +79,7 @@ export default class AddNewATItem extends Component {
                 console.log('updateEntireArray Finished')
                 console.log(doc);
                 if (this.props != null) {
+                    this.props.hideNewATModal();
                     console.log("refreshing FireBasev2 from AddNewATItem");
                     this.props.refresh(newArr);
                 }

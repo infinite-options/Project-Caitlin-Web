@@ -22,6 +22,16 @@ export default class editIS extends Component {
         console.log("submitting edited formed to firebase");
         let newArr  = this.props.ISArray;
         newArr[this.props.i] = this.state.itemToEdit;
+        if(!newArr[this.props.i]['datetime_completed']){
+            newArr[this.props.i]['datetime_completed'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
+        }
+        if(!newArr[this.props.i]['datetime_started']){
+            newArr[this.props.i]['datetime_started'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
+        }
+
+        if(!newArr[this.props.i]['audio']){
+            newArr[this.props.i]['audio'] = '';
+        }
         this.props.FBPath.update({ 'instructions&steps': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
