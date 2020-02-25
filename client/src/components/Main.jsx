@@ -447,7 +447,7 @@ submits the data to be passed up to be integrated into google calendar
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
       //width and height is fixed now but should be by % percentage later on
-      <div className="normalfancytext" style={{ marginLeft: '0px', height: "2000px", width: '2000px' }}>
+      <div className="normalfancytext" style={{ marginLeft: '0px', height: "100%", width: '2000px' }}>
         <div style={{ background: 'white', margin: '0', padding: '0', width: '100%' }}>
           <div >
             {this.abstractedMainEventGRShowButtons()}
