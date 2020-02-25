@@ -561,7 +561,7 @@ export default class FirebaseV2 extends React.Component {
                             <Row style={{ margin: '0' }} className="d-flex flex-row-center" >
                                 <Col >
                                     <div className="fancytext">{this.state.routines[i]['title']}
-                                        <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes
+                                        {/* <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes */}
                                     </div>
                                 </Col>
 
@@ -654,7 +654,7 @@ export default class FirebaseV2 extends React.Component {
                             <Row style={{ margin: '0' }} className="d-flex flex-row-center"  >
                                 <Col style={{ textAlign: "center", width: "100%" }}>
                                     <div className="fancytext"> {this.state.goals[i]['title']}</div>
-                                    <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div>
+                                    {/* <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div> */}
                                 </Col>
                                 <Col sm="auto" md="auto" lg="auto" style={{ width: '100%', height: "100%" }}>
                                     {(this.state.goals[i]['photo'] ?
@@ -856,14 +856,6 @@ export default class FirebaseV2 extends React.Component {
                         </Col>) : <div> </div>
                 }
 
-                {
-                    (this.props.showGoal) ? (
-                        <Col style={{ width: this.state.modalWidth, marginTop: '0', marginRight: '15px' }} sm="auto" md="auto" lg="auto" >
-                            <div style={{ borderRadius: "15px" }}>
-                                {this.abstractedGoalsList(displayGoals)}
-                            </div>
-                        </Col>) : <div> </div>
-                }
 
                 {/* <Col sm="auto" md="auto" lg="auto">
                     <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
@@ -900,7 +892,7 @@ shows entire list of goals and routines
 */
     abstractedGoalsList = (displayGoals) => {
         return (
-            <Modal.Dialog style={{ marginTop: "0", width: this.state.modalWidth, marginLeft: '0', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+            <Modal.Dialog style={{ borderRadius: '15px', marginTop: "0", width: this.state.modalWidth, marginLeft: '0', boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                 <Modal.Header onClick={this.props.closeGoal} closeButton>
                     <Modal.Title><h5 className="normalfancytext">Goals</h5> </Modal.Title>
                 </Modal.Header>

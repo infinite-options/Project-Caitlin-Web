@@ -23,6 +23,8 @@ export default class editAT extends Component {
         console.log("submitting edited formed to firebase");
         let newArr  = this.props.ATArray;
         newArr[this.props.i] = this.state.itemToEdit;
+        
+        //Add the below attributes in case they don't already exists
         if(!newArr[this.props.i]['datetime_completed']){
             newArr[this.props.i]['datetime_completed'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
         }

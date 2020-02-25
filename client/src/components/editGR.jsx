@@ -23,21 +23,22 @@ export default class editGR extends Component {
     newInputSubmit = () => {
         console.log("submitting GR edited formed to firebase");
         let newArr = this.props.ATArray;
-        
+
         newArr[this.props.i] = this.state.itemToEdit;
-        
-        
-        if(!newArr[this.props.i]['audio']){
+
+        //Add the below attributes in case they don't already exists
+
+        if (!newArr[this.props.i]['audio']) {
             newArr[this.props.i]['audio'] = '';
         }
-        if(!newArr[this.props.i]['datetime_completed']){
+        if (!newArr[this.props.i]['datetime_completed']) {
             newArr[this.props.i]['datetime_completed'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
         }
 
-        if(!newArr[this.props.i]['datetime_started']){
+        if (!newArr[this.props.i]['datetime_started']) {
             newArr[this.props.i]['datetime_started'] = 'Sun, 23 Feb 2020 00:08:43 GMT';
         }
-        
+
         this.props.FBPath.update({ 'goals&routines': newArr }).then(
             (doc) => {
                 console.log('updateEntireArray Finished')
@@ -74,11 +75,11 @@ export default class editGR extends Component {
                     })
 
                 }}
-                // showTimeSelect
-                // timeFormat="HH:mm"
-                // timeIntervals={15}
-                // timeCaption="time"
-                // dateFormat="MMMM d, yyyy h:mm aa"
+            // showTimeSelect
+            // timeFormat="HH:mm"
+            // timeIntervals={15}
+            // timeCaption="time"
+            // dateFormat="MMMM d, yyyy h:mm aa"
             />
         );
     }
@@ -86,22 +87,22 @@ export default class editGR extends Component {
 
     editGRForm = () => {
         return (
-            <div style={{ border:"2px", margin: '0', width: "315px", padding:'20px'}}>
+            <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
                 <label>Title</label>
                 <div className="input-group mb-3" >
-                    <input style={{ width: '200px' }} placeholder="Enter Title"  value={this.state.itemToEdit.title} onChange={
+                    <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
                         (e) => { e.preventDefault(); e.stopPropagation(); let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({ itemToEdit: temp }) }
                     }
-                    
-                    //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                    onKeyDown={
-                        (e) => {
-                            if (e.keyCode == 32) {
-                                 
-                                let temp = this.state.itemToEdit; temp.title = e.target.value + " "; this.setState({ itemToEdit: temp })
-                                e.preventDefault(); e.stopPropagation()
-                            }
-                        }}/>
+
+                        //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
+                        onKeyDown={
+                            (e) => {
+                                if (e.keyCode == 32) {
+
+                                    let temp = this.state.itemToEdit; temp.title = e.target.value + " "; this.setState({ itemToEdit: temp })
+                                    e.preventDefault(); e.stopPropagation()
+                                }
+                            }} />
                 </div >
 
                 <label>Photo URL</label>
@@ -239,7 +240,7 @@ export default class editGR extends Component {
     render() {
         return (
 
-            <div  onClick={(e) => { e.stopPropagation(); }}>
+            <div onClick={(e) => { e.stopPropagation(); }}>
                 {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
                 {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
 
