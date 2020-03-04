@@ -2,16 +2,21 @@ import React from 'react';
 import moment from 'moment';
 
 export default class TylersCalendarv1 extends React.Component {
-
+    constructor(props){
+        super(props)
+        //gives an array of weekdays ["Sunday", "Monday", ect]
+        this.weekdays = moment.weekdays();
+        //gives shortened version of week days ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        //not using 
+        // this.weekdaysShort = moment.weekdaysShort(); 
+    }
+    // weekdays = moment.weekdays();
+    // weekdaysShort = moment.weekdaysShort(); // ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     componentDidMount() {
     }
     
-    weekdays = moment.weekdays();
-    weekdaysShort = moment.weekdaysShort(); // ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-
-    componentWillUnmount() {
-     
+    componentWillUnmount() { 
     }
 
     year = () => {
@@ -28,10 +33,15 @@ export default class TylersCalendarv1 extends React.Component {
         return this.props.dateContext.daysInMonth();
     }
     firstDayOfMonth = () => {
+        //takes todays day and time. beacuse state in main of dateContext: moment()
+        //console.log(this.props.dateContext);
         let dateContext = this.props.dateContext;
         let firstDay = moment(dateContext)
             .startOf("month")
             .format("d"); // Day of week 0...1..5...6
+        //console.log(moment(dateContext).startOf("month"));
+        //inside that.d will tell use which day frisday ect is the first day of that month. format gives 
+        //it in a simple number of 0 as in first day is the sunday 1 its a monday ect
         return firstDay;
     };
 
@@ -101,21 +111,17 @@ export default class TylersCalendarv1 extends React.Component {
     }
 
     onDayClick = (d) => {
-        // console.log('dateClick')
-        // console.log(d)
-        // console.log('this month ')
-        // console.log()
-        
         this.props.handleDateClick(this.props.dateContext.format("M") + '/' + d + '/'+  this.props.dateContext.format("Y"));
     }
 
     render() {
-        // console.log("reventded TCal")
         // console.log(this.props.organizedData)
         let daysInMonth = [];
         let weekdays = this.weekdays.map((day) => {
             return (
-                <td className="fancytext" key={day}>{day}</td>
+                <td className="fancytext" key={day}>
+                    {day}
+                </td>
             )
         });
 
@@ -124,15 +130,23 @@ export default class TylersCalendarv1 extends React.Component {
         // console.log('first day of month');
         // console.log(this.firstDayOfMonth());
 
-
+        // create the empty slots in calender till ready for first date. 
         for (let i = 0; i < this.firstDayOfMonth(); i++) {
-            blanks.push(<td key={'empty' + i} className="calendar-day empty">{""}</td>);
+            blanks.push(
+                <td key={'empty' + i} className="calendar-day empty">
+                    {""}
+                </td>
+            );
         }
 
         
         //The variable below tells us if the current month we are at is today's month
+        //dayContext changes by which month we are in 
+        console.log(this.props.dateObject.format("DD/MM/YYYY"));
         var sameDate = this.props.dateObject.format("DD/MM/YYYY") === this.props.dateContext.format("DD/MM/YYYY");
-        console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
+        console.log(sameDate);
+        console.log(this.props.dateContext.format("DD/MM/YYYY"));
+        
         for (var d = 1; d <= this.daysInMonth(); d++) {
             // let currentDay = d == this.currentDay() ? "today" : "";
 

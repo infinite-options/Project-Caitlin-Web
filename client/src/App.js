@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 
 import MainPage from './components/Main.jsx';
 // import Header from './components/Header.jsx'
+import DayView from './components/DayView';
 class App extends Component {
   render() {
     return (
@@ -15,6 +16,7 @@ class App extends Component {
         {/* <Header /> */}
           <div>
             <MainPage />
+            {/* <DayView/> */}
           </div>
          
         {/* </Router> */}

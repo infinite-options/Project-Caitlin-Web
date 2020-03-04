@@ -88,7 +88,7 @@ export default class FirebaseV2 extends React.Component {
      *
     */
     refreshATItem = (arr) => {
-        console.log("refreshATItem was called")
+        // console.log("refreshATItem was called")
 
         this.setState({ singleATitemArr: arr })
         let resArr = this.createListofAT(arr);
@@ -109,8 +109,8 @@ export default class FirebaseV2 extends React.Component {
      * the one passed in.
     */
     refreshISItem = (arr) => {
-        console.log("refreshISItem new arr")
-        console.log(arr)
+        // console.log("refreshISItem new arr")
+        // console.log(arr)
         this.setState({
             singleISitemArr: arr
         })
@@ -122,7 +122,7 @@ export default class FirebaseV2 extends React.Component {
 
     constructor(props) { // serves almost no purpose currently
         super(props);
-        console.log('running Firebase 2');
+        // console.log('running Firebase 2');
         // this.state = {date: new Date()};
     }
 
@@ -140,23 +140,23 @@ export default class FirebaseV2 extends React.Component {
     */
     grabFireBaseRoutinesGoalsData = () => {
         const db = firebase.firestore();
-        console.log('FirebaseV2 component did mount');
+        // console.log('FirebaseV2 component did mount');
         const docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy');
         docRef.get().then((doc) => {
             if (doc.exists) {
-                console.log(doc.data());
+                // console.log(doc.data());
                 var x = doc.data();
-                console.log(x['goals&routines']);
+                // console.log(x['goals&routines']);
                 x = x['goals&routines'];
                 let routine = [];
                 let goal = [];
                 for (let i = 0; i < x.length; ++i) {
                     if (!x[i]['deleted'] && x[i]['is_persistent']) {
-                        console.log("routine " + x[i]['title']);
+                        // console.log("routine " + x[i]['title']);
                         routine.push(x[i]);
                     }
                     else if (!x[i]['deleted'] && !x[i]['is_persistent']) {
-                        console.log("not routine " + x[i]['title']);
+                        // console.log("not routine " + x[i]['title']);
                         goal.push(x[i]);
                     }
                 }
@@ -168,15 +168,15 @@ export default class FirebaseV2 extends React.Component {
                 })
             } else {
                 // doc.data() will be undefined in this case
-                console.log("No such document!");
+                // console.log("No such document!");
             }
         }).catch(function (error) {
-            console.log("Error getting document:", error);
+            // console.log("Error getting document:", error);
         });
     }
 
     componentWillUnmount() {
-        console.log(' FirebaseV2 will unmount web');
+        // console.log(' FirebaseV2 will unmount web');
     }
 
     formatDateTime(str) {
@@ -187,24 +187,24 @@ export default class FirebaseV2 extends React.Component {
 
     onInputChange = (e) => {
         const inputField = e.target.value;
-        console.log('FirebaseV2.jsx :: onInputChange :: ' + inputField);
+        // console.log('FirebaseV2.jsx :: onInputChange :: ' + inputField);
     }
     //This function essentially grabs all action/tasks
     //for the routine or goal passed in and pops open the
     //modal for the action/task
     getATList = (id, title, persist) => {
         const db = firebase.firestore();
-        console.log('getATList function with id : ' + id);
+        // console.log('getATList function with id : ' + id);
         let docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy')
             .collection('goals&routines').doc(id);
         docRef.get().then((doc) => {
             if (doc.exists) {
-                console.log('testes')
-                console.log(doc.data());
+                // console.log('testes')
+                // console.log(doc.data());
                 var x = doc.data()['actions&tasks']
-                console.log(x);
+                // console.log(x);
                 if (x == null) {
-                    console.log("No actions&tasks array!");
+                    // console.log("No actions&tasks array!");
                     let singleGR = { //Variable to hold information about the parent Goal/ Routine
                         show: true,
                         type: (persist) ? "Routine" : "Goal",
@@ -252,10 +252,10 @@ export default class FirebaseV2 extends React.Component {
 
             } else {
                 // doc.data() will be undefined in this case
-                console.log("No such document!");
+                // console.log("No such document!");
             }
         }).catch(function (error) {
-            console.log("Error getting document:", error);
+            // console.log("Error getting document:", error);
         });
     }
 
@@ -264,9 +264,9 @@ export default class FirebaseV2 extends React.Component {
     createListofAT = (A) => {
         let res = []
         for (let i = 0; i < A.length; i++) {
-            console.log(A[i]['title']);
+            // console.log(A[i]['title']);
             if (!A[i]['id'] || !A[i]['title']) {
-                console.log('missing title, or id at index : ' + i);
+                // console.log('missing title, or id at index : ' + i);
                 return []
             }
             if (A[i]['deleted']) { //item is "deleted" and should not be shown...
@@ -274,7 +274,7 @@ export default class FirebaseV2 extends React.Component {
             }
             let tempID = A[i]['id'];
             let tempPhoto = A[i]['photo'];
-            console.log(tempPhoto);
+            // console.log(tempPhoto);
             let tempTitle = A[i]['title'];
             let tempAvailable = A[i]['is_available'];
             res.push(
@@ -359,15 +359,15 @@ export default class FirebaseV2 extends React.Component {
     createListofIS = (A) => {
         let res = []
         for (let i = 0; i < A.length; i++) {
-            console.log(A[i]['title']);
-            console.log(A[i]['id']);
+            // console.log(A[i]['title']);
+            // console.log(A[i]['id']);
             /**
              * TODO: notify jeremy of this issue:
              * Some of these here don't have IDs, so we need to
              * ignore it for now
             */
             let tempPhoto = A[i]['photo'];
-            console.log("IS index " + i + " photo url :" + tempPhoto);
+            // console.log("IS index " + i + " photo url :" + tempPhoto);
             let tempTitle = A[i]['title'];
             let tempAvailable = A[i]['is_available'];
             res.push(
@@ -446,7 +446,7 @@ export default class FirebaseV2 extends React.Component {
     }
 
     ISonClickEvent = (title) => {
-        console.log("Inside IS Click " + title);
+        // console.log("Inside IS Click " + title);
     }
 
 
@@ -456,7 +456,7 @@ export default class FirebaseV2 extends React.Component {
      * which is done in getATList function
     */
     GRonClickEvent = (title, id, persist) => {
-        console.log(id, title, persist);
+        // console.log(id, title, persist);
         this.getATList(id, title, persist)
 
     }
@@ -469,7 +469,7 @@ export default class FirebaseV2 extends React.Component {
     */
     ATonClickEvent = (title, id) => {
         let stepsInstructionArrayPath = this.state.firebaseRootPath.collection('goals&routines').doc(this.state.singleGR.id).collection('actions&tasks').doc(id);
-        console.log(id, title);
+        // console.log(id, title);
         let temp = {
             show: true,
             type: "Action/Task",
@@ -480,7 +480,7 @@ export default class FirebaseV2 extends React.Component {
         };
         stepsInstructionArrayPath.get().then((doc) => {
             if (doc.exists) {
-                console.log('Grabbing steps/instructions data:')
+                // console.log('Grabbing steps/instructions data:')
                 // console.log(doc.data());
                 var x = doc.data();
                 x = x['instructions&steps'];
@@ -490,7 +490,7 @@ export default class FirebaseV2 extends React.Component {
                     )
                     return;
                 }
-                console.log(x);
+                // console.log(x);
                 //Below is a fix for fbPath Null when we pass it
                 //createListofIS and DeleteISItem.jsx, we need a path
                 //to delete the item, so we set the path then create the
@@ -501,10 +501,10 @@ export default class FirebaseV2 extends React.Component {
 
             } else {
                 // doc.data() will be undefined in this case
-                console.log("No Instruction/Step documents!");
+                // console.log("No Instruction/Step documents!");
             }
         }).catch(function (error) {
-            console.log("Error getting document:", error);
+            // console.log("Error getting document:", error);
             alert("Error getting document:", error);
         });
     }
@@ -822,7 +822,7 @@ export default class FirebaseV2 extends React.Component {
     }
 
     render() {
-        console.log('ran render firebasev2')
+        // console.log('ran render firebasev2')
         var displayRoutines = this.getRoutines();
         var displayGoals = this.getGoals();
         var displayCompletedGoals = this.getGoalsStatus();
