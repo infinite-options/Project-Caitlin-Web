@@ -63,12 +63,15 @@ export default class DayEvents extends Component {
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
+           //Add MarginRight here Lymann
             if (tempStartTime.getHours() == hour) {
                 // console.log("matched" + i );
                 let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                 let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
                 let minDiff = (tempEndTime.getMinutes()) / 60;
                 let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                //increment MarginRight by 10px  here Lymann = 0  
+
                 let newElement =
                     (
 
@@ -95,6 +98,7 @@ export default class DayEvents extends Component {
 
 
                                 style={{
+                                    //add marginRight property : 
                                     // marginLeft: this.state.marginFromLeft + "px",
                                     zIndex: this.state.zIndex,
                                     marginTop: minsToMarginTop + "px",
@@ -147,7 +151,7 @@ export default class DayEvents extends Component {
                         style={{
                             position: "relative",
                             borderTop: "1px solid lavender",
-                            width: '180px',
+                            width: '180px', //lyman change width to adjust
                             background: "aliceblue",
                             height: this.state.pxPerHour
                         }}>
