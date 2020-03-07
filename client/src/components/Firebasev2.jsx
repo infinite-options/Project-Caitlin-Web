@@ -134,7 +134,7 @@ export default class FirebaseV2 extends React.Component {
     /**
      * grabFireBaseRoutinesGoalsData:
      * this function grabs the goals&routines array from the path located in this function
-     * which will then popular the goals, routines,originalGoalsAndRoutineArr array
+     * which will then populate the goals, routines,originalGoalsAndRoutineArr array
      * separately. The arrays will be used for display and data manipulation later.
      *
     */

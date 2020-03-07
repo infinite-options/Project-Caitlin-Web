@@ -1,14 +1,20 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Modal, Dropdown, DropdownButton } from 'react-bootstrap';
 import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
 import moment from 'moment';
 import TylersCalendarv1 from './TCal.jsx'
+import DayEvents from './DayEvents.jsx'
+import DayRoutines from './DayRoutines.jsx'
+import DayGoals from './DayGoals.jsx'
+import DayEvent0 from './DayEvents0.jsx'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
 
 export default class MainPage extends React.Component {
 
@@ -37,9 +43,8 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
+      calendarView: "Day", // decides which type of calendar to display
     }
-
-    console.log("Lyman Says Hello")
   }
 
   componentDidUpdate() {
@@ -97,19 +102,6 @@ export default class MainPage extends React.Component {
     let A = this.state.originalEvents[i];
     console.log('setting new Data: ');
     console.log(A);
-
-    /*
-    'reminders': {
-      'useDefault': false,
-      'sequence': 0,
-      'overrides': [
-        {
-          method: 'popup',
-          minutes: minutesNotification,
-        }
-      ],
-    },
-    */
 
     //Guest list erroneously includes owner's email as well
     var guestList = ''
@@ -212,8 +204,6 @@ submits the data to be passed up to be integrated into google calendar
         }
       }
     }
-
-
   }
 
   /*
@@ -288,6 +278,7 @@ submits the data to be passed up to be integrated into google calendar
   /*
   calls the backend API to delete a item with a particular eventID
   */
+
   deleteSubmit = () => {
     if (this.state.newEventID === '') {
       return;
@@ -314,7 +305,6 @@ submits the data to be passed up to be integrated into google calendar
   Basically creates a new event based on details given
   */
   createEvent = (newTitle, newStart, newEnd) => {
-
     /*
      * TODO: Replace formatting email with function
      */
@@ -427,6 +417,7 @@ submits the data to be passed up to be integrated into google calendar
   updateEventsArray:
   updates the array if the month view changes to a different month.
   */
+
   updateEventsArray = () => { //The month view has transferred to a different month
     let startObject = this.state.dateContext.clone()
     let endObject = this.state.dateContext.clone()
@@ -448,16 +439,16 @@ submits the data to be passed up to be integrated into google calendar
     return (
       //width and height is fixed now but should be by % percentage later on
       <div className="normalfancytext" style={{ marginLeft: '0px', height: "100%", width: '2000px' }}>
-        <div style={{ background: 'white', margin: '0', padding: '0', width: '100%' }}>
+        <div style={{  margin: '0', padding: '0', width: '100%' }}>
           <div >
             {this.abstractedMainEventGRShowButtons()}
           </div>
           {/* <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" /> */}
         </div>
-        <Container fluid style={{ marginTop:"15px", marginLeft: '0%' }}  >
+        <Container fluid style={{ marginTop: "15px", marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
 
-          <Row style={{ marginTop:"0"}}>
+          <Row style={{ marginTop: "0" }}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
             <Firebasev2
@@ -469,10 +460,11 @@ submits the data to be passed up to be integrated into google calendar
               showGoal={this.state.showGoalModal}
             />
             <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '35px' }}  >
-              {this.calendarAbstracted()}
-              {/* <Row>
-                {this.eventFormAbstractedHorizontalVersion()}
-              </Row> */}
+              {(this.state.calendarView === "Month")? 
+              this.calendarAbstracted():
+              
+               this.dayViewAbstracted()
+               }
               <div style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
                 Dedicated to Caitlin Little
         </div>
@@ -487,6 +479,30 @@ submits the data to be passed up to be integrated into google calendar
       </div>
     )
   }
+
+  dayViewAbstracted=()=>{
+    return(
+    <div style={{
+      borderRadius: '20px',
+      backgroundColor: 'white',
+      width: '100%',
+      marginLeft: '10px',
+      padding: '20px',
+      // border:"1px black solid",
+      boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)'
+    }}>
+        <h5 style={{textAlign:"center"}}>Daily Agenda</h5>
+      <Row>
+     {/* <DayEvent0 /> */}
+        <DayEvents today={"Today is March 4"} />
+        <DayRoutines />
+        <DayGoals />
+
+      </Row>
+    </div>)
+  }
+
+
 
   toggleShowRoutine = () => {
     this.setState({
@@ -523,14 +539,15 @@ submits the data to be passed up to be integrated into google calendar
       newEventDescription: '',
       dayEventSelected: true,
       isEvent: false,
+
       // dayEventSelected: !this.state.dayEventSelected deleted by tyler on 2/22/2020
     });
   }
 
   abstractedMainEventGRShowButtons = () => {
-    return (<div style={{ marginLeft:'33%', width: '100%', fontSize: '20px' }}>
+    return (<div style={{ marginLeft: '33%', width: '100%', fontSize: '20px' }}>
 
-      <Button style={{  marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
+      <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
         }}
@@ -543,7 +560,7 @@ submits the data to be passed up to be integrated into google calendar
       <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}> Goals </Button>
 
-  {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
+      {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
     Infinte Options: Project Caitlin
   </b> */}
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
@@ -555,6 +572,22 @@ submits the data to be passed up to be integrated into google calendar
           })
         }}
       >Current Status</Button>
+
+
+      <DropdownButton 
+      style={{ margin: '10px',   float: 'left' }}  
+      title={this.state.calendarView} >
+        <Dropdown.Item onClick={() => {
+          this.setState({
+            calendarView: 'Month',
+          })
+        }}> Month </Dropdown.Item>
+        <Dropdown.Item onClick={() => {
+          this.setState({
+            calendarView: 'Day',
+          })
+        }}> Day </Dropdown.Item>
+      </DropdownButton>
 
     </div>)
   }
@@ -580,8 +613,6 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </div>
         <TylersCalendarv1 eventClick={this.handleEventClick} handleDateClick={this.handleDateClick} originalEvents={this.state.originalEvents} dateObject={this.state.todayDateObject} today={this.state.today} dateContext={this.state.dateContext} selectedDay={this.state.selectedDay} />
-
-
       </div>
     )
   }
@@ -603,7 +634,6 @@ submits the data to be passed up to be integrated into google calendar
         </Modal.Body>
         <Modal.Footer>
           <Row>
-
             <Col style={this.state.isEvent ? { display: 'none' } : {}} >
               <Button onClick={this.handleSubmit} variant="info" type="submit"> Submit </Button>
             </Col>
@@ -662,7 +692,7 @@ submits the data to be passed up to be integrated into google calendar
                 <Form.Label>Notification:</Form.Label>
                 <Row>
                   <Col> <Form.Control value={this.state.newEventNotification} onChange={this.handleNotificationChange}
-                    type="number" placeholder="" /> </Col>
+                    type="number" placeholder="30" /> </Col>
                   <Col> <Form.Text> Minutes </Form.Text> </Col>
                 </Row>
               </Form.Group>
@@ -823,6 +853,5 @@ when there is a change in the event form
       }
       );
   }
-
 
 }

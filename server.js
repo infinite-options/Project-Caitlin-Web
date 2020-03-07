@@ -164,8 +164,8 @@ data is retrieve.
 */
 app.get("/getEventsByInterval", function (req, result) {
 
-  // console.log("passed in params start date "  + req.query.start);
-  // console.log("passed in params end date"  + req.query.end);
+  console.log("passed in params start date "  + req.query.start);
+  console.log("passed in params end date"  + req.query.end);
 
   if (!req.query.start || !req.query.end) {
     var date = new Date();
@@ -178,6 +178,7 @@ app.get("/getEventsByInterval", function (req, result) {
     console.log("start : ", startParam, " end:", endParam);
     startParam.setHours(0, 0, 0, 0);
     endParam.setHours(23, 59, 59, 999);
+    console.log("start : ", startParam, " end:", endParam);
   }
   calendar.events.list({
     calendarId: calendarID,

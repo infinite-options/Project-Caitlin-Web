@@ -153,7 +153,6 @@ export default class AddNewATItem extends Component {
 
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
-
                                 name="Timed"
                                 type="checkbox"
                                 checked={this.state.itemToEdit.is_timed}
