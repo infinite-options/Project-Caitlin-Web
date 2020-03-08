@@ -87,13 +87,13 @@ export default class DayGoals extends Component {
 
     /**
      * getEventItem: given an hour, this will return all events that was started during that hour
-     * 
+     *
     */
     getEventItem = (hour) => {
         var res = []
         var arr = this.state.goals;
         for (let i = 0; i < arr.length; i++) {
-            
+
             let start_dateObj = new Date();
             let start_dateStr = start_dateObj.toISOString().split('T').shift();
             let start_timeStr = arr[i].available_start_time;
@@ -129,7 +129,7 @@ export default class DayGoals extends Component {
                         onMouseOut={e => {
                             e.target.style.zIndex="1";
                             e.target.style.marginLeft = "0px";
-                            e.target.style.color = "#000000"; 
+                            e.target.style.color = "#000000";
                             e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
                         }}
                         style={{
@@ -139,7 +139,7 @@ export default class DayGoals extends Component {
                             fontSize: "10px",
                             border: "1px lightgray solid ",
                             float: "left",
-                            borderRadius: "5px", background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'), 
+                            borderRadius: "5px", background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
                             width: this.state.eventBoxSize,
                             position: "absolute", height: height + "px"
                         }}>
@@ -152,7 +152,7 @@ export default class DayGoals extends Component {
     }
 
     /**
-     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour 
+     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
     */
     dayViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
         var arr = [];
@@ -179,20 +179,14 @@ export default class DayGoals extends Component {
         return (
 
 
-            <div style={{margin:'20px', 
-            padding: '20px', 
-            marginTop: "0px", 
-            width: "300px", 
+            <div style={{margin:'20px',
+            padding: '20px',
+            marginTop: "0px",
+            width: "300px",
             borderRadius: "20px" }}>
                 Today's Goals:
                 <Container style={{}}>
                     <Row >
-                        <Col >
-                            {/* this is Just for the time slow */}
-                            <Container style={{ margin: '0', padding: '0' }}>
-                                {this.dayView()}
-                            </Container>
-                        </Col>
                         {/* <div class="table col-md-1" > */}
                         <Col>
                             {/* this is for the actual event slots */}
