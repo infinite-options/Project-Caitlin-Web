@@ -23,8 +23,15 @@ export default class DayEvents extends Component {
     }
 
     componentDidMount() { //retrive data and put in dayEvents
-        console.log("retrieve data for date: " + this.state.todayDateObject.format('MM/DD/YYYY'));
-        this.getEventsByIntervalDayVersion(this.state.todayDateObject.format('MM/DD/YYYY'));
+        console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
+        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
+    }
+
+    componentDidUpdate(prevProps) { //retrive data and put in dayEvents
+      if(this.props.dateContext != prevProps.dateContext) {
+        console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
+        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
+      }
     }
 
     timeDisplay = () => { //this essentially creates the time row
@@ -48,7 +55,7 @@ export default class DayEvents extends Component {
 
     /**
      * getEventItem: given an hour, this will return all events that was started during that hour
-     * 
+     *
     */
     getEventItem = (hour) => {
         var res = []
@@ -100,7 +107,6 @@ export default class DayEvents extends Component {
                                 onMouseOver={e => {
                                     e.target.style.color = "#FFFFFF";
                                     e.target.style.background = "RebeccaPurple";
-                                    // e.target.style.marginLeft = "5px";
                                     e.target.style.zIndex = "2"; 
                                 }}
                                 onMouseOut={e => {
@@ -111,12 +117,12 @@ export default class DayEvents extends Component {
                                 }}
 
                                 style={{
-                                    //add marginRight property : 
+                                    //add marginRight property :
                                     // marginLeft: this.state.marginFromLeft + "px",
                                     zIndex: this.state.zIndex,
                                     marginTop: minsToMarginTop + "px",
                                     padding: "5px",
-                                    // width:( 10 + i ) + "px", 
+                                    // width:( 10 + i ) + "px",
                                     fontSize: "10px",
                                     border: "1px lightgray solid ",
                                     // float: "left",
@@ -142,7 +148,7 @@ export default class DayEvents extends Component {
 
 
     /**
-     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour 
+     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
     */
     dayViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
         var arr = [];
@@ -170,9 +176,9 @@ export default class DayEvents extends Component {
             <div style={{
                 // margin:'10px',
                 padding: '20px',
-                //  marginTop: "10px", 
+                //  marginTop: "10px",
                 width: "300px",
-                //  border: "2px lightlightgray solid", 
+                //  border: "2px lightlightgray solid",
                 borderRadius: "20px"
             }}>
                 Today's Events:

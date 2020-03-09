@@ -75,9 +75,9 @@ export default class DayRoutines extends Component {
         for (let i = 0; i < 24; ++i) {
             arr.push(
                 <Row key={"dayDayViewRoutines" + i}>
-                    <Col style={{ 
-                        borderTop: "1px solid  mistyrose", 
-                    textAlign: "right", 
+                    <Col style={{
+                        borderTop: "1px solid  mistyrose",
+                    textAlign: "right",
                     height: this.state.pxPerHour }}>
                         {i}:00
                     </Col >
@@ -90,13 +90,13 @@ export default class DayRoutines extends Component {
 
     /**
      * getEventItem: given an hour, this will return all events that was started during that hour
-     * 
+     *
     */
     getEventItem = (hour) => {
         var res = []
         var arr = this.state.routines;
         for (let i = 0; i < arr.length; i++) {
-            
+
             let start_dateObj = new Date();
             let start_dateStr = start_dateObj.toISOString().split('T').shift();
             let start_timeStr = arr[i].available_start_time;
@@ -137,11 +137,11 @@ export default class DayRoutines extends Component {
                             e.target.style.zIndex="1";
 
                             e.target.style.marginLeft = "0px";
-                             e.target.style.color = "#000000"; 
+                             e.target.style.color = "#000000";
                              e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
                              e.target.style.border= "1px lightgray solid";
 
-                            
+
                             }}
                         style={{
                             zIndex: this.state.zIndex,
@@ -163,7 +163,7 @@ export default class DayRoutines extends Component {
     }
 
     /**
-     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour 
+     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
     */
     dayViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
         var arr = [];
@@ -190,20 +190,14 @@ export default class DayRoutines extends Component {
         return (
 
 
-            <div style={{ 
-                padding: '20px', 
-                // marginTop: "10px", 
-                width: "300px", 
+            <div style={{
+                padding: '20px',
+                // marginTop: "10px",
+                width: "300px",
                 borderRadius: "20px" }}>
                 Today's Routines:
                 <Container style={{}}>
                     <Row >
-                        <Col >
-                            {/* this is Just for the time slow */}
-                            <Container style={{ margin: '0', padding: '0' }}>
-                                {this.dayView()}
-                            </Container>
-                        </Col>
                         {/* <div class="table col-md-1" > */}
                         <Col>
                             {/* this is for the actual event slots */}

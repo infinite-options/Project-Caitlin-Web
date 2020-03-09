@@ -394,6 +394,25 @@ submits the data to be passed up to be integrated into google calendar
     }, this.updateEventsArray)
   }
 
+  nextDay = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).add(1, "day");
+    this.setState({
+      dateContext: dateContext,
+      originalEvents: []
+    }, this.updateEventsArray);
+  }
+
+
+  prevDay = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).subtract(1, "day");
+    this.setState({
+      dateContext: dateContext,
+      originalEvents: []
+    }, this.updateEventsArray)
+  }
+
   /*
   updateEventsArray:
   updates the array if the month view changes to a different month.
@@ -464,9 +483,25 @@ submits the data to be passed up to be integrated into google calendar
       // border:"1px black solid",
       boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)'
     }}>
-        <h5 style={{textAlign:"center"}}>Daily Agenda</h5>
+        <Container>
+          <Row style={{ marginTop: '0px' }}>
+            <Col >
+              <div>
+                <FontAwesomeIcon style={{ marginLeft: '50%' }} icon={faChevronLeft} size="2x" className="X"
+                  onClick={(e) => { this.prevDay() }} />
+              </div>
+            </Col>
+            <Col style={{ textAlign: 'center' }} className="bigfancytext">
+              <p> {this.getDay()} {this.getMonth()} {this.getYear()} </p>
+            </Col>
+            <Col>
+              <FontAwesomeIcon style={{ marginLeft: '50%' }} icon={faChevronRight} size="2x" className="X"
+                onClick={(e) => { this.nextDay() }} />
+            </Col>
+          </Row>
+        </Container>
       <Row>
-        <DayEvents today={"Today is March 7"} />
+        <DayEvents dateContext={this.state.dateContext} />
         <DayRoutines />
         <DayGoals />
       </Row>
@@ -543,8 +578,8 @@ submits the data to be passed up to be integrated into google calendar
       >Current Status</Button>
 
 
-      <DropdownButton 
-      style={{ margin: '10px',   float: 'left' }}  
+      <DropdownButton
+      style={{ margin: '10px',   float: 'left' }}
       title={this.state.calendarView} >
         <Dropdown.Item onClick={() => {
           this.setState({
@@ -732,6 +767,10 @@ submits the data to be passed up to be integrated into google calendar
   */
   getMonth = () => {
     return this.state.dateContext.format("MMMM");
+  }
+
+  getDay = () => {
+    return this.state.dateContext.format("D");
   }
 
   /*
