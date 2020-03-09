@@ -5,7 +5,18 @@ import './DayView.css';
 const DayView = (props) => {
     console.log(props.originalEvents);
     console.log("this is here");
-    console.log(props.originalEvents[0]);
+    let Event = []
+    if(props.originalEvents[0]){
+        for (let i = 0; i<props.originalEvents.length; i++){
+            Event[i] = props.originalEvents[i].summary;
+        }
+        
+        // console.log(props.originalEvents[0].summary)
+    }else {
+        console.log('NOT THERE YET')
+    }
+    console.log(Event);
+
     return(
          
         <div>
@@ -23,7 +34,7 @@ const DayView = (props) => {
                
                 <td>
                     {/* <hr />  */}
-                    {/* {this.props.originalEvents[0].summary}} */}
+                    {Event[0]}
                     {/* {props.originalEvents.length} */}
                 
                  </td>
@@ -34,21 +45,24 @@ const DayView = (props) => {
             {/* <hr  style = {{width:"100%"}}/> */}
             <tr style = {{width: "50px", height: "100px"}}>
                 <td>9:00 am</td>
-                <td><hr/></td>
+                <td><hr/>
+                {Event[1]}</td>
                 <td><hr/></td>
                 <td><hr/></td>
             </tr>
             {/* <hr  style = {{width:"100%"}}/> */}
             <tr style = {{width: "50px", height: "100px"}}>
                 <td>10:00 am</td>
-                <td><hr/></td>
+                <td><hr/>
+                {Event[2]}</td>
                 <td><hr/></td>
                 <td><hr/></td>
             </tr>
             {/* <hr  style = {{width:"100%"}}/> */}
             <tr style = {{width: "50px", height: "100px"}}>
                 <td>11:00 am</td>
-                <td><hr/></td>
+                <td><hr/>
+                {Event[3]}</td>
                 <td><hr/></td>
                 <td><hr/></td>
             </tr>

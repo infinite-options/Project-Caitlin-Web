@@ -4,6 +4,7 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "bootstrap": "^4.4.1",
     "concurrently": "^4.1.1",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
@@ -12,6 +13,7 @@
     "firebase-functions": "^3.3.0",
     "googleapis": "^39.2.0",
     "moment": "^2.24.0",
+    "react-bootstrap": "^1.0.0-beta.17",
     "react-modal-resizable-draggable": "^0.1.4",
     "react-router-dom": "^5.1.2",
     "styled-components": "^5.0.0"

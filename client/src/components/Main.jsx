@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Modal, Dropdown, DropdownButton } from 'react-bootstrap';
 import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
 import moment from 'moment';
@@ -10,6 +10,7 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import DayView from './DayView';
+import DayEvents from './DayEvents';
 
 export default class MainPage extends React.Component {
 
@@ -38,6 +39,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
+      calendarView: 'Month',
     }
 
     //console.log(this.state.dateContext);
@@ -168,7 +170,6 @@ export default class MainPage extends React.Component {
       dayEventSelected: true,
       isEvent: false
     });
-    //  return <DayView/>;
   }
 
   /*
@@ -448,6 +449,12 @@ submits the data to be passed up to be integrated into google calendar
     // console.log("Main Render")
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
+    let calendar;
+    if(this.state.calendarView === "Month") {
+      calendar = this.monthAbstracted();
+    } else {
+      calendar = this.dayAbstracted();
+    }
     return (
       //width and height is fixed now but should be by % percentage later on
       <div className="normalfancytext" style={{ marginLeft: '0px', height: "2000px", width: '2000px' }}>
@@ -472,7 +479,8 @@ submits the data to be passed up to be integrated into google calendar
               showGoal={this.state.showGoalModal}
             />
             <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '35px' }}  >
-              {this.calendarAbstracted()}
+              {/* {this.calendarAbstracted()} */}
+              {calendar}
               {/* <Row>
                 {this.eventFormAbstractedHorizontalVersion()}
               </Row> */}
@@ -533,7 +541,18 @@ submits the data to be passed up to be integrated into google calendar
 
   abstractedMainEventGRShowButtons = () => {
     return (<div style={{ marginLeft:'33%', width: '100%', fontSize: '20px' }}>
-
+      <DropdownButton style={{margin: '10px', marginLeft: '10px', marginRight: '10%', float:'left'}} id="dropdown-basic-button"  title={this.state.calendarView}>
+         <Dropdown.Item onClick={() => {
+           this.setState({
+             calendarView: 'Month',
+           })
+         }}> Month </Dropdown.Item>
+         <Dropdown.Item onClick={() => {
+           this.setState({
+             calendarView: 'Day',
+           })
+         }}> Day </Dropdown.Item>
+      </DropdownButton>
       <Button style={{  marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.showEventsFormbyCreateNewEventButton()
@@ -559,11 +578,20 @@ submits the data to be passed up to be integrated into google calendar
           })
         }}
       >Current Status</Button>
-
+      
     </div>)
   }
 
-  calendarAbstracted = () => {
+  dayAbstracted = ()=>{
+    return (
+      <div>
+         <DayEvents/>
+      </div>
+    );
+   
+  }
+
+  monthAbstracted = () => {
     return (
       <div style={{ borderRadius: '2%', backgroundColor: 'white', width: '1000px', marginLeft: '10px', padding: '45px', paddingBottom: "10px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
         <div >
