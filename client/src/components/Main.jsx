@@ -5,11 +5,9 @@ import Firebasev2 from './Firebasev2.jsx';
 import './App.css'
 import moment from 'moment';
 import TylersCalendarv1 from './TCal.jsx'
-import DayEvents from './DayEvents.jsx'
 import DayRoutines from './DayRoutines.jsx'
 import DayGoals from './DayGoals.jsx'
-// import DayEvent0 from './DayEvents0.jsx'
-
+import DayEvents from './DayEvents.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
@@ -19,7 +17,6 @@ import "react-datepicker/dist/react-datepicker.css";
 export default class MainPage extends React.Component {
 
   constructor(props) {
-
     super(props);
     this.state = { //Saved variables
       originalEvents: [], //holds the google events data in it's original JSON form
@@ -43,12 +40,11 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
     }
   }
 
   componentDidUpdate() {
-    console.log("Main.jsx::componentDidUpdate()");
   }
 
   componentDidMount() {
@@ -60,20 +56,15 @@ export default class MainPage extends React.Component {
   the current month's events
   */
   getThisMonthEvents = () => {
-
     axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
       params: {
       }
     })
       .then(response => {
-        console.log('normal gCal data')
         var events = response.data;
         console.log(events);
         this.setState({ originalEvents: events }, () => {
           console.log("New Events Arrived")
-          // console.log(events.data);
-          // this.createOrganizeData(start0, end0);
-          //Call function to prep data for Monthly View
         })
       })
       .catch(error => {
@@ -95,13 +86,7 @@ export default class MainPage extends React.Component {
     TODO: Set New Event Location, description, guests, ...
   */
   handleEventClick = (i) => { // bind with an arrow function
-    console.log('Inside handleEventClick')
-    console.log(i)
-    console.log('Inside handleEventClick2')
-    console.log(this.state.originalEvents[i]);
     let A = this.state.originalEvents[i];
-    console.log('setting new Data: ');
-    console.log(A);
 
     //Guest list erroneously includes owner's email as well
     var guestList = ''
@@ -136,14 +121,10 @@ export default class MainPage extends React.Component {
   */
   //TODO: Initialize Date, set other properties to empty
   handleDateClick = (arg) => { // bind with an arrow function
-    console.log('Inside Main, HandleDateClick')
-    console.log(arg);
     var newStart = new Date(arg);
     newStart.setHours(0, 0, 0, 0);
     var newEnd = new Date(arg);
     newEnd.setHours(23, 59, 59, 59);
-    console.log(newStart);
-    console.log(newEnd)
     this.setState({
       newEventID: '',
       newEventStart: newStart.toString(),
@@ -257,8 +238,8 @@ submits the data to be passed up to be integrated into google calendar
       ID: this.state.newEventID,
     })
       .then((response) => {
-        console.log('update return');
-        console.log(response);
+        // console.log('update return');
+        // console.log(response);
         this.setState(
           {
             dayEventSelected: false,
@@ -271,7 +252,7 @@ submits the data to be passed up to be integrated into google calendar
         this.updateEventsArray();
       })
       .catch(function (error) {
-        console.log(error);
+        // console.log(error);
       });
   }
 
@@ -287,7 +268,7 @@ submits the data to be passed up to be integrated into google calendar
       ID: this.state.newEventID
     })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         this.setState({
           dayEventSelected: false,
           newEventStart: '',
@@ -296,7 +277,7 @@ submits the data to be passed up to be integrated into google calendar
         this.updateEventsArray();
       })
       .catch(function (error) {
-        console.log(error);
+        // console.log(error);
       });
   }
 
@@ -363,7 +344,7 @@ submits the data to be passed up to be integrated into google calendar
 
     };
 
-    console.log("Create Event:", event);
+    // console.log("Create Event:", event);
 
     axios.post('/createNewEvent', {
       newEvent: event,
@@ -373,14 +354,14 @@ submits the data to be passed up to be integrated into google calendar
       end: this.state.newEventEnd0.toISOString()
     })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         this.setState({
           dayEventSelected: false
         })
         this.updateEventsArray();
       })
       .catch(function (error) {
-        console.log(error);
+        // console.log(error);
       });
   }
 
@@ -446,13 +427,12 @@ submits the data to be passed up to be integrated into google calendar
     let endDate = new Date(endDay.format("MM/DD/YYYY"))
     startDate.setHours(0, 0, 0)
     endDate.setHours(23, 59, 59)
-    console.log("getting intervals")
-    console.log(startDate.toString(), endDate.toString())
+    // console.log("getting intervals")
+    // console.log(startDate.toString(), endDate.toString())
     this.getEventsByInterval(startDate.toString(), endDate.toString());
   }
 
   render() {
-    console.log("Main Render")
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal = !this.state.showRoutineGoalModal && !this.state.showGoalModal && !this.state.showRoutineModal;
     return (
@@ -462,11 +442,9 @@ submits the data to be passed up to be integrated into google calendar
           <div >
             {this.abstractedMainEventGRShowButtons()}
           </div>
-          {/* <hr style={{ backgroundColor: 'white', marginLeft: "0" }} className="brace" /> */}
         </div>
         <Container fluid style={{ marginTop: "15px", marginLeft: '0%' }}  >
           {/* Within this container essentially contains all the UI of the App */}
-
           <Row style={{ marginTop: "0" }}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
             {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
@@ -479,15 +457,10 @@ submits the data to be passed up to be integrated into google calendar
               showGoal={this.state.showGoalModal}
             />
             <Col sm="auto" md="auto" lg="auto" style={onlyCal ? { marginLeft: '20%' } : { marginLeft: '35px' }}  >
-              {(this.state.calendarView === "Month")?
-              this.calendarAbstracted():
-
-               this.dayViewAbstracted()
-               }
+              {(this.state.calendarView === "Month")? this.calendarAbstracted():this.dayViewAbstracted()}
               <div style={{ marginTop: '50px', textAlign: 'center' }} className="fancytext">
                 Dedicated to Caitlin Little
-        </div>
-
+            </div>
             </Col>
             <Col style={{ marginLeft: '25px' }}>
               {this.state.dayEventSelected ? this.eventFormAbstracted() : <div> </div>}
@@ -528,11 +501,9 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </Container>
       <Row>
-        {/* <DayEvent0 /> */}
         <DayEvents dateContext={this.state.dateContext} />
         <DayRoutines />
         <DayGoals />
-
       </Row>
     </div>)
   }
@@ -560,8 +531,8 @@ submits the data to be passed up to be integrated into google calendar
     newStart.setHours(0, 0, 0, 0);
     var newEnd = new Date();
     newEnd.setHours(23, 59, 59, 59);
-    console.log(newStart);
-    console.log(newEnd)
+    // console.log(newStart);
+    // console.log(newEnd)
     this.setState({
       newEventID: '',
       newEventStart: newStart.toString(),
@@ -595,9 +566,7 @@ submits the data to be passed up to be integrated into google calendar
       <Button style={{ marginTop: '0', margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={this.toggleShowGoal}> Goals </Button>
 
-      {/* <b style={{ paddingTop:'5px', textDecoration: 'underline'}}>
-    Infinte Options: Project Caitlin
-  </b> */}
+
       <Button style={{ margin: "10px", marginBottom: '0' }} variant="outline-primary"
         onClick={() => {
           this.setState({
