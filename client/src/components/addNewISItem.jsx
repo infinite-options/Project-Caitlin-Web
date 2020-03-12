@@ -13,7 +13,7 @@ export default class AddNewISItem extends Component {
 
     constructor(props) {
         super(props)
-        console.log('AddNewISItem constructor');
+        // console.log('AddNewISItem constructor');
     }
 
     state = {
@@ -35,14 +35,14 @@ export default class AddNewISItem extends Component {
     }
 
     componentDidMount() {
-        console.log('AddNewISItem did mount')
-        console.log(this.props.ISArray);
-        console.log(this.props.ISItem);
+        // console.log('AddNewISItem did mount')
+        // console.log(this.props.ISArray);
+        // console.log(this.props.ISItem);
 
     }
 
     handleInputChange = (e) => {
-        console.log(e.target.value);
+        // console.log(e.target.value);
         this.setState(
             {
                 newInstructionTitle: e.target.value
@@ -55,7 +55,7 @@ export default class AddNewISItem extends Component {
             alert('Invalid Input');
             return;
         }
-        console.log("Submitting Input: " + this.state.itemToEdit.title)
+        // console.log("Submitting Input: " + this.state.itemToEdit.title)
         
         this.props.ISArray.push(this.state.itemToEdit)
         this.updateEntireArray(this.props.ISArray);
@@ -67,15 +67,15 @@ export default class AddNewISItem extends Component {
         
         this.props.ISItem.fbPath.update({ 'instructions&steps': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
                     this.props.hideNewISModal();
-                    console.log("refreshing FireBasev2 from ISItem");
+                    // console.log("refreshing FireBasev2 from ISItem");
                     this.props.refresh(newArr);
                 }
                 else{
-                    console.log("removing newly added item due to failure");
+                    // console.log("removing newly added item due to failure");
                     this.props.ISArray.pop()
                 }
             }
@@ -129,7 +129,7 @@ export default class AddNewISItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_available)
+                                    // console.log(temp.is_available)
                                     temp.is_available = !temp.is_available;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -146,7 +146,7 @@ export default class AddNewISItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_timed)
+                                    // console.log(temp.is_timed)
                                     temp.is_timed = !temp.is_timed;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -164,7 +164,7 @@ export default class AddNewISItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.notifies_ta)
+                                    // console.log(temp.notifies_ta)
                                     temp.notifies_ta = !temp.notifies_ta;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -180,7 +180,7 @@ export default class AddNewISItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.reminds_user)
+                                    // console.log(temp.reminds_user)
                                     temp.reminds_user = !temp.reminds_user;
                                     this.setState({ itemToEdit: temp })
                                 }} />

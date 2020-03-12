@@ -6,7 +6,7 @@ export default class AddNewGRItem extends Component {
 
     constructor(props) {
         super(props)
-        console.log('Is this a Routine? ' + this.props.isRoutine);
+        // console.log('Is this a Routine? ' + this.props.isRoutine);
     }
 
     state = {
@@ -40,10 +40,10 @@ export default class AddNewGRItem extends Component {
 
     getGRDataFromFB = () => {
         //Grab the goals/routine array from firebase and then store it in state varible grArr
-        console.log(this.state.arrPath);
+        // console.log(this.state.arrPath);
         this.state.arrPath.get().then((doc) => {
             if (doc.exists) {
-                console.log('getGRDataFromFB DATA:')
+                // console.log('getGRDataFromFB DATA:')
                 // console.log(doc.data());
                 var x = doc.data();
                 x = x['goals&routines'];
@@ -56,7 +56,7 @@ export default class AddNewGRItem extends Component {
                 console.log("No such document! 2");
             }
         }).catch(function (error) {
-            console.log("Error getting document:", error);
+            // console.log("Error getting document:", error);
             alert("Error getting document:", error);
         });
     }
@@ -83,7 +83,7 @@ export default class AddNewGRItem extends Component {
                 let newArr = this.props.ATArray
                 let temp = this.state.itemToEdit;
                 temp.id = ref.id;
-                console.log('Added document with ID: ', ref.id);
+                // console.log('Added document with ID: ', ref.id);
                 // this.state.grArr.push(temp);
                 newArr.push(temp);
                 this.updateEntireArray(newArr);
@@ -97,11 +97,11 @@ export default class AddNewGRItem extends Component {
         let db = this.state.arrPath;
         db.update({ 'goals&routines': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 this.getGRDataFromFB();
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from AddNewGRItem");
+                    // console.log("refreshing FireBasev2 from AddNewGRItem");
                     this.props.refresh();
                 }
             }
@@ -158,7 +158,7 @@ export default class AddNewGRItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_available)
+                                    // console.log(temp.is_available)
                                     temp.is_available = !temp.is_available;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -179,7 +179,7 @@ export default class AddNewGRItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_timed)
+                                    // console.log(temp.is_timed)
                                     temp.is_timed = !temp.is_timed;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -197,7 +197,7 @@ export default class AddNewGRItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.notifies_ta)
+                                    // console.log(temp.notifies_ta)
                                     temp.notifies_ta = !temp.notifies_ta;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -213,7 +213,7 @@ export default class AddNewGRItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.reminds_user)
+                                    // console.log(temp.reminds_user)
                                     temp.reminds_user = !temp.reminds_user;
                                     this.setState({ itemToEdit: temp })
                                 }} />

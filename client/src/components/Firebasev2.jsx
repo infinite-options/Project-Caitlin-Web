@@ -917,7 +917,7 @@ shows entire list of goals and routines
                     </ListGroup>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" class="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button>
+                    <button type="button" className="btn btn-info btn-md" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button>
                 </Modal.Footer>
             </Modal.Dialog>)
     }

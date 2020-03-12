@@ -17,7 +17,7 @@ export default class DayRoutines extends Component {
             pxPerHour: "30px", //preset size for all columns
             pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
             zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
-            eventBoxSize: "150px", //width size for event box
+            eventBoxSize: "200", //width size for event box
         }
     }
 
@@ -34,24 +34,24 @@ export default class DayRoutines extends Component {
 */
     grabFireBaseRoutinesGoalsData = () => {
         const db = firebase.firestore();
-        console.log('DayRoutine component did mount');
+        // console.log('DayRoutine component did mount');
         const docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy');
         docRef.get().then((doc) => {
             if (doc.exists) {
-                console.log(doc.data());
+                // console.log(doc.data());
                 var x = doc.data();
-                console.log("from DayRoutines");
-                console.log(x['goals&routines']);
+                // console.log("from DayRoutines");
+                // console.log(x['goals&routines']);
                 x = x['goals&routines'];
                 let routine = [];
                 let goal = [];
                 for (let i = 0; i < x.length; ++i) {
                     if (!x[i]['deleted'] && x[i]['is_persistent']) {
-                        console.log("routine " + x[i]['title']);
+                        // console.log("routine " + x[i]['title']);
                         routine.push(x[i]);
                     }
                     else if (!x[i]['deleted'] && !x[i]['is_persistent']) {
-                        console.log("not routine " + x[i]['title']);
+                        // console.log("not routine " + x[i]['title']);
                         goal.push(x[i]);
                     }
                 }
@@ -87,6 +87,9 @@ export default class DayRoutines extends Component {
         return arr
     }
 
+    RoutineClicked = () =>{
+        this.props.dayRoutineClick();
+    }
 
     /**
      * getEventItem: given an hour, this will return all events that was started during that hour
@@ -95,6 +98,11 @@ export default class DayRoutines extends Component {
     getEventItem = (hour) => {
         var res = []
         var arr = this.state.routines;
+        var sameTimeEventCount = 0;
+        let itemWidth = this.state.eventBoxSize;
+        // var overlapEvent = 0;
+        var addmarginLeft = 0;
+        var fontSize = 10;
         for (let i = 0; i < arr.length; i++) {
 
             let start_dateObj = new Date();
@@ -118,6 +126,53 @@ export default class DayRoutines extends Component {
                 let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
                 let minDiff = (tempEndTime.getMinutes()) / 60;
                 let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                let color = 'PaleTurquoise';
+
+                sameTimeEventCount++;
+                //check if there is already an event there overlapping from another hour
+                for(let i = 0; i < arr.length; i++){
+                    let start_dateObj = new Date();
+                    let start_dateStr = start_dateObj.toISOString().split('T').shift();
+                    let start_timeStr = arr[i].available_start_time;
+                    let start_timeAndDate = moment(start_dateStr + ' ' + start_timeStr).toDate();
+        
+                    let end_dateObj = new Date();
+                    let end_dateStr = end_dateObj.toISOString().split('T').shift();
+                    let end_timeStr = arr[i].available_end_time;
+                    let end_timeAndDate = moment(end_dateStr + ' ' + end_timeStr).toDate();
+        
+                    let tempStartTime = start_timeAndDate;
+                    let tempEndTime = end_timeAndDate;
+                    if (tempStartTime.getHours() <  hour &&  tempEndTime.getHours()> hour) {
+                        // console.log("We ARE IN HEREEEE");
+                        addmarginLeft += 20;
+                        itemWidth = itemWidth - 20;
+                        // overlapEvent++;
+                    }
+                }
+                
+                if(sameTimeEventCount > 1  ){
+                     addmarginLeft += 20; 
+                    // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
+                    // itemWidth = itemWidth/(sameHourItems-1);
+                    itemWidth = itemWidth - 20;
+                    // console.log("thi is the item width after subtracting 40 " + itemWidth);
+                }
+                
+                //chnage font size if not enough space 
+                if((tempEndTime.getHours() - tempStartTime.getHours()) < 2){
+                    fontSize = 8;
+                }
+                // change color if more than one event in same time. 
+                if(sameTimeEventCount <= 1){
+                     color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                }
+                else if( sameTimeEventCount == 2){
+                    color = 'skyblue';
+                }
+                else{
+                    color = 'blue';
+                }
                 let newElement =
                     (<div key={"dayRoutineItem" + i}
                     data-toggle="tooltip" data-placement="right" title={arr[i].title + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
@@ -125,7 +180,7 @@ export default class DayRoutines extends Component {
                         onMouseOver={e => {
                             e.target.style.color = "#FFFFFF";
                             e.target.style.background = "RebeccaPurple";
-                            e.target.style.marginLeft = "5px";
+                            // e.target.style.marginLeft = "5px";
                             // e.target.style.border= "3px solid w";
                             e.target.style.zIndex="2";
 
@@ -136,23 +191,34 @@ export default class DayRoutines extends Component {
                         onMouseOut={e => {
                             e.target.style.zIndex="1";
 
-                            e.target.style.marginLeft = "0px";
+                            // e.target.style.marginLeft = "0px";
                              e.target.style.color = "#000000";
-                             e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
+                            //  e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
                              e.target.style.border= "1px lightgray solid";
+
+                             e.target.style.background = color;
 
 
                             }}
+
+                        onClick = {this.RoutineClicked}
                         style={{
                             zIndex: this.state.zIndex,
                             marginTop: minsToMarginTop + "px",
                             padding: "5px",
-                            fontSize: "10px",
+                            // fontSize: "10px",
                             border: "1px lightgray solid ",
-                            float: "left",
-                            borderRadius: "5px", background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
-                             width: this.state.eventBoxSize,
-                            position: "absolute", height: height + "px"
+                            // float: "left",
+                            borderRadius: "5px", 
+                            // background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
+                            //  width: this.state.eventBoxSize,
+                            position: "absolute", 
+                            height: height + "px",
+
+                            fontSize: fontSize + "px",
+                            background: color,
+                            width: itemWidth + "px",
+                            marginLeft: addmarginLeft + "px"
                         }}>
                         {arr[i].title}
                     </div>);
@@ -188,8 +254,6 @@ export default class DayRoutines extends Component {
 
     render() {
         return (
-
-
             <div style={{
                 padding: '20px',
                 // marginTop: "10px",
@@ -198,13 +262,10 @@ export default class DayRoutines extends Component {
                 Today's Routines:
                 <Container style={{}}>
                     <Row >
-                        {/* <div class="table col-md-1" > */}
                         <Col>
-                            {/* this is for the actual event slots */}
                             <Container style={{ margin: '0', padding: '0' }}>
                                 {this.dayViewItems()}
                             </Container>
-                            {/* </div> */}
                         </Col>
                     </Row>
                 </Container>
