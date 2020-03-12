@@ -6,7 +6,7 @@ export default class AddNewATItem extends Component {
 
     constructor(props) {
         super(props)
-        console.log('AddNewATItem constructor');
+        // console.log('AddNewATItem constructor');
         this.state = {
             newActionTitle: '', //Old delete Later
             itemToEdit: {
@@ -29,11 +29,11 @@ export default class AddNewATItem extends Component {
   
 
     componentDidMount() {
-        console.log('AddNewATItem did mount')
-        console.log(this.props.ATItem)
-        console.log(this.props.ATItem.fbPath)
-        console.log(this.props.ATItem.arr)
-        console.log(this.props.ATArray)
+        // console.log('AddNewATItem did mount')
+        // console.log(this.props.ATItem)
+        // console.log(this.props.ATItem.fbPath)
+        // console.log(this.props.ATItem.arr)
+        // console.log(this.props.ATArray)
     }
 
 
@@ -43,7 +43,7 @@ export default class AddNewATItem extends Component {
             alert('Invalid Input');
             return;
         }
-        console.log("Submitting Input: " + this.state.itemToEdit.title)
+        // console.log("Submitting Input: " + this.state.itemToEdit.title)
         this.addNewDoc();
     }
 
@@ -59,13 +59,13 @@ export default class AddNewATItem extends Component {
                     alert('Fail to add new Action / Task item')
                     return;
                 }
-                console.log('Added document with ID: ', ref.id);
+                // console.log('Added document with ID: ', ref.id);
                 let newArr = this.props.ATArray;
                 let temp = this.state.itemToEdit;
                 temp.id = ref.id;
                 newArr.push(temp);
-                console.log(newArr);
-                console.log("adding new item")
+                // console.log(newArr);
+                // console.log("adding new item")
                 this.updateEntireArray(newArr);
             }
         );
@@ -76,11 +76,11 @@ export default class AddNewATItem extends Component {
         // 2. update adds to the document
         this.props.ATItem.fbPath.update({ 'actions&tasks': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
                     this.props.hideNewATModal();
-                    console.log("refreshing FireBasev2 from AddNewATItem");
+                    // console.log("refreshing FireBasev2 from AddNewATItem");
                     this.props.refresh(newArr);
                 }
             }
@@ -139,7 +139,7 @@ export default class AddNewATItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_available)
+                                    // console.log(temp.is_available)
                                     temp.is_available = !temp.is_available;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -159,7 +159,7 @@ export default class AddNewATItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.is_timed)
+                                    // console.log(temp.is_timed)
                                     temp.is_timed = !temp.is_timed;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -177,7 +177,7 @@ export default class AddNewATItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.notifies_ta)
+                                    // console.log(temp.notifies_ta)
                                     temp.notifies_ta = !temp.notifies_ta;
                                     this.setState({ itemToEdit: temp })
                                 }} />
@@ -193,7 +193,7 @@ export default class AddNewATItem extends Component {
                                 onChange={(e) => {
                                     e.stopPropagation();
                                     let temp = this.state.itemToEdit;
-                                    console.log(temp.reminds_user)
+                                    // console.log(temp.reminds_user)
                                     temp.reminds_user = !temp.reminds_user;
                                     this.setState({ itemToEdit: temp })
                                 }} />

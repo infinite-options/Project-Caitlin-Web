@@ -62,7 +62,6 @@ export default class MainPage extends React.Component {
     })
       .then(response => {
         var events = response.data;
-        console.log(events);
         this.setState({ originalEvents: events }, () => {
           console.log("New Events Arrived")
         })
@@ -74,7 +73,33 @@ export default class MainPage extends React.Component {
   }
 
 
-
+  handleDayEventClick = (A) => {
+    // console.log("this is from day view");
+    var guestList = ''
+    if (A.attendees) {
+      guestList = A.attendees.reduce((guestList, nextGuest) => {
+        return guestList + ' ' + nextGuest.email;
+      }, '');
+      console.log("Guest List:", A.attendees, guestList);
+    }
+    
+    this.setState({
+      newEventID: A.id,
+      newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
+      newEventEnd: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)).toISOString(),
+      newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
+      newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
+      newEventName: A.summary,
+      newEventGuests: guestList,
+      newEventLocation: (A.location) ? A.location : '',
+      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : '',
+      newEventDescription: (A.description) ? A.description : '',
+      dayEventSelected: true,
+      isEvent: true,
+    }, () => {
+      console.log('callback from handEventClick')
+    });
+  }
 
   /*
   handleEventClick:
@@ -85,9 +110,8 @@ export default class MainPage extends React.Component {
   /*
     TODO: Set New Event Location, description, guests, ...
   */
-  handleEventClick = (i) => { // bind with an arrow function
+  handleEventClick = (i) => { // bind with an arrow function 
     let A = this.state.originalEvents[i];
-
     //Guest list erroneously includes owner's email as well
     var guestList = ''
     if (A.attendees) {
@@ -156,19 +180,14 @@ submits the data to be passed up to be integrated into google calendar
     event.preventDefault();
     var start = new Date(this.state.newEventStart).toISOString();
     var end = new Date(this.state.newEventEnd).toISOString();
-    console.log("submit clicked with ", start, end);
-
     /**
      *
      * all variables within form need to be accessible up to this point
     */
-
     this.createEvent(this.state.newEventName, start, end);
-
   }
 
   updateEventClick = (event) => {
-    console.log(event)
     event.preventDefault();
     let newStart = new Date(this.state.newEventStart).toISOString();
     let newEnd = new Date(this.state.newEventEnd).toISOString();
@@ -178,9 +197,6 @@ submits the data to be passed up to be integrated into google calendar
     else {
       for (let i = 0; i < this.state.originalEvents.length; i++) {
         if (this.state.originalEvents[i].id === this.state.newEventID) {
-          console.log(this.state.originalEvents[i]);
-          console.log(newStart);
-          console.log(newEnd);
           this.updateRequest(i, newStart, newEnd);
         }
       }
@@ -501,9 +517,9 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </Container>
       <Row>
-        <DayEvents dateContext={this.state.dateContext} />
-        <DayRoutines />
-        <DayGoals />
+        <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} />
+        <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
+        <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
       </Row>
     </div>)
   }
@@ -778,12 +794,9 @@ submits the data to be passed up to be integrated into google calendar
   Hides the create/edit events form when a date or event is clicked
   */
   hideEventForm = (e) => {
-    console.log("Tyler says: Hello")
     this.setState({
       dayEventSelected: false
     });
-
-
   }
 
   /*
@@ -830,8 +843,6 @@ when there is a change in the event form
   *
   */
   getEventsByInterval = (start0, end0) => {
-    console.log('Main getEventsByInterval ran ');
-
     axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
       params: {
         start: start0,
@@ -839,8 +850,6 @@ when there is a change in the event form
       }
     })
       .then(response => {
-        console.log('normal gCal data')
-        console.log(response);
         var events = response.data;
         this.setState({
           newEventID: '',

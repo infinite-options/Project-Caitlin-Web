@@ -8,10 +8,10 @@ export default class editIS extends Component {
 
     constructor(props) {
         super(props)
-        console.log('editIs constructor');
-        console.log('Edit index ' + this.props.i)
-        console.log(this.props.FBPath)
-        console.log(this.props.ISArray)
+        // console.log('editIs constructor');
+        // console.log('Edit index ' + this.props.i)
+        // console.log(this.props.FBPath)
+        // console.log(this.props.ISArray)
         this.state = {
             showEditModal: false,
             itemToEdit: this.props.ISArray[this.props.i]
@@ -19,7 +19,7 @@ export default class editIS extends Component {
     }
 
     newInputSubmit = () => {
-        console.log("submitting edited formed to firebase");
+        // console.log("submitting edited formed to firebase");
         let newArr  = this.props.ISArray;
         newArr[this.props.i] = this.state.itemToEdit;
 
@@ -38,10 +38,10 @@ export default class editIS extends Component {
 
         this.props.FBPath.update({ 'instructions&steps': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from updating ISItem");
+                    // console.log("refreshing FireBasev2 from updating ISItem");
                     this.setState({ showEditModal: false })
                     this.props.refresh(newArr);
                 }
@@ -92,7 +92,7 @@ export default class editIS extends Component {
                     onChange={(e) => {
                         e.stopPropagation();
                         let temp = this.state.itemToEdit;
-                        console.log(temp.is_available)
+                        // console.log(temp.is_available)
                         temp.is_available = !temp.is_available;
                         this.setState({ itemToEdit: temp })
                     }} />
@@ -107,7 +107,7 @@ export default class editIS extends Component {
                     onChange={(e) => {
                         e.stopPropagation();
                         let temp = this.state.itemToEdit;
-                        console.log(temp.is_timed)
+                        // console.log(temp.is_timed)
                         temp.is_timed = !temp.is_timed;
                         this.setState({ itemToEdit: temp })
                     }} />
@@ -122,7 +122,7 @@ export default class editIS extends Component {
                     onChange={(e) => {
                         e.stopPropagation();
                         let temp = this.state.itemToEdit;
-                        console.log(temp.notifies_ta)
+                        // console.log(temp.notifies_ta)
                         temp.notifies_ta = !temp.notifies_ta;
                         this.setState({ itemToEdit: temp })
                     }} />
@@ -137,7 +137,7 @@ export default class editIS extends Component {
                     onChange={(e) => {
                         e.stopPropagation();
                         let temp = this.state.itemToEdit;
-                        console.log(temp.reminds_user)
+                        // console.log(temp.reminds_user)
                         temp.reminds_user = !temp.reminds_user;
                         this.setState({ itemToEdit: temp })
                     }} />
