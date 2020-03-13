@@ -1186,8 +1186,7 @@ shows entire list of goals and routines
       </Modal.Dialog>
     );
   };
-
-  /*
+    /*
     abstractedRoutineList:
     shows entire list of routines
     */

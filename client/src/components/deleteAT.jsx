@@ -6,7 +6,7 @@ export default class deleteAT extends Component {
 
     constructor(props) {
         super(props)
-        console.log('Delete AT constructor');
+        // console.log('Delete AT constructor');
     }
 
     /**
@@ -14,10 +14,10 @@ export default class deleteAT extends Component {
      * delete the stupid AT
     */
     submitRequest = () => {
-        console.log("request to delete AT")
-        console.log('delete index ' + this.props.deleteIndex)
-        console.log(this.props.Item)
-        console.log(this.props.Array)
+        // console.log("request to delete AT")
+        // console.log('delete index ' + this.props.deleteIndex)
+        // console.log(this.props.Item)
+        // console.log(this.props.Array)
         if (this.props.deleteIndex < 0) {
             console.log("deleteAT index error")
             return;
@@ -26,18 +26,18 @@ export default class deleteAT extends Component {
     }
 
     tempdeleteArrPortion = () => {
-        console.log("request was made to delete this index " + this.props.deleteIndex);
+        // console.log("request was made to delete this index " + this.props.deleteIndex);
         let items = [...this.props.Array];
-        console.log("delete with: ");
-        console.log(items);
+        // console.log("delete with: ");
+        // console.log(items);
         let i = this.props.deleteIndex;
         items[i]['deleted'] = true;
         this.props.Item.fbPath.update({ 'actions&tasks': items }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from delete ISItem");
+                    // console.log("refreshing FireBasev2 from delete ISItem");
                     this.props.refresh(items);
                 }
                 else {
@@ -55,20 +55,20 @@ export default class deleteAT extends Component {
      * it will update the array in firestore and refresh the page once that is completed
     */
     deleteArrPortion = () => {
-        console.log("request was made to delete this  element " + this.props.deleteIndex);
+        // console.log("request was made to delete this  element " + this.props.deleteIndex);
         let items = [...this.props.Array];
-        console.log("delete with: ");
-        console.log(items);
+        // console.log("delete with: ");
+        // console.log(items);
         let i = this.props.deleteIndex;
         const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-        console.log("delete 2 with: ");
-        console.log(newArr);
+        // console.log("delete 2 with: ");
+        // console.log(newArr);
         this.props.Item.fbPath.update({ 'actions&tasks': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from delete ISItem");
+                    // console.log("refreshing FireBasev2 from delete ISItem");
                     this.props.refresh(newArr);
                 }
                 else {
@@ -82,11 +82,11 @@ export default class deleteAT extends Component {
     confirmation = () => {
         const r = window.confirm("Confirm Delete"); 
         if(r == true){ 
-            console.log("Delete Confirm")
+            // console.log("Delete Confirm")
             this.submitRequest();
             return;
         }
-        console.log("Delete Not Confirm")
+        // console.log("Delete Not Confirm")
     }
 
     render() {
