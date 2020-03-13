@@ -82,7 +82,7 @@ export default class MainPage extends React.Component {
       }, '');
       console.log("Guest List:", A.attendees, guestList);
     }
-    
+
     this.setState({
       newEventID: A.id,
       newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
@@ -110,7 +110,7 @@ export default class MainPage extends React.Component {
   /*
     TODO: Set New Event Location, description, guests, ...
   */
-  handleEventClick = (i) => { // bind with an arrow function 
+  handleEventClick = (i) => { // bind with an arrow function
     let A = this.state.originalEvents[i];
     //Guest list erroneously includes owner's email as well
     var guestList = ''
@@ -233,6 +233,11 @@ submits the data to be passed up to be integrated into google calendar
       });
     }
 
+    var minutesNotification = 30;
+    if (this.state.newEventNotification) {
+      minutesNotification = this.state.newEventNotification;
+    }
+
     let updatedEvent = this.state.originalEvents[index];
     updatedEvent.summary = this.state.newEventName;
     updatedEvent.attendees = formattedEmail;
@@ -243,7 +248,7 @@ submits the data to be passed up to be integrated into google calendar
     updatedEvent.reminders = {
       overrides: [{
         method: 'popup',
-        minutes: this.state.newEventNotification,
+        minutes: minutesNotification,
       }],
       'useDefault': false,
       'sequence': 0,
@@ -254,8 +259,8 @@ submits the data to be passed up to be integrated into google calendar
       ID: this.state.newEventID,
     })
       .then((response) => {
-        // console.log('update return');
-        // console.log(response);
+        //console.log('update return');
+        //console.log(response);
         this.setState(
           {
             dayEventSelected: false,
@@ -850,6 +855,8 @@ when there is a change in the event form
       }
     })
       .then(response => {
+        //console.log('normal gCal data');
+        //console.log(response);
         var events = response.data;
         this.setState({
           newEventID: '',
