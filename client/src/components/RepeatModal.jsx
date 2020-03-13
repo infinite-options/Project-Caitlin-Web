@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Modal, Button, Dropdown, DropdownButton } from "react-bootstrap";
+import { Modal, Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
 
 const RepeatModal = props => {
   const [title, setTitle] = useState("DAY");
+  const [monthly, setMonthly] = useState("Monthly on day 13");
 
   const week_days = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -11,7 +12,7 @@ const RepeatModal = props => {
     position: "absolute",
     zIndex: "5",
     left: "50%",
-    top: "50%",
+    top: "60%",
     transform: "translate(-50%, -50%)",
     width: "400px"
   };
@@ -22,12 +23,12 @@ const RepeatModal = props => {
     background: "#F8F9FA",
     border: "none",
     width: "70px",
-    borderRadius: "4px"
+    borderRadius: "4px",
+    marginRight: "8px"
   };
 
   const selectStyle = {
-    display: "inline-block",
-    marginLeft: "8px"
+    display: "inline-block"
   };
 
   const weekStyle = {
@@ -36,6 +37,8 @@ const RepeatModal = props => {
     textAlign: "center",
     marginTop: "10px"
   };
+
+  const radioInputStyle = { display: "flex", alignItems: "center" };
 
   // onClick event handler for the circles
   const selectedDot = e => {
@@ -59,6 +62,28 @@ const RepeatModal = props => {
         })}
       </div>
     </div>
+  );
+
+  // If selected repeat every month, the following shows.
+  const monthSelected = (
+    <DropdownButton
+      title={monthly}
+      variant="light"
+      style={{ marginTop: "20px" }}
+    >
+      <Dropdown.Item
+        eventKey="Monthly on day 13"
+        onSelect={eventKey => setMonthly(eventKey)}
+      >
+        Monthly on day 13
+      </Dropdown.Item>
+      <Dropdown.Item
+        eventKey="Monthly on the second Friday"
+        onSelect={eventKey => setMonthly(eventKey)}
+      >
+        Monthly on the second Friday
+      </Dropdown.Item>
+    </DropdownButton>
   );
 
   return (
@@ -107,6 +132,60 @@ const RepeatModal = props => {
           </DropdownButton>
         </div>
         {title === "WEEK" && weekSelected}
+        {title === "MONTH" && monthSelected}
+        <Form
+          style={{
+            height: "140px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            marginTop: "20px"
+          }}
+        >
+          Ends
+          <Form.Check type="radio" style={radioInputStyle}>
+            <Form.Check.Input
+              type="radio"
+              name="radios"
+              style={{ marginTop: "0" }}
+            />
+            <Form.Check.Label>Never</Form.Check.Label>
+          </Form.Check>
+          <Form.Check type="radio" style={radioInputStyle}>
+            <Form.Check.Input
+              type="radio"
+              name="radios"
+              style={{ marginTop: "0" }}
+            />
+
+            <Form.Check.Label>
+              On
+              <Button style={{ marginLeft: "94px" }} variant="light">
+                Mar 13, 2020
+              </Button>
+            </Form.Check.Label>
+          </Form.Check>
+          <Form.Check type="radio" style={radioInputStyle}>
+            <Form.Check.Input
+              type="radio"
+              name="radios"
+              style={{ marginTop: "0" }}
+            />
+            <Form.Check.Label>
+              After
+              <span style={{ marginLeft: "60px" }}>
+                <input
+                  type="number"
+                  min="1"
+                  max="10000"
+                  // value="1"
+                  style={inputStyle}
+                />
+                occurrence
+              </span>
+            </Form.Check.Label>
+          </Form.Check>
+        </Form>
       </Modal.Body>
 
       <Modal.Footer>

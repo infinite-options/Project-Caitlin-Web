@@ -821,7 +821,10 @@ submits the data to be passed up to be integrated into google calendar
           <Container fluid>
             <Row>
               <Col style={{ float: "right", marginBottom: "10px" }}>
-                <Button variant="light" onClick={this.openRepeatModal}>
+                <Button
+                  variant="outline-primary"
+                  onClick={this.openRepeatModal}
+                >
                   Repeating Options
                 </Button>
               </Col>

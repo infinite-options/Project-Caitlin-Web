@@ -1297,7 +1297,7 @@ shows entire list of goals and routines
       >
         <Modal.Header
           closeButton
-          onClick={() => {
+          onHide={() => {
             this.setState({ singleAT: { show: false } });
           }}
         >
@@ -1368,7 +1368,7 @@ shows entire list of goals and routines
       >
         <Modal.Header
           closeButton
-          onClick={() => {
+          onHide={() => {
             this.setState({ singleGR: { show: false } });
           }}
         >
