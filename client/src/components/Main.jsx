@@ -259,8 +259,8 @@ submits the data to be passed up to be integrated into google calendar
       ID: this.state.newEventID,
     })
       .then((response) => {
-        console.log('update return');
-        console.log(response);
+        //console.log('update return');
+        //console.log(response);
         this.setState(
           {
             dayEventSelected: false,
