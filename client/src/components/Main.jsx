@@ -17,6 +17,7 @@ import TylersCalendarv1 from "./TCal.jsx";
 import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
+import RepeatModal from "./RepeatModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -34,7 +35,7 @@ export default class MainPage extends React.Component {
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
-      dayEventSelected: false, //use to show modal to create new event
+      dayEventSelected: true, //use to show modal to create new event
       modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
       newEventName: "",
@@ -51,7 +52,8 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //As we change from month to month, this variable will keep track of where we are
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Month" // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
+      showRepeatModal: true
     };
   }
 
@@ -470,6 +472,26 @@ submits the data to be passed up to be integrated into google calendar
     this.getEventsByInterval(startDate.toString(), endDate.toString());
   };
 
+  /*
+  openRepeatModal:
+  this will open repeat modal.
+  */
+  openRepeatModal = () => {
+    this.setState(prevState => {
+      return { showRepeatModal: !prevState.showRepeatModal };
+    });
+  };
+
+  /*
+  closeRepeatModal:
+  this will close repeat modal.
+  */
+  closeRepeatModal = () => {
+    this.setState({
+      showRepeatModal: false
+    });
+  };
+
   render() {
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal =
@@ -789,50 +811,64 @@ submits the data to be passed up to be integrated into google calendar
             <h5 className="normalfancytext">Event Form</h5>{" "}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>{this.eventFormInputArea()}</Modal.Body>
+        <Modal.Body>
+          {this.state.showRepeatModal && (
+            <RepeatModal closeRepeatModal={this.closeRepeatModal} />
+          )}
+          {this.eventFormInputArea()}
+        </Modal.Body>
         <Modal.Footer>
-          {/* <Row>
-            <Col>
-              <Button>Repeating Options</Button>
-            </Col>
-          </Row> */}
-          <Row>
-            <Col>
-              <Button variant="secondary" onClick={this.hideEventForm}>
-                Repeating Options
-              </Button>
-            </Col>
-            <Col style={this.state.isEvent ? { display: "none" } : {}}>
-              <Button onClick={this.handleSubmit} variant="info" type="submit">
-                {" "}
-                Submit{" "}
-              </Button>
-            </Col>
-            <Col
-              style={
-                this.state.isEvent ? { marginTop: "0px" } : { display: "none" }
-              }
-            >
-              <Button onClick={this.updateEventClick} className="btn btn-info">
-                Update
-              </Button>
-            </Col>
-            <Col>
-              <Button variant="secondary" onClick={this.hideEventForm}>
-                Cancel
-              </Button>
-            </Col>
-            <Col>
-              <Button
-                style={this.state.isEvent ? {} : { display: "none" }}
-                variant="danger"
-                onClick={this.deleteSubmit}
+          <Container fluid>
+            <Row>
+              <Col style={{ float: "right", marginBottom: "10px" }}>
+                <Button variant="light" onClick={this.openRepeatModal}>
+                  Repeating Options
+                </Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col style={this.state.isEvent ? { display: "none" } : {}} xs={4}>
+                <Button
+                  onClick={this.handleSubmit}
+                  variant="info"
+                  type="submit"
+                >
+                  {" "}
+                  Submit{" "}
+                </Button>
+              </Col>
+              <Col
+                style={
+                  this.state.isEvent
+                    ? { marginTop: "0px" }
+                    : { display: "none" }
+                }
+                xs={4}
               >
-                {" "}
-                Delete
-              </Button>
-            </Col>
-          </Row>
+                <Button
+                  onClick={this.updateEventClick}
+                  className="btn btn-info"
+                >
+                  Update
+                </Button>
+              </Col>
+              <Col xs={4}>
+                <Button variant="secondary" onClick={this.hideEventForm}>
+                  Cancel
+                </Button>
+              </Col>
+              <Col xs={4}>
+                <Button
+                  style={this.state.isEvent ? {} : { display: "none" }}
+                  variant="danger"
+                  onClick={this.deleteSubmit}
+                >
+                  {" "}
+                  Delete
+                </Button>
+              </Col>
+            </Row>
+          </Container>
         </Modal.Footer>
       </Modal.Dialog>
     );

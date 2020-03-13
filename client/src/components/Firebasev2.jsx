@@ -1175,7 +1175,7 @@ shows entire list of goals and routines
         <Modal.Footer>
           <button
             type="button"
-            class="btn btn-info btn-md"
+            className="btn btn-info btn-md"
             onClick={() => {
               this.setState({ addNewGRModalShow: true, isRoutine: false });
             }}
@@ -1339,7 +1339,7 @@ shows entire list of goals and routines
         <Modal.Footer>
           <button
             type="button"
-            class="btn btn-info btn-md"
+            className="btn btn-info btn-md"
             onClick={() => {
               this.setState({ addNewISModalShow: true });
             }}
@@ -1467,7 +1467,7 @@ shows entire list of goals and routines
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
         }}
       >
-        <Modal.Header onClick={this.props.closeRoutineGoalModal} closeButton>
+        <Modal.Header onHide={this.props.closeRoutineGoalModal} closeButton>
           <Modal.Title>
             {" "}
             <h5 className="normalfancytext">Current Status</h5>{" "}
