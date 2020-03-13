@@ -855,8 +855,8 @@ when there is a change in the event form
       }
     })
       .then(response => {
-        console.log('normal gCal data');
-        console.log(response);
+        //console.log('normal gCal data');
+        //console.log(response);
         var events = response.data;
         this.setState({
           newEventID: '',
