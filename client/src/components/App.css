@@ -21,78 +21,74 @@
   color: #09d3ac;
 } */
 
-
 /*!
  * FullCalendar v3.9.0
  * Docs & License: https://fullcalendar.io/
  * (c) 2018 Adam Shaw
  */
 
-
-h2{
+h2 {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 26px;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-.fancytext{
+.fancytext {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 12px;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-.fancytextsmall{
+.fancytextsmall {
   font-size: 12px;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-
-.midfancytext{
+.midfancytext {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 12px;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-.bigfancytext{
+.bigfancytext {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 22px;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-.normalfancytext{
+.normalfancytext {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
 }
 
-
-.bigfancytitle{
+.bigfancytitle {
   margin-left: 5%;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 35px;
   letter-spacing: 1px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   color: #002147;
   margin-bottom: 10px;
 }
@@ -107,12 +103,11 @@ h1 {
   text-transform: uppercase;
   font-weight: bold;
   color: black;
-  text-shadow: 0 1px 2px rgba(rgb(206, 23, 23),.15);
-  text-shadow: 2px 2px #FFFFFF;
-
+  text-shadow: 0 1px 2px rgba(rgb(206, 23, 23), 0.15);
+  text-shadow: 2px 2px #ffffff;
 }
 
-.X:hover{
+.X:hover {
   color: CornflowerBlue;
 }
 
@@ -121,7 +116,7 @@ h1 {
   width: 28px;
   height: 28px;
   padding-top: 1.5px;
-  padding-left:1px;
+  padding-left: 1px;
   background: #fff;
   border: 2px solid rgb(0, 20, 6);
   color: #666;
@@ -130,12 +125,9 @@ h1 {
 }
 
 .boxItem {
-  
   border: 2px solid gray;
   border-radius: 5px;
 }
-
-
 
 /* width */
 ::-webkit-scrollbar {
@@ -145,19 +137,18 @@ h1 {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
-
 
 /* this class below is for centering specific items */
 .center {
@@ -167,22 +158,20 @@ h1 {
   width: 50%;
 }
 
-
-
 /**
 The below is styling for the react date picker 
  */
 .react-datepicker-wrapper,
 .react-datepicker__input-container,
 .react-datepicker__input-container input {
-    display: block;
-    width: 250px;
+  display: block;
+  width: 250px;
 }
 
-.modal-content  {
-  -webkit-border-radius: 15px ;
-  -moz-border-radius: 15px ;
-  border-radius: 15px ; 
+.modal-content {
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
 }
 
 .border-radius-2 div {
@@ -192,4 +181,21 @@ The below is styling for the react date picker
 /* Force all image to be rounded off */
 img {
   border-radius: 15px;
+}
+
+/* The dots in Repeating Options */
+.dot {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+
+.selected {
+  background: #1a73e8;
 }
