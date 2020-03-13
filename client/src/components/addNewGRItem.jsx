@@ -117,7 +117,7 @@ export default class AddNewGRItem extends Component {
 
   render() {
     return (
-      <Modal.Dialog style={{ marginLeft: "0", width: this.state.modalWidth }}>
+      <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
         <Modal.Header closeButton onHide={this.props.closeModal}>
           <Modal.Title>
             <h5 className="normalfancytext">

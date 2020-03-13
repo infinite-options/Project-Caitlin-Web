@@ -1271,6 +1271,7 @@ shows entire list of goals and routines
         ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
         refresh={this.grabFireBaseRoutinesGoalsData}
         isRoutine={this.state.isRoutine}
+        width={this.state.modalWidth}
       />
     );
   };

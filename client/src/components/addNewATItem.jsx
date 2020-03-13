@@ -80,7 +80,7 @@ export default class AddNewATItem extends Component {
 
   render() {
     return (
-      <Modal.Dialog style={{ marginLeft: "0", width: this.props.modalWidth }}>
+      <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
         <Modal.Header
           closeButton
           onHide={() => {
