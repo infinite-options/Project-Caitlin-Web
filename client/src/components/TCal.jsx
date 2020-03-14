@@ -95,23 +95,15 @@ export default class TylersCalendarv1 extends React.Component {
     }
 
     onEventClick = (x) => {
-        // console.log('onEventClick');
         x.stopPropagation();
         this.props.eventClick(x.target.value);
     }
 
-    onDayClick = (d) => {
-        // console.log('dateClick')
-        // console.log(d)
-        // console.log('this month ')
-        // console.log()
-        
+    onDayClick = (d) => {   
         this.props.handleDateClick(this.props.dateContext.format("M") + '/' + d + '/'+  this.props.dateContext.format("Y"));
     }
 
     render() {
-        // console.log("reventded TCal")
-        // console.log(this.props.organizedData)
         let daysInMonth = [];
         let weekdays = this.weekdays.map((day) => {
             return (
@@ -121,8 +113,6 @@ export default class TylersCalendarv1 extends React.Component {
 
         //create the blank slots to push day 1 to right day
         let blanks = [];
-        // console.log('first day of month');
-        // console.log(this.firstDayOfMonth());
 
 
         for (let i = 0; i < this.firstDayOfMonth(); i++) {
@@ -132,7 +122,7 @@ export default class TylersCalendarv1 extends React.Component {
         
         //The variable below tells us if the current month we are at is today's month
         var sameDate = this.props.dateObject.format("DD/MM/YYYY") === this.props.dateContext.format("DD/MM/YYYY");
-        console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
+        // console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
         for (var d = 1; d <= this.daysInMonth(); d++) {
             // let currentDay = d == this.currentDay() ? "today" : "";
 

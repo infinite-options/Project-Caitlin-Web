@@ -6,15 +6,15 @@ export default class deleteGR extends Component {
 
     constructor(props) {
         super(props)
-        console.log('Delete AT constructor');  
+        // console.log('Delete AT constructor');  
        
     }
 
     submitRequest = () => {
-        console.log("request to delete GR")
-        console.log('delete index ' + this.props.deleteIndex)
-        console.log(this.props.Item)
-        console.log(this.props.Array)
+        // console.log("request to delete GR")
+        // console.log('delete index ' + this.props.deleteIndex)
+        // console.log(this.props.Item)
+        // console.log(this.props.Array)
         if (this.props.deleteIndex < 0){
             console.log("invalid index exiting delete");
             return;
@@ -27,10 +27,10 @@ export default class deleteGR extends Component {
         items[this.props.deleteIndex]['deleted'] = true;
         this.props.Path.update({ 'goals&routines': items }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from delete GRItem");
+                    // console.log("refreshing FireBasev2 from delete GRItem");
                     this.props.refresh();
                 }
                 else{
@@ -41,19 +41,19 @@ export default class deleteGR extends Component {
     }
 
     deleteArrPortion = () => {
-        console.log("request was made to delete this  element " +  this.props.deleteIndex);
+        // console.log("request was made to delete this  element " +  this.props.deleteIndex);
         let items = [...this.props.Array];
-        console.log("delete with: ");
+        // console.log("delete with: ");
         let i = this.props.deleteIndex;
         const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-        console.log("delete 2 with: ");
-        console.log(newArr);
+        // console.log("delete 2 with: ");
+        // console.log(newArr);
         this.props.Path.update({ 'goals&routines': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from delete ISItem");
+                    // console.log("refreshing FireBasev2 from delete ISItem");
                     this.props.refresh();
                 }
                 else{
@@ -66,7 +66,7 @@ export default class deleteGR extends Component {
     confirmation = () => {
         const r = window.confirm("Confirm Delete"); 
         if(r == true){ 
-            console.log("Delete Confirm")
+            // console.log("Delete Confirm")
             this.submitRequest();
             return;
         }
