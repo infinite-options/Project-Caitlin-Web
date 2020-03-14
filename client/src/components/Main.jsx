@@ -461,7 +461,7 @@ submits the data to be passed up to be integrated into google calendar
     this.setState(
       {
         dateContext: dateContext,
-        originalEvents: []
+        dayEvents: []
       },
       this.updateEventsArray
     );
@@ -473,7 +473,7 @@ submits the data to be passed up to be integrated into google calendar
     this.setState(
       {
         dateContext: dateContext,
-        originalEvents: []
+        dayEvents: []
       },
       this.updateEventsArray
     );
