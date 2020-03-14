@@ -53,11 +53,7 @@ export default class MainPage extends React.Component {
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Month", // decides which type of calendar to display
-<<<<<<< HEAD
       showRepeatModal: false
-=======
-      showRepeatModal: false
->>>>>>> 85dab52ed448d48f6348df5faf14897ade3010e8
     };
   }
 
@@ -85,38 +81,49 @@ export default class MainPage extends React.Component {
       })
       .catch(error => {
         //console.log('Error Occurred ' + error);
-      }
-      );
-  }
+      });
+  };
 
-
-  handleDayEventClick = (A) => {
+  handleDayEventClick = A => {
     // console.log("this is from day view");
-    var guestList = ''
+    var guestList = "";
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
-        return guestList + ' ' + nextGuest.email;
-      }, '');
+        return guestList + " " + nextGuest.email;
+      }, "");
       console.log("Guest List:", A.attendees, guestList);
     }
 
-    this.setState({
-      newEventID: A.id,
-      newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
-      newEventEnd: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)).toISOString(),
-      newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
-      newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
-      newEventName: A.summary,
-      newEventGuests: guestList,
-      newEventLocation: (A.location) ? A.location : '',
-      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : '',
-      newEventDescription: (A.description) ? A.description : '',
-      dayEventSelected: true,
-      isEvent: true,
-    }, () => {
-      console.log('callback from handEventClick')
-    });
-  }
+    this.setState(
+      {
+        newEventID: A.id,
+        newEventStart: A.start.dateTime
+          ? new Date(A.start.dateTime)
+          : new Date(A.start.date).toISOString(),
+        newEventEnd: A.end.dateTime
+          ? new Date(A.end.dateTime)
+          : new Date(A.end.date).toISOString(),
+        newEventStart0: A.start.dateTime
+          ? new Date(A.start.dateTime)
+          : new Date(A.start.date),
+        newEventEnd0: A.end.dateTime
+          ? new Date(A.end.dateTime)
+          : new Date(A.end.date),
+        newEventName: A.summary,
+        newEventGuests: guestList,
+        newEventLocation: A.location ? A.location : "",
+        newEventNotification: A.reminders.overrides
+          ? A.reminders.overrides[0].minutes
+          : "",
+        newEventDescription: A.description ? A.description : "",
+        dayEventSelected: true,
+        isEvent: true
+      },
+      () => {
+        console.log("callback from handEventClick");
+      }
+    );
+  };
 
   /*
   handleEventClick:
@@ -215,11 +222,11 @@ submits the data to be passed up to be integrated into google calendar
     /**
      *
      * all variables within form need to be accessible up to this point
-    */
+     */
     this.createEvent(this.state.newEventName, start, end);
-  }
+  };
 
-  updateEventClick = (event) => {
+  updateEventClick = event => {
     //console.log(event);
     event.preventDefault();
     let newStart = new Date(this.state.newEventStart).toISOString();
@@ -279,30 +286,32 @@ submits the data to be passed up to be integrated into google calendar
     updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
     updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
     updatedEvent.reminders = {
-      overrides: [{
-        method: 'popup',
-        minutes: minutesNotification,
-      }],
-      'useDefault': false,
-      'sequence': 0,
-    }
+      overrides: [
+        {
+          method: "popup",
+          minutes: minutesNotification
+        }
+      ],
+      useDefault: false,
+      sequence: 0
+    };
 
-    axios.post('/updateEvent', {
-      extra: updatedEvent,
-      ID: this.state.newEventID,
-    })
-      .then((response) => {
+    axios
+      .post("/updateEvent", {
+        extra: updatedEvent,
+        ID: this.state.newEventID
+      })
+      .then(response => {
         //console.log('update return');
         //console.log(response);
-        this.setState(
-          {
-            dayEventSelected: false,
-            newEventName: '',
-            newEventStart: '',
-            newEventEnd: '',
-            newEventStart0: new Date(),
-            newEventEnd0: new Date()
-          });
+        this.setState({
+          dayEventSelected: false,
+          newEventName: "",
+          newEventStart: "",
+          newEventEnd: "",
+          newEventStart0: new Date(),
+          newEventEnd0: new Date()
+        });
         this.updateEventsArray();
       })
       .catch(function(error) {
@@ -632,13 +641,17 @@ submits the data to be passed up to be integrated into google calendar
             </Col>
           </Row>
         </Container>
-      <Row>
-        <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} />
-        <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
-        <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
-      </Row>
-    </div>)
-  }
+        <Row>
+          <DayEvents
+            dateContext={this.state.dateContext}
+            eventClickDayView={this.handleDayEventClick}
+          />
+          <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
+          <DayGoals dayGoalClick={this.toggleShowGoal} />
+        </Row>
+      </div>
+    );
+  };
 
   toggleShowRoutine = () => {
     this.setState({
@@ -1064,12 +1077,12 @@ submits the data to be passed up to be integrated into google calendar
   hideEventForm:
   Hides the create/edit events form when a date or event is clicked
   */
-  hideEventForm = (e) => {
+  hideEventForm = e => {
     //console.log("Tyler says: Hello");
     this.setState({
       dayEventSelected: false
     });
-  }
+  };
 
   /*
 All functions below will change a variables
@@ -1116,12 +1129,14 @@ when there is a change in the event form
   */
   getEventsByInterval = (start0, end0) => {
     //console.log("Main getEventsByInterval ran ");
-    axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-      params: {
-        start: start0,
-        end: end0
-      }
-    })
+    axios
+      .get("/getEventsByInterval", {
+        //get normal google calendar data for possible future use
+        params: {
+          start: start0,
+          end: end0
+        }
+      })
       .then(response => {
         //console.log('normal gCal data');
         //console.log(response);
