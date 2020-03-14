@@ -46,8 +46,9 @@ export default class DayEvents extends Component {
           this.props.eventClickDayView(arr[i]);
     }
 
-   
-    /**
+
+    /*
+     * TODO: events spanning multiple days
      * getEventItem: given an hour, this will return all events that was started during that hour
      *
     */
@@ -121,7 +122,7 @@ export default class DayEvents extends Component {
                     (
 
                          <div key={"event" + i}>
-                            <div 
+                            <div
 
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
@@ -168,8 +169,8 @@ export default class DayEvents extends Component {
         return res;
     }
 
-    onDayClick = (e, i) => {   
-        
+    onDayClick = (e, i) => {
+
         console.log("this is the hour:"+i);
         this.props.handleDateClick((this.props.dateContext.format("M") + '/' + this.props.dateContext.format("D") + '/'+  this.props.dateContext.format("Y")), i);
     }

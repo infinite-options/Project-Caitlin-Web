@@ -50,7 +50,7 @@ export default class MainPage extends React.Component {
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
-      dateContext: moment(), //As we change from month to month and day to day, this variable will keep track of where we are
+      dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Month", // decides which type of calendar to display
@@ -121,9 +121,8 @@ export default class MainPage extends React.Component {
   when a event on the calendar is clicked, the function below
   will execute and save the clicked event varibles to this.state and
   passed that into the form where the user can edit that data
-  */
-  /*
-    TODO: Set New Event Location, description, guests, ...
+
+  TODO: set dateContext to the date clicked
   */
   handleEventClick = i => {
     // bind with an arrow function
