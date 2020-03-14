@@ -141,24 +141,22 @@ const RepeatModal = props => {
             justifyContent: "space-between",
             marginTop: "20px"
           }}
+          className="repeat-form"
         >
           Ends
           <Form.Check type="radio" style={radioInputStyle}>
-            <Form.Check.Input
-              type="radio"
-              name="radios"
-              style={{ marginTop: "0" }}
-            />
-            <Form.Check.Label>Never</Form.Check.Label>
+            <Form.Check.Label style={{ marginLeft: "5px" }}>
+              <Form.Check.Input type="radio" name="radios" />
+              Never
+            </Form.Check.Label>
           </Form.Check>
           <Form.Check type="radio" style={radioInputStyle}>
-            <Form.Check.Input
-              type="radio"
-              name="radios"
-              style={{ marginTop: "0" }}
-            />
-
-            <Form.Check.Label>
+            <Form.Check.Label style={{ marginLeft: "5px" }}>
+              <Form.Check.Input
+                type="radio"
+                name="radios"
+                style={{ marginTop: "12px" }}
+              />
               On
               <Button style={{ marginLeft: "94px" }} variant="light">
                 Mar 13, 2020
@@ -166,12 +164,12 @@ const RepeatModal = props => {
             </Form.Check.Label>
           </Form.Check>
           <Form.Check type="radio" style={radioInputStyle}>
-            <Form.Check.Input
-              type="radio"
-              name="radios"
-              style={{ marginTop: "0" }}
-            />
-            <Form.Check.Label>
+            <Form.Check.Label style={{ marginLeft: "5px" }}>
+              <Form.Check.Input
+                type="radio"
+                name="radios"
+                style={{ marginTop: "12px" }}
+              />
               After
               <span style={{ marginLeft: "60px" }}>
                 <input
@@ -180,6 +178,7 @@ const RepeatModal = props => {
                   max="10000"
                   // value="1"
                   style={inputStyle}
+                  className="input-exception"
                 />
                 occurrence
               </span>

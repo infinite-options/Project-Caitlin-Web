@@ -183,7 +183,7 @@ img {
   border-radius: 15px;
 }
 
-/* The dots in Repeating Options */
+/* Repeating modal css */
 .dot {
   height: 25px;
   width: 25px;
@@ -198,4 +198,21 @@ img {
 
 .selected {
   background: #1a73e8;
+}
+
+.repeat-form input {
+  transform: scale(1.5);
+  cursor: pointer;
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  -o-transform: scale(1.5);
+}
+
+.repeat-form input.input-exception {
+  transform: none;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
 }
