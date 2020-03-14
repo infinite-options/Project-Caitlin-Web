@@ -12,7 +12,7 @@ export default class DayEvents extends Component {
         super(props);
         // console.log(this.props.dateContext);
         this.state = {
-            dayEvents: [], //holds google events data for a single day
+            //dayEvents: [], //holds google events data for a single day
             // todayDateObject: moment("03/07/2020"), //this is the date of interset for events to be displaye
             pxPerHour: "30px", //preset size for all columns
             pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
@@ -20,18 +20,6 @@ export default class DayEvents extends Component {
             eventBoxSize: 150, //width size for event box
             marginFromLeft: 0
         }
-    }
-
-    componentDidMount() { //retrive data and put in dayEvents
-        // console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
-        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
-    }
-
-    componentDidUpdate(prevProps) { //retrive data and put in dayEvents
-      if(this.props.dateContext != prevProps.dateContext) {
-        // console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
-        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
-      }
     }
 
     timeDisplay = () => { //this essentially creates the time row
@@ -53,7 +41,7 @@ export default class DayEvents extends Component {
     }
 
     onEventClick = (e, i) => {
-         var arr = this.state.dayEvents;
+         var arr = this.props.dayEvents;
           e.stopPropagation();
           this.props.eventClickDayView(arr[i]);
     }
@@ -65,7 +53,7 @@ export default class DayEvents extends Component {
         var res = []
         var tempStart = null;
         var tempEnd = null;
-        var arr = this.state.dayEvents;
+        var arr = this.props.dayEvents;
         var sameTimeEventCount = 0;
         var overlapEvent = 0;
         var addmarginLeft = 0;
@@ -110,20 +98,20 @@ export default class DayEvents extends Component {
                         // overlapEvent++;
                     }
                 }
-                
+
                 if(sameTimeEventCount > 1  ){
                     // console.log("add 20 in day");
-                     addmarginLeft += 20; 
+                     addmarginLeft += 20;
                     // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
                     // itemWidth = itemWidth/(sameHourItems-1);
                     itemWidth = itemWidth - 20;
                 }
-                //chnage font size if not enough space 
+                //chnage font size if not enough space
                 if((tempEndTime.getHours() - tempStartTime.getHours()) < 2){
                     fontSize = 8;
                 }
-                
-                // change color if more than one event in same time. 
+
+                // change color if more than one event in same time.
                 if(sameTimeEventCount <= 1){
                      color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
                 }
@@ -133,16 +121,16 @@ export default class DayEvents extends Component {
                 else{
                     color = 'blue';
                 }
-                
+
                 let newElement =
                     (
                         // <div key={"event" + i}>
-                            <div 
+                            <div
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
                                     e.target.style.color = "#FFFFFF";
                                     e.target.style.background = "RebeccaPurple";
-                                    e.target.style.zIndex = "2"; 
+                                    e.target.style.zIndex = "2";
                                 }}
                                 onMouseOut={e => {
                                     e.target.style.zIndex = "1";
@@ -162,11 +150,11 @@ export default class DayEvents extends Component {
                                     //  verticalAlign: " ",
                                     // verticalAlign: 'text-top',
                                     // textAlign:"left",
-                                    borderRadius: "5px", 
+                                    borderRadius: "5px",
                                     background: color,
                                     // width: this.state.eventBoxSize - (addmarginLeft/16),
                                     width: itemWidth + "px",
-                                    position: "absolute", 
+                                    position: "absolute",
                                     height: height + "px",
                                     marginLeft: addmarginLeft + "px"
                                 }}>
@@ -238,32 +226,5 @@ export default class DayEvents extends Component {
                 </Container>
             </div>
         )
-    }
-
-    /*
-*
-getEventsByIntervalDayVersion:
-gets exactly the days worth of events from the google calendar
-*
-*
-*/
-    getEventsByIntervalDayVersion = (day) => {
-        axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-            params: {
-                start: day.toString(),         
-                end: day.toString()
-            }
-        })
-            .then(response => {
-                var events = response.data;
-                this.setState({
-                    dayEvents: events
-                }, () => {
-                    console.log("New Events Arrived")
-                })
-            })
-            .catch(error => {
-                console.log('Error Occurred ' + error);
-            });
     }
 }
