@@ -45,6 +45,8 @@ export default class DayEvents extends Component {
           e.stopPropagation();
           this.props.eventClickDayView(arr[i]);
     }
+
+   
     /**
      * getEventItem: given an hour, this will return all events that was started during that hour
      *
@@ -60,13 +62,7 @@ export default class DayEvents extends Component {
         var sameHourItems= 1;
         let itemWidth = this.state.eventBoxSize;
         var fontSize = 10;
-        // for(let i = 0; i < arr.length; i++){
-        //     tempStart = arr[i].start.dateTime;
-        //     let tempStartTime = new Date(tempStart);
-        //     if (tempStartTime.getHours() == hour) {
-        //         sameHourItems++;
-        //     }
-        // }
+
         for (let i = 0; i < arr.length; i++) {
             tempStart = arr[i].start.dateTime;
             tempEnd = arr[i].end.dateTime;
@@ -95,7 +91,6 @@ export default class DayEvents extends Component {
                     if (tempStartTime.getHours() <  hour &&  tempEndTime.getHours()> hour) {
                         addmarginLeft += 20;
                         itemWidth = itemWidth - 20;
-                        // overlapEvent++;
                     }
                 }
 
@@ -124,8 +119,10 @@ export default class DayEvents extends Component {
 
                 let newElement =
                     (
-                        // <div key={"event" + i}>
-                            <div
+
+                         <div key={"event" + i}>
+                            <div 
+
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
                                     e.target.style.color = "#FFFFFF";
@@ -161,7 +158,7 @@ export default class DayEvents extends Component {
                                     {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                 {arr[i].summary}
                             </div>
-                        // </div>
+                         </div>
                     );
                 res.push(newElement);
 
@@ -171,6 +168,11 @@ export default class DayEvents extends Component {
         return res;
     }
 
+    onDayClick = (e, i) => {   
+        
+        console.log("this is the hour:"+i);
+        this.props.handleDateClick((this.props.dateContext.format("M") + '/' + this.props.dateContext.format("D") + '/'+  this.props.dateContext.format("Y")), i);
+    }
 
 
     /**
@@ -188,7 +190,9 @@ export default class DayEvents extends Component {
                             width: '180px', //lyman change width to adjust
                             background: "aliceblue",
                             height: this.state.pxPerHour
-                        }}>
+                        }}
+                        onClick = {e =>this.onDayClick(e, i)}
+                        >
                         {this.getEventItem(i)}
                     </Col >
                 </Row>

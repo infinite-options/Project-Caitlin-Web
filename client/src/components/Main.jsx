@@ -167,6 +167,28 @@ export default class MainPage extends React.Component {
     );
   };
 
+  handleDateClickOnDayView = (arg, i) => { // bind with an arrow function
+    console.log("we are in the handleDateOnDayView");
+    console.log("this is the i:" + i);
+    var newStart = new Date(arg);
+    newStart.setHours(i, 0, 0);
+    var newEnd = new Date(arg);
+    newEnd.setHours(i+1, 0, 0);
+    this.setState({
+      newEventID: '',
+      newEventStart: newStart.toString(),
+      newEventEnd: newEnd.toString(),
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
+      newEventName: '',
+      newEventGuests: '',
+      newEventLocation: '',
+      newEventNotification: 30,
+      newEventDescription: '',
+      dayEventSelected: true,
+      isEvent: false
+    });
+  }
   /*
   handleDateClick:
   This will trigger when a date is clicked, it will present
@@ -635,7 +657,9 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </Container>
       <Row>
-        <DayEvents dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} />
+
+        <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
+
         <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
         <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
       </Row>
