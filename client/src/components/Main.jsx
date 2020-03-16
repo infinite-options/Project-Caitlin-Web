@@ -56,7 +56,8 @@ export default class MainPage extends React.Component {
       showRepeatModal: true,
       repeatDropDown: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: 1
+      repeatInputValue: 1,
+      repeatOccurrence: 1
     };
   }
 
@@ -81,6 +82,12 @@ export default class MainPage extends React.Component {
   handleRepeatInputValue = eventKey => {
     this.setState({
       repeatInputValue: eventKey
+    });
+  };
+
+  handleRepeatOccurrence = eventKey => {
+    this.setState({
+      repeatOccurrence: eventKey
     });
   };
 
@@ -1151,7 +1158,8 @@ submits the data to be passed up to be integrated into google calendar
                     type="number"
                     min="1"
                     max="10000"
-                    // value="1"
+                    value={this.state.repeatOccurrence}
+                    onChange={e => this.handleRepeatOccurrence(e.target.value)}
                     style={inputStyle}
                     className="input-exception"
                   />
