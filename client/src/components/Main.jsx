@@ -713,6 +713,12 @@ submits the data to be passed up to be integrated into google calendar
     });
   };
 
+  changeCalendarView = (view) => {
+    this.setState({
+      calendarView: view,
+    },this.updateEventsArray);
+  }
+
   abstractedMainEventGRShowButtons = () => {
     return (
       <div style={{ marginLeft: "33%", width: "100%", fontSize: "20px" }}>
@@ -761,23 +767,11 @@ submits the data to be passed up to be integrated into google calendar
           style={{ margin: "10px", float: "left" }}
           title={this.state.calendarView}
         >
-          <Dropdown.Item
-            onClick={() => {
-              this.setState({
-                calendarView: "Month"
-              });
-            }}
-          >
+          <Dropdown.Item onClick={e => {this.changeCalendarView('Month')} }>
             {" "}
             Month{" "}
           </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => {
-              this.setState({
-                calendarView: "Day"
-              });
-            }}
-          >
+          <Dropdown.Item onClick={e => {this.changeCalendarView('Day')} }>
             {" "}
             Day{" "}
           </Dropdown.Item>
