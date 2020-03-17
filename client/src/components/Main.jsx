@@ -62,7 +62,6 @@ export default class MainPage extends React.Component {
 
   componentDidMount() {
     this.getThisMonthEvents();
-    this.getEventsByIntervalDayVersion(this.state.dateContext.format('MM/DD/YYYY'));
   }
   /*
   getThisMonthEvents:
@@ -655,14 +654,14 @@ submits the data to be passed up to be integrated into google calendar
             </Col>
           </Row>
         </Container>
-      <Row>
+        <Row>
 
-        <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
+          <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
 
-        <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
-        <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
-      </Row>
-    </div>)
+          <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
+          <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
+        </Row>
+      </div>)
   }
 
   toggleShowRoutine = () => {
@@ -1180,22 +1179,22 @@ when there is a change in the event form
    * gets exactly the days worth of events from the google calendar
    */
   getEventsByIntervalDayVersion = (day) => {
-      axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-          params: {
-              start: day.toString(),
-              end: day.toString()
-          }
+    axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
+      params: {
+        start: day.toString(),
+        end: day.toString()
+      }
+    })
+      .then(response => {
+        var events = response.data;
+        this.setState({
+          dayEvents: events
+        }, () => {
+          console.log("New Events Arrived")
+        })
       })
-          .then(response => {
-              var events = response.data;
-              this.setState({
-                  dayEvents: events
-              }, () => {
-                  console.log("New Events Arrived")
-              })
-          })
-          .catch(error => {
-              console.log('Error Occurred ' + error);
-          });
+      .catch(error => {
+        console.log('Error Occurred ' + error);
+      });
   }
 }
