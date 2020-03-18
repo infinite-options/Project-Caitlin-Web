@@ -53,12 +53,12 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Month", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
     };
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() { }
 
   componentDidMount() {
     this.getThisMonthEvents();
@@ -171,7 +171,7 @@ export default class MainPage extends React.Component {
     var newStart = new Date(arg);
     newStart.setHours(i, 0, 0);
     var newEnd = new Date(arg);
-    newEnd.setHours(i+1, 0, 0);
+    newEnd.setHours(i + 1, 0, 0);
     this.setState({
       newEventID: '',
       newEventStart: newStart.toString(),
@@ -323,7 +323,7 @@ submits the data to be passed up to be integrated into google calendar
           });
         this.updateEventsArray();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // console.log(error);
       });
   };
@@ -349,7 +349,7 @@ submits the data to be passed up to be integrated into google calendar
         });
         this.updateEventsArray();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // console.log(error);
       });
   };
@@ -435,7 +435,7 @@ submits the data to be passed up to be integrated into google calendar
         });
         this.updateEventsArray();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // console.log(error);
       });
   };
@@ -505,7 +505,7 @@ submits the data to be passed up to be integrated into google calendar
   */
 
   updateEventsArray = () => {
-    if(this.state.calendarView === "Month") {
+    if (this.state.calendarView === "Month") {
       //The month view has transferred to a different month
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
@@ -518,7 +518,7 @@ submits the data to be passed up to be integrated into google calendar
       // console.log("getting intervals")
       // console.log(startDate.toString(), endDate.toString())
       this.getEventsByInterval(startDate.toString(), endDate.toString());
-    } else if(this.state.calendarView === "Day") {
+    } else if (this.state.calendarView === "Day") {
       this.getEventsByIntervalDayVersion(this.state.dateContext.format('MM/DD/YYYY'));
     }
   };
@@ -597,8 +597,8 @@ submits the data to be passed up to be integrated into google calendar
               {this.state.dayEventSelected ? (
                 this.eventFormAbstracted()
               ) : (
-                <div> </div>
-              )}
+                  <div> </div>
+                )}
             </Col>
           </Row>
         </Container>
@@ -656,10 +656,10 @@ submits the data to be passed up to be integrated into google calendar
         </Container>
         <Row>
 
-          <DayEvents dateContext={this.state.dateContext}  eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
+          <DayEvents dateContext={this.state.dateContext} eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
 
-          <DayRoutines dayRoutineClick =  {this.toggleShowRoutine} />
-          <DayGoals  dayGoalClick =  {this.toggleShowGoal}/>
+          <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
+          <DayGoals dayGoalClick={this.toggleShowGoal} />
         </Row>
       </div>)
   }
@@ -682,7 +682,7 @@ submits the data to be passed up to be integrated into google calendar
 
   showEventsFormbyCreateNewEventButton = () => {
     var newStart, newEnd;
-    if(this.state.calendarView == 'Month') {
+    if (this.state.calendarView == 'Month') {
       newStart = new Date();
       newStart.setHours(0, 0, 0, 0);
       newEnd = new Date();
@@ -715,7 +715,7 @@ submits the data to be passed up to be integrated into google calendar
   changeCalendarView = (view) => {
     this.setState({
       calendarView: view,
-    },this.updateEventsArray);
+    }, this.updateEventsArray);
   }
 
   abstractedMainEventGRShowButtons = () => {
@@ -766,11 +766,11 @@ submits the data to be passed up to be integrated into google calendar
           style={{ margin: "10px", float: "left" }}
           title={this.state.calendarView}
         >
-          <Dropdown.Item onClick={e => {this.changeCalendarView('Month')} }>
+          <Dropdown.Item onClick={e => { this.changeCalendarView('Month') }}>
             {" "}
             Month{" "}
           </Dropdown.Item>
-          <Dropdown.Item onClick={e => {this.changeCalendarView('Day')} }>
+          <Dropdown.Item onClick={e => { this.changeCalendarView('Day') }}>
             {" "}
             Day{" "}
           </Dropdown.Item>
@@ -1190,7 +1190,7 @@ when there is a change in the event form
         this.setState({
           dayEvents: events
         }, () => {
-          console.log("New Events Arrived")
+          console.log("New Events Arrived", events)
         })
       })
       .catch(error => {
