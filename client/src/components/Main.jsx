@@ -61,7 +61,7 @@ export default class MainPage extends React.Component {
   componentDidUpdate() { }
 
   componentDidMount() {
-    this.getThisMonthEvents();
+    this.updateEventsArray();
   }
   /*
   getThisMonthEvents:
