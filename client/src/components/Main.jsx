@@ -43,7 +43,7 @@ export default class MainPage extends React.Component {
       newEventLocation: "",
       newEventNotification: 30,
       newEventDescription: "",
-      newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
+      // newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
@@ -54,10 +54,14 @@ export default class MainPage extends React.Component {
       selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: true,
+      repeatOption: false,
       repeatDropDown: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: 1,
-      repeatOccurrence: 1
+      repeatOccurrence: 1,
+      repeatRadio: "Never",
+      repeatEndDate: ""
+      // repeatOccurrence: newEventStart0
     };
   }
 
@@ -73,10 +77,13 @@ export default class MainPage extends React.Component {
     });
   };
 
-  handleRepeatEndDate = eventKey => {
-    this.setState({
-      repeatEndDate: eventKey
-    });
+  handleRepeatEndDate = date => {
+    this.setState(
+      {
+        repeatEndDate: date
+      },
+      console.log("handleRepeatEndDate", date, this.state.repeatEndDate)
+    );
   };
 
   handleRepeatInputValue = eventKey => {
@@ -110,7 +117,7 @@ export default class MainPage extends React.Component {
       .then(response => {
         var events = response.data;
         this.setState({ originalEvents: events }, () => {
-          console.log("New Events Arrived main", response.data);
+          console.log("New Events Arrived cdm", response.data);
         });
       })
       .catch(error => {
@@ -131,9 +138,9 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        newEventStart: A.start.dateTime
-          ? new Date(A.start.dateTime)
-          : new Date(A.start.date).toISOString(),
+        // newEventStart: A.start.dateTime
+        // ? new Date(A.start.dateTime)
+        // : new Date(A.start.date).toISOString(),
         newEventEnd: A.end.dateTime
           ? new Date(A.end.dateTime)
           : new Date(A.end.date).toISOString(),
@@ -183,9 +190,9 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        newEventStart: A.start.dateTime
-          ? new Date(A.start.dateTime)
-          : new Date(A.start.date).toISOString(),
+        // newEventStart: A.start.dateTime
+        //   ? new Date(A.start.dateTime)
+        //   : new Date(A.start.date).toISOString(),
         newEventEnd: A.end.dateTime
           ? new Date(A.end.dateTime)
           : new Date(A.end.date).toISOString(),
@@ -203,7 +210,15 @@ export default class MainPage extends React.Component {
           : "",
         newEventDescription: A.description ? A.description : "",
         dayEventSelected: true,
-        isEvent: true
+        isEvent: true,
+        showRepeatModal: false,
+        repeatOption: false,
+        repeatDropDown: "DAY",
+        repeatMonthlyDropDown: "Monthly on day 13",
+        repeatInputValue: 1,
+        repeatOccurrence: 1,
+        repeatRadio: "Never",
+        repeatEndDate: ""
       },
       () => {
         console.log("callback from handEventClick");
@@ -223,20 +238,31 @@ export default class MainPage extends React.Component {
     newStart.setHours(0, 0, 0, 0);
     var newEnd = new Date(arg);
     newEnd.setHours(23, 59, 59, 59);
-    this.setState({
-      newEventID: "",
-      newEventStart: newStart.toString(),
-      newEventEnd: newEnd.toString(),
-      newEventStart0: newStart,
-      newEventEnd0: newEnd,
-      newEventName: "",
-      newEventGuests: "",
-      newEventLocation: "",
-      newEventNotification: 30,
-      newEventDescription: "",
-      dayEventSelected: true,
-      isEvent: false
-    });
+    this.setState(
+      {
+        newEventID: "",
+        // newEventStart: newStart.toString(),
+        newEventEnd: newEnd.toString(),
+        newEventStart0: newStart,
+        newEventEnd0: newEnd,
+        newEventName: "",
+        newEventGuests: "",
+        newEventLocation: "",
+        newEventNotification: 30,
+        newEventDescription: "",
+        dayEventSelected: true,
+        isEvent: false,
+        showRepeatModal: false,
+        repeatOption: false,
+        repeatDropDown: "DAY",
+        repeatMonthlyDropDown: "Monthly on day 13",
+        repeatInputValue: 1,
+        repeatOccurrence: 1,
+        repeatRadio: "Never",
+        repeatEndDate: ""
+      },
+      console.log("handledateclick")
+    );
   };
 
   /*
@@ -252,8 +278,8 @@ submits the data to be passed up to be integrated into google calendar
       return;
     }
     event.preventDefault();
-    var start = new Date(this.state.newEventStart).toISOString();
-    var end = new Date(this.state.newEventEnd).toISOString();
+    var start = new Date(this.state.newEventStart0).toISOString();
+    var end = new Date(this.state.newEventEnd0).toISOString();
     /**
      *
      * all variables within form need to be accessible up to this point
@@ -264,7 +290,7 @@ submits the data to be passed up to be integrated into google calendar
   updateEventClick = event => {
     //console.log(event);
     event.preventDefault();
-    let newStart = new Date(this.state.newEventStart).toISOString();
+    let newStart = new Date(this.state.newEventStart0).toISOString();
     let newEnd = new Date(this.state.newEventEnd).toISOString();
     if (this.state.newEventID === "") {
       return;
@@ -342,7 +368,7 @@ submits the data to be passed up to be integrated into google calendar
         this.setState({
           dayEventSelected: false,
           newEventName: "",
-          newEventStart: "",
+          // newEventStart: "",
           newEventEnd: "",
           newEventStart0: new Date(),
           newEventEnd0: new Date()
@@ -370,7 +396,7 @@ submits the data to be passed up to be integrated into google calendar
         // console.log(response);
         this.setState({
           dayEventSelected: false,
-          newEventStart: "",
+          // newEventStart: "",
           newEventEnd: ""
         });
         this.updateEventsArray();
@@ -421,7 +447,29 @@ submits the data to be passed up to be integrated into google calendar
     if (this.state.newEventNotification) {
       minutesNotification = this.state.newEventNotification;
     }
-    var event = {
+
+    // frequency in RRULE
+    let frequency =
+      this.state.repeatDropDown === "DAY"
+        ? "DAILY"
+        : this.state.repeatDropDown.concat("LY");
+
+    // recurrence string
+    let recurrence = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
+
+    if (this.state.repeatRadio === "After")
+      recurrence = recurrence.concat(`;COUNT=${this.state.repeatOccurrence}`);
+
+    if (this.state.repeatRadio === "On") {
+      let repeat_end_date = moment(this.state.repeatEndDate);
+      recurrence = recurrence.concat(
+        `;UNTIL=${repeat_end_date.format("YYYYMMDD")}`
+      );
+    }
+
+    console.log("recurrence", recurrence);
+
+    let event = {
       summary: this.state.newEventName,
       location: this.state.newEventLocation,
       description: this.state.newEventDescription,
@@ -436,11 +484,14 @@ submits the data to be passed up to be integrated into google calendar
         ]
       },
       start: {
-        dateTime: this.state.newEventStart0.toISOString()
+        dateTime: this.state.newEventStart0.toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
       end: {
-        dateTime: this.state.newEventEnd0.toISOString()
+        dateTime: this.state.newEventEnd0.toISOString(),
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
+      recurrence: [recurrence],
       attendees: formattedEmail
     };
 
@@ -455,14 +506,14 @@ submits the data to be passed up to be integrated into google calendar
         end: this.state.newEventEnd0.toISOString()
       })
       .then(response => {
-        // console.log(response);
+        console.log("createnewevent", response);
         this.setState({
           dayEventSelected: false
         });
         this.updateEventsArray();
       })
       .catch(function(error) {
-        // console.log(error);
+        console.log(error);
       });
   };
 
@@ -562,6 +613,17 @@ submits the data to be passed up to be integrated into google calendar
   closeRepeatModal = () => {
     this.setState({
       showRepeatModal: false
+    });
+  };
+
+  /*
+  saveRepeatChanges:
+  this will close repeat modal.
+  */
+  saveRepeatChanges = () => {
+    this.setState({
+      showRepeatModal: false,
+      repeatOption: true
     });
   };
 
@@ -714,7 +776,7 @@ submits the data to be passed up to be integrated into google calendar
     // console.log(newEnd)
     this.setState({
       newEventID: "",
-      newEventStart: newStart.toString(),
+      // newEventStart: newStart.toString(),
       newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
@@ -967,7 +1029,7 @@ submits the data to be passed up to be integrated into google calendar
     // const [endDate, setEndDate] = useState(this.state.newEventStart0);
     // const [inputValue, setInputValue] = useState(1);
 
-    this.state.repeatEndDate = this.state.newEventStart0;
+    // this.state.repeatEndDate = this.state.newEventStart0;
 
     const week_days = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -1067,106 +1129,128 @@ submits the data to be passed up to be integrated into google calendar
         </Modal.Header>
 
         <Modal.Body>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            Repeat every
-            <input
-              type="number"
-              min="1"
-              max="10000"
-              value={this.state.repeatInputValue}
-              style={inputStyle}
-              onChange={e => this.handleRepeatInputValue(e.target.value)}
-            />
-            <DropdownButton
-              title={this.state.repeatDropDown}
-              style={selectStyle}
-              variant="light"
+          <Form>
+            <Form.Group
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: "5px"
+              }}
             >
-              <Dropdown.Item
-                eventKey="DAY"
-                onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+              Repeat every
+              <input
+                type="number"
+                min="1"
+                max="10000"
+                value={this.state.repeatInputValue}
+                style={inputStyle}
+                onChange={e => this.handleRepeatInputValue(e.target.value)}
+              />
+              <DropdownButton
+                title={this.state.repeatDropDown}
+                style={selectStyle}
+                variant="light"
               >
-                day
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="WEEK"
-                onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
-              >
-                week
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="MONTH"
-                onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
-              >
-                month
-              </Dropdown.Item>
-              <Dropdown.Item
-                eventKey="YEAR"
-                onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
-              >
-                year
-              </Dropdown.Item>
-            </DropdownButton>
-          </div>
-          {this.state.repeatDropDown === "WEEK" && weekSelected}
-          {this.state.repeatDropDown === "MONTH" && monthSelected}
-          <Form
-            style={{
-              height: "140px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              marginTop: "20px"
-            }}
-            className="repeat-form"
-          >
-            Ends
-            <Form.Check type="radio">
-              <Form.Check.Label style={{ marginLeft: "5px" }}>
-                <Form.Check.Input type="radio" name="radios" />
-                Never
-              </Form.Check.Label>
-            </Form.Check>
-            <Form.Check type="radio">
-              <Form.Check.Label style={{ marginLeft: "5px" }}>
-                <Form.Check.Input
-                  type="radio"
-                  name="radios"
-                  style={{ marginTop: "10px" }}
-                />
-                On
-                {/* <Button style={{ marginLeft: "94px" }} variant="light"> */}
-                {/* Mar 14, 2020 */}
-                <DatePicker
-                  className="date-picker-btn btn btn-light"
-                  selected={this.state.repeatEndDate}
-                  onChange={date => this.handleRepeatEndDate(date)}
-                ></DatePicker>
-                {/* </Button> */}
-              </Form.Check.Label>
-            </Form.Check>
-            <Form.Check type="radio">
-              <Form.Check.Label style={{ marginLeft: "5px" }}>
-                <Form.Check.Input
-                  type="radio"
-                  name="radios"
-                  style={{ marginTop: "12px" }}
-                />
-                After
-                <span style={{ marginLeft: "60px" }}>
-                  <input
-                    type="number"
-                    min="1"
-                    max="10000"
-                    value={this.state.repeatOccurrence}
-                    onChange={e => this.handleRepeatOccurrence(e.target.value)}
-                    style={inputStyle}
-                    className="input-exception"
+                <Dropdown.Item
+                  eventKey="DAY"
+                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                >
+                  day
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="WEEK"
+                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                >
+                  week
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="MONTH"
+                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                >
+                  month
+                </Dropdown.Item>
+                <Dropdown.Item
+                  eventKey="YEAR"
+                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                >
+                  year
+                </Dropdown.Item>
+              </DropdownButton>
+            </Form.Group>
+            {this.state.repeatDropDown === "WEEK" && weekSelected}
+            {this.state.repeatDropDown === "MONTH" && monthSelected}
+            <Form.Group
+              style={{
+                height: "140px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                marginTop: "20px",
+                marginLeft: "5px"
+              }}
+              className="repeat-form"
+              onChange={e => {
+                if (e.target.type === "radio") {
+                  this.setState({
+                    repeatRadio: e.target.value
+                  });
+                }
+              }}
+            >
+              Ends
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="Never"
+                    name="radios"
+                    defaultChecked
                   />
-                  occurrence
-                </span>
-              </Form.Check.Label>
-            </Form.Check>
+                  Never
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="On"
+                    style={{ marginTop: "10px" }}
+                  />
+                  On
+                  <DatePicker
+                    className="date-picker-btn btn btn-light"
+                    selected={this.state.repeatEndDate}
+                    onChange={date => this.handleRepeatEndDate(date)}
+                  ></DatePicker>
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="After"
+                    style={{ marginTop: "12px" }}
+                  />
+                  After
+                  <span style={{ marginLeft: "60px" }}>
+                    <input
+                      type="number"
+                      min="1"
+                      max="10000"
+                      value={this.state.repeatOccurrence}
+                      onChange={e =>
+                        this.handleRepeatOccurrence(e.target.value)
+                      }
+                      style={inputStyle}
+                      className="input-exception"
+                    />
+                    occurrence
+                  </span>
+                </Form.Check.Label>
+              </Form.Check>
+            </Form.Group>
           </Form>
         </Modal.Body>
 
@@ -1174,7 +1258,9 @@ submits the data to be passed up to be integrated into google calendar
           <Button variant="secondary" onClick={this.closeRepeatModal}>
             Close
           </Button>
-          <Button variant="primary">Save changes</Button>
+          <Button variant="primary" onClick={this.saveRepeatChanges}>
+            Save changes
+          </Button>
         </Modal.Footer>
       </Modal.Dialog>
     );
@@ -1195,7 +1281,7 @@ submits the data to be passed up to be integrated into google calendar
                   placeholder="Title"
                 />
               </Form.Group>
-              <Form.Group value={this.state.newEventStart} controlId="Y">
+              <Form.Group value={this.state.newEventStart0} controlId="Y">
                 <Form.Label>Start Time</Form.Label> <br />
                 {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
               type="text" placeholder="Start Time" /> */}
@@ -1280,7 +1366,6 @@ submits the data to be passed up to be integrated into google calendar
           );
         }}
         showTimeSelect
-        timeFormat="HH:mm"
         timeIntervals={15}
         timeCaption="time"
         dateFormat="MMMM d, yyyy h:mm aa"
@@ -1307,7 +1392,6 @@ submits the data to be passed up to be integrated into google calendar
           );
         }}
         showTimeSelect
-        timeFormat="HH:mm"
         timeIntervals={15}
         timeCaption="time"
         dateFormat="MMMM d, yyyy h:mm aa"
@@ -1407,7 +1491,7 @@ when there is a change in the event form
           {
             newEventID: "",
             newEventName: "",
-            newEventStart: "",
+            // newEventStart: "",
             newEventEnd: "",
             originalEvents: events
           },
