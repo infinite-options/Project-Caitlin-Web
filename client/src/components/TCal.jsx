@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faExpandAlt
 } from "@fortawesome/free-solid-svg-icons";
+import { Row, Col } from "react-bootstrap";
 
 export default class TylersCalendarv1 extends React.Component {
 
@@ -107,6 +108,10 @@ export default class TylersCalendarv1 extends React.Component {
     this.props.handleDateClick(this.props.dateContext.format("M") + '/' + d + '/' + this.props.dateContext.format("Y"));
   }
 
+  onExpandClick = (d) => {
+    this.props.handleExpandClick(this.props.dateContext.format("M") + '/' + d + '/' + this.props.dateContext.format("Y"));
+  }
+
   render() {
     let daysInMonth = [];
     let weekdays = this.weekdays.map((day) => {
@@ -134,23 +139,27 @@ export default class TylersCalendarv1 extends React.Component {
 
       daysInMonth.push(
         <td key={d} onClick={this.onDayClick.bind(this, d)}>
-          <FontAwesomeIcon
-            style={{ float: "right" }}
-            icon={faExpandAlt}
-            size=".5x"
-            className="X"
-            onClick={e => {
-              console.log("Click on day ", d)
-            }}
-          />
           <div style={{ padding: '0', margin: '0', height: '110px', width: "100px", overflow: 'auto' }}>
             {
               // eslint-disable-next-line max-len
             }
-            <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircle" : ""}  >
-              <span className="fancytext" >
-                {d}
-              </span>
+            <div >
+              <Row>
+                <Col>
+                  <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircle" : ""} >
+                    <span className="fancytext"> {d} </span>
+                  </div>
+                </Col>
+                <Col>
+                  <FontAwesomeIcon
+                    style={{ 'marginLeft': '60%' }}
+                    icon={faExpandAlt}
+                    size="sm"
+                    className="X"
+                    onClick={this.onExpandClick.bind(this, d)}
+                  />
+                </Col>
+              </Row>
             </div>
             {this.getEventsforDay(d)}
           </div>
