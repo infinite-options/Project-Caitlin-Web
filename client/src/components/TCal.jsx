@@ -148,8 +148,8 @@ export default class TylersCalendarv1 extends React.Component {
             <div >
               <Row>
                 <Col>
-                  <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircle" : ""} >
-                    <span className="fancytext"> {d} </span>
+                  <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircleCurrent" : "numberCircle"} >
+                    <a className="fancytext"> {d} </a>
                   </div>
                 </Col>
                 <Col>
