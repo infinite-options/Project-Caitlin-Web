@@ -40,13 +40,14 @@ export default class DayEvents extends Component {
     }
 
     onEventClick = (e, i) => {
-         var arr = this.props.dayEvents;
-          e.stopPropagation();
-          this.props.eventClickDayView(arr[i]);
+        var arr = this.props.dayEvents;
+        e.stopPropagation();
+        this.props.eventClickDayView(arr[i]);
     }
 
-   
-    /**
+
+    /*
+     * TODO: events spanning multiple days
      * getEventItem: given an hour, this will return all events that was started during that hour
      *
     */
@@ -58,7 +59,7 @@ export default class DayEvents extends Component {
         var sameTimeEventCount = 0;
         var overlapEvent = 0;
         var addmarginLeft = 0;
-        var sameHourItems= 1;
+        var sameHourItems = 1;
         let itemWidth = this.state.eventBoxSize;
         var fontSize = 10;
 
@@ -82,45 +83,45 @@ export default class DayEvents extends Component {
 
                 sameTimeEventCount++;
                 //check if there is already an event there overlapping from another hour
-                for(let i = 0; i < arr.length; i++){
+                for (let i = 0; i < arr.length; i++) {
                     tempStart = arr[i].start.dateTime;
                     tempEnd = arr[i].end.dateTime;
                     let tempStartTime = new Date(tempStart);
                     let tempEndTime = new Date(tempEnd);
-                    if (tempStartTime.getHours() <  hour &&  tempEndTime.getHours()> hour) {
+                    if (tempStartTime.getHours() < hour && tempEndTime.getHours() > hour) {
                         addmarginLeft += 20;
                         itemWidth = itemWidth - 20;
                     }
                 }
 
-                if(sameTimeEventCount > 1  ){
+                if (sameTimeEventCount > 1) {
                     // console.log("add 20 in day");
-                     addmarginLeft += 20;
+                    addmarginLeft += 20;
                     // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
                     // itemWidth = itemWidth/(sameHourItems-1);
                     itemWidth = itemWidth - 20;
                 }
                 //chnage font size if not enough space
-                if((tempEndTime.getHours() - tempStartTime.getHours()) < 2){
+                if ((tempEndTime.getHours() - tempStartTime.getHours()) < 2) {
                     fontSize = 8;
                 }
 
                 // change color if more than one event in same time.
-                if(sameTimeEventCount <= 1){
-                     color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                if (sameTimeEventCount <= 1) {
+                    color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
                 }
-                else if( sameTimeEventCount == 2){
+                else if (sameTimeEventCount == 2) {
                     color = 'skyblue';
                 }
-                else{
+                else {
                     color = 'blue';
                 }
 
                 let newElement =
                     (
 
-                         <div key={"event" + i}>
-                            <div 
+                        <div key={"event" + i}>
+                            <div
 
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
@@ -135,14 +136,14 @@ export default class DayEvents extends Component {
                                 }}
                                 key={i}
                                 // value = {i}
-                                onClick = {e => this.onEventClick(e, i)}
+                                onClick={e => this.onEventClick(e, i)}
                                 style={{
                                     zIndex: this.state.zIndex,
                                     marginTop: minsToMarginTop + "px",
                                     padding: "5px",
                                     fontSize: fontSize + "px",
                                     border: "1px lightgray solid ",
-                                     float: "left",
+                                    float: "left",
                                     //  verticalAlign: " ",
                                     // verticalAlign: 'text-top',
                                     // textAlign:"left",
@@ -154,10 +155,10 @@ export default class DayEvents extends Component {
                                     height: height + "px",
                                     marginLeft: addmarginLeft + "px"
                                 }}>
-                                    {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                                {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                 {arr[i].summary}
                             </div>
-                         </div>
+                        </div>
                     );
                 res.push(newElement);
 
@@ -167,10 +168,10 @@ export default class DayEvents extends Component {
         return res;
     }
 
-    onDayClick = (e, i) => {   
-        
-        console.log("this is the hour:"+i);
-        this.props.handleDateClick((this.props.dateContext.format("M") + '/' + this.props.dateContext.format("D") + '/'+  this.props.dateContext.format("Y")), i);
+    onDayClick = (e, i) => {
+
+        console.log("this is the hour:" + i);
+        this.props.handleDateClick((this.props.dateContext.format("M") + '/' + this.props.dateContext.format("D") + '/' + this.props.dateContext.format("Y")), i);
     }
 
 
@@ -190,8 +191,8 @@ export default class DayEvents extends Component {
                             background: "aliceblue",
                             height: this.state.pxPerHour
                         }}
-                        onClick = {e =>this.onDayClick(e, i)}
-                        >
+                        onClick={e => this.onDayClick(e, i)}
+                    >
                         {this.getEventItem(i)}
                     </Col >
                 </Row>
