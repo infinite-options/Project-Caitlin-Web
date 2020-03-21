@@ -35,7 +35,7 @@ export default class MainPage extends React.Component {
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
-      dayEventSelected: true, //use to show modal to create new event
+      dayEventSelected: false, //use to show modal to create new event
       modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
       newEventName: "",
@@ -53,7 +53,7 @@ export default class MainPage extends React.Component {
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Month", // decides which type of calendar to display
-      showRepeatModal: true,
+      showRepeatModal: false,
       repeatOption: false,
       repeatDropDown: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
