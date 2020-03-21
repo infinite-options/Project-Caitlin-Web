@@ -65,12 +65,33 @@ export default class MainPage extends React.Component {
       repeatEndDate: "",
       showNoTitleError: "",
       showDateError: "",
-      notificationBeforeChecked: false
+      notificationBeforeChecked: false,
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
       // repeatOccurrence: newEventStart0
     };
   }
 
-  handleRepeatDropDown = eventKey => {
+  handleRepeatDropDown = (eventKey, week_days) => {
+    if (eventKey === "WEEK") {
+      const newByDay = {
+        ...this.state.byDay,
+        [this.state.newEventStart0.getDay()]: week_days[
+          this.state.newEventStart0.getDay()
+        ]
+      };
+      this.setState({
+        repeatDropDown: eventKey,
+        byDay: newByDay
+      });
+    }
     this.setState({
       repeatDropDown: eventKey
     });
@@ -130,8 +151,8 @@ export default class MainPage extends React.Component {
       });
   };
 
-  handleDayEventClick = (A) => {
-    var guestList = ''
+  handleDayEventClick = A => {
+    var guestList = "";
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
         return guestList + " " + nextGuest.email;
@@ -140,22 +161,43 @@ export default class MainPage extends React.Component {
     }
     this.setState({
       newEventID: A.id,
-      newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
-      newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
+      newEventStart0: A.start.dateTime
+        ? new Date(A.start.dateTime)
+        : new Date(A.start.date),
+      newEventEnd0: A.end.dateTime
+        ? new Date(A.end.dateTime)
+        : new Date(A.end.date),
       newEventName: A.summary,
       newEventGuests: guestList,
-      newEventLocation: (A.location) ? A.location : '',
-      newEventNotification: (A.reminders.overrides) ? (A.reminders.overrides[0].minutes) : '',
-      newEventDescription: (A.description) ? A.description : '',
+      newEventLocation: A.location ? A.location : "",
+      newEventNotification: A.reminders.overrides
+        ? A.reminders.overrides[0].minutes
+        : "",
+      newEventDescription: A.description ? A.description : "",
       dayEventSelected: true,
       isEvent: true,
       showNoTitleError: "",
       showDateError: "",
       showRepeatModal: false,
-      showAboutModal:false
+      showAboutModal: false,
+      repeatOption: false,
+      repeatDropDown: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: 1,
+      repeatOccurrence: 1,
+      repeatRadio: "Never",
+      repeatEndDate: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
     });
-  }
-
+  };
 
   /*
   handleEventClick For Month View. 
@@ -180,12 +222,18 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        newEventStart0: A.start.dateTime ? new Date(A.start.dateTime) : new Date(A.start.date),
-        newEventEnd0: A.end.dateTime ? new Date(A.end.dateTime) : new Date(A.end.date),
+        newEventStart0: A.start.dateTime
+          ? new Date(A.start.dateTime)
+          : new Date(A.start.date),
+        newEventEnd0: A.end.dateTime
+          ? new Date(A.end.dateTime)
+          : new Date(A.end.date),
         newEventName: A.summary,
         newEventGuests: guestList,
         newEventLocation: A.location ? A.location : "",
-        newEventNotification: A.reminders.overrides ? A.reminders.overrides[0].minutes: "",
+        newEventNotification: A.reminders.overrides
+          ? A.reminders.overrides[0].minutes
+          : "",
         newEventDescription: A.description ? A.description : "",
         dayEventSelected: true,
         isEvent: true,
@@ -199,8 +247,16 @@ export default class MainPage extends React.Component {
         repeatEndDate: "",
         showNoTitleError: "",
         showDateError: "",
-        showRepeatModal: false,
-        showAboutModal: false
+        showAboutModal: false,
+        byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        }
       },
       () => {
         console.log("callback from handEventClick");
@@ -208,28 +264,44 @@ export default class MainPage extends React.Component {
     );
   };
 
-  handleDateClickOnDayView = (arg, i) => { 
+  handleDateClickOnDayView = (arg, i) => {
     var newStart = new Date(arg);
     newStart.setHours(i, 0, 0);
     var newEnd = new Date(arg);
     newEnd.setHours(i + 1, 0, 0);
     this.setState({
-      newEventID: '',
+      newEventID: "",
       newEventStart0: newStart,
       newEventEnd0: newEnd,
-      newEventName: '',
-      newEventGuests: '',
-      newEventLocation: '',
+      newEventName: "",
+      newEventGuests: "",
+      newEventLocation: "",
       newEventNotification: 30,
-      newEventDescription: '',
+      newEventDescription: "",
       dayEventSelected: true,
       isEvent: false,
       showNoTitleError: "",
       showDateError: "",
       showRepeatModal: false,
-      showAboutModal:false
+      showAboutModal: false,
+      repeatOption: false,
+      repeatDropDown: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: 1,
+      repeatOccurrence: 1,
+      repeatRadio: "Never",
+      repeatEndDate: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
     });
-  }
+  };
 
   /*
   handleDateClick on Month View.
@@ -264,16 +336,22 @@ export default class MainPage extends React.Component {
         repeatEndDate: "",
         showNoTitleError: "",
         showDateError: "",
-        showRepeatModal: false,
-        showAboutModal: false
+        showAboutModal: false,
+        byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        }
       },
       console.log("handledateclick")
     );
   };
 
-
-
-  validate = () =>{
+  validate = () => {
     let titleError = "";
     let dayError = "";
     var startDay = new Date(this.state.newEventStart0).getDate();
@@ -284,41 +362,42 @@ export default class MainPage extends React.Component {
     var endYear = new Date(this.state.newEventEnd0).getFullYear();
     var startHour = new Date(this.state.newEventStart0).getHours();
     var endHour = new Date(this.state.newEventEnd0).getHours();
-    if((startDay > endDay  &&  startMonth === endMonth) || 
-    (startMonth > endMonth && startYear=== endYear) || 
-    (startYear > endYear) ||
-    (startHour > endHour && startDay === endDay ) ){
-      dayError = "Invalid: start date is before end date"
+    if (
+      (startDay > endDay && startMonth === endMonth) ||
+      (startMonth > endMonth && startYear === endYear) ||
+      startYear > endYear ||
+      (startHour > endHour && startDay === endDay)
+    ) {
+      dayError = "Invalid: start date is before end date";
     }
-    if(this.state.newEventName === ""){
+    if (this.state.newEventName === "") {
       titleError = "Invalid: No Title";
     }
     //empty string evalutes to false.
-    if(titleError || dayError){
-      this.setState({showNoTitleError: titleError,showDateError: dayError});
+    if (titleError || dayError) {
+      this.setState({ showNoTitleError: titleError, showDateError: dayError });
       return false;
     }
     return true;
-  } 
+  };
 
-  /*handleSubmit:
+  // handleSubmit:
 
   handleExpandClick = arg => {
-    let newDate = new Date(arg)
+    let newDate = new Date(arg);
     console.log(newDate);
-    this.setState({
-      dateContext: moment(newDate),
-      calendarView: 'Day',
-    }, this.updateEventsArray);
-  }
+    this.setState(
+      {
+        dateContext: moment(newDate),
+        calendarView: "Day"
+      },
+      this.updateEventsArray
+    );
+  };
 
-  /*
-  *
-handleSubmit:
+  // handleSubmit:
 
-submits the data to be passed up to be integrated into google calendar
-*
-*/
+  // submits the data to be passed up to be integrated into google calendar
 
   handleSubmit = event => {
     if (this.state.start === "" || this.state.end === "") {
@@ -326,17 +405,17 @@ submits the data to be passed up to be integrated into google calendar
       return;
     }
     const isValid = this.validate();
-    if(isValid){
+    if (isValid) {
       event.preventDefault();
       this.createEvent(this.state.newEventName);
-      this.setState({showNoTitleError: "", showDateError: ""});
-    }  
-  }
+      this.setState({ showNoTitleError: "", showDateError: "" });
+    }
+  };
 
-  updateEventClick = (event) => {
+  updateEventClick = event => {
     event.preventDefault();
     const isValid = this.validate();
-    if(isValid){
+    if (isValid) {
       if (this.state.newEventID === "") {
         return;
       } else {
@@ -353,7 +432,7 @@ submits the data to be passed up to be integrated into google calendar
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = (index) => {
+  updateRequest = index => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -391,27 +470,26 @@ submits the data to be passed up to be integrated into google calendar
       sequence: 0
     };
 
-    axios.post('/updateEvent', {
-      extra: updatedEvent,
-      ID: this.state.newEventID,
-    })
-      .then((response) => {
-        this.setState(
-          {
-            dayEventSelected: false,
-            newEventName: '',
-            // newEventStart: '',
-            // newEventEnd: '',
-            newEventStart0: new Date(),
-            newEventEnd0: new Date()
-          });
+    axios
+      .post("/updateEvent", {
+        extra: updatedEvent,
+        ID: this.state.newEventID
+      })
+      .then(response => {
+        this.setState({
+          dayEventSelected: false,
+          newEventName: "",
+          // newEventStart: '',
+          // newEventEnd: '',
+          newEventStart0: new Date(),
+          newEventEnd0: new Date()
+        });
 
         this.updateEventsArray();
       })
 
       .catch(function(error) {
         console.log(error);
-
       });
   };
 
@@ -430,7 +508,7 @@ submits the data to be passed up to be integrated into google calendar
       .then(response => {
         // console.log(response);
         this.setState({
-          dayEventSelected: false,
+          dayEventSelected: false
           // newEventStart: "",
           // newEventEnd: ""
         });
@@ -439,7 +517,6 @@ submits the data to be passed up to be integrated into google calendar
 
       .catch(function(error) {
         console.log(error);
-
       });
   };
 
@@ -447,25 +524,25 @@ submits the data to be passed up to be integrated into google calendar
   createEvent:
   Basically creates a new event based on details given
   */
-    /*
-     * TODO: Replace formatting email with function
-     */
-    /*
-     * https://tools.ietf.org/html/rfc3696 for what is valid email addresses
-     *
-     * local-part@domain-part
-     * local-part: alphanumeric, symbols ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ with restriction no two . in a row
-     * localWord = [a-zA-Z!#$%&'*+\-/=?^_`{|}~]+
-     * localPart = localWord (\.localWord)*
-     * domain-part:
-     * domains: alphanumeric, symbol - with restriction - not at beginning or end
-     * dot separate domains, top level domain can have optional . at end
-     * domain = [a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?
-     * domainPart = domain(\.domain)*\.domain(\.)?
-     * email: localPart@domainPart
-     */
-    //Note: This works, but does not email the guests that they are invited to the event
-  createEvent = (newTitle) => {
+  /*
+   * TODO: Replace formatting email with function
+   */
+  /*
+   * https://tools.ietf.org/html/rfc3696 for what is valid email addresses
+   *
+   * local-part@domain-part
+   * local-part: alphanumeric, symbols ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ with restriction no two . in a row
+   * localWord = [a-zA-Z!#$%&'*+\-/=?^_`{|}~]+
+   * localPart = localWord (\.localWord)*
+   * domain-part:
+   * domains: alphanumeric, symbol - with restriction - not at beginning or end
+   * dot separate domains, top level domain can have optional . at end
+   * domain = [a-zA-Z0-9]([a-zA-Z0-9\-]*[a-zA-Z0-9])?
+   * domainPart = domain(\.domain)*\.domain(\.)?
+   * email: localPart@domainPart
+   */
+  //Note: This works, but does not email the guests that they are invited to the event
+  createEvent = newTitle => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -494,17 +571,26 @@ submits the data to be passed up to be integrated into google calendar
     // recurrence string
     let recurrence = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
 
+    // If seleted WEEK, add BYDAY to recurrence string
+    if (this.state.repeatDropDown === "WEEK") {
+      let selectedDays = [];
+      for (let [key, value] of Object.entries(this.state.byDay)) {
+        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
+      }
+      recurrence = recurrence.concat(`;BYDAY=${selectedDays.toString()}`);
+    }
+
+    // If selected After, add COUNT to recurrence string
     if (this.state.repeatRadio === "After")
       recurrence = recurrence.concat(`;COUNT=${this.state.repeatOccurrence}`);
 
+    // If selected On, add UNTIL to recurrence string
     if (this.state.repeatRadio === "On") {
       let repeat_end_date = moment(this.state.repeatEndDate);
       recurrence = recurrence.concat(
         `;UNTIL=${repeat_end_date.format("YYYYMMDD")}`
       );
     }
-
-    console.log("recurrence", recurrence);
 
     let event = {
       summary: this.state.newEventName,
@@ -546,7 +632,7 @@ submits the data to be passed up to be integrated into google calendar
         });
         this.updateEventsArray();
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // console.log(error);
       });
   };
@@ -628,7 +714,9 @@ submits the data to be passed up to be integrated into google calendar
       endDate.setHours(23, 59, 59);
       this.getEventsByInterval(startDate.toString(), endDate.toString());
     } else if (this.state.calendarView === "Day") {
-      this.getEventsByIntervalDayVersion(this.state.dateContext.format('MM/DD/YYYY'));
+      this.getEventsByIntervalDayVersion(
+        this.state.dateContext.format("MM/DD/YYYY")
+      );
     }
   };
 
@@ -722,9 +810,7 @@ submits the data to be passed up to be integrated into google calendar
               </div>
             </Col>
             <Col style={{ marginLeft: "25px" }}>
-
               {this.showDayViewOrAboutView()}
-
             </Col>
           </Row>
         </Container>
@@ -732,7 +818,6 @@ submits the data to be passed up to be integrated into google calendar
     );
   }
 
- 
   dayViewAbstracted = () => {
     return (
       <div
@@ -782,12 +867,19 @@ submits the data to be passed up to be integrated into google calendar
           </Row>
         </Container>
         <Row>
-          <DayEvents dateContext={this.state.dateContext} eventClickDayView={this.handleDayEventClick} handleDateClick={this.handleDateClickOnDayView} dayEvents={this.state.dayEvents} getEventsByInterval={this.state.getEventsByIntervalDayVersion} />
+          <DayEvents
+            dateContext={this.state.dateContext}
+            eventClickDayView={this.handleDayEventClick}
+            handleDateClick={this.handleDateClickOnDayView}
+            dayEvents={this.state.dayEvents}
+            getEventsByInterval={this.state.getEventsByIntervalDayVersion}
+          />
           <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
           <DayGoals dayGoalClick={this.toggleShowGoal} />
         </Row>
-      </div>)
-  }
+      </div>
+    );
+  };
 
   toggleShowRoutine = () => {
     this.setState({
@@ -807,13 +899,13 @@ submits the data to be passed up to be integrated into google calendar
 
   showEventsFormbyCreateNewEventButton = () => {
     var newStart, newEnd;
-    if (this.state.calendarView == 'Month') {
+    if (this.state.calendarView == "Month") {
       newStart = new Date();
       newStart.setHours(0, 0, 0, 0);
       newEnd = new Date();
       newEnd.setHours(23, 59, 59, 59);
-    } else if (this.state.calendarView === 'Day') {
-      newStart = new Date(this.state.dateContext.toDate())
+    } else if (this.state.calendarView === "Day") {
+      newStart = new Date(this.state.dateContext.toDate());
       newStart.setHours(0, 0, 0, 0);
       newEnd = new Date(this.state.dateContext.toDate());
       newEnd.setHours(23, 59, 59, 59);
@@ -834,11 +926,14 @@ submits the data to be passed up to be integrated into google calendar
     });
   };
 
-  changeCalendarView = (view) => {
-    this.setState({
-      calendarView: view,
-    }, this.updateEventsArray);
-  }
+  changeCalendarView = view => {
+    this.setState(
+      {
+        calendarView: view
+      },
+      this.updateEventsArray
+    );
+  };
 
   abstractedMainEventGRShowButtons = () => {
     return (
@@ -847,12 +942,15 @@ submits the data to be passed up to be integrated into google calendar
           style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
-            this.setState({
-              showAboutModal: false
-              // dayEventSelected: !this.state.dayEventSelected
-            }, ()=> {
-              this.showEventsFormbyCreateNewEventButton();
-            });
+            this.setState(
+              {
+                showAboutModal: false
+                // dayEventSelected: !this.state.dayEventSelected
+              },
+              () => {
+                this.showEventsFormbyCreateNewEventButton();
+              }
+            );
           }}
         >
           New Event
@@ -898,18 +996,26 @@ submits the data to be passed up to be integrated into google calendar
             });
           }}
         >
-          About 
+          About
         </Button>
 
         <DropdownButton
           style={{ margin: "10px", float: "left" }}
           title={this.state.calendarView}
         >
-          <Dropdown.Item onClick={e => { this.changeCalendarView('Month') }}>
+          <Dropdown.Item
+            onClick={e => {
+              this.changeCalendarView("Month");
+            }}
+          >
             {" "}
             Month{" "}
           </Dropdown.Item>
-          <Dropdown.Item onClick={e => { this.changeCalendarView('Day') }}>
+          <Dropdown.Item
+            onClick={e => {
+              this.changeCalendarView("Day");
+            }}
+          >
             {" "}
             Day{" "}
           </Dropdown.Item>
@@ -983,37 +1089,34 @@ submits the data to be passed up to be integrated into google calendar
   aboutFormAbstracted = () => {
     return (
       <Modal.Dialog
-      style={{
-        borderRadius: "15px",
-        boxShadow:
-          "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-        marginLeft: "0",
-        width: "350px",
-        marginTop: "0"
-      }}
-    >
-      <Modal.Header
-        closeButton
-        onHide={() => {
-          this.setState({ showAboutModal: false });
+        style={{
+          borderRadius: "15px",
+          boxShadow:
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+          marginLeft: "0",
+          width: "350px",
+          marginTop: "0"
         }}
       >
-        <Modal.Title>
-          <h5 className="normalfancytext">About Me</h5>{" "}
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-          <input type = "file" onChange = {this.handleFileSelected}/>
-          <button onClick= {this.imageUploadHandler}> Upload</button>
-      </Modal.Body>
-      <Modal.Footer>
+        <Modal.Header
+          closeButton
+          onHide={() => {
+            this.setState({ showAboutModal: false });
+          }}
+        >
+          <Modal.Title>
+            <h5 className="normalfancytext">About Me</h5>{" "}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input type="file" onChange={this.handleFileSelected} />
+          <button onClick={this.imageUploadHandler}> Upload</button>
+        </Modal.Body>
+        <Modal.Footer>
           <Container fluid>
             <Row>
-              <Col  xs={4}>
-                <Button
-                  variant="info"
-                  type="submit"
-                > 
+              <Col xs={4}>
+                <Button variant="info" type="submit">
                   Save
                 </Button>
               </Col>
@@ -1025,22 +1128,20 @@ submits the data to be passed up to be integrated into google calendar
             </Row>
           </Container>
         </Modal.Footer>
-    </Modal.Dialog>
+      </Modal.Dialog>
     );
   };
-  
-  imageUploadHandler = ()=>{
 
-  }
-  handleFileSelected =( event) => {
+  imageUploadHandler = () => {};
+  handleFileSelected = event => {
     console.log(event.target.files[0]);
-  }
+  };
 
-  hideAboutForm = (e) => {
+  hideAboutForm = e => {
     this.setState({
       showAboutModal: false
     });
-  }
+  };
   /**
    * This is where the event form is made
    *
@@ -1098,7 +1199,7 @@ submits the data to be passed up to be integrated into google calendar
                   onClick={this.handleSubmit}
                   variant="info"
                   type="submit"
-                > 
+                >
                   Submit
                 </Button>
               </Col>
@@ -1147,14 +1248,24 @@ submits the data to be passed up to be integrated into google calendar
 
     // this.state.repeatEndDate = this.state.newEventStart0;
 
-    const week_days = ["S", "M", "T", "W", "T", "F", "S"];
+    const week_days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+
+    const d = new Date();
 
     // Custom styles
     const modalStyle = {
       position: "absolute",
       zIndex: "5",
       left: "50%",
-      top: "60%",
+      top: "55%",
       transform: "translate(-50%, -50%)",
       width: "400px"
     };
@@ -1183,11 +1294,21 @@ submits the data to be passed up to be integrated into google calendar
     // const radioInputStyle = { display: "flex", alignItems: "center" };
 
     // onClick event handler for the circles
-    const selectedDot = e => {
+    const selectedDot = (e, index) => {
       let curClass = e.target.classList;
-      curClass.contains("selected")
-        ? curClass.remove("selected")
-        : curClass.add("selected");
+      if (curClass.contains("selected")) {
+        curClass.remove("selected");
+        const newByDay = { ...this.state.byDay, [index]: "" };
+        this.setState({
+          byDay: newByDay
+        });
+      } else {
+        curClass.add("selected");
+        const newByDay = { ...this.state.byDay, [index]: week_days[index] };
+        this.setState({
+          byDay: newByDay
+        });
+      }
     };
 
     // If selected repeat every week, the following shows.
@@ -1204,9 +1325,9 @@ submits the data to be passed up to be integrated into google calendar
                     ? "dot selected"
                     : "dot"
                 }
-                onClick={e => selectedDot(e)}
+                onClick={e => selectedDot(e, i)}
               >
-                {day}
+                {day.charAt(0)}
               </span>
             );
           })}
@@ -1215,26 +1336,26 @@ submits the data to be passed up to be integrated into google calendar
     );
 
     // If selected repeat every month, the following shows.
-    const monthSelected = (
-      <DropdownButton
-        title={this.state.repeatMonthlyDropDown}
-        variant="light"
-        style={{ marginTop: "20px" }}
-      >
-        <Dropdown.Item
-          eventKey="Monthly on day 13"
-          onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
-        >
-          Monthly on day 13
-        </Dropdown.Item>
-        <Dropdown.Item
-          eventKey="Monthly on the second Friday"
-          onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
-        >
-          Monthly on the second Friday
-        </Dropdown.Item>
-      </DropdownButton>
-    );
+    // const monthSelected = (
+    //   <DropdownButton
+    //     title={this.state.repeatMonthlyDropDown}
+    //     variant="light"
+    //     style={{ marginTop: "20px" }}
+    //   >
+    //     <Dropdown.Item
+    //       eventKey="Monthly on day 13"
+    //       onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
+    //     >
+    //       Monthly on day 13
+    //     </Dropdown.Item>
+    //     <Dropdown.Item
+    //       eventKey="Monthly on the second Friday"
+    //       onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
+    //     >
+    //       Monthly on the second Friday
+    //     </Dropdown.Item>
+    //   </DropdownButton>
+    // );
 
     return (
       <Modal.Dialog style={modalStyle}>
@@ -1275,7 +1396,9 @@ submits the data to be passed up to be integrated into google calendar
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="WEEK"
-                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                  onSelect={eventKey =>
+                    this.handleRepeatDropDown(eventKey, week_days)
+                  }
                 >
                   week
                 </Dropdown.Item>
@@ -1294,7 +1417,7 @@ submits the data to be passed up to be integrated into google calendar
               </DropdownButton>
             </Form.Group>
             {this.state.repeatDropDown === "WEEK" && weekSelected}
-            {this.state.repeatDropDown === "MONTH" && monthSelected}
+            {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group
               style={{
                 height: "140px",
@@ -1396,7 +1519,10 @@ submits the data to be passed up to be integrated into google calendar
                   type="text"
                   placeholder="Title"
                 />
-                <div style = {{color: "red"}}> {this.state.showNoTitleError}</div>
+                <div style={{ color: "red" }}>
+                  {" "}
+                  {this.state.showNoTitleError}
+                </div>
               </Form.Group>
               <Form.Group value={this.state.newEventStart0} controlId="Y">
                 <Form.Label>Start Time</Form.Label> <br />
@@ -1406,7 +1532,7 @@ submits the data to be passed up to be integrated into google calendar
                 <Form.Label>End Time</Form.Label>
                 <br />
                 {this.endTimePicker()}
-                <div style = {{color: "red"}}> {this.state.showDateError}</div>
+                <div style={{ color: "red" }}> {this.state.showDateError}</div>
               </Form.Group>
               <Form.Group value={"Extra Slot"}>
                 <Form.Label>Guests</Form.Label>
@@ -1442,55 +1568,71 @@ submits the data to be passed up to be integrated into google calendar
                     {" "}
                     <Form.Text> Minutes </Form.Text>{" "}
                   </Col>
-                </Row>  
+                </Row>
               </Form.Group>
 
-               <Form.Group controlId="formBasicCheckbox">
-              <Row style={{  height:"30px"}}>
+              <Form.Group controlId="formBasicCheckbox">
+                <Row style={{ height: "30px" }}>
                   <Col>
-                    <Form.Check  type="checkbox" >
-                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
+                    <Form.Check type="checkbox">
+                      <Form.Check.Input
+                        type="checkbox"
+                        onChange={e => this.notifyBefore(e)}
+                        style={{ width: "20px", height: "20px" }}
+                      />
                     </Form.Check>
                   </Col>
                   <Col>
                     {/* <Form.Check  type="checkbox" >
                     <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
                     </Form.Check> */}
-                    <Form.Check  type="checkbox" >
-                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
-                    <Form.Check.Label style ={{marginLeft:"10px"}}>Before</Form.Check.Label>
+                    <Form.Check type="checkbox">
+                      <Form.Check.Input
+                        type="checkbox"
+                        onChange={e => this.notifyBefore(e)}
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                      <Form.Check.Label style={{ marginLeft: "10px" }}>
+                        Before
+                      </Form.Check.Label>
                     </Form.Check>
                   </Col>
-              </Row>
-              {this.state.notificationBeforeChecked && (
-                  <EventBeforeChecked  />
-              )}
-             
+                </Row>
+                {this.state.notificationBeforeChecked && <EventBeforeChecked />}
               </Form.Group>
 
               <Form.Group controlId="formBasicCheckbox">
-              <Row style={{  height:"30px"}}>
+                <Row style={{ height: "30px" }}>
                   <Col>
-                    <Form.Check  type="checkbox" >
-                    <Form.Check.Input type="checkbox"  style={{ width:"20px", height:"20px"}}/>
-                    <Form.Check.Label style ={{marginLeft:"10px"}}>During</Form.Check.Label>
+                    <Form.Check type="checkbox">
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                      <Form.Check.Label style={{ marginLeft: "10px" }}>
+                        During
+                      </Form.Check.Label>
                     </Form.Check>
                   </Col>
-              </Row>
+                </Row>
               </Form.Group>
               <Form.Group controlId="formBasicCheckbox">
-              <Row style={{  height:"30px"}}>
+                <Row style={{ height: "30px" }}>
                   <Col>
-                    <Form.Check  type="checkbox" >
-                    <Form.Check.Input type="checkbox"  style={{ width:"20px", height:"20px"}}/>
-                    <Form.Check.Label style ={{marginLeft:"10px"}}>After</Form.Check.Label>
+                    <Form.Check type="checkbox">
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                      <Form.Check.Label style={{ marginLeft: "10px" }}>
+                        After
+                      </Form.Check.Label>
                     </Form.Check>
                   </Col>
-              </Row>
+                </Row>
               </Form.Group>
-              
 
-                 {/* End here */}
+              {/* End here */}
               <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
                 <Form.Control
@@ -1509,13 +1651,12 @@ submits the data to be passed up to be integrated into google calendar
     );
   };
 
-
-  notifyBefore = (e)=>{
+  notifyBefore = e => {
     console.log("this is result of checked:");
     console.log(e.target.checked);
     let beforeChecked = e.target.checked;
-    this.setState({notificationBeforeChecked:beforeChecked});
-  }
+    this.setState({ notificationBeforeChecked: beforeChecked });
+  };
 
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
@@ -1635,12 +1776,14 @@ when there is a change in the event form
   *
   */
   getEventsByInterval = (start0, end0) => {
-    axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-      params: {
-        start: start0,
-        end: end0
-      }
-    })
+    axios
+      .get("/getEventsByInterval", {
+        //get normal google calendar data for possible future use
+        params: {
+          start: start0,
+          end: end0
+        }
+      })
       .then(response => {
         var events = response.data;
         this.setState(
@@ -1665,23 +1808,28 @@ when there is a change in the event form
    * getEventsByIntervalDayVersion:
    * gets exactly the days worth of events from the google calendar
    */
-  getEventsByIntervalDayVersion = (day) => {
-    axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-      params: {
-        start: day.toString(),
-        end: day.toString()
-      }
-    })
+  getEventsByIntervalDayVersion = day => {
+    axios
+      .get("/getEventsByInterval", {
+        //get normal google calendar data for possible future use
+        params: {
+          start: day.toString(),
+          end: day.toString()
+        }
+      })
       .then(response => {
         var events = response.data;
-        this.setState({
-          dayEvents: events
-        }, () => {
-          console.log("New Events Arrived", events)
-        })
+        this.setState(
+          {
+            dayEvents: events
+          },
+          () => {
+            console.log("New Events Arrived", events);
+          }
+        );
       })
       .catch(error => {
-        console.log('Error Occurred ' + error);
+        console.log("Error Occurred " + error);
       });
-  }
+  };
 }
