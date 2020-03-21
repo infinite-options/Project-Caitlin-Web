@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import moment from 'moment';
+// import axios from 'axios';
+// import moment from 'moment';
 import {
-    OverlayTrigger,
-    Tooltip, Button, Container, Row, Col, Modal
+    Tooltip, Container, Row, Col
 } from 'react-bootstrap';
 
 export default class DayEvents extends Component {

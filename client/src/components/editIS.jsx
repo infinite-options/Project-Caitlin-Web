@@ -8,10 +8,6 @@ export default class editIS extends Component {
 
     constructor(props) {
         super(props)
-        // console.log('editIs constructor');
-        // console.log('Edit index ' + this.props.i)
-        // console.log(this.props.FBPath)
-        // console.log(this.props.ISArray)
         this.state = {
             showEditModal: false,
             itemToEdit: this.props.ISArray[this.props.i]
@@ -19,7 +15,6 @@ export default class editIS extends Component {
     }
 
     newInputSubmit = () => {
-        // console.log("submitting edited formed to firebase");
         let newArr  = this.props.ISArray;
         newArr[this.props.i] = this.state.itemToEdit;
 
@@ -34,12 +29,8 @@ export default class editIS extends Component {
         if(!newArr[this.props.i]['audio']){
             newArr[this.props.i]['audio'] = '';
         }
-
-
         this.props.FBPath.update({ 'instructions&steps': newArr }).then(
             (doc) => {
-                // console.log('updateEntireArray Finished')
-                // console.log(doc);
                 if (this.props != null) {
                     // console.log("refreshing FireBasev2 from updating ISItem");
                     this.setState({ showEditModal: false })
@@ -83,6 +74,16 @@ export default class editIS extends Component {
                 } />
             </div >
 
+            <label>This Takes Me</label>
+            <div className="input-group mb-3">
+            <input 
+                style={{ width: "50px", textAlign: "right", height: "30px"}}
+                placeholder= "30"
+
+            />
+            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            </div>
+            
             <label>Available to Caitlin?</label>
             <div className="input-group mb-3" >
                 <input
@@ -151,24 +152,23 @@ export default class editIS extends Component {
     showIcon = () => {
         return (
             <div>
-            <FontAwesomeIcon
+                <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
                     style={{ color: "#000000" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
                     icon={faEdit} size="lg"
                 />
-
-                </div>
+            </div>
         )
     }
 
     render() {
         return (
             <div>
-                {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
-                {(this.state.showEditModal ? this.editISForm() : <div> </div>)}
-             
+                {/* {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
+                {(this.state.showEditModal ? this.editISForm() : <div> </div>)} */}
+                {this.state.showEditModal ? this.editISForm() : this.showIcon()}
             </div>
         )
     }

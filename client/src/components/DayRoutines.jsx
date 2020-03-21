@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import axios from 'axios';
+// import axios from 'axios';
 import moment from 'moment';
-import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
+import { Container, Row, Col} from 'react-bootstrap';
 
 import firebase from "./firebase";
 export default class DayRoutines extends Component {

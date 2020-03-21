@@ -18,6 +18,7 @@ import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
 import RepeatModal from "./RepeatModal.jsx";
+import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -30,31 +31,34 @@ export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //Saved variables
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
+      showAboutModal: false,
       dayEventSelected: false, //use to show modal to create new event
-      modelSelected: false, // use to display the routine/goals modal
+      // modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
       newEventName: "",
       newEventGuests: "",
       newEventLocation: "",
       newEventNotification: 30,
       newEventDescription: "",
-      newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
-      newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
+      // newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
+      // newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      selectedDay: null, // Any use of this variable should be deleted in future revisions
+      // selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
+      showNoTitleError: "",
+      showDateError: "",
+      notificationBeforeChecked: false,
     };
   }
 
@@ -88,7 +92,6 @@ export default class MainPage extends React.Component {
 
 
   handleDayEventClick = (A) => {
-    // console.log("this is from day view");
     var guestList = ''
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
@@ -96,11 +99,8 @@ export default class MainPage extends React.Component {
       }, '');
       console.log("Guest List:", A.attendees, guestList);
     }
-
     this.setState({
       newEventID: A.id,
-      newEventStart: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)).toISOString(),
-      newEventEnd: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)).toISOString(),
       newEventStart0: (A.start.dateTime) ? (new Date(A.start.dateTime)) : (new Date(A.start.date)),
       newEventEnd0: (A.end.dateTime) ? (new Date(A.end.dateTime)) : (new Date(A.end.date)),
       newEventName: A.summary,
@@ -110,13 +110,15 @@ export default class MainPage extends React.Component {
       newEventDescription: (A.description) ? A.description : '',
       dayEventSelected: true,
       isEvent: true,
-    }, () => {
-      console.log('callback from handEventClick')
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal:false
     });
   }
 
   /*
-  handleEventClick:
+  handleEventClick For Month View. 
   when a event on the calendar is clicked, the function below
   will execute and save the clicked event varibles to this.state and
   passed that into the form where the user can edit that data
@@ -137,45 +139,29 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        newEventStart: A.start.dateTime
-          ? new Date(A.start.dateTime)
-          : new Date(A.start.date).toISOString(),
-        newEventEnd: A.end.dateTime
-          ? new Date(A.end.dateTime)
-          : new Date(A.end.date).toISOString(),
-        newEventStart0: A.start.dateTime
-          ? new Date(A.start.dateTime)
-          : new Date(A.start.date),
-        newEventEnd0: A.end.dateTime
-          ? new Date(A.end.dateTime)
-          : new Date(A.end.date),
+        newEventStart0: A.start.dateTime ? new Date(A.start.dateTime) : new Date(A.start.date),
+        newEventEnd0: A.end.dateTime ? new Date(A.end.dateTime) : new Date(A.end.date),
         newEventName: A.summary,
         newEventGuests: guestList,
         newEventLocation: A.location ? A.location : "",
-        newEventNotification: A.reminders.overrides
-          ? A.reminders.overrides[0].minutes
-          : "",
+        newEventNotification: A.reminders.overrides ? A.reminders.overrides[0].minutes: "",
         newEventDescription: A.description ? A.description : "",
         dayEventSelected: true,
-        isEvent: true
-      },
-      () => {
-        console.log("callback from handEventClick");
-      }
-    );
+        isEvent: true,
+        showNoTitleError: "",
+        showDateError: "",
+        showRepeatModal: false,
+        showAboutModal:false
+      });
   };
 
-  handleDateClickOnDayView = (arg, i) => { // bind with an arrow function
-    console.log("we are in the handleDateOnDayView");
-    console.log("this is the i:" + i);
+  handleDateClickOnDayView = (arg, i) => { 
     var newStart = new Date(arg);
     newStart.setHours(i, 0, 0);
     var newEnd = new Date(arg);
     newEnd.setHours(i + 1, 0, 0);
     this.setState({
       newEventID: '',
-      newEventStart: newStart.toString(),
-      newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: '',
@@ -184,25 +170,27 @@ export default class MainPage extends React.Component {
       newEventNotification: 30,
       newEventDescription: '',
       dayEventSelected: true,
-      isEvent: false
+      isEvent: false,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal:false
     });
   }
+
   /*
-  handleDateClick:
+  handleDateClick on Month View.
   This will trigger when a date is clicked, it will present
   the user with a new form to create a event
   */
   //TODO: Initialize Date, set other properties to empty
   handleDateClick = arg => {
-    // bind with an arrow function
     var newStart = new Date(arg);
     newStart.setHours(0, 0, 0, 0);
     var newEnd = new Date(arg);
     newEnd.setHours(23, 59, 59, 59);
     this.setState({
       newEventID: "",
-      newEventStart: newStart.toString(),
-      newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: "",
@@ -211,9 +199,45 @@ export default class MainPage extends React.Component {
       newEventNotification: 30,
       newEventDescription: "",
       dayEventSelected: true,
-      isEvent: false
+      isEvent: false, 
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal:false
     });
   };
+
+
+
+  validate = () =>{
+    let titleError = "";
+    let dayError = "";
+    var startDay = new Date(this.state.newEventStart0).getDate();
+    var endDay = new Date(this.state.newEventEnd0).getDate();
+    var startMonth = new Date(this.state.newEventStart0).getUTCMonth();
+    var endMonth = new Date(this.state.newEventEnd0).getUTCMonth();
+    var startYear = new Date(this.state.newEventStart0).getFullYear();
+    var endYear = new Date(this.state.newEventEnd0).getFullYear();
+    var startHour = new Date(this.state.newEventStart0).getHours();
+    var endHour = new Date(this.state.newEventEnd0).getHours();
+    if((startDay > endDay  &&  startMonth === endMonth) || 
+    (startMonth > endMonth && startYear=== endYear) || 
+    (startYear > endYear) ||
+    (startHour > endHour && startDay === endDay ) ){
+      dayError = "Invalid: start date is before end date"
+    }
+    if(this.state.newEventName === ""){
+      titleError = "Invalid: No Title";
+    }
+    //empty string evalutes to false.
+    if(titleError || dayError){
+      this.setState({showNoTitleError: titleError,showDateError: dayError});
+      return false;
+    }
+    return true;
+  } 
+
+  /*handleSubmit:
 
   handleExpandClick = arg => {
     let newDate = new Date(arg)
@@ -227,6 +251,7 @@ export default class MainPage extends React.Component {
   /*
   *
 handleSubmit:
+
 submits the data to be passed up to be integrated into google calendar
 *
 */
@@ -236,27 +261,25 @@ submits the data to be passed up to be integrated into google calendar
       console.log("invalid params");
       return;
     }
-    event.preventDefault();
-    var start = new Date(this.state.newEventStart).toISOString();
-    var end = new Date(this.state.newEventEnd).toISOString();
-    /**
-     *
-     * all variables within form need to be accessible up to this point
-    */
-    this.createEvent(this.state.newEventName, start, end);
+    const isValid = this.validate();
+    if(isValid){
+      event.preventDefault();
+      this.createEvent(this.state.newEventName);
+      this.setState({showNoTitleError: "", showDateError: ""});
+    }  
   }
 
   updateEventClick = (event) => {
-    //console.log(event);
     event.preventDefault();
-    let newStart = new Date(this.state.newEventStart).toISOString();
-    let newEnd = new Date(this.state.newEventEnd).toISOString();
-    if (this.state.newEventID === "") {
-      return;
-    } else {
-      for (let i = 0; i < this.state.originalEvents.length; i++) {
-        if (this.state.originalEvents[i].id === this.state.newEventID) {
-          this.updateRequest(i, newStart, newEnd);
+    const isValid = this.validate();
+    if(isValid){
+      if (this.state.newEventID === "") {
+        return;
+      } else {
+        for (let i = 0; i < this.state.originalEvents.length; i++) {
+          if (this.state.originalEvents[i].id === this.state.newEventID) {
+            this.updateRequest(i);
+          }
         }
       }
     }
@@ -266,19 +289,7 @@ submits the data to be passed up to be integrated into google calendar
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = (index, newStart, newEnd) => {
-    /**
-     * TODO:
-     * instead of individually passing original item, id
-     * title, start and end,
-     * pass in just extra as follows
-     * let temp = this.state.originalEvents[index]
-     * temp.start.dateTime = newStart
-     * temp.end.dateTime = newEnd
-     * and other parameters
-     *
-     */
-
+  updateRequest = (index) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -319,21 +330,21 @@ submits the data to be passed up to be integrated into google calendar
       ID: this.state.newEventID,
     })
       .then((response) => {
-        //console.log('update return');
-        //console.log(response);
         this.setState(
           {
             dayEventSelected: false,
             newEventName: '',
-            newEventStart: '',
-            newEventEnd: '',
+            // newEventStart: '',
+            // newEventEnd: '',
             newEventStart0: new Date(),
             newEventEnd0: new Date()
           });
         this.updateEventsArray();
       })
-      .catch(function (error) {
-        // console.log(error);
+
+      .catch(function(error) {
+        console.log(error);
+
       });
   };
 
@@ -353,13 +364,15 @@ submits the data to be passed up to be integrated into google calendar
         // console.log(response);
         this.setState({
           dayEventSelected: false,
-          newEventStart: "",
-          newEventEnd: ""
+          // newEventStart: "",
+          // newEventEnd: ""
         });
         this.updateEventsArray();
       })
-      .catch(function (error) {
-        // console.log(error);
+
+      .catch(function(error) {
+        console.log(error);
+
       });
   };
 
@@ -367,11 +380,9 @@ submits the data to be passed up to be integrated into google calendar
   createEvent:
   Basically creates a new event based on details given
   */
-  createEvent = (newTitle, newStart, newEnd) => {
     /*
      * TODO: Replace formatting email with function
      */
-    const guests = this.state.newEventGuests;
     /*
      * https://tools.ietf.org/html/rfc3696 for what is valid email addresses
      *
@@ -387,6 +398,8 @@ submits the data to be passed up to be integrated into google calendar
      * email: localPart@domainPart
      */
     //Note: This works, but does not email the guests that they are invited to the event
+  createEvent = (newTitle) => {
+    const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
       /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g
@@ -426,9 +439,6 @@ submits the data to be passed up to be integrated into google calendar
       },
       attendees: formattedEmail
     };
-
-    // console.log("Create Event:", event);
-
     axios
       .post("/createNewEvent", {
         newEvent: event,
@@ -453,12 +463,12 @@ submits the data to be passed up to be integrated into google calendar
   handleModalClicked:
   this will toggle show hide of the firebase modal currently
   */
-  handleModalClicked = arg => {
-    // bind with an arrow function
-    this.setState({
-      modelSelected: !this.state.modelSelected
-    });
-  };
+  // handleModalClicked = arg => {
+  //   // bind with an arrow function
+  //   this.setState({
+  //     modelSelected: !this.state.modelSelected
+  //   });
+  // };
 
   nextMonth = () => {
     let dateContext = Object.assign({}, this.state.dateContext);
@@ -524,8 +534,6 @@ submits the data to be passed up to be integrated into google calendar
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
-      // console.log("getting intervals")
-      // console.log(startDate.toString(), endDate.toString())
       this.getEventsByInterval(startDate.toString(), endDate.toString());
     } else if (this.state.calendarView === "Day") {
       this.getEventsByIntervalDayVersion(this.state.dateContext.format('MM/DD/YYYY'));
@@ -552,6 +560,14 @@ submits the data to be passed up to be integrated into google calendar
     });
   };
 
+  showDayViewOrAboutView = () => {
+    if (this.state.dayEventSelected) {
+      return this.eventFormAbstracted();
+    } else if(this.state.showAboutModal) {
+      return this.aboutFormAbstracted();
+    }
+  }
+
   render() {
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal =
@@ -571,7 +587,6 @@ submits the data to be passed up to be integrated into google calendar
           {/* Within this container essentially contains all the UI of the App */}
           <Row style={{ marginTop: "0" }}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
-            {/* {this.state.showRoutineGoalModal ? <Firebasev2 showRoutine = {this.state.showRoutineModal} showGoal= {this.state.showGoalModal} /> : <div></div>} */}
             <Firebasev2
               closeRoutineGoalModal={() => {
                 this.setState({ showRoutineGoalModal: false });
@@ -603,11 +618,9 @@ submits the data to be passed up to be integrated into google calendar
               </div>
             </Col>
             <Col style={{ marginLeft: "25px" }}>
-              {this.state.dayEventSelected ? (
-                this.eventFormAbstracted()
-              ) : (
-                  <div> </div>
-                )}
+
+              {this.showDayViewOrAboutView()}
+
             </Col>
           </Row>
         </Container>
@@ -615,6 +628,7 @@ submits the data to be passed up to be integrated into google calendar
     );
   }
 
+ 
   dayViewAbstracted = () => {
     return (
       <div
@@ -702,12 +716,11 @@ submits the data to be passed up to be integrated into google calendar
       newEnd = new Date(this.state.dateContext.toDate());
       newEnd.setHours(23, 59, 59, 59);
     }
-    // console.log(newStart);
-    // console.log(newEnd)
+
     this.setState({
       newEventID: "",
-      newEventStart: newStart.toString(),
-      newEventEnd: newEnd.toString(),
+      // newEventStart: newStart.toString(),
+      // newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: "",
@@ -716,8 +729,6 @@ submits the data to be passed up to be integrated into google calendar
       newEventDescription: "",
       dayEventSelected: true,
       isEvent: false
-
-      // dayEventSelected: !this.state.dayEventSelected deleted by tyler on 2/22/2020
     });
   };
 
@@ -734,7 +745,12 @@ submits the data to be passed up to be integrated into google calendar
           style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
-            this.showEventsFormbyCreateNewEventButton();
+            this.setState({
+              showAboutModal: false
+              // dayEventSelected: !this.state.dayEventSelected
+            }, ()=> {
+              this.showEventsFormbyCreateNewEventButton();
+            });
           }}
         >
           New Event
@@ -769,6 +785,18 @@ submits the data to be passed up to be integrated into google calendar
           }}
         >
           Current Status
+        </Button>
+        <Button
+          style={{ margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+              showAboutModal: !this.state.showAboutModal,
+              dayEventSelected: false
+            });
+          }}
+        >
+          About 
         </Button>
 
         <DropdownButton
@@ -843,12 +871,74 @@ submits the data to be passed up to be integrated into google calendar
           dateObject={this.state.todayDateObject}
           today={this.state.today}
           dateContext={this.state.dateContext}
-          selectedDay={this.state.selectedDay}
+          // selectedDay={this.state.selectedDay}
         />
       </div>
     );
   };
 
+  /***     About Modal ***** */
+  aboutFormAbstracted = () => {
+    return (
+      <Modal.Dialog
+      style={{
+        borderRadius: "15px",
+        boxShadow:
+          "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+        marginLeft: "0",
+        width: "350px",
+        marginTop: "0"
+      }}
+    >
+      <Modal.Header
+        closeButton
+        onHide={() => {
+          this.setState({ showAboutModal: false });
+        }}
+      >
+        <Modal.Title>
+          <h5 className="normalfancytext">About Me</h5>{" "}
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+          <input type = "file" onChange = {this.handleFileSelected}/>
+          <button onClick= {this.imageUploadHandler}> Upload</button>
+      </Modal.Body>
+      <Modal.Footer>
+          <Container fluid>
+            <Row>
+              <Col  xs={4}>
+                <Button
+                  variant="info"
+                  type="submit"
+                > 
+                  Save
+                </Button>
+              </Col>
+              <Col xs={4}>
+                <Button variant="secondary" onClick={this.hideAboutForm}>
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </Container>
+        </Modal.Footer>
+    </Modal.Dialog>
+    );
+  };
+  
+  imageUploadHandler = ()=>{
+
+  }
+  handleFileSelected =( event) => {
+    console.log(event.target.files[0]);
+  }
+
+  hideAboutForm = (e) => {
+    this.setState({
+      showAboutModal: false
+    });
+  }
   /**
    * This is where the event form is made
    *
@@ -899,9 +989,8 @@ submits the data to be passed up to be integrated into google calendar
                   onClick={this.handleSubmit}
                   variant="info"
                   type="submit"
-                >
-                  {" "}
-                  Submit{" "}
+                > 
+                  Submit
                 </Button>
               </Col>
               <Col
@@ -955,19 +1044,17 @@ submits the data to be passed up to be integrated into google calendar
                   type="text"
                   placeholder="Title"
                 />
+                <div style = {{color: "red"}}> {this.state.showNoTitleError}</div>
               </Form.Group>
-              <Form.Group value={this.state.newEventStart} controlId="Y">
+              <Form.Group value={this.state.newEventStart0} controlId="Y">
                 <Form.Label>Start Time</Form.Label> <br />
-                {/* <Form.Control value={this.state.newEventStart} onChange={this.handleDateStartchange}
-              type="text" placeholder="Start Time" /> */}
                 {this.startTimePicker()}
               </Form.Group>
-              <Form.Group value={this.state.newEventEnd} controlId="X">
+              <Form.Group value={this.state.newEventEnd0} controlId="X">
                 <Form.Label>End Time</Form.Label>
                 <br />
-                {/* <Form.Control value={this.state.newEventEnd} onChange={this.handleDateEndchange}
-              type="text" placeholder="End Time" /> */}
                 {this.endTimePicker()}
+                <div style = {{color: "red"}}> {this.state.showDateError}</div>
               </Form.Group>
               <Form.Group value={"Extra Slot"}>
                 <Form.Label>Guests</Form.Label>
@@ -1003,8 +1090,55 @@ submits the data to be passed up to be integrated into google calendar
                     {" "}
                     <Form.Text> Minutes </Form.Text>{" "}
                   </Col>
-                </Row>
+                </Row>  
               </Form.Group>
+
+               <Form.Group controlId="formBasicCheckbox">
+              <Row style={{  height:"30px"}}>
+                  <Col>
+                    <Form.Check  type="checkbox" >
+                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
+                    </Form.Check>
+                  </Col>
+                  <Col>
+                    {/* <Form.Check  type="checkbox" >
+                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
+                    </Form.Check> */}
+                    <Form.Check  type="checkbox" >
+                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
+                    <Form.Check.Label style ={{marginLeft:"10px"}}>Before</Form.Check.Label>
+                    </Form.Check>
+                  </Col>
+              </Row>
+              {this.state.notificationBeforeChecked && (
+                  <EventBeforeChecked  />
+              )}
+             
+              </Form.Group>
+
+              <Form.Group controlId="formBasicCheckbox">
+              <Row style={{  height:"30px"}}>
+                  <Col>
+                    <Form.Check  type="checkbox" >
+                    <Form.Check.Input type="checkbox"  style={{ width:"20px", height:"20px"}}/>
+                    <Form.Check.Label style ={{marginLeft:"10px"}}>During</Form.Check.Label>
+                    </Form.Check>
+                  </Col>
+              </Row>
+              </Form.Group>
+              <Form.Group controlId="formBasicCheckbox">
+              <Row style={{  height:"30px"}}>
+                  <Col>
+                    <Form.Check  type="checkbox" >
+                    <Form.Check.Input type="checkbox"  style={{ width:"20px", height:"20px"}}/>
+                    <Form.Check.Label style ={{marginLeft:"10px"}}>After</Form.Check.Label>
+                    </Form.Check>
+                  </Col>
+              </Row>
+              </Form.Group>
+              
+
+                 {/* End here */}
               <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
                 <Form.Control
@@ -1022,6 +1156,14 @@ submits the data to be passed up to be integrated into google calendar
       </Form>
     );
   };
+
+
+  notifyBefore = (e)=>{
+    console.log("this is result of checked:");
+    console.log(e.target.checked);
+    let beforeChecked = e.target.checked;
+    this.setState({notificationBeforeChecked:beforeChecked});
+  }
 
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
@@ -1116,14 +1258,6 @@ when there is a change in the event form
     this.setState({ newEventName: event.target.value });
   };
 
-  handleDateStartchange = event => {
-    this.setState({ newEventStart: event.target.value });
-  };
-
-  handleDateEndchange = event => {
-    this.setState({ newEventEnd: event.target.value });
-  };
-
   handleGuestChange = event => {
     this.setState({ newEventGuests: event.target.value });
   };
@@ -1151,7 +1285,6 @@ when there is a change in the event form
   *
   */
   getEventsByInterval = (start0, end0) => {
-    //console.log("Main getEventsByInterval ran ");
     axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
       params: {
         start: start0,
@@ -1159,23 +1292,17 @@ when there is a change in the event form
       }
     })
       .then(response => {
-        //console.log('normal gCal data');
-        //console.log(response);
         var events = response.data;
         this.setState(
           {
             newEventID: "",
             newEventName: "",
-            newEventStart: "",
-            newEventEnd: "",
+            // newEventStart: "",
+            // newEventEnd: "",
             originalEvents: events
           },
           () => {
             console.log("New Events Arrived");
-
-            // console.log(events.data);
-            // this.createOrganizeData(start0, end0);
-            //Call function to prep data for Monthly View
           }
         );
       })
