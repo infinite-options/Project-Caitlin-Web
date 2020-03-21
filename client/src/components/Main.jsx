@@ -311,24 +311,26 @@ export default class MainPage extends React.Component {
     return true;
   };
 
-  /*handleSubmit:
+  // handleSubmit:
 
   handleExpandClick = arg => {
-    let newDate = new Date(arg)
+    let newDate = new Date(arg);
     console.log(newDate);
-    this.setState({
-      dateContext: moment(newDate),
-      calendarView: 'Day',
-    }, this.updateEventsArray);
-  }
+    this.setState(
+      {
+        dateContext: moment(newDate),
+        calendarView: "Day"
+      },
+      this.updateEventsArray
+    );
+  };
 
-  /*
-  *
-handleSubmit:
+  // *
+  // handleSubmit:
 
-submits the data to be passed up to be integrated into google calendar
-*
-*/
+  // submits the data to be passed up to be integrated into google calendar
+  // *
+  // */
 
   handleSubmit = event => {
     if (this.state.start === "" || this.state.end === "") {
