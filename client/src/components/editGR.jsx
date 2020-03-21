@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import { faEdit, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEdit} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 
 export default class editGR extends Component {
 
     constructor(props) {
         super(props)
-        console.log('editAT constructor');
-        console.log('Edit index ' + this.props.i)
-        console.log(this.props.FBPath)
-        console.log(this.props.ATArray)
-        console.log(this.props.ATArray[this.props.i])
+        // console.log('editAT constructor');
+        // console.log('Edit index ' + this.props.i)
+        // console.log(this.props.FBPath)
+        // console.log(this.props.ATArray)
+        // console.log(this.props.ATArray[this.props.i])
 
         this.state = {
             showEditModal: false,
@@ -21,7 +21,7 @@ export default class editGR extends Component {
     }
 
     newInputSubmit = () => {
-        console.log("submitting GR edited formed to firebase");
+        // console.log("submitting GR edited formed to firebase");
         let newArr = this.props.ATArray;
 
         newArr[this.props.i] = this.state.itemToEdit;
@@ -41,11 +41,11 @@ export default class editGR extends Component {
 
         this.props.FBPath.update({ 'goals&routines': newArr }).then(
             (doc) => {
-                console.log('updateEntireArray Finished')
-                console.log(doc);
+                // console.log('updateEntireArray Finished')
+                // console.log(doc);
                 this.setState({ showEditModal: false })
                 if (this.props != null) {
-                    console.log("refreshing FireBasev2 from updating GR ITEM ");
+                    // console.log("refreshing FireBasev2 from updating GR ITEM ");
                     this.props.refresh(newArr);
                 }
                 else {
@@ -60,7 +60,7 @@ export default class editGR extends Component {
     startTimePicker = () => {
         // const [startDate, setStartDate] = useState(new Date());
         return (
-            <DatePicker class="form-control form-control-lg" type="text" style={{ width: '100%' }}
+            <DatePicker className="form-control form-control-lg" type="text" style={{ width: '100%' }}
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={15}
@@ -126,9 +126,18 @@ export default class editGR extends Component {
                     } />
                 </div >
 
+                <label>This Takes Me</label>
+                <div className="input-group mb-3">
+                <input 
+                    style={{ width: "50px", textAlign: "right", height: "30px"}}
+                    placeholder= "30"
+
+                />
+                <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+                </div>
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Available to Caitlin?</label>
+                    <label className="form-check-label">Available to Caitlin?</label>
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
                         name="Available"
@@ -137,7 +146,7 @@ export default class editGR extends Component {
                         onChange={(e) => {
                             e.stopPropagation();
                             let temp = this.state.itemToEdit;
-                            console.log(temp.is_available)
+                            // console.log(temp.is_available)
                             temp.is_available = !temp.is_available;
                             this.setState({ itemToEdit: temp })
                         }} />
@@ -147,7 +156,7 @@ export default class editGR extends Component {
 
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Time?</label>
+                    <label className="form-check-label">Time?</label>
 
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -158,14 +167,14 @@ export default class editGR extends Component {
                         onChange={(e) => {
                             e.stopPropagation();
                             let temp = this.state.itemToEdit;
-                            console.log(temp.is_timed)
+                            // console.log(temp.is_timed)
                             temp.is_timed = !temp.is_timed;
                             this.setState({ itemToEdit: temp })
                         }} />
                 </div >
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Notify TA?</label>
+                    <label className="form-check-label">Notify TA?</label>
 
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -176,14 +185,14 @@ export default class editGR extends Component {
                         onChange={(e) => {
                             e.stopPropagation();
                             let temp = this.state.itemToEdit;
-                            console.log(temp.notifies_ta)
+                            // console.log(temp.notifies_ta)
                             temp.notifies_ta = !temp.notifies_ta;
                             this.setState({ itemToEdit: temp })
                         }} />
                 </div >
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Remind User? </label>
+                    <label className="form-check-label">Remind User? </label>
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
                         name="Timed"
@@ -192,7 +201,7 @@ export default class editGR extends Component {
                         onChange={(e) => {
                             e.stopPropagation();
                             let temp = this.state.itemToEdit;
-                            console.log(temp.reminds_user)
+                            // console.log(temp.reminds_user)
                             temp.reminds_user = !temp.reminds_user;
                             this.setState({ itemToEdit: temp })
                         }} />

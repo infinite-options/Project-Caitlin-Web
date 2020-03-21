@@ -1,37 +1,24 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-import moment from 'moment';
+// import axios from 'axios';
+// import moment from 'moment';
 import {
-    OverlayTrigger,
-    Tooltip, Button, Container, Row, Col, Modal
+    Tooltip, Container, Row, Col
 } from 'react-bootstrap';
 
 export default class DayEvents extends Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.today);
+        // console.log(this.props.dateContext);
         this.state = {
-            dayEvents: [], //holds google events data for a single day
-            todayDateObject: moment("03/07/2020"), //this is the date of interset for events to be displaye
+            //dayEvents: [], //holds google events data for a single day
+            // todayDateObject: moment("03/07/2020"), //this is the date of interset for events to be displaye
             pxPerHour: "30px", //preset size for all columns
             pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
             zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
-            eventBoxSize: "150px", //width size for event box
+            eventBoxSize: 150, //width size for event box
             marginFromLeft: 0
         }
-    }
-
-    componentDidMount() { //retrive data and put in dayEvents
-        console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
-        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
-    }
-
-    componentDidUpdate(prevProps) { //retrive data and put in dayEvents
-      if(this.props.dateContext != prevProps.dateContext) {
-        console.log("retrieve data for date: " + this.props.dateContext.format('MM/DD/YYYY'));
-        this.getEventsByIntervalDayVersion(this.props.dateContext.format('MM/DD/YYYY'));
-      }
     }
 
     timeDisplay = () => { //this essentially creates the time row
@@ -52,8 +39,15 @@ export default class DayEvents extends Component {
         return arr
     }
 
+    onEventClick = (e, i) => {
+        var arr = this.props.dayEvents;
+        e.stopPropagation();
+        this.props.eventClickDayView(arr[i]);
+    }
 
-    /**
+
+    /*
+     * TODO: events spanning multiple days
      * getEventItem: given an hour, this will return all events that was started during that hour
      *
     */
@@ -61,78 +55,107 @@ export default class DayEvents extends Component {
         var res = []
         var tempStart = null;
         var tempEnd = null;
-        var arr = this.state.dayEvents;
+        var arr = this.props.dayEvents;
         var sameTimeEventCount = 0;
+        var overlapEvent = 0;
         var addmarginLeft = 0;
+        var sameHourItems = 1;
+        let itemWidth = this.state.eventBoxSize;
+        var fontSize = 10;
+
         for (let i = 0; i < arr.length; i++) {
             tempStart = arr[i].start.dateTime;
             tempEnd = arr[i].end.dateTime;
             let tempStartTime = new Date(tempStart);
             let tempEndTime = new Date(tempEnd);
-            // console.log ("looooookkkk hererefre  " + tempStartTime);
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
-           //Add MarginRight here Lymann
 
             if (tempStartTime.getHours() == hour) {
-                sameTimeEventCount++;
-                if(sameTimeEventCount > 1){
-                    addmarginLeft += 40; 
-                }
-                console.log("loook here: " + addmarginLeft);
+                // addmarginLeft = 0;
+                // itemWidth = this.state.eventBoxSize;
                 let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                 let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
                 let minDiff = (tempEndTime.getMinutes()) / 60;
                 let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
                 let color = 'PaleTurquoise';
-                if(sameTimeEventCount <= 1){
-                     color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+
+                sameTimeEventCount++;
+                //check if there is already an event there overlapping from another hour
+                for (let i = 0; i < arr.length; i++) {
+                    tempStart = arr[i].start.dateTime;
+                    tempEnd = arr[i].end.dateTime;
+                    let tempStartTime = new Date(tempStart);
+                    let tempEndTime = new Date(tempEnd);
+                    if (tempStartTime.getHours() < hour && tempEndTime.getHours() > hour) {
+                        addmarginLeft += 20;
+                        itemWidth = itemWidth - 20;
+                    }
                 }
-                else if( sameTimeEventCount == 2){
-                     console.log("why not hererere ");
+
+                if (sameTimeEventCount > 1) {
+                    // console.log("add 20 in day");
+                    addmarginLeft += 20;
+                    // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
+                    // itemWidth = itemWidth/(sameHourItems-1);
+                    itemWidth = itemWidth - 20;
+                }
+                //chnage font size if not enough space
+                if ((tempEndTime.getHours() - tempStartTime.getHours()) < 2) {
+                    fontSize = 8;
+                }
+
+                // change color if more than one event in same time.
+                if (sameTimeEventCount <= 1) {
+                    color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                }
+                else if (sameTimeEventCount == 2) {
                     color = 'skyblue';
                 }
-                else{
+                else {
                     color = 'blue';
                 }
-                
-                //increment MarginRight by 10px  here Lymann = 0  
 
                 let newElement =
                     (
+
                         <div key={"event" + i}>
                             <div
+
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
                                     e.target.style.color = "#FFFFFF";
                                     e.target.style.background = "RebeccaPurple";
-                                    e.target.style.zIndex = "2"; 
+                                    e.target.style.zIndex = "2";
                                 }}
                                 onMouseOut={e => {
                                     e.target.style.zIndex = "1";
-                                    // e.target.style.marginLeft = addmarginLeft + "px";
                                     e.target.style.color = "#000000";
                                     e.target.style.background = color;
                                 }}
-
+                                key={i}
+                                // value = {i}
+                                onClick={e => this.onEventClick(e, i)}
                                 style={{
-                                    //add marginRight property :
-                                    // marginLeft: this.state.marginFromLeft + "px",
                                     zIndex: this.state.zIndex,
                                     marginTop: minsToMarginTop + "px",
                                     padding: "5px",
-                                    // width:( 10 + i ) + "px",
-                                    fontSize: "10px",
+                                    fontSize: fontSize + "px",
                                     border: "1px lightgray solid ",
-                                    // float: "left",
-                                    borderRadius: "5px", 
+                                    float: "left",
+                                    //  verticalAlign: " ",
+                                    // verticalAlign: 'text-top',
+                                    // textAlign:"left",
+                                    borderRadius: "5px",
                                     background: color,
-                                    width: this.state.eventBoxSize - (addmarginLeft/16),
-                                    position: "absolute", 
+                                    // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                    width: itemWidth + "px",
+                                    position: "absolute",
                                     height: height + "px",
                                     marginLeft: addmarginLeft + "px"
                                 }}>
+                                {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                 {arr[i].summary}
                             </div>
                         </div>
@@ -145,6 +168,11 @@ export default class DayEvents extends Component {
         return res;
     }
 
+    onDayClick = (e, i) => {
+
+        console.log("this is the hour:" + i);
+        this.props.handleDateClick((this.props.dateContext.format("M") + '/' + this.props.dateContext.format("D") + '/' + this.props.dateContext.format("Y")), i);
+    }
 
 
     /**
@@ -162,7 +190,9 @@ export default class DayEvents extends Component {
                             width: '180px', //lyman change width to adjust
                             background: "aliceblue",
                             height: this.state.pxPerHour
-                        }}>
+                        }}
+                        onClick={e => this.onDayClick(e, i)}
+                    >
                         {this.getEventItem(i)}
                     </Col >
                 </Row>
@@ -200,36 +230,5 @@ export default class DayEvents extends Component {
                 </Container>
             </div>
         )
-    }
-
-    /*
-*
-getEventsByIntervalDayVersion:
-gets exactly the days worth of events from the google calendar
-*
-*
-*/
-    getEventsByIntervalDayVersion = (day) => {
-        console.log('DayEvents getEventsByIntervalDayVersion ran with ' + day);
-        console.log(day.toString());
-        axios.get('/getEventsByInterval', { //get normal google calendar data for possible future use
-            params: {
-                start: day.toString(),         
-                end: day.toString()
-            }
-        })
-            .then(response => {
-                console.log('Today\'s Google Events:')
-                console.log(response);
-                var events = response.data;
-                this.setState({
-                    dayEvents: events
-                }, () => {
-                    console.log("New Events Arrived")
-                })
-            })
-            .catch(error => {
-                console.log('Error Occurred ' + error);
-            });
     }
 }

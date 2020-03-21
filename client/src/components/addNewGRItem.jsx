@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal, Row } from "react-bootstrap";
+import { Button, Modal} from "react-bootstrap";
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
     super(props);
     console.log("Is this a Routine? " + this.props.isRoutine);
   }
-
   state = {
     grArr: [], //goal, routine original array
     itemToEdit: {
@@ -113,7 +112,7 @@ export default class AddNewGRItem extends Component {
         this.props.refresh();
       }
     });
-  };
+  }
 
   render() {
     return (
@@ -141,7 +140,6 @@ export default class AddNewGRItem extends Component {
                 }}
               />
             </div>
-
             <label>Photo URL</label>
             <div className="input-group mb-3">
               <input
@@ -186,7 +184,16 @@ export default class AddNewGRItem extends Component {
                 }}
               />
             </div>
+            <label>This Takes Me</label>
+            <div className="input-group mb-3">
+            <input 
+                style={{ width: "50px", textAlign: "right", height: "30px"}}
+                placeholder= "30"
 
+            />
+            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            </div>
+            
             <div className="input-group mb-3">
               <label className="form-check-label">Available to Caitlin?</label>
               <input
