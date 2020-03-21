@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { ListGroup, Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+// import { Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 /**
  * 
  * This class is responsible for adding a new elemnt to the

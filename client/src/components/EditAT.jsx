@@ -94,9 +94,18 @@ export default class editAT extends Component {
                             } />
                         </div >
 
+                        <label>This Takes Me</label>
+                        <div className="input-group mb-3">
+                        <input 
+                            style={{ width: "50px", textAlign: "right", height: "30px"}}
+                            placeholder= "30"
+
+                        />
+                        <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+                        </div>
 
                         <div className="input-group mb-3" >
-                            <label class="form-check-label">Available to Caitlin?</label>
+                            <label className="form-check-label">Available to Caitlin?</label>
                             <input
                                 style={{ marginTop: '5px', marginLeft: '5px' }}
                                 name="Available"

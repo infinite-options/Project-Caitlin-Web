@@ -154,7 +154,15 @@ export default class AddNewISItem extends Component {
                 }}
               />
             </div>
+            <label>This Takes Me</label>
+            <div className="input-group mb-3">
+            <input 
+                style={{ width: "50px", textAlign: "right", height: "30px"}}
+                placeholder= "30"
 
+            />
+            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            </div>
             <label>Available to Caitlin?</label>
             <div className="input-group mb-3">
               <input

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal, Row } from "react-bootstrap";
+import { Button, Modal} from "react-bootstrap";
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
@@ -184,6 +184,16 @@ export default class AddNewGRItem extends Component {
                 }}
               />
             </div>
+            <label>This Takes Me</label>
+            <div className="input-group mb-3">
+            <input 
+                style={{ width: "50px", textAlign: "right", height: "30px"}}
+                placeholder= "30"
+
+            />
+            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            </div>
+            
             <div className="input-group mb-3">
               <label className="form-check-label">Available to Caitlin?</label>
               <input

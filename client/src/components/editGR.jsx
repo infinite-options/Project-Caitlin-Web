@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { faEdit, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEdit} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Row, Col, Modal, InputGroup, FormControl } from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 
 export default class editGR extends Component {
@@ -60,7 +60,7 @@ export default class editGR extends Component {
     startTimePicker = () => {
         // const [startDate, setStartDate] = useState(new Date());
         return (
-            <DatePicker class="form-control form-control-lg" type="text" style={{ width: '100%' }}
+            <DatePicker className="form-control form-control-lg" type="text" style={{ width: '100%' }}
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={15}
@@ -126,9 +126,18 @@ export default class editGR extends Component {
                     } />
                 </div >
 
+                <label>This Takes Me</label>
+                <div className="input-group mb-3">
+                <input 
+                    style={{ width: "50px", textAlign: "right", height: "30px"}}
+                    placeholder= "30"
+
+                />
+                <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+                </div>
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Available to Caitlin?</label>
+                    <label className="form-check-label">Available to Caitlin?</label>
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
                         name="Available"
@@ -147,7 +156,7 @@ export default class editGR extends Component {
 
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Time?</label>
+                    <label className="form-check-label">Time?</label>
 
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -165,7 +174,7 @@ export default class editGR extends Component {
                 </div >
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Notify TA?</label>
+                    <label className="form-check-label">Notify TA?</label>
 
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
@@ -183,7 +192,7 @@ export default class editGR extends Component {
                 </div >
 
                 <div className="input-group mb-3" >
-                    <label class="form-check-label">Remind User? </label>
+                    <label className="form-check-label">Remind User? </label>
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
                         name="Timed"
