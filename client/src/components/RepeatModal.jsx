@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Modal, Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const RepeatModal = props => {
   const [title, setTitle] = useState("DAY");
   const [monthly, setMonthly] = useState("Monthly on day 13");
+  const [endDate, setEndDate] = useState(props.newEventStart0);
+  const [inputValue, setInputValue] = useState(1);
 
   const week_days = ["S", "M", "T", "W", "T", "F", "S"];
 
@@ -38,7 +42,7 @@ const RepeatModal = props => {
     marginTop: "10px"
   };
 
-  const radioInputStyle = { display: "flex", alignItems: "center" };
+  // const radioInputStyle = { display: "flex", alignItems: "center" };
 
   // onClick event handler for the circles
   const selectedDot = e => {
@@ -55,7 +59,13 @@ const RepeatModal = props => {
       <div style={weekStyle}>
         {week_days.map((day, i) => {
           return (
-            <span key={i} className="dot" onClick={e => selectedDot(e)}>
+            <span
+              key={i}
+              className={
+                i === props.newEventStart0.getDay() ? "dot selected" : "dot"
+              }
+              onClick={e => selectedDot(e)}
+            >
               {day}
             </span>
           );
@@ -86,6 +96,8 @@ const RepeatModal = props => {
     </DropdownButton>
   );
 
+  console.log("repeatin", props.newEventStart0.getDay());
+
   return (
     <Modal.Dialog style={modalStyle}>
       <Modal.Header closeButton onHide={props.closeRepeatModal}>
@@ -101,8 +113,9 @@ const RepeatModal = props => {
             type="number"
             min="1"
             max="10000"
-            // value="1"
+            value={inputValue}
             style={inputStyle}
+            onChange={e => setInputValue(e.target.value)}
           />
           <DropdownButton title={title} style={selectStyle} variant="light">
             <Dropdown.Item
@@ -144,13 +157,13 @@ const RepeatModal = props => {
           className="repeat-form"
         >
           Ends
-          <Form.Check type="radio" style={radioInputStyle}>
+          <Form.Check type="radio">
             <Form.Check.Label style={{ marginLeft: "5px" }}>
               <Form.Check.Input type="radio" name="radios" />
               Never
             </Form.Check.Label>
           </Form.Check>
-          <Form.Check type="radio" style={radioInputStyle}>
+          <Form.Check type="radio">
             <Form.Check.Label style={{ marginLeft: "5px" }}>
               <Form.Check.Input
                 type="radio"
@@ -158,12 +171,17 @@ const RepeatModal = props => {
                 style={{ marginTop: "12px" }}
               />
               On
-              <Button style={{ marginLeft: "94px" }} variant="light">
-                Mar 13, 2020
-              </Button>
+              {/* <Button style={{ marginLeft: "94px" }} variant="light"> */}
+              {/* Mar 14, 2020 */}
+              <DatePicker
+                className="date-picker-btn btn btn-light"
+                selected={endDate}
+                onChange={date => setEndDate(date)}
+              ></DatePicker>
+              {/* </Button> */}
             </Form.Check.Label>
           </Form.Check>
-          <Form.Check type="radio" style={radioInputStyle}>
+          <Form.Check type="radio">
             <Form.Check.Label style={{ marginLeft: "5px" }}>
               <Form.Check.Input
                 type="radio"

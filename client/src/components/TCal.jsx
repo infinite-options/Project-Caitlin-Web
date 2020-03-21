@@ -8,7 +8,6 @@ import { Row, Col } from "react-bootstrap";
 
 export default class TylersCalendarv1 extends React.Component {
 
-
   componentDidMount() {
   }
 
@@ -22,6 +21,7 @@ export default class TylersCalendarv1 extends React.Component {
   year = () => {
     return this.props.dateContext.format("Y");
   }
+
   currentDay = () => {
     return this.props.dateObject.format("D");
   };
@@ -32,6 +32,7 @@ export default class TylersCalendarv1 extends React.Component {
   daysInMonth = () => {
     return this.props.dateContext.daysInMonth();
   }
+
   firstDayOfMonth = () => {
     let dateContext = this.props.dateContext;
     let firstDay = moment(dateContext)
@@ -42,7 +43,9 @@ export default class TylersCalendarv1 extends React.Component {
 
   //Returns a dense populated set of icons to be pushed onto a day i
   //into the table
+
   getEventsforDay = (i) => {
+
     var res = [];
     var tempStart = null;
     var tempEnd = null;
@@ -123,14 +126,13 @@ export default class TylersCalendarv1 extends React.Component {
     //create the blank slots to push day 1 to right day
     let blanks = [];
 
-
     for (let i = 0; i < this.firstDayOfMonth(); i++) {
       blanks.push(<td key={'empty' + i} className="calendar-day empty">{""}</td>);
     }
 
-
     //The variable below tells us if the current month we are at is today's month
     var sameDate = this.props.dateObject.format("DD/MM/YYYY") === this.props.dateContext.format("DD/MM/YYYY");
+
     // console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
     for (var d = 1; d <= this.daysInMonth(); d++) {
       // let currentDay = d == this.currentDay() ? "today" : "";
@@ -204,5 +206,4 @@ export default class TylersCalendarv1 extends React.Component {
       </div>
     )
   }
-
 }
