@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import axios from 'axios';
+// import axios from 'axios';
 import moment from 'moment';
-import { Form, Button, Container, Row, Col, Modal } from 'react-bootstrap';
+import {  Container, Row, Col} from 'react-bootstrap';
 
 import firebase from "./firebase";
 export default class DayGoals extends Component {
@@ -34,7 +34,6 @@ export default class DayGoals extends Component {
 */
     grabFireBaseRoutinesGoalsData = () => {
         const db = firebase.firestore();
-        // console.log('DayRoutine component did mount');
         const docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy');
         docRef.get().then((doc) => {
             if (doc.exists) {

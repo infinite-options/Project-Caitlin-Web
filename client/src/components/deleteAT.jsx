@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Col } from 'react-bootstrap';
+// import { Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 export default class deleteAT extends Component {
