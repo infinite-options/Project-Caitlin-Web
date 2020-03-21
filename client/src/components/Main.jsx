@@ -867,7 +867,6 @@ export default class MainPage extends React.Component {
           variant="outline-primary"
           onClick={() => {
             this.setState({
-               //Today button
                dateContext: moment(),
             });
           }}
