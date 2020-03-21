@@ -18,6 +18,7 @@ import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
+import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -44,7 +45,7 @@ export default class MainPage extends React.Component {
       newEventNotification: 30,
       newEventDescription: "",
       // newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
-      newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
+      // newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
@@ -60,7 +61,10 @@ export default class MainPage extends React.Component {
       repeatInputValue: 1,
       repeatOccurrence: 1,
       repeatRadio: "Never",
-      repeatEndDate: ""
+      repeatEndDate: "",
+      showNoTitleError: "",
+      showDateError: "",
+      notificationBeforeChecked: false
       // repeatOccurrence: newEventStart0
     };
   }
@@ -126,7 +130,7 @@ export default class MainPage extends React.Component {
   };
 
   handleDayEventClick = A => {
-    // console.log("this is from day view");
+    console.log("this is from day view");
     var guestList = "";
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
@@ -138,12 +142,6 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        // newEventStart: A.start.dateTime
-        // ? new Date(A.start.dateTime)
-        // : new Date(A.start.date).toISOString(),
-        newEventEnd: A.end.dateTime
-          ? new Date(A.end.dateTime)
-          : new Date(A.end.date).toISOString(),
         newEventStart0: A.start.dateTime
           ? new Date(A.start.dateTime)
           : new Date(A.start.date),
@@ -158,7 +156,11 @@ export default class MainPage extends React.Component {
           : "",
         newEventDescription: A.description ? A.description : "",
         dayEventSelected: true,
-        isEvent: true
+        isEvent: true,
+        showNoTitleError: "",
+        showDateError: "",
+        showRepeatModal: false,
+        showAboutModal: false
       },
       () => {
         console.log("callback from handEventClick");
@@ -190,12 +192,6 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
-        // newEventStart: A.start.dateTime
-        //   ? new Date(A.start.dateTime)
-        //   : new Date(A.start.date).toISOString(),
-        newEventEnd: A.end.dateTime
-          ? new Date(A.end.dateTime)
-          : new Date(A.end.date).toISOString(),
         newEventStart0: A.start.dateTime
           ? new Date(A.start.dateTime)
           : new Date(A.start.date),
@@ -218,7 +214,11 @@ export default class MainPage extends React.Component {
         repeatInputValue: 1,
         repeatOccurrence: 1,
         repeatRadio: "Never",
-        repeatEndDate: ""
+        repeatEndDate: "",
+        showNoTitleError: "",
+        showDateError: "",
+        showRepeatModal: false,
+        showAboutModal: false
       },
       () => {
         console.log("callback from handEventClick");
@@ -241,8 +241,6 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: "",
-        // newEventStart: newStart.toString(),
-        newEventEnd: newEnd.toString(),
         newEventStart0: newStart,
         newEventEnd0: newEnd,
         newEventName: "",
@@ -259,7 +257,11 @@ export default class MainPage extends React.Component {
         repeatInputValue: 1,
         repeatOccurrence: 1,
         repeatRadio: "Never",
-        repeatEndDate: ""
+        repeatEndDate: "",
+        showNoTitleError: "",
+        showDateError: "",
+        showRepeatModal: false,
+        showAboutModal: false
       },
       console.log("handledateclick")
     );
@@ -277,27 +279,25 @@ submits the data to be passed up to be integrated into google calendar
       console.log("invalid params");
       return;
     }
-    event.preventDefault();
-    var start = new Date(this.state.newEventStart0).toISOString();
-    var end = new Date(this.state.newEventEnd0).toISOString();
-    /**
-     *
-     * all variables within form need to be accessible up to this point
-     */
-    this.createEvent(this.state.newEventName, start, end);
+    const isValid = this.validate();
+    if (isValid) {
+      event.preventDefault();
+      this.createEvent(this.state.newEventName);
+      this.setState({ showNoTitleError: "", showDateError: "" });
+    }
   };
 
   updateEventClick = event => {
-    //console.log(event);
     event.preventDefault();
-    let newStart = new Date(this.state.newEventStart0).toISOString();
-    let newEnd = new Date(this.state.newEventEnd).toISOString();
-    if (this.state.newEventID === "") {
-      return;
-    } else {
-      for (let i = 0; i < this.state.originalEvents.length; i++) {
-        if (this.state.originalEvents[i].id === this.state.newEventID) {
-          this.updateRequest(i, newStart, newEnd);
+    const isValid = this.validate();
+    if (isValid) {
+      if (this.state.newEventID === "") {
+        return;
+      } else {
+        for (let i = 0; i < this.state.originalEvents.length; i++) {
+          if (this.state.originalEvents[i].id === this.state.newEventID) {
+            this.updateRequest(i, newStart, newEnd);
+          }
         }
       }
     }
@@ -369,7 +369,7 @@ submits the data to be passed up to be integrated into google calendar
           dayEventSelected: false,
           newEventName: "",
           // newEventStart: "",
-          newEventEnd: "",
+          // newEventEnd: "",
           newEventStart0: new Date(),
           newEventEnd0: new Date()
         });
@@ -395,9 +395,9 @@ submits the data to be passed up to be integrated into google calendar
       .then(response => {
         // console.log(response);
         this.setState({
-          dayEventSelected: false,
+          dayEventSelected: false
           // newEventStart: "",
-          newEventEnd: ""
+          // newEventEnd: ""
         });
         this.updateEventsArray();
       })
@@ -513,7 +513,7 @@ submits the data to be passed up to be integrated into google calendar
         this.updateEventsArray();
       })
       .catch(function(error) {
-        console.log(error);
+        // console.log(error);
       });
   };
 
@@ -625,6 +625,14 @@ submits the data to be passed up to be integrated into google calendar
       showRepeatModal: false,
       repeatOption: true
     });
+  };
+
+  showDayViewOrAboutView = () => {
+    if (this.state.dayEventSelected) {
+      return this.eventFormAbstracted();
+    } else if (this.state.showAboutModal) {
+      return this.aboutFormAbstracted();
+    }
   };
 
   render() {
@@ -743,6 +751,9 @@ submits the data to be passed up to be integrated into google calendar
           <DayEvents
             dateContext={this.state.dateContext}
             eventClickDayView={this.handleDayEventClick}
+            handleDateClick={this.handleDateClickOnDayView}
+            dayEvents={this.state.dayEvents}
+            getEventsByInterval={this.state.getEventsByIntervalDayVersion}
           />
           <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
           <DayGoals dayGoalClick={this.toggleShowGoal} />
@@ -777,7 +788,7 @@ submits the data to be passed up to be integrated into google calendar
     this.setState({
       newEventID: "",
       // newEventStart: newStart.toString(),
-      newEventEnd: newEnd.toString(),
+      // newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: "",
@@ -1474,7 +1485,6 @@ when there is a change in the event form
   *
   */
   getEventsByInterval = (start0, end0) => {
-    //console.log("Main getEventsByInterval ran ");
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -1492,15 +1502,11 @@ when there is a change in the event form
             newEventID: "",
             newEventName: "",
             // newEventStart: "",
-            newEventEnd: "",
+            // newEventEnd: "",
             originalEvents: events
           },
           () => {
-            console.log("New Events Arrived", response);
-
-            // console.log(events.data);
-            // this.createOrganizeData(start0, end0);
-            //Call function to prep data for Monthly View
+            console.log("New Events Arrived");
           }
         );
       })
