@@ -1,5 +1,8 @@
 import React from "react";
 import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExpandAlt } from "@fortawesome/free-solid-svg-icons";
+import { Row, Col } from "react-bootstrap";
 
 export default class TylersCalendarv1 extends React.Component {
   componentDidMount() {}
@@ -118,6 +121,16 @@ export default class TylersCalendarv1 extends React.Component {
 
   onDayClick = d => {
     this.props.handleDateClick(
+      this.props.dateContext.format("M") +
+        "/" +
+        d +
+        "/" +
+        this.props.dateContext.format("Y")
+    );
+  };
+
+  onExpandClick = d => {
+    this.props.handleExpandClick(
       this.props.dateContext.format("M") +
         "/" +
         d +
