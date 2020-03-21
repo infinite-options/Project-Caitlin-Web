@@ -215,6 +215,15 @@ export default class MainPage extends React.Component {
     });
   };
 
+  handleExpandClick = arg => {
+    let newDate = new Date(arg)
+    console.log(newDate);
+    this.setState({
+      dateContext: moment(newDate),
+      calendarView: 'Day',
+    }, this.updateEventsArray);
+  }
+
   /*
   *
 handleSubmit:
@@ -829,6 +838,7 @@ submits the data to be passed up to be integrated into google calendar
         <TylersCalendarv1
           eventClick={this.handleEventClick}
           handleDateClick={this.handleDateClick}
+          handleExpandClick={this.handleExpandClick}
           originalEvents={this.state.originalEvents}
           dateObject={this.state.todayDateObject}
           today={this.state.today}
