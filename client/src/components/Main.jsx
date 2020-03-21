@@ -65,11 +65,33 @@ export default class MainPage extends React.Component {
       repeatEndDate: "",
       showNoTitleError: "",
       showDateError: "",
-      notificationBeforeChecked: false
+      notificationBeforeChecked: false,
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
+      // repeatOccurrence: newEventStart0
     };
   }
 
-  handleRepeatDropDown = eventKey => {
+  handleRepeatDropDown = (eventKey, week_days) => {
+    if (eventKey === "WEEK") {
+      const newByDay = {
+        ...this.state.byDay,
+        [this.state.newEventStart0.getDay()]: week_days[
+          this.state.newEventStart0.getDay()
+        ]
+      };
+      this.setState({
+        repeatDropDown: eventKey,
+        byDay: newByDay
+      });
+    }
     this.setState({
       repeatDropDown: eventKey
     });
@@ -157,7 +179,23 @@ export default class MainPage extends React.Component {
       showNoTitleError: "",
       showDateError: "",
       showRepeatModal: false,
-      showAboutModal: false
+      showAboutModal: false,
+      repeatOption: false,
+      repeatDropDown: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: 1,
+      repeatOccurrence: 1,
+      repeatRadio: "Never",
+      repeatEndDate: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
     });
   };
 
@@ -209,8 +247,16 @@ export default class MainPage extends React.Component {
         repeatEndDate: "",
         showNoTitleError: "",
         showDateError: "",
-        showRepeatModal: false,
-        showAboutModal: false
+        showAboutModal: false,
+        byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        }
       },
       () => {
         console.log("callback from handEventClick");
@@ -237,7 +283,23 @@ export default class MainPage extends React.Component {
       showNoTitleError: "",
       showDateError: "",
       showRepeatModal: false,
-      showAboutModal: false
+      showAboutModal: false,
+      repeatOption: false,
+      repeatDropDown: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: 1,
+      repeatOccurrence: 1,
+      repeatRadio: "Never",
+      repeatEndDate: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
     });
   };
 
@@ -274,8 +336,16 @@ export default class MainPage extends React.Component {
         repeatEndDate: "",
         showNoTitleError: "",
         showDateError: "",
-        showRepeatModal: false,
-        showAboutModal: false
+        showAboutModal: false,
+        byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        }
       },
       console.log("handledateclick")
     );
@@ -325,12 +395,9 @@ export default class MainPage extends React.Component {
     );
   };
 
-  // *
   // handleSubmit:
 
   // submits the data to be passed up to be integrated into google calendar
-  // *
-  // */
 
   handleSubmit = event => {
     if (this.state.start === "" || this.state.end === "") {
@@ -504,17 +571,26 @@ export default class MainPage extends React.Component {
     // recurrence string
     let recurrence = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
 
+    // If seleted WEEK, add BYDAY to recurrence string
+    if (this.state.repeatDropDown === "WEEK") {
+      let selectedDays = [];
+      for (let [key, value] of Object.entries(this.state.byDay)) {
+        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
+      }
+      recurrence = recurrence.concat(`;BYDAY=${selectedDays.toString()}`);
+    }
+
+    // If selected After, add COUNT to recurrence string
     if (this.state.repeatRadio === "After")
       recurrence = recurrence.concat(`;COUNT=${this.state.repeatOccurrence}`);
 
+    // If selected On, add UNTIL to recurrence string
     if (this.state.repeatRadio === "On") {
       let repeat_end_date = moment(this.state.repeatEndDate);
       recurrence = recurrence.concat(
         `;UNTIL=${repeat_end_date.format("YYYYMMDD")}`
       );
     }
-
-    console.log("recurrence", recurrence);
 
     let event = {
       summary: this.state.newEventName,
@@ -1172,14 +1248,24 @@ export default class MainPage extends React.Component {
 
     // this.state.repeatEndDate = this.state.newEventStart0;
 
-    const week_days = ["S", "M", "T", "W", "T", "F", "S"];
+    const week_days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+
+    const d = new Date();
 
     // Custom styles
     const modalStyle = {
       position: "absolute",
       zIndex: "5",
       left: "50%",
-      top: "60%",
+      top: "55%",
       transform: "translate(-50%, -50%)",
       width: "400px"
     };
@@ -1208,11 +1294,21 @@ export default class MainPage extends React.Component {
     // const radioInputStyle = { display: "flex", alignItems: "center" };
 
     // onClick event handler for the circles
-    const selectedDot = e => {
+    const selectedDot = (e, index) => {
       let curClass = e.target.classList;
-      curClass.contains("selected")
-        ? curClass.remove("selected")
-        : curClass.add("selected");
+      if (curClass.contains("selected")) {
+        curClass.remove("selected");
+        const newByDay = { ...this.state.byDay, [index]: "" };
+        this.setState({
+          byDay: newByDay
+        });
+      } else {
+        curClass.add("selected");
+        const newByDay = { ...this.state.byDay, [index]: week_days[index] };
+        this.setState({
+          byDay: newByDay
+        });
+      }
     };
 
     // If selected repeat every week, the following shows.
@@ -1229,9 +1325,9 @@ export default class MainPage extends React.Component {
                     ? "dot selected"
                     : "dot"
                 }
-                onClick={e => selectedDot(e)}
+                onClick={e => selectedDot(e, i)}
               >
-                {day}
+                {day.charAt(0)}
               </span>
             );
           })}
@@ -1240,26 +1336,26 @@ export default class MainPage extends React.Component {
     );
 
     // If selected repeat every month, the following shows.
-    const monthSelected = (
-      <DropdownButton
-        title={this.state.repeatMonthlyDropDown}
-        variant="light"
-        style={{ marginTop: "20px" }}
-      >
-        <Dropdown.Item
-          eventKey="Monthly on day 13"
-          onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
-        >
-          Monthly on day 13
-        </Dropdown.Item>
-        <Dropdown.Item
-          eventKey="Monthly on the second Friday"
-          onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
-        >
-          Monthly on the second Friday
-        </Dropdown.Item>
-      </DropdownButton>
-    );
+    // const monthSelected = (
+    //   <DropdownButton
+    //     title={this.state.repeatMonthlyDropDown}
+    //     variant="light"
+    //     style={{ marginTop: "20px" }}
+    //   >
+    //     <Dropdown.Item
+    //       eventKey="Monthly on day 13"
+    //       onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
+    //     >
+    //       Monthly on day 13
+    //     </Dropdown.Item>
+    //     <Dropdown.Item
+    //       eventKey="Monthly on the second Friday"
+    //       onSelect={eventKey => this.handleRepeatMonthlyDropDown(eventKey)}
+    //     >
+    //       Monthly on the second Friday
+    //     </Dropdown.Item>
+    //   </DropdownButton>
+    // );
 
     return (
       <Modal.Dialog style={modalStyle}>
@@ -1300,7 +1396,9 @@ export default class MainPage extends React.Component {
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="WEEK"
-                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                  onSelect={eventKey =>
+                    this.handleRepeatDropDown(eventKey, week_days)
+                  }
                 >
                   week
                 </Dropdown.Item>
@@ -1319,7 +1417,7 @@ export default class MainPage extends React.Component {
               </DropdownButton>
             </Form.Group>
             {this.state.repeatDropDown === "WEEK" && weekSelected}
-            {this.state.repeatDropDown === "MONTH" && monthSelected}
+            {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group
               style={{
                 height: "140px",
