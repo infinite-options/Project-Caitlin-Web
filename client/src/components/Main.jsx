@@ -162,7 +162,7 @@ export default class MainPage extends React.Component {
   };
 
   /*
-  handleEventClick For Month View. 
+  handleEventClick For Month View.
   when a event on the calendar is clicked, the function below
   will execute and save the clicked event varibles to this.state and
   passed that into the form where the user can edit that data
@@ -862,6 +862,19 @@ export default class MainPage extends React.Component {
   abstractedMainEventGRShowButtons = () => {
     return (
       <div style={{ marginLeft: "33%", width: "100%", fontSize: "20px" }}>
+        <Button
+          style={{ margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+               //Today button
+               dateContext: moment(),
+            });
+          }}
+        >
+          Today
+        </Button>
+
         <Button
           style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
