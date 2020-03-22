@@ -1,10 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExpandAlt
-} from "@fortawesome/free-solid-svg-icons";
-import { Row, Col } from "react-bootstrap";
 
 export default class TylersCalendarv1 extends React.Component {
 
@@ -145,11 +140,9 @@ export default class TylersCalendarv1 extends React.Component {
             {
               // eslint-disable-next-line max-len
             }
-            <Col>
               <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircleCurrent" : "numberCircle"} onClick={this.onExpandClick.bind(this, d)}>
                 <a className="fancytext"> {d} </a>
               </div>
-            </Col>
             {this.getEventsforDay(d)}
           </div>
         </td>
