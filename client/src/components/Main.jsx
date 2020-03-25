@@ -569,28 +569,40 @@ export default class MainPage extends React.Component {
         : this.state.repeatDropDown.concat("LY");
 
     // recurrence string
-    let recurrence = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
+    let rrule = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
+    let recurrence = [];
+    let exdate = "";
 
     // If seleted WEEK, add BYDAY to recurrence string
     if (this.state.repeatDropDown === "WEEK") {
       let selectedDays = [];
       for (let [key, value] of Object.entries(this.state.byDay)) {
+        // Excluding today if today is not selected
+        if (key === this.state.newEventStart0.getDay().toString()) {
+          if (value === "") {
+            exdate = `EXDATE;TZID=America/Los_Angeles:${moment(
+              this.state.newEventStart0
+            ).format("YYYYMMDD")}T070000Z`;
+            recurrence.unshift(exdate);
+          }
+        }
         value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
       }
-      recurrence = recurrence.concat(`;BYDAY=${selectedDays.toString()}`);
+      rrule = rrule.concat(`;BYDAY=${selectedDays.toString()}`);
     }
 
     // If selected After, add COUNT to recurrence string
     if (this.state.repeatRadio === "After")
-      recurrence = recurrence.concat(`;COUNT=${this.state.repeatOccurrence}`);
+      rrule = rrule.concat(`;COUNT=${this.state.repeatOccurrence}`);
 
     // If selected On, add UNTIL to recurrence string
     if (this.state.repeatRadio === "On") {
-      let repeat_end_date = moment(this.state.repeatEndDate);
-      recurrence = recurrence.concat(
-        `;UNTIL=${repeat_end_date.format("YYYYMMDD")}`
-      );
+      let repeat_end_date = moment(this.state.repeatEndDate).add(1, "days");
+      rrule = rrule.concat(`;UNTIL=${repeat_end_date.format("YYYYMMDD")}`);
     }
+
+    recurrence.push(rrule);
+    console.log("recurrence", recurrence);
 
     let event = {
       summary: this.state.newEventName,
@@ -614,7 +626,7 @@ export default class MainPage extends React.Component {
         dateTime: this.state.newEventEnd0.toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
-      recurrence: [recurrence],
+      recurrence: recurrence,
       attendees: formattedEmail
     };
     axios
@@ -1443,7 +1455,7 @@ export default class MainPage extends React.Component {
                     type="radio"
                     value="Never"
                     name="radios"
-                    defaultChecked
+                    defaultChecked={this.state.repeatRadio === "Never" && true}
                   />
                   Never
                 </Form.Check.Label>
@@ -1455,6 +1467,7 @@ export default class MainPage extends React.Component {
                     name="radios"
                     value="On"
                     style={{ marginTop: "10px" }}
+                    defaultChecked={this.state.repeatRadio === "On" && true}
                   />
                   On
                   <DatePicker
@@ -1471,6 +1484,7 @@ export default class MainPage extends React.Component {
                     name="radios"
                     value="After"
                     style={{ marginTop: "12px" }}
+                    defaultChecked={this.state.repeatRadio === "After" && true}
                   />
                   After
                   <span style={{ marginLeft: "60px" }}>
