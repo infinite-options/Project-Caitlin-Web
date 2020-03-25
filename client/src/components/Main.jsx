@@ -936,8 +936,12 @@ export default class MainPage extends React.Component {
   };
 
   abstractedMainEventGRShowButtons = () => {
+    // Redefine the width of those buttons; Should fix to be 100% and make
+    // enclosing div to be based on % and not 2000px
+
+    let barWidth = window.outerWidth + 'px'
     return (
-      <div style={{ display: "block", textAlign: "center", width: "100%", fontSize: "20px"}}>
+      <div style={{ display: "block", textAlign: "center", width: barWidth, fontSize: "20px"}}>
         <div style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginTop: "10px"}}>
         <DropdownButton
           style={{ top: "5px" }}
