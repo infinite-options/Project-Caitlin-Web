@@ -1,10 +1,5 @@
 import React from 'react';
 import moment from 'moment';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faExpandAlt
-} from "@fortawesome/free-solid-svg-icons";
-import { Row, Col } from "react-bootstrap";
 
 export default class TylersCalendarv1 extends React.Component {
 
@@ -69,7 +64,7 @@ export default class TylersCalendarv1 extends React.Component {
               paddingLeft: '4px',
               paddingRight: '4px',
               fontSize: '9px', color: "white",
-              borderRadius: '4px', background: "rgb(66, 184, 221)",
+              borderRadius: '4px', background: "#42B8DD",
               textShadow: "0 1px 1px rgba(0, 0, 0, 0.2)", marginBottom: "3px"
             }} >{this.props.originalEvents[j].summary}</button><br /></div>);
         }
@@ -145,24 +140,9 @@ export default class TylersCalendarv1 extends React.Component {
             {
               // eslint-disable-next-line max-len
             }
-            <div >
-              <Row>
-                <Col>
-                  <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircle" : ""} >
-                    <span className="fancytext"> {d} </span>
-                  </div>
-                </Col>
-                <Col>
-                  <FontAwesomeIcon
-                    style={{ 'marginLeft': '60%' }}
-                    icon={faExpandAlt}
-                    size="sm"
-                    className="X"
-                    onClick={this.onExpandClick.bind(this, d)}
-                  />
-                </Col>
-              </Row>
-            </div>
+              <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircleCurrent" : "numberCircle"} onClick={this.onExpandClick.bind(this, d)}>
+                <a className="fancytext"> {d} </a>
+              </div>
             {this.getEventsforDay(d)}
           </div>
         </td>
