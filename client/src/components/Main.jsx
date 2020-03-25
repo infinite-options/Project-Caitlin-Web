@@ -937,82 +937,10 @@ export default class MainPage extends React.Component {
 
   abstractedMainEventGRShowButtons = () => {
     return (
-      <div style={{ marginLeft: "33%", width: "100%", fontSize: "20px" }}>
-        <Button
-          style={{ margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={() => {
-            this.setState({
-               dateContext: moment(),
-            });
-          }}
-        >
-          Today
-        </Button>
-
-        <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={() => {
-            this.setState(
-              {
-                showAboutModal: false
-                // dayEventSelected: !this.state.dayEventSelected
-              },
-              () => {
-                this.showEventsFormbyCreateNewEventButton();
-              }
-            );
-          }}
-        >
-          New Event
-        </Button>
-
-        <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={this.toggleShowRoutine}
-        >
-          Routines
-        </Button>
-
-        <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={this.toggleShowGoal}
-        >
-          {" "}
-          Goals{" "}
-        </Button>
-
-        <Button
-          style={{ margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={() => {
-            this.setState({
-              showRoutineGoalModal: !this.state.showRoutineGoalModal,
-              showGoalModal: false,
-              showRoutineModal: false
-            });
-          }}
-        >
-          Current Status
-        </Button>
-        <Button
-          style={{ margin: "10px", marginBottom: "0" }}
-          variant="outline-primary"
-          onClick={() => {
-            this.setState({
-              showAboutModal: !this.state.showAboutModal,
-              dayEventSelected: false
-            });
-          }}
-        >
-          About
-        </Button>
-
+      <div style={{ display: "block", textAlign: "center", width: "100%", fontSize: "20px"}}>
+        <div style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginTop: "10px"}}>
         <DropdownButton
-          style={{ margin: "10px", float: "left" }}
+          style={{ top: "5px" }}
           title={this.state.calendarView}
         >
           <Dropdown.Item
@@ -1032,6 +960,78 @@ export default class MainPage extends React.Component {
             Day{" "}
           </Dropdown.Item>
         </DropdownButton>
+        </div>
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0"}}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+               dateContext: moment(),
+            });
+          }}
+        >
+          Today
+        </Button>
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState(
+              {
+                showAboutModal: false
+                // dayEventSelected: !this.state.dayEventSelected
+              },
+              () => {
+                this.showEventsFormbyCreateNewEventButton();
+              }
+            );
+          }}
+        >
+          New Event
+        </Button>
+
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={this.toggleShowRoutine}
+        >
+          Routines
+        </Button>
+
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={this.toggleShowGoal}
+        >
+          {" "}
+          Goals{" "}
+        </Button>
+
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+              showRoutineGoalModal: !this.state.showRoutineGoalModal,
+              showGoalModal: false,
+              showRoutineModal: false
+            });
+          }}
+        >
+          Current Status
+        </Button>
+        <Button
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          variant="outline-primary"
+          onClick={() => {
+            this.setState({
+              showAboutModal: !this.state.showAboutModal,
+              dayEventSelected: false
+            });
+          }}
+        >
+          About
+        </Button>
       </div>
     );
   };
