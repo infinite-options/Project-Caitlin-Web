@@ -955,7 +955,7 @@ export default class MainPage extends React.Component {
           variant="outline-primary"
           onClick={() => {
             this.setState({
-               dateContext: moment(),
+              dateContext: moment()
             });
           }}
         >
@@ -1335,28 +1335,36 @@ export default class MainPage extends React.Component {
       }
     };
 
+    let selectedDays = [];
+    for (let [key, value] of Object.entries(this.state.byDay)) {
+      if (value !== "") selectedDays.push(key);
+    }
     // If selected repeat every week, the following shows.
     const weekSelected = (
-      <div style={{ marginTop: "20px" }}>
+      <>
         Repeat On
         <div style={weekStyle}>
           {week_days.map((day, i) => {
-            return (
-              <span
-                key={i}
-                className={
-                  i === this.state.newEventStart0.getDay()
-                    ? "dot selected"
-                    : "dot"
-                }
-                onClick={e => selectedDot(e, i)}
-              >
-                {day.charAt(0)}
-              </span>
-            );
+            if (selectedDays.includes(i.toString())) {
+              return (
+                <span
+                  key={i}
+                  className="dot selected"
+                  onClick={e => selectedDot(e, i)}
+                >
+                  {day.charAt(0)}
+                </span>
+              );
+            } else {
+              return (
+                <span key={i} className="dot" onClick={e => selectedDot(e, i)}>
+                  {day.charAt(0)}
+                </span>
+              );
+            }
           })}
         </div>
-      </div>
+      </>
     );
 
     // If selected repeat every month, the following shows.
@@ -1440,7 +1448,9 @@ export default class MainPage extends React.Component {
                 </Dropdown.Item>
               </DropdownButton>
             </Form.Group>
-            {this.state.repeatDropDown === "WEEK" && weekSelected}
+            <Form.Group style={{ marginLeft: "5px" }}>
+              {this.state.repeatDropDown === "WEEK" && weekSelected}
+            </Form.Group>
             {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group
               style={{
