@@ -3,6 +3,12 @@ import { faEdit} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button} from 'react-bootstrap';
 import DatePicker from "react-datepicker";
+import ShowNotifications from "./ShowNotifications";
+import {
+    Form,
+    Row,
+    Col
+  } from "react-bootstrap";
 
 export default class editGR extends Component {
 
@@ -97,7 +103,7 @@ export default class editGR extends Component {
                         //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
                         onKeyDown={
                             (e) => {
-                                if (e.keyCode == 32) {
+                                if (e.keyCode === 32) {
 
                                     let temp = this.state.itemToEdit; temp.title = e.target.value + " "; this.setState({ itemToEdit: temp })
                                     e.preventDefault(); e.stopPropagation()
@@ -127,35 +133,22 @@ export default class editGR extends Component {
                 </div >
 
                 <label>This Takes Me</label>
-                <div className="input-group mb-3">
-                <input 
-                    style={{ width: "50px", textAlign: "right", height: "30px"}}
-                    placeholder= "30"
+                <Row>
+                    <Col  style = {{paddingRight: "0px" }}>  
+                        <Form.Control
+                            // value={this.state.newEventNotification}
+                            // onChange={this.handleNotificationChange}
+                            type="number"
+                            placeholder="30"
+                            style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                        />
+                    </Col>
+                    <Col xs={8} style = {{paddingLeft:"0px"}} >
+                        <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                    </Col>
+                </Row>
 
-                />
-                <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-                </div>
-
-                <div className="input-group mb-3" >
-                    <label className="form-check-label">Available to Caitlin?</label>
-                    <input
-                        style={{ marginTop: '5px', marginLeft: '5px' }}
-                        name="Available"
-                        type="checkbox"
-                        checked={this.state.itemToEdit.is_available}
-                        onChange={(e) => {
-                            e.stopPropagation();
-                            let temp = this.state.itemToEdit;
-                            // console.log(temp.is_available)
-                            temp.is_available = !temp.is_available;
-                            this.setState({ itemToEdit: temp })
-                        }} />
-
-
-                </div >
-
-
-                <div className="input-group mb-3" >
+                <div className="input-group mb-3"style ={{marginTop:"10px"}} >
                     <label className="form-check-label">Time?</label>
 
                     <input
@@ -173,39 +166,24 @@ export default class editGR extends Component {
                         }} />
                 </div >
 
-                <div className="input-group mb-3" >
-                    <label className="form-check-label">Notify TA?</label>
-
+                <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+                    <label className="form-check-label">Available to Caitlin?</label>
                     <input
                         style={{ marginTop: '5px', marginLeft: '5px' }}
-
-                        name="Timed"
+                        name="Available"
                         type="checkbox"
-                        checked={this.state.itemToEdit.notifies_ta}
+                        checked={this.state.itemToEdit.is_available}
                         onChange={(e) => {
                             e.stopPropagation();
                             let temp = this.state.itemToEdit;
-                            // console.log(temp.notifies_ta)
-                            temp.notifies_ta = !temp.notifies_ta;
+                            // console.log(temp.is_available)
+                            temp.is_available = !temp.is_available;
                             this.setState({ itemToEdit: temp })
                         }} />
                 </div >
 
-                <div className="input-group mb-3" >
-                    <label className="form-check-label">Remind User? </label>
-                    <input
-                        style={{ marginTop: '5px', marginLeft: '5px' }}
-                        name="Timed"
-                        type="checkbox"
-                        checked={this.state.itemToEdit.reminds_user}
-                        onChange={(e) => {
-                            e.stopPropagation();
-                            let temp = this.state.itemToEdit;
-                            // console.log(temp.reminds_user)
-                            temp.reminds_user = !temp.reminds_user;
-                            this.setState({ itemToEdit: temp })
-                        }} />
-                </div >
+                {this.state.itemToEdit.is_available && <ShowNotifications />}
+
                 {/* <Row>
                     <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}

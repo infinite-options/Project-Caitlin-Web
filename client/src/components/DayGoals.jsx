@@ -115,7 +115,7 @@ export default class DayGoals extends Component {
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
-            if (tempStartTime.getHours() == hour) {
+            if (tempStartTime.getHours() === hour) {
                 // addmarginLeft = 0;
                 // itemWidth = this.state.eventBoxSize;
                 // itemWidth = 0;
@@ -172,9 +172,9 @@ export default class DayGoals extends Component {
                 }
                 // change color if more than one event in same time. 
                 if(sameTimeEventCount <= 1){
-                     color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                     color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                 }
-                else if( sameTimeEventCount == 2){
+                else if( sameTimeEventCount === 2){
                     color = 'skyblue';
                 }
                 else{

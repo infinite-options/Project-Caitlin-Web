@@ -2,6 +2,12 @@ import React, { Component } from 'react'
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from 'react-bootstrap';
+import ShowNotifications from "./ShowNotifications";
+import {
+    Form,
+    Row,
+    Col
+  } from "react-bootstrap";
 
 
 export default class editIS extends Component {
@@ -75,18 +81,41 @@ export default class editIS extends Component {
             </div >
 
             <label>This Takes Me</label>
-            <div className="input-group mb-3">
-            <input 
-                style={{ width: "50px", textAlign: "right", height: "30px"}}
-                placeholder= "30"
+            <Row>
+                <Col  style = {{paddingRight: "0px" }}>  
+                    <Form.Control
+                        // value={this.state.newEventNotification}
+                        // onChange={this.handleNotificationChange}
+                        type="number"
+                        placeholder="30"
+                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                    />
+                </Col>
+                <Col xs={8} style = {{paddingLeft:"0px"}} >
+                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                </Col>
+            </Row>
 
-            />
-            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+                <label className="form-check-label">Time?</label>
+                <input
+                    style={{ marginTop: '5px', marginLeft: '5px' }}
+                    name="Timed"
+                    type="checkbox"
+                    checked={this.state.itemToEdit.is_timed}
+                    onChange={(e) => {
+                        e.stopPropagation();
+                        let temp = this.state.itemToEdit;
+                        // console.log(temp.is_timed)
+                        temp.is_timed = !temp.is_timed;
+                        this.setState({ itemToEdit: temp })
+                    }} />
             </div>
             
-            <label>Available to Caitlin?</label>
             <div className="input-group mb-3" >
+                <label className="form-check-label">Available to Caitlin?</label>
                 <input
+                    style={{ marginTop: '5px', marginLeft: '5px' }}
                     name="Available"
                     type="checkbox"
                     checked={this.state.itemToEdit.is_available}
@@ -99,22 +128,11 @@ export default class editIS extends Component {
                     }} />
             </div >
 
-            <label>Time?</label>
-            <div className="input-group mb-3" >
-                <input
-                    name="Timed"
-                    type="checkbox"
-                    checked={this.state.itemToEdit.is_timed}
-                    onChange={(e) => {
-                        e.stopPropagation();
-                        let temp = this.state.itemToEdit;
-                        // console.log(temp.is_timed)
-                        temp.is_timed = !temp.is_timed;
-                        this.setState({ itemToEdit: temp })
-                    }} />
-            </div >
+            {this.state.itemToEdit.is_available && <ShowNotifications />}
 
-            <label>Notify TA?</label>
+          
+
+            {/* <label>Notify TA?</label>
             <div className="input-group mb-3" >
                 <input
                     name="Timed"
@@ -142,7 +160,7 @@ export default class editIS extends Component {
                         temp.reminds_user = !temp.reminds_user;
                         this.setState({ itemToEdit: temp })
                     }} />
-            </div > 
+            </div >  */}
             <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
             <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
         </div>
