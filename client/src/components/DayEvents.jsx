@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import axios from 'axios';
 // import moment from 'moment';
 import {
-    Tooltip, Container, Row, Col
+     Container, Row, Col
 } from 'react-bootstrap';
 
 export default class DayEvents extends Component {
@@ -57,9 +57,7 @@ export default class DayEvents extends Component {
         var tempEnd = null;
         var arr = this.props.dayEvents;
         var sameTimeEventCount = 0;
-        var overlapEvent = 0;
         var addmarginLeft = 0;
-        var sameHourItems = 1;
         let itemWidth = this.state.eventBoxSize;
         var fontSize = 10;
 
@@ -72,7 +70,7 @@ export default class DayEvents extends Component {
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
 
-            if (tempStartTime.getHours() == hour) {
+            if (tempStartTime.getHours() === hour) {
                 // addmarginLeft = 0;
                 // itemWidth = this.state.eventBoxSize;
                 let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
@@ -95,10 +93,7 @@ export default class DayEvents extends Component {
                 }
 
                 if (sameTimeEventCount > 1) {
-                    // console.log("add 20 in day");
                     addmarginLeft += 20;
-                    // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
-                    // itemWidth = itemWidth/(sameHourItems-1);
                     itemWidth = itemWidth - 20;
                 }
                 //chnage font size if not enough space
@@ -108,9 +103,9 @@ export default class DayEvents extends Component {
 
                 // change color if more than one event in same time.
                 if (sameTimeEventCount <= 1) {
-                    color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                    color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                 }
-                else if (sameTimeEventCount == 2) {
+                else if (sameTimeEventCount === 2) {
                     color = 'skyblue';
                 }
                 else {
@@ -119,10 +114,8 @@ export default class DayEvents extends Component {
 
                 let newElement =
                     (
-
                         <div key={"event" + i}>
                             <div
-
                                 data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
                                 onMouseOver={e => {
                                     e.target.style.color = "#FFFFFF";
@@ -135,7 +128,6 @@ export default class DayEvents extends Component {
                                     e.target.style.background = color;
                                 }}
                                 key={i}
-                                // value = {i}
                                 onClick={e => this.onEventClick(e, i)}
                                 style={{
                                     zIndex: this.state.zIndex,
@@ -144,25 +136,18 @@ export default class DayEvents extends Component {
                                     fontSize: fontSize + "px",
                                     border: "1px lightgray solid ",
                                     float: "left",
-                                    //  verticalAlign: " ",
-                                    // verticalAlign: 'text-top',
-                                    // textAlign:"left",
                                     borderRadius: "5px",
                                     background: color,
-                                    // width: this.state.eventBoxSize - (addmarginLeft/16),
                                     width: itemWidth + "px",
                                     position: "absolute",
                                     height: height + "px",
                                     marginLeft: addmarginLeft + "px"
                                 }}>
-                                {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                 {arr[i].summary}
                             </div>
                         </div>
                     );
                 res.push(newElement);
-
-                // this.state.marginFromLeft = this.state.marginFromLeft + 5;
             }
         }
         return res;
@@ -204,11 +189,8 @@ export default class DayEvents extends Component {
     render() {
         return (
             <div style={{
-                // margin:'10px',
                 padding: '20px',
-                //  marginTop: "10px",
                 width: "300px",
-                //  border: "2px lightlightgray solid",
                 borderRadius: "20px"
             }}>
                 Today's Events:

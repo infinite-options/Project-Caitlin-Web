@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form,Row,Col} from "react-bootstrap";
+import {  Form,Row,Col} from "react-bootstrap";
 
 
 class EventBeforeChecked extends React.Component{

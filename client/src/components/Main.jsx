@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
 import {
   Form,
@@ -18,11 +18,12 @@ import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
-import EventBeforeChecked from "./EventBeforeChecked.jsx";
+// import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
+  faImage
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -209,7 +210,6 @@ export default class MainPage extends React.Component {
         repeatEndDate: "",
         showNoTitleError: "",
         showDateError: "",
-        showRepeatModal: false,
         showAboutModal: false
       },
       () => {
@@ -264,7 +264,6 @@ export default class MainPage extends React.Component {
         newEventDescription: "",
         dayEventSelected: true,
         isEvent: false,
-        showRepeatModal: false,
         repeatOption: false,
         repeatDropDown: "DAY",
         repeatMonthlyDropDown: "Monthly on day 13",
@@ -823,7 +822,7 @@ export default class MainPage extends React.Component {
 
   showEventsFormbyCreateNewEventButton = () => {
     var newStart, newEnd;
-    if (this.state.calendarView == "Month") {
+    if (this.state.calendarView === "Month") {
       newStart = new Date();
       newStart.setHours(0, 0, 0, 0);
       newEnd = new Date();
@@ -1033,8 +1032,105 @@ export default class MainPage extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input type="file" onChange={this.handleFileSelected} />
-          <button onClick={this.imageUploadHandler}> Upload</button>
+          <Row>
+            <Col >
+              <FontAwesomeIcon
+                // style={{ marginLeft: "50%" }}
+                icon={faImage}
+                size="4x"
+                // className="X"
+            />
+            </Col>
+            <Col  xs={9}>
+              <label for="ProfileImage">Upload A New Image</label>
+             <input type="file" onChange={this.handleFileSelected} id="ProfileImage" />
+            </Col>
+          </Row>
+          
+          <Form.Group controlId="AboutMessage" style ={{marginTop:"10px"}}>
+              <Form.Label>Message (My Day):</Form.Label>  
+              <Form.Control
+                as="textarea"
+                rows="4"
+                // value={this.state.newEventDescription}
+                // onChange={this.handleDescriptionChange}
+                type="text"
+                placeholder="You are a strong ..."
+                // style={{textAlign:"center"}}
+              />
+          </Form.Group>
+          <Form.Group controlId="AboutMessageCard">
+              <Form.Label>Message (My Card):</Form.Label>  
+              <Form.Control
+                as="textarea"
+                rows="4"
+                // value={this.state.newEventDescription}
+                // onChange={this.handleDescriptionChange}
+                type="text"
+                placeholder="You are a safe ..."
+                // style={{textAlign:"center"}}
+              />
+          </Form.Group>
+          <Form.Group controlId="ImportantPeople">
+              <Form.Label >Important People</Form.Label>  
+              <Row>
+                <Col >
+                  <FontAwesomeIcon
+                    icon={faImage}
+                    size="5x"
+                />
+                </Col>
+                <Col  xs={8}>
+                    <Form.Control
+                      type="text"
+                      placeholder="Relationship"
+                    />
+                    <Form.Control
+                      type="text"
+                      placeholder="Phone Number"
+                    />
+                </Col>
+            </Row>
+            <Row style = {{marginTop:"20px"}}>
+                <Col >
+                  <FontAwesomeIcon
+                    icon={faImage}
+                    size="5x"
+                />
+                </Col>
+                <Col  xs={8}>
+                    <Form.Control
+                      type="text"
+                      placeholder="Relationship"
+                    />
+                    <Form.Control
+                      type="text"
+                      placeholder="Phone Number"
+                    />
+                </Col>
+            </Row>
+            <Row style = {{marginTop:"20px"}}>
+                <Col >
+                  <FontAwesomeIcon
+                    icon={faImage}
+                    size="5x"
+                />
+                </Col>
+                <Col  xs={8}>
+                    <Form.Control
+                      type="text"
+                      placeholder="Relationship"
+                    />
+                    <Form.Control
+                      type="text"
+                      placeholder="Phone Number"
+                    />
+                </Col>
+            </Row>
+             
+          </Form.Group>
+         
+          {/* <button onClick={this.imageUploadHandler}> Upload</button> */}
         </Modal.Body>
         <Modal.Footer>
           <Container fluid>
@@ -1453,27 +1549,181 @@ export default class MainPage extends React.Component {
                   type="text"
                   placeholder="Location"
                 />
+
               </Form.Group>
               <Form.Group controlId="Notification">
-                <Form.Label>Notification:</Form.Label>
+                <Form.Label>Notifications:</Form.Label>
                 <Row>
-                  <Col>
-                    {" "}
+                  <Col style = {{paddingRight: "0px" }}>
                     <Form.Control
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
-                    />{" "}
+                      style = {{width:"70px", marginTop:".25rem"}}
+                    />
                   </Col>
-                  <Col>
-                    {" "}
-                    <Form.Text> Minutes </Form.Text>{" "}
+                  <Col xs={8} style = {{paddingLeft:"0px"}}>
+                    <Form.Text style = {{fontSize:"65%"}}> Min Before Start Time</Form.Text>
                   </Col>
                 </Row>
+                <Row style = {{ marginTop:"15px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+           
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+                <Row style = {{marginTop:"10px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+                <Row style = {{marginTop:"10px"}}>
+                  <Col style = {{paddingRight: "0px" }}>
+                    <Form.Control
+                      // value={this.state.newEventNotification}
+                      // onChange={this.handleNotificationChange}
+                      type="number"
+                      placeholder="30"
+                      style = {{width:"70px", marginTop:".25rem"}}
+                    />
+                  </Col>
+                  <Col xs={8} style = {{paddingLeft:"0px"}}>
+                    <Form.Text style = {{fontSize:"65%"}}> Min After Start Time</Form.Text>
+                  </Col>
+                </Row>
+                <Row style = {{ marginTop:"15px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                     
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+                <Row style = {{marginTop:"10px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                     
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+                <Row style = {{marginTop:"10px"}}>
+                  <Col style = {{paddingRight: "0px" }}>
+                    <Form.Control
+                      // value={this.state.newEventNotification}
+                      // onChange={this.handleNotificationChange}
+                      type="number"
+                      placeholder="30"
+                      style = {{width:"70px", marginTop:".25rem"}}
+                    />
+                  </Col>
+                  <Col xs={8} style = {{paddingLeft:"0px"}}>
+                    <Form.Text style = {{fontSize:"65%"}}> Min After End Time</Form.Text>
+                  </Col>
+                </Row>
+                <Row style = {{ marginTop:"15px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                     
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+                <Row style = {{marginTop:"10px"}}>
+                  <Col style = {{paddingRight: "0px"}}>
+                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                  </Col>
+                  <Col xs={8}>
+                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                      <Form.Check.Input
+                        type="checkbox"
+                        style={{ width: "20px", height: "20px" }}
+                      />
+                     
+                      <Form.Control
+                        as="textarea"
+                        rows="1"
+                        type="text"
+                        placeholder="Enter Message Here"
+                        style={{marginLeft: "10px"}}
+                      />
+                    </Form.Check>
+                  </Col>
+                </Row>
+              
               </Form.Group>
 
-              <Form.Group controlId="formBasicCheckbox">
+              {/* <Form.Group controlId="formBasicCheckbox">
                 <Row style={{ height: "30px" }}>
                   <Col>
                     <Form.Check type="checkbox">
@@ -1485,9 +1735,6 @@ export default class MainPage extends React.Component {
                     </Form.Check>
                   </Col>
                   <Col>
-                    {/* <Form.Check  type="checkbox" >
-                    <Form.Check.Input type="checkbox" onChange = {(e) => this.notifyBefore(e)}  style={{ width:"20px", height:"20px"}}/>
-                    </Form.Check> */}
                     <Form.Check type="checkbox">
                       <Form.Check.Input
                         type="checkbox"
@@ -1532,7 +1779,7 @@ export default class MainPage extends React.Component {
                     </Form.Check>
                   </Col>
                 </Row>
-              </Form.Group>
+              </Form.Group> */}
 
               {/* End here */}
               <Form.Group controlId="Description">
