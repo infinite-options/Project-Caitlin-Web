@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import axios from 'axios';
 // import moment from 'moment';
 import {
-    Tooltip, Container, Row, Col
+     Container, Row, Col
 } from 'react-bootstrap';
 
 export default class DayEvents extends Component {
@@ -57,9 +57,7 @@ export default class DayEvents extends Component {
         var tempEnd = null;
         var arr = this.props.dayEvents;
         var sameTimeEventCount = 0;
-        var overlapEvent = 0;
         var addmarginLeft = 0;
-        var sameHourItems = 1;
         let itemWidth = this.state.eventBoxSize;
         var fontSize = 10;
 
@@ -83,7 +81,6 @@ export default class DayEvents extends Component {
                   sameTimeEventCount++;
                   let newElement =
                       (
-
                           <div key={"event" + i}>
                               <div
 
@@ -353,11 +350,8 @@ export default class DayEvents extends Component {
     render() {
         return (
             <div style={{
-                // margin:'10px',
                 padding: '20px',
-                //  marginTop: "10px",
                 width: "300px",
-                //  border: "2px lightlightgray solid",
                 borderRadius: "20px"
             }}>
                 Today's Events:

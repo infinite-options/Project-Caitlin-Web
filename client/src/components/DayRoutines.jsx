@@ -120,7 +120,7 @@ export default class DayRoutines extends Component {
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
-            if (tempStartTime.getHours() == hour) {
+            if (tempStartTime.getHours() === hour) {
                 // console.log("matched" + i );
                 let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                 let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
@@ -165,9 +165,9 @@ export default class DayRoutines extends Component {
                 }
                 // change color if more than one event in same time. 
                 if(sameTimeEventCount <= 1){
-                     color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                     color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                 }
-                else if( sameTimeEventCount == 2){
+                else if( sameTimeEventCount === 2){
                     color = 'skyblue';
                 }
                 else{

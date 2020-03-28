@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 // import firebase from "./firebase";
+import ShowNotifications from "./ShowNotifications"
 import { Button, Modal } from "react-bootstrap";
+import {
+    Form,
+    Row,
+    Col
+  } from "react-bootstrap";
 
 /**
  *
@@ -154,33 +160,25 @@ export default class AddNewISItem extends Component {
                 }}
               />
             </div>
+            
             <label>This Takes Me</label>
-            <div className="input-group mb-3">
-            <input 
-                style={{ width: "50px", textAlign: "right", height: "30px"}}
-                placeholder= "30"
+            <Row>
+                <Col  style = {{paddingRight: "0px" }}>  
+                    <Form.Control
+                        // value={this.state.newEventNotification}
+                        // onChange={this.handleNotificationChange}
+                        type="number"
+                        placeholder="30"
+                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                    />
+                </Col>
+                <Col xs={8} style = {{paddingLeft:"0px"}} >
+                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                </Col>
+            </Row>
 
-            />
-            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-            </div>
-            <label>Available to Caitlin?</label>
-            <div className="input-group mb-3">
-              <input
-                name="Available"
-                type="checkbox"
-                checked={this.state.itemToEdit.is_available}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.is_available);
-                  temp.is_available = !temp.is_available;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
-            <div className="input-group mb-3">
-              <label className="form-check-label">Time?</label>
+            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+              <label className="form-check-label" >Time?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Timed"
@@ -197,39 +195,24 @@ export default class AddNewISItem extends Component {
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Notify TA?</label>
-
+              <label className="form-check-label">Available to Caitlin?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
+                name="Available"
                 type="checkbox"
-                checked={this.state.itemToEdit.notifies_ta}
+                checked={this.state.itemToEdit.is_available}
                 onChange={e => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.notifies_ta);
-                  temp.notifies_ta = !temp.notifies_ta;
+                  console.log(temp.is_available);
+                  temp.is_available = !temp.is_available;
                   this.setState({ itemToEdit: temp });
                 }}
               />
             </div>
 
-            <div className="input-group mb-3">
-              <label className="form-check-label">Remind User? </label>
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.reminds_user}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.reminds_user);
-                  temp.reminds_user = !temp.reminds_user;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
+            {this.state.itemToEdit.is_available && <ShowNotifications />}
+
           </div>
         </Modal.Body>
         <Modal.Footer>

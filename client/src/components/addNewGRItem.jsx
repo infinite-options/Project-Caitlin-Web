@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
 import { Button, Modal} from "react-bootstrap";
+import ShowNotifications from "./ShowNotifications"
+import {
+    Form,
+    Row,
+    Col
+  } from "react-bootstrap";
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
@@ -15,7 +21,7 @@ export default class AddNewGRItem extends Component {
       is_persistent: this.props.isRoutine,
       photo: "",
       is_complete: false,
-      is_available: true,
+      is_available: false,
       available_end_time: "23:59:59",
       available_start_time: "00:00:00",
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
@@ -184,36 +190,25 @@ export default class AddNewGRItem extends Component {
                 }}
               />
             </div>
-            <label>This Takes Me</label>
-            <div className="input-group mb-3">
-            <input 
-                style={{ width: "50px", textAlign: "right", height: "30px"}}
-                placeholder= "30"
-
-            />
-            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-            </div>
             
-            <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Available"
-                type="checkbox"
-                checked={this.state.itemToEdit.is_available}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.is_available);
-                  temp.is_available = !temp.is_available;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
-            <div className="input-group mb-3">
-              <label className="form-check-label">Time?</label>
-
+            <label>This Takes Me</label>
+            <Row>
+                <Col  style = {{paddingRight: "0px" }}>  
+                    <Form.Control
+                        // value={this.state.newEventNotification}
+                        // onChange={this.handleNotificationChange}
+                        type="number"
+                        placeholder="30"
+                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                    />
+                </Col>
+                <Col xs={8} style = {{paddingLeft:"0px"}} >
+                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                </Col>
+            </Row>
+            
+            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+              <label className="form-check-label" >Time?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Timed"
@@ -230,6 +225,26 @@ export default class AddNewGRItem extends Component {
             </div>
 
             <div className="input-group mb-3">
+              <label className="form-check-label">Available to Caitlin?</label>
+              <input
+                style={{ marginTop: "5px", marginLeft: "5px" }}
+                name="Available"
+                type="checkbox"
+                checked={this.state.itemToEdit.is_available}
+                onChange={e => {
+                  e.stopPropagation();
+                  console.log(e.target.checked);
+                  let temp = this.state.itemToEdit;
+                //   console.log(temp.is_available);
+                  temp.is_available = e.target.checked;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
+
+            {this.state.itemToEdit.is_available && <ShowNotifications />}
+
+            {/* <div className="input-group mb-3">
               <label className="form-check-label">Notify TA?</label>
 
               <input
@@ -262,7 +277,7 @@ export default class AddNewGRItem extends Component {
                   this.setState({ itemToEdit: temp });
                 }}
               />
-            </div>
+            </div> */}
           </div>
         </Modal.Body>
         <Modal.Footer>

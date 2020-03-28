@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 // import firebase from "./firebase";
+import ShowNotifications from "./ShowNotifications"
 import { Button, Modal } from "react-bootstrap";
+import {
+    Form,
+    Row,
+    Col
+  } from "react-bootstrap";
 
 export default class AddNewATItem extends Component {
   constructor(props) {
@@ -14,7 +20,7 @@ export default class AddNewATItem extends Component {
         photo: "",
         audio: "",
         is_complete: false,
-        is_available: true,
+        is_available: false,
         available_end_time: "23:59:59",
         available_start_time: "00:00:00",
         datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
@@ -154,14 +160,36 @@ export default class AddNewATItem extends Component {
                 }}
               />
             </div>
-            <label>This Takes Me</label>
-            <div className="input-group mb-3">
-            <input 
-                style={{ width: "50px", textAlign: "right", height: "30px"}}
-                placeholder= "30"
 
-            />
-            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
+            <label>This Takes Me</label>
+            <Row>
+                <Col  style = {{paddingRight: "0px" }}>  
+                    <Form.Control
+                        type="number"
+                        placeholder="30"
+                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                    />
+                </Col>
+                <Col xs={8} style = {{paddingLeft:"0px"}} >
+                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                </Col>
+            </Row>
+
+            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+              <label className="form-check-label" >Time?</label>
+              <input
+                style={{ marginTop: "5px", marginLeft: "5px" }}
+                name="Timed"
+                type="checkbox"
+                checked={this.state.itemToEdit.is_timed}
+                onChange={e => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  console.log(temp.is_timed);
+                  temp.is_timed = !temp.is_timed;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
             </div>
 
             <div className="input-group mb-3">
@@ -181,25 +209,10 @@ export default class AddNewATItem extends Component {
               />
             </div>
 
-            <div className="input-group mb-3">
-              <label className="form-check-label">Time?</label>
+            {this.state.itemToEdit.is_available && <ShowNotifications />}
+            
 
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.is_timed}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.is_timed);
-                  temp.is_timed = !temp.is_timed;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
-            <div className="input-group mb-3">
+            {/* <div className="input-group mb-3">
               <label className="form-check-label">Notify TA?</label>
 
               <input
@@ -232,7 +245,7 @@ export default class AddNewATItem extends Component {
                   this.setState({ itemToEdit: temp });
                 }}
               />
-            </div>
+            </div> */}
           </div>
         </Modal.Body>
         <Modal.Footer>

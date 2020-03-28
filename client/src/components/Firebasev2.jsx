@@ -18,6 +18,7 @@ import DeleteGR from "./deleteGR.jsx";
 import EditGR from "./editGR.jsx";
 import EditIS from "./editIS.jsx";
 import EditAT from "./EditAT.jsx";
+import ShowATList from "./ShowATList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -92,7 +93,10 @@ export default class FirebaseV2 extends React.Component {
 
     //isRoutine is to check whether we clicked on add routine or add goal
     isRoutine: true,
-    availabilityColorCode: "#D6A34C"
+    availabilityColorCode: "#D6A34C",
+
+    //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
+    // iconShowATModal: true
   };
 
   /**
@@ -619,6 +623,7 @@ export default class FirebaseV2 extends React.Component {
               style={{ marginBottom: "3px" }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-reverse">
+                {/* <Col> */}
                 {this.state.routines[i]["is_available"] ? (
                   <div style={{ marginLeft: "5px" }}>
                     <FontAwesomeIcon
@@ -650,12 +655,23 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
+                
+                {/* </Col> */}
+               
               </Row>
+              <Row style={{ margin: "0" }} className="d-flex flex-row-reverse"> <ShowATList /></Row>
+              {/* <Row style={{ margin: "0" }} className="d-flex flex-row-center">
+                <Col>
+                
+                  <div className="fancytext " >
+                      {this.state.routines[i]["title"]}
+                  </div>
+                </Col>     
+              </Row> */}
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
                   <div className="fancytext">
                     {this.state.routines[i]["title"]}
-                    {/* <br /> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes */}
                   </div>
                 </Col>
 
@@ -703,6 +719,10 @@ export default class FirebaseV2 extends React.Component {
                   FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                   refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                 />
+                 {/* <ShowATList /> */}
+                  
+               
+                
               </Row>
               <Row>
                 <div style={{ fontSize: "12px" }}>
@@ -1088,31 +1108,6 @@ export default class FirebaseV2 extends React.Component {
         ) : (
           <div> </div>
         )}
-
-        {/* <Col sm="auto" md="auto" lg="auto">
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.addNewGRModalShow) ? this.AddNewGRModalAbstracted() : ""}
-                    </div>
-                </Col> */}
-
-        {/* <Col sm="auto" md="auto" lg="auto">
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.singleGR.show) ? this.abstractedActionsAndTaskList() : (<div></div>)}
-                    </div>
-                </Col> */}
-
-        {/* <Col sm="auto" md="auto" lg="auto">
-                    <div style={{borderRadius:"15px", boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.addNewATModalShow) ? <AddNewATItem /> : (<div></div>)}
-                    </div>
-                </Col> */}
-
-        {/* <Col sm="auto" md="auto" lg="auto">
-                    <div style={{ boxShadow: '0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        {(this.state.singleAT.show) ? this.abstractedInstructionsAndStepsList() : (<div></div>)}
-                    </div>
-                </Col> */}
-        {/* </Row> */}
       </div>
     );
   }
