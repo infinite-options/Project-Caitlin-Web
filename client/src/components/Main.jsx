@@ -919,9 +919,10 @@ export default class MainPage extends React.Component {
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
       }
+      console.log(selectedDays, "selectedDays week");
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
-          if (selectedDays.length === "7") {
+          if (selectedDays.length === 7) {
             this.setState({
               repeatOptionDropDown: "Weekly on all days"
             });
@@ -931,7 +932,7 @@ export default class MainPage extends React.Component {
             });
           }
         } else if (repeatRadio_temp === "On") {
-          if (selectedDays.length === "7") {
+          if (selectedDays.length === 7) {
             this.setState({
               repeatOptionDropDown: `Weekly on all days, until ${moment(
                 repeatEndDate_temp
@@ -950,7 +951,7 @@ export default class MainPage extends React.Component {
               repeatOptionDropDown: `Once`
             });
           } else {
-            if (selectedDays.length === "7") {
+            if (selectedDays.length === 7) {
               this.setState({
                 repeatOptionDropDown: `Weekly on all days, , ${repeatOccurrence_temp} times`
               });
@@ -965,7 +966,7 @@ export default class MainPage extends React.Component {
         }
       } else {
         if (repeatRadio_temp === "Never") {
-          if (selectedDays.length === "7") {
+          if (selectedDays.length === 7) {
             this.setState({
               repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days`
             });
@@ -977,7 +978,7 @@ export default class MainPage extends React.Component {
             });
           }
         } else if (repeatRadio_temp === "On") {
-          if (selectedDays.length === "7") {
+          if (selectedDays.length === 7) {
             this.setState({
               repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, until ${moment(
                 repeatEndDate_temp
@@ -996,7 +997,7 @@ export default class MainPage extends React.Component {
               repeatOptionDropDown: "Once"
             });
           } else {
-            if (selectedDays.length === "7") {
+            if (selectedDays.length === 7) {
               this.setState({
                 repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, ${repeatOccurrence_temp} times`
               });
