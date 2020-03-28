@@ -38,7 +38,7 @@ export default class MainPage extends React.Component {
       showGoalModal: false,
       showRoutineModal: false,
       showAboutModal: false,
-      dayEventSelected: true, //use to show modal to create new event
+      dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
       newEventName: "",
@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Month", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -1484,103 +1484,79 @@ export default class MainPage extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col >
+            <Col>
               <FontAwesomeIcon
                 // style={{ marginLeft: "50%" }}
                 icon={faImage}
                 size="4x"
                 // className="X"
-            />
+              />
             </Col>
-            <Col  xs={9}>
+            <Col xs={9}>
               <label for="ProfileImage">Upload A New Image</label>
-             <input type="file" onChange={this.handleFileSelected} id="ProfileImage" />
+              <input
+                type="file"
+                onChange={this.handleFileSelected}
+                id="ProfileImage"
+              />
             </Col>
           </Row>
-          
-          <Form.Group controlId="AboutMessage" style ={{marginTop:"10px"}}>
-              <Form.Label>Message (My Day):</Form.Label>  
-              <Form.Control
-                as="textarea"
-                rows="4"
-                // value={this.state.newEventDescription}
-                // onChange={this.handleDescriptionChange}
-                type="text"
-                placeholder="You are a strong ..."
-                // style={{textAlign:"center"}}
-              />
+
+          <Form.Group controlId="AboutMessage" style={{ marginTop: "10px" }}>
+            <Form.Label>Message (My Day):</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows="4"
+              // value={this.state.newEventDescription}
+              // onChange={this.handleDescriptionChange}
+              type="text"
+              placeholder="You are a strong ..."
+              // style={{textAlign:"center"}}
+            />
           </Form.Group>
           <Form.Group controlId="AboutMessageCard">
-              <Form.Label>Message (My Card):</Form.Label>  
-              <Form.Control
-                as="textarea"
-                rows="4"
-                // value={this.state.newEventDescription}
-                // onChange={this.handleDescriptionChange}
-                type="text"
-                placeholder="You are a safe ..."
-                // style={{textAlign:"center"}}
-              />
+            <Form.Label>Message (My Card):</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows="4"
+              // value={this.state.newEventDescription}
+              // onChange={this.handleDescriptionChange}
+              type="text"
+              placeholder="You are a safe ..."
+              // style={{textAlign:"center"}}
+            />
           </Form.Group>
           <Form.Group controlId="ImportantPeople">
-              <Form.Label >Important People</Form.Label>  
-              <Row>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Form.Label>Important People</Form.Label>
+            <Row>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-            <Row style = {{marginTop:"20px"}}>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Row style={{ marginTop: "20px" }}>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-            <Row style = {{marginTop:"20px"}}>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Row style={{ marginTop: "20px" }}>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-             
           </Form.Group>
-         
+
           {/* <button onClick={this.imageUploadHandler}> Upload</button> */}
         </Modal.Body>
         <Modal.Footer>
@@ -2076,51 +2052,53 @@ export default class MainPage extends React.Component {
                   type="text"
                   placeholder="Location"
                 />
-
               </Form.Group>
               <Form.Group controlId="Notification">
                 <Form.Label>Notifications:</Form.Label>
                 <Row>
-                  <Col style = {{paddingRight: "0px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
-                      style = {{width:"70px", marginTop:".25rem"}}
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min Before Start Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min Before Start Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-           
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
@@ -2130,124 +2108,129 @@ export default class MainPage extends React.Component {
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px" }}>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
-                      style = {{width:"70px", marginTop:".25rem"}}
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min After Start Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min After Start Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px" }}>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
-                      style = {{width:"70px", marginTop:".25rem"}}
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min After End Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min After End Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-              
               </Form.Group>
 
               {/* <Form.Group controlId="formBasicCheckbox">
