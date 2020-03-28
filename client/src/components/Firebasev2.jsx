@@ -49,8 +49,8 @@ export default class FirebaseV2 extends React.Component {
       .collection("users")
       .doc("7R6hAVmDrNutRkG3sVRy"),
     originalGoalsAndRoutineArr: [],
-    goals: [], 
-    routines: [], 
+    goals: [],
+    routines: [],
     //This single GR item is passed to AddNewATItem to help processed the new item
     singleGR: {
       //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
@@ -202,7 +202,7 @@ export default class FirebaseV2 extends React.Component {
   formatDateTime(str) {
     const formattedStr = str.replace(/\//g, "-");
     const time = moment(formattedStr);
-    return time.format("YYYY MMM DD HH:m");
+    return time.format("YYYY MMM DD HH:mm");
   }
 
   onInputChange = e => {
@@ -655,18 +655,18 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                
+
                 {/* </Col> */}
-               
+
               </Row>
               <Row style={{ margin: "0" }} className="d-flex flex-row-reverse"> <ShowATList /></Row>
               {/* <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
-                
+
                   <div className="fancytext " >
                       {this.state.routines[i]["title"]}
                   </div>
-                </Col>     
+                </Col>
               </Row> */}
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
@@ -720,9 +720,9 @@ export default class FirebaseV2 extends React.Component {
                   refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                 />
                  {/* <ShowATList /> */}
-                  
-               
-                
+
+
+
               </Row>
               <Row>
                 <div style={{ fontSize: "12px" }}>

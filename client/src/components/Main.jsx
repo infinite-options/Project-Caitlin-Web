@@ -17,6 +17,7 @@ import TylersCalendarv1 from "./TCal.jsx";
 import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
+import WeekEvents from "./WeekEvents.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
 // import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -1120,6 +1121,15 @@ export default class MainPage extends React.Component {
     }
   };
 
+  showCalendarView = () => {
+    if(this.state.calendarView === "Month")
+      return this.calendarAbstracted()
+    else if(this.state.calendarView === "Day")
+      return this.dayViewAbstracted()
+    else if(this.state.calendarView === "Week")
+      return this.weekViewAbstracted()
+  }
+
   render() {
     //The variable below will help decide whether to center the Calendar object or not
     var onlyCal =
@@ -1160,9 +1170,7 @@ export default class MainPage extends React.Component {
               lg="auto"
               style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
-              {this.state.calendarView === "Month"
-                ? this.calendarAbstracted()
-                : this.dayViewAbstracted()}
+              {this.showCalendarView()}
               <div
                 style={{ marginTop: "50px", textAlign: "center" }}
                 className="fancytext"
@@ -1241,6 +1249,32 @@ export default class MainPage extends React.Component {
       </div>
     );
   };
+
+  weekViewAbstracted = () => {
+    return (
+      <div
+        style={{
+        borderRadius: "20px",
+        backgroundColor: "white",
+        width: "100%",
+        marginLeft: "10px",
+        padding: "20px",
+        // border:"1px black solid",
+        boxShadow:
+          "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+      }}>
+        <Container>
+          <WeekEvents />
+          <Row>
+            Routines stuff
+          </Row>
+          <Row>
+            Goal stuff
+          </Row>
+        </Container>
+      </div>
+    )
+  }
 
   toggleShowRoutine = () => {
     this.setState({
@@ -1323,6 +1357,14 @@ export default class MainPage extends React.Component {
           >
             {" "}
             Day{" "}
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={e => {
+              this.changeCalendarView("Week");
+            }}
+          >
+            {" "}
+            Week{" "}
           </Dropdown.Item>
         </DropdownButton>
         </div>
