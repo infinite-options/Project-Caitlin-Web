@@ -614,7 +614,7 @@ export default class MainPage extends React.Component {
         dateTime: this.state.newEventEnd0.toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
-      recurrence: [recurrence],
+      recurrence: this.state.repeatOption && [recurrence],
       attendees: formattedEmail
     };
     axios

@@ -73,16 +73,66 @@ export default class DayEvents extends Component {
             let tempEndTime = new Date(tempEnd);
             let curDate = this.props.dateContext.get('date')
             if (tempStartTime.getDate() ===  curDate) {
-              if(tempEndTime.getDate() === curDate){
-                if (tempStartTime.getHours() == hour) {
+              if (tempStartTime.getHours() == hour) {
+                if (tempStartTime.getDate() !==  tempEndTime.getDate()) {
+                  let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
+                  let hourDiff = 24 - tempStartTime.getHours();
+                  let minDiff = 0;
+                  let color = 'lavender';
+                  let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                  sameTimeEventCount++;
+                  let newElement =
+                      (
+
+                          <div key={"event" + i}>
+                              <div
+
+                                  data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                                  onMouseOver={e => {
+                                      e.target.style.color = "#FFFFFF";
+                                      e.target.style.background = "RebeccaPurple";
+                                      e.target.style.zIndex = "2";
+                                  }}
+                                  onMouseOut={e => {
+                                      e.target.style.zIndex = "1";
+                                      e.target.style.color = "#000000";
+                                      e.target.style.background = color;
+                                  }}
+                                  key={i}
+                                  // value = {i}
+                                  onClick={e => this.onEventClick(e, i)}
+                                  style={{
+                                      zIndex: this.state.zIndex,
+                                      marginTop: minsToMarginTop + "px",
+                                      padding: "5px",
+                                      fontSize: fontSize + "px",
+                                      border: "1px lightgray solid ",
+                                      float: "left",
+                                      //  verticalAlign: " ",
+                                      // verticalAlign: 'text-top',
+                                      // textAlign:"left",
+                                      borderRadius: "5px",
+                                      background: color,
+                                      // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                      width: itemWidth + "px",
+                                      position: "absolute",
+                                      height: height + "px",
+                                      marginLeft: addmarginLeft + "px"
+                                  }}>
+                                  {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                                  {arr[i].summary}
+                              </div>
+                          </div>
+                      );
+                  res.push(newElement);
+                } else {
                   // addmarginLeft = 0;
                   // itemWidth = this.state.eventBoxSize;
                   let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                   let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
                   let minDiff = (tempEndTime.getMinutes()) / 60;
-                  let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
                   let color = 'PaleTurquoise';
-
+                  let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
                   sameTimeEventCount++;
                   //check if there is already an event there overlapping from another hour
                   for (let i = 0; i < arr.length; i++) {
@@ -171,6 +221,7 @@ export default class DayEvents extends Component {
               let minDiff = (tempEndTime.getMinutes()) / 60;
               let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
               let color = 'lavender';
+              sameTimeEventCount++;
               let newElement =
                   (
                       <div key={"event" + i}>
@@ -218,6 +269,7 @@ export default class DayEvents extends Component {
               let hourDiff = 24
               let height = (hourDiff) * this.state.pxPerHourForConversion;
               let color = 'lavender';
+              sameTimeEventCount++;
               let newElement =
                   (
                       <div key={"event" + i}>
