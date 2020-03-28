@@ -64,90 +64,251 @@ export default class DayEvents extends Component {
         for (let i = 0; i < arr.length; i++) {
             tempStart = arr[i].start.dateTime;
             tempEnd = arr[i].end.dateTime;
-            let tempStartTime = new Date(tempStart);
-            let tempEndTime = new Date(tempEnd);
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
+            let tempStartTime = new Date(tempStart);
+            let tempEndTime = new Date(tempEnd);
+            let curDate = this.props.dateContext.get('date')
+            if (tempStartTime.getDate() ===  curDate) {
+              if (tempStartTime.getHours() == hour) {
+                if (tempStartTime.getDate() !==  tempEndTime.getDate()) {
+                  let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
+                  let hourDiff = 24 - tempStartTime.getHours();
+                  let minDiff = 0;
+                  let color = 'lavender';
+                  let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                  sameTimeEventCount++;
+                  let newElement =
+                      (
+                          <div key={"event" + i}>
+                              <div
 
-            if (tempStartTime.getHours() === hour) {
-                // addmarginLeft = 0;
-                // itemWidth = this.state.eventBoxSize;
-                let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
-                let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
-                let minDiff = (tempEndTime.getMinutes()) / 60;
-                let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
-                let color = 'PaleTurquoise';
+                                  data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                                  onMouseOver={e => {
+                                      e.target.style.color = "#FFFFFF";
+                                      e.target.style.background = "RebeccaPurple";
+                                      e.target.style.zIndex = "2";
+                                  }}
+                                  onMouseOut={e => {
+                                      e.target.style.zIndex = "1";
+                                      e.target.style.color = "#000000";
+                                      e.target.style.background = color;
+                                  }}
+                                  key={i}
+                                  // value = {i}
+                                  onClick={e => this.onEventClick(e, i)}
+                                  style={{
+                                      zIndex: this.state.zIndex,
+                                      marginTop: minsToMarginTop + "px",
+                                      padding: "5px",
+                                      fontSize: fontSize + "px",
+                                      border: "1px lightgray solid ",
+                                      float: "left",
+                                      //  verticalAlign: " ",
+                                      // verticalAlign: 'text-top',
+                                      // textAlign:"left",
+                                      borderRadius: "5px",
+                                      background: color,
+                                      // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                      width: itemWidth + "px",
+                                      position: "absolute",
+                                      height: height + "px",
+                                      marginLeft: addmarginLeft + "px"
+                                  }}>
+                                  {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                                  {arr[i].summary}
+                              </div>
+                          </div>
+                      );
+                  res.push(newElement);
+                } else {
+                  // addmarginLeft = 0;
+                  // itemWidth = this.state.eventBoxSize;
+                  let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
+                  let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
+                  let minDiff = (tempEndTime.getMinutes()) / 60;
+                  let color = 'PaleTurquoise';
+                  let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                  sameTimeEventCount++;
+                  //check if there is already an event there overlapping from another hour
+                  for (let i = 0; i < arr.length; i++) {
+                      tempStart = arr[i].start.dateTime;
+                      tempEnd = arr[i].end.dateTime;
+                      let tempStartTime = new Date(tempStart);
+                      let tempEndTime = new Date(tempEnd);
+                      if (tempStartTime.getHours() < hour && tempEndTime.getHours() > hour) {
+                          addmarginLeft += 20;
+                          itemWidth = itemWidth - 20;
+                      }
+                  }
 
-                sameTimeEventCount++;
-                //check if there is already an event there overlapping from another hour
-                for (let i = 0; i < arr.length; i++) {
-                    tempStart = arr[i].start.dateTime;
-                    tempEnd = arr[i].end.dateTime;
-                    let tempStartTime = new Date(tempStart);
-                    let tempEndTime = new Date(tempEnd);
-                    if (tempStartTime.getHours() < hour && tempEndTime.getHours() > hour) {
-                        addmarginLeft += 20;
-                        itemWidth = itemWidth - 20;
-                    }
-                }
+                  if (sameTimeEventCount > 1) {
+                      // console.log("add 20 in day");
+                      addmarginLeft += 20;
+                      // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
+                      // itemWidth = itemWidth/(sameHourItems-1);
+                      itemWidth = itemWidth - 20;
+                  }
+                  //chnage font size if not enough space
+                  if ((tempEndTime.getHours() - tempStartTime.getHours()) < 2) {
+                      fontSize = 8;
+                  }
 
-                if (sameTimeEventCount > 1) {
-                    addmarginLeft += 20;
-                    itemWidth = itemWidth - 20;
-                }
-                //chnage font size if not enough space
-                if ((tempEndTime.getHours() - tempStartTime.getHours()) < 2) {
-                    fontSize = 8;
-                }
+                  // change color if more than one event in same time.
+                  if (sameTimeEventCount <= 1) {
+                      color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                  }
+                  else if (sameTimeEventCount == 2) {
+                      color = 'skyblue';
+                  }
+                  else {
+                      color = 'blue';
+                  }
 
-                // change color if more than one event in same time.
-                if (sameTimeEventCount <= 1) {
-                    color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
-                }
-                else if (sameTimeEventCount === 2) {
-                    color = 'skyblue';
-                }
-                else {
-                    color = 'blue';
-                }
+                  let newElement =
+                      (
 
-                let newElement =
-                    (
-                        <div key={"event" + i}>
-                            <div
-                                data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
-                                onMouseOver={e => {
-                                    e.target.style.color = "#FFFFFF";
-                                    e.target.style.background = "RebeccaPurple";
-                                    e.target.style.zIndex = "2";
-                                }}
-                                onMouseOut={e => {
-                                    e.target.style.zIndex = "1";
-                                    e.target.style.color = "#000000";
-                                    e.target.style.background = color;
-                                }}
-                                key={i}
-                                onClick={e => this.onEventClick(e, i)}
-                                style={{
-                                    zIndex: this.state.zIndex,
-                                    marginTop: minsToMarginTop + "px",
-                                    padding: "5px",
-                                    fontSize: fontSize + "px",
-                                    border: "1px lightgray solid ",
-                                    float: "left",
-                                    borderRadius: "5px",
-                                    background: color,
-                                    width: itemWidth + "px",
-                                    position: "absolute",
-                                    height: height + "px",
-                                    marginLeft: addmarginLeft + "px"
-                                }}>
-                                {arr[i].summary}
-                            </div>
-                        </div>
-                    );
-                res.push(newElement);
+                          <div key={"event" + i}>
+                              <div
+
+                                  data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                                  onMouseOver={e => {
+                                      e.target.style.color = "#FFFFFF";
+                                      e.target.style.background = "RebeccaPurple";
+                                      e.target.style.zIndex = "2";
+                                  }}
+                                  onMouseOut={e => {
+                                      e.target.style.zIndex = "1";
+                                      e.target.style.color = "#000000";
+                                      e.target.style.background = color;
+                                  }}
+                                  key={i}
+                                  // value = {i}
+                                  onClick={e => this.onEventClick(e, i)}
+                                  style={{
+                                      zIndex: this.state.zIndex,
+                                      marginTop: minsToMarginTop + "px",
+                                      padding: "5px",
+                                      fontSize: fontSize + "px",
+                                      border: "1px lightgray solid ",
+                                      float: "left",
+                                      //  verticalAlign: " ",
+                                      // verticalAlign: 'text-top',
+                                      // textAlign:"left",
+                                      borderRadius: "5px",
+                                      background: color,
+                                      // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                      width: itemWidth + "px",
+                                      position: "absolute",
+                                      height: height + "px",
+                                      marginLeft: addmarginLeft + "px"
+                                  }}>
+                                  {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                                  {arr[i].summary}
+                              </div>
+                          </div>
+                      );
+                  res.push(newElement);
+                }
+              }
+            } else if ( hour === 0 && tempEndTime.getDate() ===  curDate) {
+              let minsToMarginTop = 0
+              let hourDiff = tempEndTime.getHours();
+              let minDiff = (tempEndTime.getMinutes()) / 60;
+              let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+              let color = 'lavender';
+              sameTimeEventCount++;
+              let newElement =
+                  (
+                      <div key={"event" + i}>
+                          <div
+                              data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                              onMouseOver={e => {
+                                  e.target.style.color = "#FFFFFF";
+                                  e.target.style.background = "RebeccaPurple";
+                                  e.target.style.zIndex = "2";
+                              }}
+                              onMouseOut={e => {
+                                  e.target.style.zIndex = "1";
+                                  e.target.style.color = "#000000";
+                                  e.target.style.background = color;
+                              }}
+                              key={i}
+                              // value = {i}
+                              onClick={e => this.onEventClick(e, i)}
+                              style={{
+                                  zIndex: this.state.zIndex,
+                                  marginTop: minsToMarginTop + "px",
+                                  padding: "5px",
+                                  fontSize: fontSize + "px",
+                                  border: "1px lightgray solid ",
+                                  float: "left",
+                                  //  verticalAlign: " ",
+                                  // verticalAlign: 'text-top',
+                                  // textAlign:"left",
+                                  borderRadius: "5px",
+                                  background: color,
+                                  // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                  width: itemWidth + "px",
+                                  position: "absolute",
+                                  height: height + "px",
+                                  marginLeft: addmarginLeft + "px"
+                              }}>
+                              {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                              {arr[i].summary}
+                          </div>
+                      </div>
+                  );
+                  res.push(newElement);
+            } else if ( hour === 0 && tempStartTime.getDate() < curDate && tempEndTime.getDate() > curDate ){
+              let minsToMarginTop = 0
+              let hourDiff = 24
+              let height = (hourDiff) * this.state.pxPerHourForConversion;
+              let color = 'lavender';
+              sameTimeEventCount++;
+              let newElement =
+                  (
+                      <div key={"event" + i}>
+                          <div
+                              data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                              onMouseOver={e => {
+                                  e.target.style.color = "#FFFFFF";
+                                  e.target.style.background = "RebeccaPurple";
+                                  e.target.style.zIndex = "2";
+                              }}
+                              onMouseOut={e => {
+                                  e.target.style.zIndex = "1";
+                                  e.target.style.color = "#000000";
+                                  e.target.style.background = color;
+                              }}
+                              key={i}
+                              // value = {i}
+                              onClick={e => this.onEventClick(e, i)}
+                              style={{
+                                  zIndex: this.state.zIndex,
+                                  marginTop: minsToMarginTop + "px",
+                                  padding: "5px",
+                                  fontSize: fontSize + "px",
+                                  border: "1px lightgray solid ",
+                                  float: "left",
+                                  //  verticalAlign: " ",
+                                  // verticalAlign: 'text-top',
+                                  // textAlign:"left",
+                                  borderRadius: "5px",
+                                  background: color,
+                                  // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                  width: itemWidth + "px",
+                                  position: "absolute",
+                                  height: height + "px",
+                                  marginLeft: addmarginLeft + "px"
+                              }}>
+                              {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                              {arr[i].summary}
+                          </div>
+                      </div>
+                  );
+              res.push(newElement);
             }
         }
         return res;
