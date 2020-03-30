@@ -21,7 +21,7 @@ export default class AddNewGRItem extends Component {
       is_persistent: this.props.isRoutine,
       photo: "",
       is_complete: false,
-      is_available: false,
+      is_available: true,
       available_end_time: "23:59:59",
       available_start_time: "00:00:00",
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",

@@ -12,7 +12,7 @@ class ShowNotifications extends React.Component{
                   <Col style = {{paddingRight: "0px" }}>
                     <Form.Control
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
                     />
                   </Col>
@@ -35,7 +35,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>
@@ -55,7 +55,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>
@@ -90,7 +90,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>
@@ -111,7 +111,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>
@@ -123,7 +123,7 @@ class ShowNotifications extends React.Component{
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
                     />
                   </Col>
@@ -146,7 +146,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>
@@ -167,7 +167,7 @@ class ShowNotifications extends React.Component{
                         as="textarea"
                         rows="1"
                         type="text"
-                        placeholder="Enter Message Here"
+                        placeholder="Enter Message"
                         style={{marginLeft: "10px"}}
                       />
                     </Form.Check>

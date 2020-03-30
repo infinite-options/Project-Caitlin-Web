@@ -51,7 +51,8 @@ export default class editIS extends Component {
 
     editISForm = () => {
         return (
-            <div style={{margin: '0', width: "315px", padding:'20px'}}>
+            // <div style={{margin: '0', width: "315px", padding:'20px'}}>
+            <Row style={{marginLeft:this.props.marginLeftV, border: "2px", padding: '20px', marginTop:"10px" }}>
             <label>Title</label>
             <div className="input-group mb-3" >
                 <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
@@ -88,14 +89,14 @@ export default class editIS extends Component {
                         // onChange={this.handleNotificationChange}
                         type="number"
                         placeholder="30"
-                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
                     />
                 </Col>
                 <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                 </Col>
             </Row>
-
+            
             <div className="input-group mb-3" style ={{marginTop:"10px"}}>
                 <label className="form-check-label">Time?</label>
                 <input
@@ -130,40 +131,11 @@ export default class editIS extends Component {
 
             {this.state.itemToEdit.is_available && <ShowNotifications />}
 
-          
 
-            {/* <label>Notify TA?</label>
-            <div className="input-group mb-3" >
-                <input
-                    name="Timed"
-                    type="checkbox"
-                    checked={this.state.itemToEdit.notifies_ta}
-                    onChange={(e) => {
-                        e.stopPropagation();
-                        let temp = this.state.itemToEdit;
-                        // console.log(temp.notifies_ta)
-                        temp.notifies_ta = !temp.notifies_ta;
-                        this.setState({ itemToEdit: temp })
-                    }} />
-            </div >
-
-            <label>Remind User</label>
-            <div className="input-group mb-3" >
-                <input
-                    name="Timed"
-                    type="checkbox"
-                    checked={this.state.itemToEdit.reminds_user}
-                    onChange={(e) => {
-                        e.stopPropagation();
-                        let temp = this.state.itemToEdit;
-                        // console.log(temp.reminds_user)
-                        temp.reminds_user = !temp.reminds_user;
-                        this.setState({ itemToEdit: temp })
-                    }} />
-            </div >  */}
             <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
             <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
-        </div>
+        {/* </div> */}
+        </Row>
         )
     }
 
@@ -173,7 +145,7 @@ export default class editIS extends Component {
                 <FontAwesomeIcon
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: "#000000" }}
+                    style={{ color: "#000000", marginLeft:"5px" }}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
                     icon={faEdit} size="lg"
                 />
