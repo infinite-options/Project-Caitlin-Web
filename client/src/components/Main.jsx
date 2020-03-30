@@ -1684,7 +1684,7 @@ export default class MainPage extends React.Component {
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
                     />
                   </Col>
@@ -1795,7 +1795,7 @@ export default class MainPage extends React.Component {
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
                     />
                   </Col>
