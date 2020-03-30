@@ -58,12 +58,18 @@ export default class MainPage extends React.Component {
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: 1,
-      repeatOccurrence: 1,
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
       repeatRadio: "Never",
+      repeatRadio_temp: "Never",
       repeatEndDate: "",
+      repeatEndDate_temp: "",
       showNoTitleError: "",
       showDateError: "",
       notificationBeforeChecked: false,
@@ -75,7 +81,17 @@ export default class MainPage extends React.Component {
         4: "",
         5: "",
         6: ""
-      }
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      },
+      repeatSummary: ""
       // repeatOccurrence: newEventStart0
     };
   }
@@ -83,18 +99,18 @@ export default class MainPage extends React.Component {
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
       const newByDay = {
-        ...this.state.byDay,
+        ...this.state.byDay_temp,
         [this.state.newEventStart0.getDay()]: week_days[
           this.state.newEventStart0.getDay()
         ]
       };
       this.setState({
-        repeatDropDown: eventKey,
-        byDay: newByDay
+        repeatDropDown_temp: eventKey,
+        byDay_temp: newByDay
       });
     }
     this.setState({
-      repeatDropDown: eventKey
+      repeatDropDown_temp: eventKey
     });
   };
 
@@ -107,7 +123,7 @@ export default class MainPage extends React.Component {
   handleRepeatEndDate = date => {
     this.setState(
       {
-        repeatEndDate: date
+        repeatEndDate_temp: date
       },
       console.log("handleRepeatEndDate", date, this.state.repeatEndDate)
     );
@@ -115,13 +131,13 @@ export default class MainPage extends React.Component {
 
   handleRepeatInputValue = eventKey => {
     this.setState({
-      repeatInputValue: eventKey
+      repeatInputValue_temp: eventKey
     });
   };
 
   handleRepeatOccurrence = eventKey => {
     this.setState({
-      repeatOccurrence: eventKey
+      repeatOccurrence_temp: eventKey
     });
   };
 
@@ -182,13 +198,28 @@ export default class MainPage extends React.Component {
       showRepeatModal: false,
       showAboutModal: false,
       repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: 1,
-      repeatOccurrence: 1,
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
       repeatRadio: "Never",
+      repeatRadio_temp: "Never",
       repeatEndDate: "",
+      repeatEndDate_temp: "",
       byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      },
+      byDay_temp: {
         0: "",
         1: "",
         2: "",
@@ -240,16 +271,31 @@ export default class MainPage extends React.Component {
         isEvent: true,
         showRepeatModal: false,
         repeatOption: false,
+        repeatOptionDropDown: "Does not repeat",
         repeatDropDown: "DAY",
+        repeatDropDown_temp: "DAY",
         repeatMonthlyDropDown: "Monthly on day 13",
-        repeatInputValue: 1,
-        repeatOccurrence: 1,
+        repeatInputValue: "1",
+        repeatInputValue_temp: "1",
+        repeatOccurrence: "1",
+        repeatOccurrence_temp: "1",
         repeatRadio: "Never",
+        repeatRadio_temp: "Never",
         repeatEndDate: "",
+        repeatEndDate_temp: "",
         showNoTitleError: "",
         showDateError: "",
         showAboutModal: false,
         byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        },
+        byDay_temp: {
           0: "",
           1: "",
           2: "",
@@ -286,13 +332,28 @@ export default class MainPage extends React.Component {
       showRepeatModal: false,
       showAboutModal: false,
       repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
       repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: 1,
-      repeatOccurrence: 1,
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
       repeatRadio: "Never",
+      repeatRadio_temp: "Never",
       repeatEndDate: "",
+      repeatEndDate_temp: "",
       byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      },
+      byDay_temp: {
         0: "",
         1: "",
         2: "",
@@ -328,16 +389,31 @@ export default class MainPage extends React.Component {
         dayEventSelected: true,
         isEvent: false,
         repeatOption: false,
+        repeatOptionDropDown: "Does not repeat",
         repeatDropDown: "DAY",
+        repeatDropDown_temp: "DAY",
         repeatMonthlyDropDown: "Monthly on day 13",
-        repeatInputValue: 1,
-        repeatOccurrence: 1,
+        repeatInputValue: "1",
+        repeatInputValue_temp: "1",
+        repeatOccurrence: "1",
+        repeatOccurrence_temp: "1",
         repeatRadio: "Never",
+        repeatRadio_temp: "Never",
         repeatEndDate: "",
+        repeatEndDate_temp: "",
         showNoTitleError: "",
         showDateError: "",
         showAboutModal: false,
         byDay: {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: ""
+        },
+        byDay_temp: {
           0: "",
           1: "",
           2: "",
@@ -458,7 +534,11 @@ export default class MainPage extends React.Component {
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
     updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
+    updatedEvent.start.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
+    updatedEvent.end.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    updatedEvent.recurrence =
+      this.state.repeatOption && this.defineRecurrence();
     updatedEvent.reminders = {
       overrides: [
         {
@@ -471,7 +551,7 @@ export default class MainPage extends React.Component {
     };
 
     axios
-      .post("/updateEvent", {
+      .put("/updateEvent", {
         extra: updatedEvent,
         ID: this.state.newEventID
       })
@@ -491,6 +571,51 @@ export default class MainPage extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
+  };
+
+  defineRecurrence = () => {
+    // frequency in RRULE
+    let frequency =
+      this.state.repeatDropDown === "DAY"
+        ? "DAILY"
+        : this.state.repeatDropDown.concat("LY");
+
+    // recurrence string
+    let rrule = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
+    let recurrence = [];
+    let exdate = "";
+
+    // If seleted WEEK, add BYDAY to recurrence string
+    if (this.state.repeatDropDown === "WEEK") {
+      let selectedDays = [];
+      for (let [key, value] of Object.entries(this.state.byDay)) {
+        // Excluding today if today is not selected
+        if (key === this.state.newEventStart0.getDay().toString()) {
+          if (value === "") {
+            exdate = `EXDATE;TZID=America/Los_Angeles:${moment(
+              this.state.newEventStart0
+            ).format("YYYYMMDD")}T070000Z`;
+            recurrence.unshift(exdate);
+          }
+        }
+        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
+      }
+      rrule = rrule.concat(`;BYDAY=${selectedDays.toString()}`);
+    }
+
+    // If selected After, add COUNT to recurrence string
+    if (this.state.repeatRadio === "After")
+      rrule = rrule.concat(`;COUNT=${this.state.repeatOccurrence}`);
+
+    // If selected On, add UNTIL to recurrence string
+    if (this.state.repeatRadio === "On") {
+      let repeat_end_date = moment(this.state.repeatEndDate).add(1, "days");
+      rrule = rrule.concat(`;UNTIL=${repeat_end_date.format("YYYYMMDD")}`);
+    }
+
+    recurrence.push(rrule);
+    console.log("recurrence", recurrence);
+    return recurrence;
   };
 
   /*
@@ -562,48 +687,6 @@ export default class MainPage extends React.Component {
       minutesNotification = this.state.newEventNotification;
     }
 
-    // frequency in RRULE
-    let frequency =
-      this.state.repeatDropDown === "DAY"
-        ? "DAILY"
-        : this.state.repeatDropDown.concat("LY");
-
-    // recurrence string
-    let rrule = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
-    let recurrence = [];
-    let exdate = "";
-
-    // If seleted WEEK, add BYDAY to recurrence string
-    if (this.state.repeatDropDown === "WEEK") {
-      let selectedDays = [];
-      for (let [key, value] of Object.entries(this.state.byDay)) {
-        // Excluding today if today is not selected
-        if (key === this.state.newEventStart0.getDay().toString()) {
-          if (value === "") {
-            exdate = `EXDATE;TZID=America/Los_Angeles:${moment(
-              this.state.newEventStart0
-            ).format("YYYYMMDD")}T070000Z`;
-            recurrence.unshift(exdate);
-          }
-        }
-        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
-      }
-      rrule = rrule.concat(`;BYDAY=${selectedDays.toString()}`);
-    }
-
-    // If selected After, add COUNT to recurrence string
-    if (this.state.repeatRadio === "After")
-      rrule = rrule.concat(`;COUNT=${this.state.repeatOccurrence}`);
-
-    // If selected On, add UNTIL to recurrence string
-    if (this.state.repeatRadio === "On") {
-      let repeat_end_date = moment(this.state.repeatEndDate).add(1, "days");
-      rrule = rrule.concat(`;UNTIL=${repeat_end_date.format("YYYYMMDD")}`);
-    }
-
-    recurrence.push(rrule);
-    console.log("recurrence", recurrence);
-
     let event = {
       summary: this.state.newEventName,
       location: this.state.newEventLocation,
@@ -626,7 +709,7 @@ export default class MainPage extends React.Component {
         dateTime: this.state.newEventEnd0.toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
-      recurrence: recurrence,
+      recurrence: this.state.repeatOption && this.defineRecurrence(),
       attendees: formattedEmail
     };
     axios
@@ -747,9 +830,20 @@ export default class MainPage extends React.Component {
   this will close repeat modal.
   */
   closeRepeatModal = () => {
-    this.setState({
-      showRepeatModal: false
-    });
+    this.setState(prevState => ({
+      showRepeatModal: false,
+      repeatInputValue_temp: prevState.repeatInputValue,
+      repeatOccurrence_temp: prevState.repeatOccurrence,
+      repeatDropDown_temp: prevState.repeatDropDown,
+      repeatRadio_temp: prevState.repeatRadio,
+      repeatEndDate_temp: prevState.repeatEndDate,
+      byDay_temp: prevState.byDay
+    }));
+    if (!this.state.repeatOption) {
+      this.setState({
+        repeatOptionDropDown: "Does not repeat"
+      });
+    }
   };
 
   /*
@@ -757,10 +851,272 @@ export default class MainPage extends React.Component {
   this will close repeat modal.
   */
   saveRepeatChanges = () => {
-    this.setState({
+    const {
+      // repeatOptionDropDown,
+      repeatDropDown_temp,
+      repeatInputValue_temp,
+      repeatOccurrence_temp,
+      repeatRadio_temp,
+      repeatEndDate_temp,
+      byDay_temp
+    } = this.state;
+    this.setState(prevState => ({
       showRepeatModal: false,
-      repeatOption: true
-    });
+      repeatOption: true,
+      repeatInputValue: prevState.repeatInputValue_temp,
+      repeatOccurrence: prevState.repeatOccurrence_temp,
+      repeatDropDown: prevState.repeatDropDown_temp,
+      repeatRadio: prevState.repeatRadio_temp,
+      repeatEndDate: prevState.repeatEndDate_temp,
+      byDay: prevState.byDay_temp
+    }));
+
+    // If repeatDropDown_temp is DAY
+    if (repeatDropDown_temp === "DAY") {
+      if (repeatInputValue_temp === "1") {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: "Daily"
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Daily, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Daily, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      } else {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} days`
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} days, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} days, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      }
+    }
+
+    // If repeatDropDown_temp is WEEK
+    else if (repeatDropDown_temp === "WEEK") {
+      let selectedDays = [];
+      for (let [key, value] of Object.entries(byDay_temp)) {
+        value !== "" && selectedDays.push(value);
+      }
+      console.log(selectedDays, "selectedDays week");
+      if (repeatInputValue_temp === "1") {
+        if (repeatRadio_temp === "Never") {
+          if (selectedDays.length === 7) {
+            this.setState({
+              repeatOptionDropDown: "Weekly on all days"
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Weekly on ${selectedDays.join(", ")}`
+            });
+          }
+        } else if (repeatRadio_temp === "On") {
+          if (selectedDays.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Weekly on all days, until ${moment(
+                repeatEndDate_temp
+              ).format("LL")}`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Weekly on ${selectedDays.join(
+                ", "
+              )}, until ${moment(repeatEndDate_temp).format("LL")}`
+            });
+          }
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            if (selectedDays.length === 7) {
+              this.setState({
+                repeatOptionDropDown: `Weekly on all days, , ${repeatOccurrence_temp} times`
+              });
+            } else {
+              this.setState({
+                repeatOptionDropDown: `Weekly on ${selectedDays.join(
+                  ", "
+                )}, ${repeatOccurrence_temp} times`
+              });
+            }
+          }
+        }
+      } else {
+        if (repeatRadio_temp === "Never") {
+          if (selectedDays.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
+                ", "
+              )}`
+            });
+          }
+        } else if (repeatRadio_temp === "On") {
+          if (selectedDays.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, until ${moment(
+                repeatEndDate_temp
+              ).format("LL")}`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
+                ", "
+              )}, until ${moment(repeatEndDate_temp).format("LL")}`
+            });
+          }
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: "Once"
+            });
+          } else {
+            if (selectedDays.length === 7) {
+              this.setState({
+                repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, ${repeatOccurrence_temp} times`
+              });
+            } else {
+              this.setState({
+                repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
+                  ", "
+                )}, ${repeatOccurrence_temp} times`
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // If repeatDropDown_temp is MONTH
+    else if (repeatDropDown_temp === "MONTH") {
+      if (repeatInputValue_temp === "1") {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: "Monthly"
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Monthly, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Monthly, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      } else {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} months`
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} months, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} months, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      }
+    }
+
+    // If repeatDropDown_temp is YEAR
+    else if (repeatDropDown_temp === "YEAR") {
+      if (repeatInputValue_temp === "1") {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: "Yearly"
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Yearly, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Yearly, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      } else {
+        if (repeatRadio_temp === "Never") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} years`
+          });
+        } else if (repeatRadio_temp === "On") {
+          this.setState({
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} years, until ${moment(
+              repeatEndDate_temp
+            ).format("LL")}`
+          });
+        } else {
+          if (repeatOccurrence_temp === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} years, ${repeatOccurrence_temp} times`
+            });
+          }
+        }
+      }
+    }
   };
 
   showDayViewOrAboutView = () => {
@@ -782,14 +1138,50 @@ export default class MainPage extends React.Component {
       //width and height is fixed now but should be by % percentage later on
       <div
         className="normalfancytext"
-        style={{ marginLeft: "0px", height: "100%", width: "2000px" }}
+        style={{
+          marginLeft: "0px",
+          height: "100%",
+          width: "2000px"
+          // width: "100%",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "center",
+          // alignItems: "center",
+          // background: "lightblue",
+        }}
       >
-        <div style={{ margin: "0", padding: "0", width: "100%" }}>
-          <div>{this.abstractedMainEventGRShowButtons()}</div>
+        <div
+          style={{
+            margin: "0",
+            padding: "0",
+            width: "100%"
+          }}
+        >
+          {this.abstractedMainEventGRShowButtons()}
         </div>
-        <Container fluid style={{ marginTop: "15px", marginLeft: "0%" }}>
+        <Container
+          fluid
+          style={{
+            marginTop: "15px",
+            marginLeft: "0"
+            // display: "flex",
+            // flexDirection: "column",
+            // justifyContent: "center",
+            // alignItems: "center",
+            // width: "100%"
+          }}
+        >
           {/* Within this container essentially contains all the UI of the App */}
-          <Row style={{ marginTop: "0" }}>
+          <Row
+            style={{
+              marginTop: "0"
+              // width: "100%",
+              // display: "flex",
+              // flexDirection: "column",
+              // justifyContent: "center"
+              // alignItems: "center"
+            }}
+          >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
               closeRoutineGoalModal={() => {
@@ -814,10 +1206,7 @@ export default class MainPage extends React.Component {
               {this.state.calendarView === "Month"
                 ? this.calendarAbstracted()
                 : this.dayViewAbstracted()}
-              <div
-                style={{ marginTop: "50px", textAlign: "center" }}
-                className="fancytext"
-              >
+              <div style={{ marginTop: "50px" }} className="fancytext">
                 Dedicated to Caitlin Little
               </div>
             </Col>
@@ -948,22 +1337,64 @@ export default class MainPage extends React.Component {
   };
 
   abstractedMainEventGRShowButtons = () => {
+    // Redefine the width of those buttons; Should fix to be 100% and make
+    // enclosing div to be based on % and not 2000px
+
     return (
-      <div style={{ marginLeft: "33%", width: "100%", fontSize: "20px" }}>
+      <div
+        style={{
+          display: "block",
+          textAlign: "center",
+          fontSize: "20px",
+          paddingRight: "165px"
+          // display: "flex",
+          // justifyContent: "center",
+          // alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            margin: "10px",
+            marginBottom: "0",
+            marginTop: "10px"
+          }}
+        >
+          <DropdownButton
+            style={{ top: "5px" }}
+            title={this.state.calendarView}
+          >
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Month");
+              }}
+            >
+              {" "}
+              Month{" "}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Day");
+              }}
+            >
+              {" "}
+              Day{" "}
+            </Dropdown.Item>
+          </DropdownButton>
+        </div>
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
-               dateContext: moment(),
+              dateContext: moment()
             });
           }}
         >
           Today
         </Button>
-
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState(
@@ -981,7 +1412,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={this.toggleShowRoutine}
         >
@@ -989,7 +1420,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={this.toggleShowGoal}
         >
@@ -998,7 +1429,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1011,7 +1442,7 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1022,28 +1453,6 @@ export default class MainPage extends React.Component {
         >
           About
         </Button>
-
-        <DropdownButton
-          style={{ margin: "10px", float: "left" }}
-          title={this.state.calendarView}
-        >
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Month");
-            }}
-          >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Day");
-            }}
-          >
-            {" "}
-            Day{" "}
-          </Dropdown.Item>
-        </DropdownButton>
       </div>
     );
   };
@@ -1055,7 +1464,7 @@ export default class MainPage extends React.Component {
           borderRadius: "2%",
           backgroundColor: "white",
           width: "1000px",
-          marginLeft: "10px",
+          // marginLeft: "10px",
           padding: "45px",
           paddingBottom: "10px",
           boxShadow:
@@ -1117,7 +1526,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
@@ -1125,7 +1534,9 @@ export default class MainPage extends React.Component {
         <Modal.Header
           closeButton
           onHide={() => {
-            this.setState({ showAboutModal: false });
+            this.setState({
+              showAboutModal: false
+            });
           }}
         >
           <Modal.Title>
@@ -1134,103 +1545,79 @@ export default class MainPage extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <Row>
-            <Col >
+            <Col>
               <FontAwesomeIcon
                 // style={{ marginLeft: "50%" }}
                 icon={faImage}
                 size="4x"
                 // className="X"
-            />
+              />
             </Col>
-            <Col  xs={9}>
+            <Col xs={9}>
               <label for="ProfileImage">Upload A New Image</label>
-             <input type="file" onChange={this.handleFileSelected} id="ProfileImage" />
+              <input
+                type="file"
+                onChange={this.handleFileSelected}
+                id="ProfileImage"
+              />
             </Col>
           </Row>
-          
-          <Form.Group controlId="AboutMessage" style ={{marginTop:"10px"}}>
-              <Form.Label>Message (My Day):</Form.Label>  
-              <Form.Control
-                as="textarea"
-                rows="4"
-                // value={this.state.newEventDescription}
-                // onChange={this.handleDescriptionChange}
-                type="text"
-                placeholder="You are a strong ..."
-                // style={{textAlign:"center"}}
-              />
+
+          <Form.Group controlId="AboutMessage" style={{ marginTop: "10px" }}>
+            <Form.Label>Message (My Day):</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows="4"
+              // value={this.state.newEventDescription}
+              // onChange={this.handleDescriptionChange}
+              type="text"
+              placeholder="You are a strong ..."
+              // style={{textAlign:"center"}}
+            />
           </Form.Group>
           <Form.Group controlId="AboutMessageCard">
-              <Form.Label>Message (My Card):</Form.Label>  
-              <Form.Control
-                as="textarea"
-                rows="4"
-                // value={this.state.newEventDescription}
-                // onChange={this.handleDescriptionChange}
-                type="text"
-                placeholder="You are a safe ..."
-                // style={{textAlign:"center"}}
-              />
+            <Form.Label>Message (My Card):</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows="4"
+              // value={this.state.newEventDescription}
+              // onChange={this.handleDescriptionChange}
+              type="text"
+              placeholder="You are a safe ..."
+              // style={{textAlign:"center"}}
+            />
           </Form.Group>
           <Form.Group controlId="ImportantPeople">
-              <Form.Label >Important People</Form.Label>  
-              <Row>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Form.Label>Important People</Form.Label>
+            <Row>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-            <Row style = {{marginTop:"20px"}}>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Row style={{ marginTop: "20px" }}>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-            <Row style = {{marginTop:"20px"}}>
-                <Col >
-                  <FontAwesomeIcon
-                    icon={faImage}
-                    size="5x"
-                />
-                </Col>
-                <Col  xs={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Relationship"
-                    />
-                    <Form.Control
-                      type="text"
-                      placeholder="Phone Number"
-                    />
-                </Col>
+            <Row style={{ marginTop: "20px" }}>
+              <Col>
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              </Col>
+              <Col xs={8}>
+                <Form.Control type="text" placeholder="Relationship" />
+                <Form.Control type="text" placeholder="Phone Number" />
+              </Col>
             </Row>
-             
           </Form.Group>
-         
+
           {/* <button onClick={this.imageUploadHandler}> Upload</button> */}
         </Modal.Body>
         <Modal.Footer>
@@ -1274,7 +1661,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
@@ -1282,7 +1669,10 @@ export default class MainPage extends React.Component {
         <Modal.Header
           closeButton
           onHide={() => {
-            this.setState({ dayEventSelected: false });
+            this.setState({
+              dayEventSelected: false,
+              repeatOptionDropDown: "Does not repeat"
+            });
           }}
         >
           <Modal.Title>
@@ -1386,7 +1776,7 @@ export default class MainPage extends React.Component {
       position: "absolute",
       zIndex: "5",
       left: "50%",
-      top: "55%",
+      top: "50%",
       transform: "translate(-50%, -50%)",
       width: "400px"
     };
@@ -1419,41 +1809,52 @@ export default class MainPage extends React.Component {
       let curClass = e.target.classList;
       if (curClass.contains("selected")) {
         curClass.remove("selected");
-        const newByDay = { ...this.state.byDay, [index]: "" };
+        const newByDay = { ...this.state.byDay_temp, [index]: "" };
         this.setState({
-          byDay: newByDay
+          byDay_temp: newByDay
         });
       } else {
         curClass.add("selected");
-        const newByDay = { ...this.state.byDay, [index]: week_days[index] };
+        const newByDay = {
+          ...this.state.byDay_temp,
+          [index]: week_days[index]
+        };
         this.setState({
-          byDay: newByDay
+          byDay_temp: newByDay
         });
       }
     };
 
+    let selectedDays = [];
+    for (let [key, value] of Object.entries(this.state.byDay_temp)) {
+      if (value !== "") selectedDays.push(key);
+    }
     // If selected repeat every week, the following shows.
     const weekSelected = (
-      <div style={{ marginTop: "20px" }}>
+      <>
         Repeat On
         <div style={weekStyle}>
           {week_days.map((day, i) => {
-            return (
-              <span
-                key={i}
-                className={
-                  i === this.state.newEventStart0.getDay()
-                    ? "dot selected"
-                    : "dot"
-                }
-                onClick={e => selectedDot(e, i)}
-              >
-                {day.charAt(0)}
-              </span>
-            );
+            if (selectedDays.includes(i.toString())) {
+              return (
+                <span
+                  key={i}
+                  className="dot selected"
+                  onClick={e => selectedDot(e, i)}
+                >
+                  {day.charAt(0)}
+                </span>
+              );
+            } else {
+              return (
+                <span key={i} className="dot" onClick={e => selectedDot(e, i)}>
+                  {day.charAt(0)}
+                </span>
+              );
+            }
           })}
         </div>
-      </div>
+      </>
     );
 
     // If selected repeat every month, the following shows.
@@ -1500,12 +1901,12 @@ export default class MainPage extends React.Component {
                 type="number"
                 min="1"
                 max="10000"
-                value={this.state.repeatInputValue}
+                value={this.state.repeatInputValue_temp}
                 style={inputStyle}
                 onChange={e => this.handleRepeatInputValue(e.target.value)}
               />
               <DropdownButton
-                title={this.state.repeatDropDown}
+                title={this.state.repeatDropDown_temp}
                 style={selectStyle}
                 variant="light"
               >
@@ -1537,7 +1938,9 @@ export default class MainPage extends React.Component {
                 </Dropdown.Item>
               </DropdownButton>
             </Form.Group>
-            {this.state.repeatDropDown === "WEEK" && weekSelected}
+            <Form.Group style={{ marginLeft: "5px" }}>
+              {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
+            </Form.Group>
             {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group
               style={{
@@ -1552,7 +1955,7 @@ export default class MainPage extends React.Component {
               onChange={e => {
                 if (e.target.type === "radio") {
                   this.setState({
-                    repeatRadio: e.target.value
+                    repeatRadio_temp: e.target.value
                   });
                 }
               }}
@@ -1564,7 +1967,9 @@ export default class MainPage extends React.Component {
                     type="radio"
                     value="Never"
                     name="radios"
-                    defaultChecked={this.state.repeatRadio === "Never" && true}
+                    defaultChecked={
+                      this.state.repeatRadio_temp === "Never" && true
+                    }
                   />
                   Never
                 </Form.Check.Label>
@@ -1576,12 +1981,14 @@ export default class MainPage extends React.Component {
                     name="radios"
                     value="On"
                     style={{ marginTop: "10px" }}
-                    defaultChecked={this.state.repeatRadio === "On" && true}
+                    defaultChecked={
+                      this.state.repeatRadio_temp === "On" && true
+                    }
                   />
                   On
                   <DatePicker
                     className="date-picker-btn btn btn-light"
-                    selected={this.state.repeatEndDate}
+                    selected={this.state.repeatEndDate_temp}
                     onChange={date => this.handleRepeatEndDate(date)}
                   ></DatePicker>
                 </Form.Check.Label>
@@ -1593,7 +2000,9 @@ export default class MainPage extends React.Component {
                     name="radios"
                     value="After"
                     style={{ marginTop: "12px" }}
-                    defaultChecked={this.state.repeatRadio === "After" && true}
+                    defaultChecked={
+                      this.state.repeatRadio_temp === "After" && true
+                    }
                   />
                   After
                   <span style={{ marginLeft: "60px" }}>
@@ -1601,7 +2010,7 @@ export default class MainPage extends React.Component {
                       type="number"
                       min="1"
                       max="10000"
-                      value={this.state.repeatOccurrence}
+                      value={this.state.repeatOccurrence_temp}
                       onChange={e =>
                         this.handleRepeatOccurrence(e.target.value)
                       }
@@ -1618,7 +2027,7 @@ export default class MainPage extends React.Component {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={this.closeRepeatModal}>
-            Close
+            Cancel
           </Button>
           <Button variant="primary" onClick={this.saveRepeatChanges}>
             Save changes
@@ -1657,6 +2066,36 @@ export default class MainPage extends React.Component {
                 {this.endTimePicker()}
                 <div style={{ color: "red" }}> {this.state.showDateError}</div>
               </Form.Group>
+              <Form.Group style={{ display: "flex", flexDirection: "column" }}>
+                <Form.Label>Repeating Options</Form.Label>
+                <DropdownButton
+                  className="repeatOptionDropDown"
+                  // onClick={this.openRepeatModal}
+                  title={this.state.repeatOptionDropDown}
+                  variant="light"
+                >
+                  <Dropdown.Item
+                    eventKey="Does not repeat"
+                    onSelect={eventKey =>
+                      this.setState({
+                        repeatOptionDropDown: eventKey,
+                        repeatOption: false
+                      })
+                    }
+                  >
+                    Does not repeat
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey="Custom..."
+                    onSelect={eventKey => {
+                      this.openRepeatModal();
+                      // this.setState({ repeatOptionDropDown: eventKey });
+                    }}
+                  >
+                    Custom...
+                  </Dropdown.Item>
+                </DropdownButton>
+              </Form.Group>
               <Form.Group value={"Extra Slot"}>
                 <Form.Label>Guests</Form.Label>
                 <Form.Control
@@ -1674,51 +2113,55 @@ export default class MainPage extends React.Component {
                   type="text"
                   placeholder="Location"
                 />
-
               </Form.Group>
               <Form.Group controlId="Notification">
                 <Form.Label>Notifications:</Form.Label>
                 <Row>
-                  <Col style = {{paddingRight: "0px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
+
                       placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
+
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min Before Start Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min Before Start Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-           
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
@@ -1728,124 +2171,131 @@ export default class MainPage extends React.Component {
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px" }}>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="30"
-                      style = {{width:"70px", marginTop:".25rem"}}
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min After Start Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min After Start Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px" }}>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
+
                       placeholder="5"
                       style = {{width:"70px", marginTop:".25rem"}}
+
                     />
                   </Col>
-                  <Col xs={8} style = {{paddingLeft:"0px"}}>
-                    <Form.Text style = {{fontSize:"65%"}}> Min After End Time</Form.Text>
+                  <Col xs={8} style={{ paddingLeft: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}>
+                      {" "}
+                      Min After End Time
+                    </Form.Text>
                   </Col>
                 </Row>
-                <Row style = {{ marginTop:"15px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> Caitlin</Form.Text>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}}>
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-                <Row style = {{marginTop:"10px"}}>
-                  <Col style = {{paddingRight: "0px"}}>
-                  <Form.Text style = {{fontSize:"65%"}}> TA</Form.Text>
+                <Row style={{ marginTop: "10px" }}>
+                  <Col style={{ paddingRight: "0px" }}>
+                    <Form.Text style={{ fontSize: "65%" }}> TA</Form.Text>
                   </Col>
                   <Col xs={8}>
-                    <Form.Check type="checkbox" style={{paddingLeft: "0px"}} >
+                    <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
                       <Form.Check.Input
                         type="checkbox"
                         style={{ width: "20px", height: "20px" }}
                       />
-                     
+
                       <Form.Control
                         as="textarea"
                         rows="1"
                         type="text"
                         placeholder="Enter Message Here"
-                        style={{marginLeft: "10px"}}
+                        style={{ marginLeft: "10px" }}
                       />
                     </Form.Check>
                   </Col>
                 </Row>
-              
               </Form.Group>
 
               {/* <Form.Group controlId="formBasicCheckbox">
@@ -2010,7 +2460,8 @@ export default class MainPage extends React.Component {
   hideEventForm = e => {
     //console.log("Tyler says: Hello");
     this.setState({
-      dayEventSelected: false
+      dayEventSelected: false,
+      repeatOptionDropDown: "Does not repeat"
     });
   };
 
