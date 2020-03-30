@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -1138,12 +1138,36 @@ export default class MainPage extends React.Component {
       //width and height is fixed now but should be by % percentage later on
       <div
         className="normalfancytext"
-        style={{ marginLeft: "0px", height: "100%", width: "2000px" }}
+        style={{
+          marginLeft: "0px",
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
+          // background: "lightblue"
+        }}
       >
-        <div style={{ margin: "0", padding: "0", width: "100%" }}>
-          <div>{this.abstractedMainEventGRShowButtons()}</div>
+        <div
+          style={{
+            margin: "0",
+            padding: "0",
+            width: "100%"
+          }}
+        >
+          {this.abstractedMainEventGRShowButtons()}
         </div>
-        <Container fluid style={{ marginTop: "15px", marginLeft: "0%" }}>
+        <Container
+          fluid
+          style={{
+            marginTop: "15px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           {/* Within this container essentially contains all the UI of the App */}
           <Row style={{ marginTop: "0" }}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
@@ -1165,21 +1189,16 @@ export default class MainPage extends React.Component {
               sm="auto"
               md="auto"
               lg="auto"
-              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+              // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.state.calendarView === "Month"
                 ? this.calendarAbstracted()
                 : this.dayViewAbstracted()}
-              <div
-                style={{ marginTop: "50px", textAlign: "center" }}
-                className="fancytext"
-              >
+              <div style={{ marginTop: "50px" }} className="fancytext">
                 Dedicated to Caitlin Little
               </div>
             </Col>
-            <Col style={{ marginLeft: "25px" }}>
-              {this.showDayViewOrAboutView()}
-            </Col>
+            <Col>{this.showDayViewOrAboutView()}</Col>
           </Row>
         </Container>
       </div>
@@ -1307,34 +1326,49 @@ export default class MainPage extends React.Component {
     // Redefine the width of those buttons; Should fix to be 100% and make
     // enclosing div to be based on % and not 2000px
 
-    let barWidth = window.outerWidth + 'px'
     return (
-      <div style={{ display: "block", textAlign: "center", width: barWidth, fontSize: "20px"}}>
-        <div style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginTop: "10px"}}>
-        <DropdownButton
-          style={{ top: "5px" }}
-          title={this.state.calendarView}
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            margin: "0 10px",
+            marginBottom: "0"
+            // marginTop: "10px"
+            // background: "green"
+          }}
         >
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Month");
-            }}
+          <DropdownButton
+            style={{ top: "5px" }}
+            title={this.state.calendarView}
           >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Day");
-            }}
-          >
-            {" "}
-            Day{" "}
-          </Dropdown.Item>
-        </DropdownButton>
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Month");
+              }}
+            >
+              {" "}
+              Month{" "}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Day");
+              }}
+            >
+              {" "}
+              Day{" "}
+            </Dropdown.Item>
+          </DropdownButton>
         </div>
         <Button
-          style={{ display: "inline-block", margin: "10px", marginBottom: "0"}}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1415,7 +1449,7 @@ export default class MainPage extends React.Component {
           borderRadius: "2%",
           backgroundColor: "white",
           width: "1000px",
-          marginLeft: "10px",
+          // marginLeft: "10px",
           padding: "45px",
           paddingBottom: "10px",
           boxShadow:
