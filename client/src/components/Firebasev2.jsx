@@ -611,7 +611,7 @@ export default class FirebaseV2 extends React.Component {
                       />
                     </div>
                   )}
-                  <ShowATList />
+                  {/* <ShowATList /> */}
                 </Row>
                 <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
                   <DeleteISItem
@@ -661,7 +661,7 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                <ShowATList />
+                {/* <ShowATList /> */}
               </Row>
               <Row style={{ marginTop:"15px", marginLeft:"100px"}} class="d-flex " >
                 <DeleteISItem
@@ -899,7 +899,7 @@ export default class FirebaseV2 extends React.Component {
               >
                   <img
                     src={this.state.routines[i]["photo"]}
-                    alt="Instructions/Steps"
+                    alt="Routines"
                     className="center"
                     height="80px"
                     width="auto"
