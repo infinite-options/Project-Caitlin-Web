@@ -93,9 +93,11 @@ export default class editGR extends Component {
 
     editGRForm = () => {
         return (
-            <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
-                <label>Title</label>
-                <div className="input-group mb-3" >
+            
+            // <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
+            <Row style={{marginLeft:"-170px", border: "2px", padding: '20px', marginTop:"10px" }}>
+                <label >Title</label>
+                 <div className="input-group mb-3" >
                     <input style={{ width: '200px' }} placeholder="Enter Title" value={this.state.itemToEdit.title} onChange={
                         (e) => { e.preventDefault(); e.stopPropagation(); let temp = this.state.itemToEdit; temp.title = e.target.value; this.setState({ itemToEdit: temp }) }
                     }
@@ -140,11 +142,11 @@ export default class editGR extends Component {
                             // onChange={this.handleNotificationChange}
                             type="number"
                             placeholder="30"
-                            style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                            style = {{ marginTop:".25rem", paddingRight:"0px"}}
                         />
                     </Col>
                     <Col xs={8} style = {{paddingLeft:"0px"}} >
-                        <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                        <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                     </Col>
                 </Row>
 
@@ -181,30 +183,13 @@ export default class editGR extends Component {
                             this.setState({ itemToEdit: temp })
                         }} />
                 </div >
-
-                {this.state.itemToEdit.is_available && <ShowNotifications />}
-
-                {/* <Row>
-                    <FontAwesomeIcon
-                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                    onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: "#00FF00" }}
-                    onClick={(e) => { e.stopPropagation();  this.newInputSubmit(); }}
-                    icon={faCheck} size="2x"
-                />
-                 <FontAwesomeIcon
-                    onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                    onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: "#FF0000" }}
-                    onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}
-                    icon={faTimes} size="2x"
-                />
                     
-                    </Row> */}
+                {this.state.itemToEdit.is_available && <ShowNotifications/>} 
+                    
 
                 <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
                 <Button variant="info" onClick={(e) => { e.stopPropagation(); this.newInputSubmit() }}>Save changes</Button>
-            </div>
+            </Row>
         )
     }
 
@@ -213,23 +198,28 @@ export default class editGR extends Component {
         return (
             <div style={{ marginLeft: "5px" }} >
                 <FontAwesomeIcon
+
                     title="Edit Item"
                     onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                     onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: "#000000" }}
+                    style={{ color: "#000000"}}
                     onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: true }) }}
                     icon={faEdit} size="lg"
                 />
             </div>
         )
     }
+   
+
+    
 
     render() {
         return (
 
             <div onClick={(e) => { e.stopPropagation(); }}>
-                {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
-                {(this.state.showEditModal) ? <div> </div> : this.showIcon()}
+                {(this.state.showEditModal) ? <div></div> : this.showIcon()} 
+                 {(this.state.showEditModal ? this.editGRForm() : <div> </div>)}
+  
 
             </div>
         )

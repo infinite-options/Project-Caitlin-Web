@@ -2122,8 +2122,10 @@ export default class MainPage extends React.Component {
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
-                      style={{ width: "70px", marginTop: ".25rem" }}
+
+                      placeholder="5"
+                      style = {{width:"70px", marginTop:".25rem"}}
+
                     />
                   </Col>
                   <Col xs={8} style={{ paddingLeft: "0px" }}>
@@ -2239,8 +2241,10 @@ export default class MainPage extends React.Component {
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
-                      style={{ width: "70px", marginTop: ".25rem" }}
+
+                      placeholder="5"
+                      style = {{width:"70px", marginTop:".25rem"}}
+
                     />
                   </Col>
                   <Col xs={8} style={{ paddingLeft: "0px" }}>
