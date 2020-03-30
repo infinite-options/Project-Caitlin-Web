@@ -547,7 +547,7 @@ export default class MainPage extends React.Component {
     };
 
     axios
-      .post("/updateEvent", {
+      .put("/updateEvent", {
         extra: updatedEvent,
         ID: this.state.newEventID
       })
