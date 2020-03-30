@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -534,7 +534,11 @@ export default class MainPage extends React.Component {
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
     updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
+    updatedEvent.start.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
+    updatedEvent.end.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    updatedEvent.recurrence =
+      this.state.repeatOption && this.defineRecurrence();
     updatedEvent.reminders = {
       overrides: [
         {
@@ -567,6 +571,51 @@ export default class MainPage extends React.Component {
       .catch(function(error) {
         console.log(error);
       });
+  };
+
+  defineRecurrence = () => {
+    // frequency in RRULE
+    let frequency =
+      this.state.repeatDropDown === "DAY"
+        ? "DAILY"
+        : this.state.repeatDropDown.concat("LY");
+
+    // recurrence string
+    let rrule = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
+    let recurrence = [];
+    let exdate = "";
+
+    // If seleted WEEK, add BYDAY to recurrence string
+    if (this.state.repeatDropDown === "WEEK") {
+      let selectedDays = [];
+      for (let [key, value] of Object.entries(this.state.byDay)) {
+        // Excluding today if today is not selected
+        if (key === this.state.newEventStart0.getDay().toString()) {
+          if (value === "") {
+            exdate = `EXDATE;TZID=America/Los_Angeles:${moment(
+              this.state.newEventStart0
+            ).format("YYYYMMDD")}T070000Z`;
+            recurrence.unshift(exdate);
+          }
+        }
+        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
+      }
+      rrule = rrule.concat(`;BYDAY=${selectedDays.toString()}`);
+    }
+
+    // If selected After, add COUNT to recurrence string
+    if (this.state.repeatRadio === "After")
+      rrule = rrule.concat(`;COUNT=${this.state.repeatOccurrence}`);
+
+    // If selected On, add UNTIL to recurrence string
+    if (this.state.repeatRadio === "On") {
+      let repeat_end_date = moment(this.state.repeatEndDate).add(1, "days");
+      rrule = rrule.concat(`;UNTIL=${repeat_end_date.format("YYYYMMDD")}`);
+    }
+
+    recurrence.push(rrule);
+    console.log("recurrence", recurrence);
+    return recurrence;
   };
 
   /*
@@ -638,48 +687,6 @@ export default class MainPage extends React.Component {
       minutesNotification = this.state.newEventNotification;
     }
 
-    // frequency in RRULE
-    let frequency =
-      this.state.repeatDropDown === "DAY"
-        ? "DAILY"
-        : this.state.repeatDropDown.concat("LY");
-
-    // recurrence string
-    let rrule = `RRULE:FREQ=${frequency};INTERVAL=${this.state.repeatInputValue}`;
-    let recurrence = [];
-    let exdate = "";
-
-    // If seleted WEEK, add BYDAY to recurrence string
-    if (this.state.repeatDropDown === "WEEK") {
-      let selectedDays = [];
-      for (let [key, value] of Object.entries(this.state.byDay)) {
-        // Excluding today if today is not selected
-        if (key === this.state.newEventStart0.getDay().toString()) {
-          if (value === "") {
-            exdate = `EXDATE;TZID=America/Los_Angeles:${moment(
-              this.state.newEventStart0
-            ).format("YYYYMMDD")}T070000Z`;
-            recurrence.unshift(exdate);
-          }
-        }
-        value !== "" && selectedDays.push(value.substring(0, 2).toUpperCase());
-      }
-      rrule = rrule.concat(`;BYDAY=${selectedDays.toString()}`);
-    }
-
-    // If selected After, add COUNT to recurrence string
-    if (this.state.repeatRadio === "After")
-      rrule = rrule.concat(`;COUNT=${this.state.repeatOccurrence}`);
-
-    // If selected On, add UNTIL to recurrence string
-    if (this.state.repeatRadio === "On") {
-      let repeat_end_date = moment(this.state.repeatEndDate).add(1, "days");
-      rrule = rrule.concat(`;UNTIL=${repeat_end_date.format("YYYYMMDD")}`);
-    }
-
-    recurrence.push(rrule);
-    console.log("recurrence", recurrence);
-
     let event = {
       summary: this.state.newEventName,
       location: this.state.newEventLocation,
@@ -702,7 +709,7 @@ export default class MainPage extends React.Component {
         dateTime: this.state.newEventEnd0.toISOString(),
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       },
-      recurrence: this.state.repeatOption && recurrence,
+      recurrence: this.state.repeatOption && this.defineRecurrence(),
       attendees: formattedEmail
     };
     axios
@@ -1131,12 +1138,36 @@ export default class MainPage extends React.Component {
       //width and height is fixed now but should be by % percentage later on
       <div
         className="normalfancytext"
-        style={{ marginLeft: "0px", height: "100%", width: "2000px" }}
+        style={{
+          marginLeft: "0px",
+          height: "100%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center"
+          // background: "lightblue"
+        }}
       >
-        <div style={{ margin: "0", padding: "0", width: "100%" }}>
-          <div>{this.abstractedMainEventGRShowButtons()}</div>
+        <div
+          style={{
+            margin: "0",
+            padding: "0",
+            width: "100%"
+          }}
+        >
+          {this.abstractedMainEventGRShowButtons()}
         </div>
-        <Container fluid style={{ marginTop: "15px", marginLeft: "0%" }}>
+        <Container
+          fluid
+          style={{
+            marginTop: "15px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
           {/* Within this container essentially contains all the UI of the App */}
           <Row style={{ marginTop: "0" }}>
             {/* the modal for routine/goal is called Firebasev2 currently */}
@@ -1158,21 +1189,16 @@ export default class MainPage extends React.Component {
               sm="auto"
               md="auto"
               lg="auto"
-              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+              // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.state.calendarView === "Month"
                 ? this.calendarAbstracted()
                 : this.dayViewAbstracted()}
-              <div
-                style={{ marginTop: "50px", textAlign: "center" }}
-                className="fancytext"
-              >
+              <div style={{ marginTop: "50px" }} className="fancytext">
                 Dedicated to Caitlin Little
               </div>
             </Col>
-            <Col style={{ marginLeft: "25px" }}>
-              {this.showDayViewOrAboutView()}
-            </Col>
+            <Col>{this.showDayViewOrAboutView()}</Col>
           </Row>
         </Container>
       </div>
@@ -1297,10 +1323,52 @@ export default class MainPage extends React.Component {
   };
 
   abstractedMainEventGRShowButtons = () => {
+    // Redefine the width of those buttons; Should fix to be 100% and make
+    // enclosing div to be based on % and not 2000px
+
     return (
-      <div style={{ marginLeft: "33%", width: "100%", fontSize: "20px" }}>
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <div
+          style={{
+            display: "inline-block",
+            margin: "0 10px",
+            marginBottom: "0"
+            // marginTop: "10px"
+            // background: "green"
+          }}
+        >
+          <DropdownButton
+            style={{ top: "5px" }}
+            title={this.state.calendarView}
+          >
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Month");
+              }}
+            >
+              {" "}
+              Month{" "}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={e => {
+                this.changeCalendarView("Day");
+              }}
+            >
+              {" "}
+              Day{" "}
+            </Dropdown.Item>
+          </DropdownButton>
+        </div>
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1310,9 +1378,8 @@ export default class MainPage extends React.Component {
         >
           Today
         </Button>
-
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState(
@@ -1330,7 +1397,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={this.toggleShowRoutine}
         >
@@ -1338,7 +1405,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ marginTop: "0", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={this.toggleShowGoal}
         >
@@ -1347,7 +1414,7 @@ export default class MainPage extends React.Component {
         </Button>
 
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1360,7 +1427,7 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-          style={{ margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1371,28 +1438,6 @@ export default class MainPage extends React.Component {
         >
           About
         </Button>
-
-        <DropdownButton
-          style={{ margin: "10px", float: "left" }}
-          title={this.state.calendarView}
-        >
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Month");
-            }}
-          >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Day");
-            }}
-          >
-            {" "}
-            Day{" "}
-          </Dropdown.Item>
-        </DropdownButton>
       </div>
     );
   };
@@ -1404,7 +1449,7 @@ export default class MainPage extends React.Component {
           borderRadius: "2%",
           backgroundColor: "white",
           width: "1000px",
-          marginLeft: "10px",
+          // marginLeft: "10px",
           padding: "45px",
           paddingBottom: "10px",
           boxShadow:
