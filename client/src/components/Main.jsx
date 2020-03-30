@@ -18,6 +18,8 @@ import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
 import WeekEvents from "./WeekEvents.jsx";
+import WeekRoutines from "./WeekRoutines.jsx";
+import WeekGoals from "./WeekGoals.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
 // import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -1265,9 +1267,13 @@ export default class MainPage extends React.Component {
       }}>
         <Container>
           <Row>
-            <Col>
               <WeekEvents />
-            </Col>
+          </Row>
+          <Row>
+              <WeekGoals />
+          </Row>
+          <Row>
+              <WeekRoutines />
           </Row>
         </Container>
       </div>

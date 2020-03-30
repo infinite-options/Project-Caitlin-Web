@@ -4,7 +4,7 @@ import {
      Container, Row, Col
 } from 'react-bootstrap';
 
-export default class WeekEvents extends Component {
+export default class WeekRoutines extends Component {
   constructor(props) {
       super(props);
       // console.log(this.props.dateContext);
@@ -53,7 +53,7 @@ export default class WeekEvents extends Component {
                           height: this.state.pxPerHour,
                       }}
                   >
-                      {/*TODO: Place calendar events {i} {j}*/}
+                      {/*TODO: Place Routine events {i} {j}*/}
                   </Col >
                 </Row>
               </Container>
@@ -77,7 +77,7 @@ export default class WeekEvents extends Component {
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
            <Row>
-             Events
+             Routines
            </Row>
            <Row>
              <Col className="fancytext">Time</Col>
