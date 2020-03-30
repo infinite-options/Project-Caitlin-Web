@@ -1345,7 +1345,8 @@ export default class MainPage extends React.Component {
         style={{
           display: "block",
           textAlign: "center",
-          fontSize: "20px"
+          fontSize: "20px",
+          paddingRight: "165px"
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1357,7 +1358,6 @@ export default class MainPage extends React.Component {
             margin: "10px",
             marginBottom: "0",
             marginTop: "10px"
-            // background: "green"
           }}
         >
           <DropdownButton
