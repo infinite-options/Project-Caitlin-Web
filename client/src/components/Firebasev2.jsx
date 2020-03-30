@@ -204,7 +204,7 @@ export default class FirebaseV2 extends React.Component {
   formatDateTime(str) {
     const formattedStr = str.replace(/\//g, "-");
     const time = moment(formattedStr);
-    return time.format("YYYY MMM DD HH:m");
+    return time.format("YYYY MMM DD HH:mm");
   }
 
   onInputChange = e => {
@@ -1040,14 +1040,13 @@ export default class FirebaseV2 extends React.Component {
                 )}
               </Row> */}
               {/* <Row style={{ margin: "0" }} className="d-flex flex-row-reverse"> <ShowATList /></Row> */}
-
               {/* <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
-                
+
                   <div className="fancytext " >
                       {this.state.routines[i]["title"]}
                   </div>
-                </Col>     
+                </Col>
               </Row> */}
               {/* <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
@@ -1102,11 +1101,6 @@ export default class FirebaseV2 extends React.Component {
 
                 /> */}
                  {/* <ShowATList /> */}
-                  
-               
-                
-              {/* </Row> */}
-
               <Row>
                 <div style={{ fontSize: "12px" }}>
                   {this.state.routines[i]["datetime_started"] ? (
