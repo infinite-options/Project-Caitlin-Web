@@ -1141,11 +1141,13 @@ export default class MainPage extends React.Component {
         style={{
           marginLeft: "0px",
           height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
+          width: "2000px"
+          // width: "100%",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "center",
+          // alignItems: "center",
+          // background: "lightblue",
         }}
       >
         <div
@@ -1161,21 +1163,22 @@ export default class MainPage extends React.Component {
           fluid
           style={{
             marginTop: "15px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%"
+            marginLeft: "0"
+            // display: "flex",
+            // flexDirection: "column",
+            // justifyContent: "center",
+            // alignItems: "center",
+            // width: "100%"
           }}
         >
           {/* Within this container essentially contains all the UI of the App */}
-          <div
+          <Row
             style={{
-              marginTop: "0",
-              width: "100%",
-              display: "flex",
+              marginTop: "0"
+              // width: "100%",
+              // display: "flex",
               // flexDirection: "column",
-              justifyContent: "center"
+              // justifyContent: "center"
               // alignItems: "center"
             }}
           >
@@ -1194,11 +1197,11 @@ export default class MainPage extends React.Component {
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal}
             />
-            <div
+            <Col
               sm="auto"
               md="auto"
               lg="auto"
-              // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.state.calendarView === "Month"
                 ? this.calendarAbstracted()
@@ -1206,9 +1209,11 @@ export default class MainPage extends React.Component {
               <div style={{ marginTop: "50px" }} className="fancytext">
                 Dedicated to Caitlin Little
               </div>
-            </div>
-            <div>{this.showDayViewOrAboutView()}</div>
-          </div>
+            </Col>
+            <Col style={{ marginLeft: "25px" }}>
+              {this.showDayViewOrAboutView()}
+            </Col>
+          </Row>
         </Container>
       </div>
     );
@@ -1338,19 +1343,20 @@ export default class MainPage extends React.Component {
     return (
       <div
         style={{
+          display: "block",
           textAlign: "center",
-          fontSize: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
+          fontSize: "20px"
+          // display: "flex",
+          // justifyContent: "center",
+          // alignItems: "center"
         }}
       >
         <div
           style={{
             display: "inline-block",
-            margin: "0 10px",
-            marginBottom: "0"
-            // marginTop: "10px"
+            margin: "10px",
+            marginBottom: "0",
+            marginTop: "10px"
             // background: "green"
           }}
         >

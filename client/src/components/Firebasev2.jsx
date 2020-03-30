@@ -1191,7 +1191,7 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "-70px",
+          marginLeft: "0px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
         }}
