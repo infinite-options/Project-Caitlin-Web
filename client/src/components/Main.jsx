@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -1146,7 +1146,6 @@ export default class MainPage extends React.Component {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center"
-          // background: "lightblue"
         }}
       >
         <div
@@ -1165,11 +1164,21 @@ export default class MainPage extends React.Component {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: "center"
+            alignItems: "center",
+            width: "100%"
           }}
         >
           {/* Within this container essentially contains all the UI of the App */}
-          <Row style={{ marginTop: "0" }}>
+          <div
+            style={{
+              marginTop: "0",
+              width: "100%",
+              display: "flex",
+              // flexDirection: "column",
+              justifyContent: "center"
+              // alignItems: "center"
+            }}
+          >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
               closeRoutineGoalModal={() => {
@@ -1185,7 +1194,7 @@ export default class MainPage extends React.Component {
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal}
             />
-            <Col
+            <div
               sm="auto"
               md="auto"
               lg="auto"
@@ -1197,9 +1206,9 @@ export default class MainPage extends React.Component {
               <div style={{ marginTop: "50px" }} className="fancytext">
                 Dedicated to Caitlin Little
               </div>
-            </Col>
-            <Col>{this.showDayViewOrAboutView()}</Col>
-          </Row>
+            </div>
+            <div>{this.showDayViewOrAboutView()}</div>
+          </div>
         </Container>
       </div>
     );
@@ -1511,7 +1520,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
@@ -1646,7 +1655,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
