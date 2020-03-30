@@ -49,8 +49,8 @@ export default class FirebaseV2 extends React.Component {
       .collection("users")
       .doc("7R6hAVmDrNutRkG3sVRy"),
     originalGoalsAndRoutineArr: [],
-    goals: [], 
-    routines: [], 
+    goals: [],
+    routines: [],
     //This single GR item is passed to AddNewATItem to help processed the new item
     singleGR: {
       //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
@@ -93,7 +93,7 @@ export default class FirebaseV2 extends React.Component {
 
     //isRoutine is to check whether we clicked on add routine or add goal
     isRoutine: true,
-    availabilityColorCode: "#D6A34C",
+    availabilityColorCode: "#D6A34C"
 
     //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
     // iconShowATModal: true
@@ -655,11 +655,13 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                
+
                 {/* </Col> */}
-               
               </Row>
-              <Row style={{ margin: "0" }} className="d-flex flex-row-reverse"> <ShowATList /></Row>
+              <Row style={{ margin: "0" }} className="d-flex flex-row-reverse">
+                {" "}
+                <ShowATList />
+              </Row>
               {/* <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col>
                 
@@ -719,10 +721,7 @@ export default class FirebaseV2 extends React.Component {
                   FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                   refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                 />
-                 {/* <ShowATList /> */}
-                  
-               
-                
+                {/* <ShowATList /> */}
               </Row>
               <Row>
                 <div style={{ fontSize: "12px" }}>
@@ -1192,7 +1191,7 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "0",
+          marginLeft: "0px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
         }}

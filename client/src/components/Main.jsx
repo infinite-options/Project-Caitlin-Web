@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -551,7 +551,7 @@ export default class MainPage extends React.Component {
     };
 
     axios
-      .post("/updateEvent", {
+      .put("/updateEvent", {
         extra: updatedEvent,
         ID: this.state.newEventID
       })
@@ -1141,12 +1141,13 @@ export default class MainPage extends React.Component {
         style={{
           marginLeft: "0px",
           height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-          // background: "lightblue"
+          width: "2000px"
+          // width: "100%",
+          // display: "flex",
+          // flexDirection: "column",
+          // justifyContent: "center",
+          // alignItems: "center",
+          // background: "lightblue",
         }}
       >
         <div
@@ -1162,14 +1163,25 @@ export default class MainPage extends React.Component {
           fluid
           style={{
             marginTop: "15px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center"
+            marginLeft: "0"
+            // display: "flex",
+            // flexDirection: "column",
+            // justifyContent: "center",
+            // alignItems: "center",
+            // width: "100%"
           }}
         >
           {/* Within this container essentially contains all the UI of the App */}
-          <Row style={{ marginTop: "0" }}>
+          <Row
+            style={{
+              marginTop: "0"
+              // width: "100%",
+              // display: "flex",
+              // flexDirection: "column",
+              // justifyContent: "center"
+              // alignItems: "center"
+            }}
+          >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
               closeRoutineGoalModal={() => {
@@ -1189,7 +1201,7 @@ export default class MainPage extends React.Component {
               sm="auto"
               md="auto"
               lg="auto"
-              // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.state.calendarView === "Month"
                 ? this.calendarAbstracted()
@@ -1198,7 +1210,9 @@ export default class MainPage extends React.Component {
                 Dedicated to Caitlin Little
               </div>
             </Col>
-            <Col>{this.showDayViewOrAboutView()}</Col>
+            <Col style={{ marginLeft: "25px" }}>
+              {this.showDayViewOrAboutView()}
+            </Col>
           </Row>
         </Container>
       </div>
@@ -1329,19 +1343,20 @@ export default class MainPage extends React.Component {
     return (
       <div
         style={{
+          display: "block",
           textAlign: "center",
-          fontSize: "20px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
+          fontSize: "20px"
+          // display: "flex",
+          // justifyContent: "center",
+          // alignItems: "center"
         }}
       >
         <div
           style={{
             display: "inline-block",
-            margin: "0 10px",
-            marginBottom: "0"
-            // marginTop: "10px"
+            margin: "10px",
+            marginBottom: "0",
+            marginTop: "10px"
             // background: "green"
           }}
         >
@@ -1511,7 +1526,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
@@ -1646,7 +1661,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "0",
+          marginLeft: "70px",
           width: "350px",
           marginTop: "0"
         }}
