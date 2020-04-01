@@ -43,8 +43,8 @@ export default class WeekEvents extends Component {
           var arr = []
           for( let j = 0; j < 24; ++j) {
             arr.push(
-              <Container>
-                <Row key={"weekEvent" + i + j} style={{ position: "relative"}}>
+              <Container key={"weekEvent" + i + j}>
+                <Row style={{ position: "relative"}}>
                   <Col
                       style={{
                           position: "relative",
@@ -53,14 +53,14 @@ export default class WeekEvents extends Component {
                           height: this.state.pxPerHour,
                       }}
                   >
-                      {/*TODO: Place calendar events {i} {j}*/}
+                      {i} {j}
                   </Col >
                 </Row>
               </Container>
             );
           }
         res.push(
-          <Col>
+          <Col key={"dayEvent" + i}>
             {arr}
           </Col>
         );
@@ -71,7 +71,7 @@ export default class WeekEvents extends Component {
  render() {
     let weekdays = moment.weekdays().map((day) => {
       return (
-        <Col className="fancytext">{day}</Col>
+        <Col key={"event"+day} className="fancytext">{day}</Col>
       )
     });
      return (
