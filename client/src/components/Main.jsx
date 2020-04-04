@@ -58,7 +58,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Week", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -1296,6 +1296,8 @@ export default class MainPage extends React.Component {
   };
 
   weekViewAbstracted = () => {
+    //Get the day the week starts on, will be a Sunday, pass as prop
+    let dateContext = this.state.dateContext.startOf('week');
     return (
       <div
         style={{
@@ -1310,7 +1312,9 @@ export default class MainPage extends React.Component {
       }}>
         <Container>
           <Row>
-              <WeekEvents />
+              <WeekEvents
+                dateContext={dateContext}
+              />
           </Row>
           <Row>
               <WeekGoals />

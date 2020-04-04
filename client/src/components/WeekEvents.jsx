@@ -7,7 +7,6 @@ import {
 export default class WeekEvents extends Component {
   constructor(props) {
       super(props);
-      // console.log(this.props.dateContext);
       this.state = {
           dayEvents: [], //holds google events data for a single day
           todayDateObject: moment("03/07/2020"), //this is the date of interset for events to be displaye
@@ -17,6 +16,8 @@ export default class WeekEvents extends Component {
           eventBoxSize: 130, //width size for event box
           marginFromLeft: 0
       }
+      // console.log(this.props.dateContext.format('MM/DD/YYYY'))
+      // dateContext prop should be Sunday of current week
   }
 
   timeDisplay = () => { //this essentially creates the time row
@@ -53,7 +54,7 @@ export default class WeekEvents extends Component {
                           height: this.state.pxPerHour,
                       }}
                   >
-                      {i} {j}
+                      {/*TODO: Place Goal events {i} {j}*/}
                   </Col >
                 </Row>
               </Container>
