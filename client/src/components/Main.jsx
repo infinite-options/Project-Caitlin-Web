@@ -37,6 +37,7 @@ export default class MainPage extends React.Component {
     this.state = {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
+      weekEvents: [], //holds google events data for a week
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -794,6 +795,30 @@ export default class MainPage extends React.Component {
     );
   };
 
+  nextWeek = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).add(1, "week");
+    this.setState(
+      {
+        dateContext: dateContext,
+        dayEvents: []
+      },
+      this.updateEventsArray
+    );
+  };
+
+  prevWeek = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).subtract(1, "week");
+    this.setState(
+      {
+        dateContext: dateContext,
+        dayEvents: []
+      },
+      this.updateEventsArray
+    );
+  };
+
   /*
   updateEventsArray:
   updates the array if the month view changes to a different month.
@@ -815,6 +840,14 @@ export default class MainPage extends React.Component {
       this.getEventsByIntervalDayVersion(
         this.state.dateContext.format("MM/DD/YYYY")
       );
+    } else if (this.state.calendarView === 'Week') {
+      let startObject = this.state.dateContext.clone();
+      let endObject = this.state.dateContext.clone();
+      let startDay = startObject.startOf("week");
+      let endDay = endObject.endOf("week");
+      let startDate = new Date(startDay.format("MM/DD/YYYY"));
+      let endDate = new Date(endDay.format("MM/DD/YYYY"));
+      this.getEventsByIntervalWeekVersion(startObject.toDate(),endObject.toDate());
     }
   };
 
@@ -1286,7 +1319,7 @@ export default class MainPage extends React.Component {
             eventClickDayView={this.handleDayEventClick}
             handleDateClick={this.handleDateClickOnDayView}
             dayEvents={this.state.dayEvents}
-            getEventsByInterval={this.state.getEventsByIntervalDayVersion}
+            getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
           <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
           <DayGoals dayGoalClick={this.toggleShowGoal} />
@@ -1296,8 +1329,8 @@ export default class MainPage extends React.Component {
   };
 
   weekViewAbstracted = () => {
-    //Get the day the week starts on, will be a Sunday, pass as prop
-    let dateContext = this.state.dateContext.startOf('week');
+    let startObject = this.state.dateContext.clone();
+    let startWeek = startObject.startOf('week')
     return (
       <div
         style={{
@@ -1311,9 +1344,44 @@ export default class MainPage extends React.Component {
           "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
       }}>
         <Container>
+        <Container>
+          <Row style={{ marginTop: "0px" }}>
+            <Col>
+              <div>
+                <FontAwesomeIcon
+                  style={{ marginLeft: "50%" }}
+                  icon={faChevronLeft}
+                  size="2x"
+                  className="X"
+                  onClick={e => {
+                    this.prevWeek();
+                  }}
+                />
+              </div>
+            </Col>
+            <Col md="auto" style={{ textAlign: "center" }} className="bigfancytext">
+              <p>
+                {" "}
+                Week of {startWeek.format('D MMMM YYYY')}{" "}
+              </p>
+            </Col>
+            <Col>
+              <FontAwesomeIcon
+                style={{ marginLeft: "50%" }}
+                icon={faChevronRight}
+                size="2x"
+                className="X"
+                onClick={e => {
+                  this.nextWeek();
+                }}
+              />
+            </Col>
+          </Row>
+        </Container>
           <Row>
               <WeekEvents
-                dateContext={dateContext}
+                weekEvents={this.state.weekEvents}
+                dateContext={this.state.dateContext}
               />
           </Row>
           <Row>
@@ -1441,7 +1509,9 @@ export default class MainPage extends React.Component {
           onClick={() => {
             this.setState({
               dateContext: moment()
-            });
+            },
+            this.updateEventsArray
+          );
           }}
         >
           Today
@@ -2603,6 +2673,33 @@ when there is a change in the event form
           },
           () => {
             console.log("New Events Arrived", events);
+          }
+        );
+      })
+      .catch(error => {
+        console.log("Error Occurred " + error);
+      });
+  };
+
+  //Get and store events by week, take first and last day of the week as parameters as date object
+  getEventsByIntervalWeekVersion = (start0, end0) => {
+    axios
+      .get("/getEventsByInterval", {
+        //get normal google calendar data for possible future use
+        params: {
+          start: start0,
+          end: end0
+        }
+      })
+      .then(response => {
+        var events = response.data;
+        this.setState(
+          {
+            weekEvents: events
+          },
+          () => {
+            console.log("New Events Arrived");
+            console.log(this.state.weekEvents)
           }
         );
       })
