@@ -1171,10 +1171,22 @@ export default class MainPage extends React.Component {
           }}
         >
           <Row style={{ margin: "0"}} className="d-flex flex-row">
-              <div  style = {{marginLeft:"20px", marginRight:"20px"}}>
+            <div style={{float: "right", width: "80px", height: "70px"}}>
+              <FontAwesomeIcon icon={faImage} size="5x"/> 
+            </div>
+            <div style={{float: "left", width: "227px", height: "50px"}}>
+              <p style = {{ marginTop:"25px"}}>First Last</p>
+            </div>
+            {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
+              <FontAwesomeIcon icon={faImage} size="5x"/> 
+            </Col>
+            <Col xs={9} style = {{paddingLeft: "0px"}}>
+              <p style = {{marginBottom:"0px", marginTop:"15px"}}>First Last</p>
+            </Col> */}
+              {/* <col style = {{marginLeft:"20px", marginRight:"20px"}}>
                 <FontAwesomeIcon icon={faImage} size="5x"/> 
                 <p style = {{marginBottom:"0px"}}>First Last</p>
-              </div>
+              </span> */}
           </Row>
         </div>
 
