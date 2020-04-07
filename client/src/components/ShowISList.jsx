@@ -4,7 +4,7 @@ import { faSlash, faList} from '@fortawesome/free-solid-svg-icons';
 
 
 
-export default class ShowATList extends React.Component {
+export default class ShowISList extends React.Component {
     constructor(props) {
         super(props)
         this.state={
@@ -13,12 +13,12 @@ export default class ShowATList extends React.Component {
     }
     componentDidUpdate() {}
 
-    componentDidMount() {
-        let items = [...this.props.Array];
-        // console.log("this is the item");
-        // console.log(items[this.props.Index]);
-        this.setState({iconShow: items[this.props.Index]['is_sublist_available']});
-    }
+  componentDidMount() {
+      let items = [...this.props.Array];
+    //   console.log("this is the item");
+    //   console.log(items[this.props.Index]);
+      this.setState({iconShow: items[this.props.Index]['is_sublist_available']});
+  }
     // ListFalse = e => {
     //   this.props.ListCameBackFalse();  
     //   this.setState({iconShow: !this.state.iconShow}); 
@@ -26,38 +26,32 @@ export default class ShowATList extends React.Component {
 
     editFirBaseFalse = e =>{
       // console.log("this should be false");
-      this.setState({iconShow: false}, () => {
-        let items = [...this.props.Array];
+      this.setState({iconShow: false})
+      // console.log(this.state.iconShow);
+      let items = [...this.props.Array];
+    //   console.log("this is the item");
+    //   console.log(items[this.props.Index]);
+      
         items[this.props.Index]['is_sublist_available'] = false;
-        this.props.Path.update({ 'goals&routines': items }).then(
+        this.props.Path.update({ 'actions&tasks': items }).then(
             (doc) => {
             }
         )
-      })
-      // this.setState({iconShow: false});
-      // // console.log(this.state.iconShow);
-      // let items = [...this.props.Array];
-      // // console.log("this is the item");
-      // // console.log(items[this.props.Index]);
-      
-      //   items[this.props.Index]['is_sublist_available'] = false;
-      //   this.props.Path.update({ 'goals&routines': items }).then(
-      //       (doc) => {
-      //       }
-      //   )
     }
 
     editFirBaseTrue = e =>{
-      this.setState({iconShow: true}, () => {
-        let items = [...this.props.Array];
+      // console.log("this should be true");
+      this.setState({iconShow: true})
+      // console.log(this.state.iconShow);
+      let items = [...this.props.Array];
+    //   console.log("this is the item");
+    //   console.log(items[this.props.Index]);
         items[this.props.Index]['is_sublist_available'] = true;
-        this.props.Path.update({ 'goals&routines': items }).then(
+        this.props.Path.update({ 'actions&tasks': items }).then(
             (doc) => {
             }
         )
-      })
     }
-
     render() {
         return (
             <div>
@@ -65,7 +59,9 @@ export default class ShowATList extends React.Component {
                     <div  >
                         <FontAwesomeIcon
                             icon={faList}
-                            title = "SubList Available"
+                            title = "Show List Item"
+                            // onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
+                            // onMouseOut ={event => {event.target.style.color = "#D6A34C";}}
                             style ={{ color:   "#D6A34C", marginLeft:"20px"}}
                             // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShow: false}); this.editFirBaseFalse()}}
                             onClick={(e)=>{ e.stopPropagation(); this.editFirBaseFalse()}}
@@ -78,18 +74,23 @@ export default class ShowATList extends React.Component {
                   <div  
                   // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: false})}}>
                   >
+                      {/* <img src={require('../slash-list.png')} 
+                      style = {{fontSize:"1.3333333333em", lineHeight: "0.75em", verticalAlign: "-0.0667em", marginLeft:"20px"}}
+                       alt="Slash-List Icon"></img> */}
                     <span className ="fa-layers fa-fw" style = {{marginLeft:"20px"}} >
                       <FontAwesomeIcon
                           style ={{color:"#000000"}}
+                        //   color="#000000"
                           icon={faList} 
-                          title = "SubList Unavailable"
+                          title = "Don't Show List Item"
                           onClick={(e)=>{ e.stopPropagation();  this.editFirBaseTrue()}}
                           size="lg" 
                         />
                       <FontAwesomeIcon
                           style ={{color:"#000000"}}
+                        //   color="#000000"
                           icon={faSlash} 
-                          title = "SubList Unavilable"
+                          title = "Don't Show List Item"
                           onClick={(e)=>{ e.stopPropagation(); this.editFirBaseTrue()}}
                           size="lg" 
                       />

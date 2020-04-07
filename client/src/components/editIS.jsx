@@ -48,7 +48,40 @@ export default class editIS extends Component {
             }
         )
     }
+    convertTimeToHRMMSS =  (e) => {
+        
+        // console.log(e.target.value);
+        let num = e.target.value;
+        let hours = num/60;
+        let rhours = Math.floor(hours);
+        let minutes = (hours - rhours)* 60;
+        let rminutes = Math.round(minutes);
+        if (rhours.toString().length == 1) {
+            rhours = "0" + rhours;
+        }
+        if (rminutes.toString().length == 1) {
+            rminutes = "0" + rminutes;
+        }
+        // console.log(rhours+":" + rminutes +":" + "00");
+        return rhours+":" + rminutes +":" + "00";
+    }
 
+    convertToMinutes = () => {
+        let myStr = this.state.itemToEdit.expected_completion_time.split(':');
+        let hours = myStr[0];
+        let hrToMin = hours* 60;
+        let minutes = (myStr[1] * 1 )+ hrToMin;
+        let seconds = myStr[2];
+        
+        // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+        return minutes;
+    }
+    
+    handleNotificationChange = (temp) => {
+        // console.log(temp);
+        this.setState({ itemToEdit: temp });
+    }
+    
     editISForm = () => {
         return (
             // <div style={{margin: '0', width: "315px", padding:'20px'}}>
@@ -89,7 +122,13 @@ export default class editIS extends Component {
                         // onChange={this.handleNotificationChange}
                         type="number"
                         placeholder="30"
+                        value = {this.convertToMinutes()}
+                        // value = {this.state.itemToEdit.expected_completion_time}
                         style = {{ marginTop:".25rem", paddingRight:"0px"}}
+                        onChange={
+                            // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
+                            (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.expected_completion_time = this.convertTimeToHRMMSS(e); this.setState({ itemToEdit: temp }) }
+                        }
                     />
                 </Col>
                 <Col xs={8} style = {{paddingLeft:"0px"}} >
@@ -129,7 +168,12 @@ export default class editIS extends Component {
                     }} />
             </div >
 
-            {this.state.itemToEdit.is_available && <ShowNotifications />}
+            {this.state.itemToEdit.is_available && 
+                <ShowNotifications 
+                    itemToEditPassedIn = {this.state.itemToEdit}
+                    notificationChange = {this.handleNotificationChange}
+                />
+            }
 
 
             <Button variant="secondary" onClick={(e) => { e.stopPropagation(); this.setState({ showEditModal: false }) }}>Close</Button>
