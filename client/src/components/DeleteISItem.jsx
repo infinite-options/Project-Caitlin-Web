@@ -49,7 +49,7 @@ export default class DeleteISItem extends Component {
 
     confirmation = () => {
         const r = window.confirm("Confirm Delete"); 
-        if(r == true){ 
+        if(r === true){ 
             // console.log("Delete Confirm")
             this.submitRequest();
             return;
@@ -62,12 +62,12 @@ export default class DeleteISItem extends Component {
         return (
             < div>
                 <FontAwesomeIcon 
-                        onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
-                        onMouseOut ={event => {event.target.style.color = "#000000";}}
-                        style ={{color:  "#000000", marginRight:"15px" }}
-                        onClick={(e)=>{e.stopPropagation(); this.confirmation()}}
-                        icon={faTrashAlt} size="lg" 
-                        />
+                    onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
+                    onMouseOut ={event => {event.target.style.color = "#000000";}}
+                    style ={{color:  "#000000", marginRight:"15px", marginLeft: "5px" }}
+                    onClick={(e)=>{e.stopPropagation(); this.confirmation()}}
+                    icon={faTrashAlt} size="lg" 
+                />
 
             </div>
         )

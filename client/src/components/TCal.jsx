@@ -126,7 +126,7 @@ export default class TylersCalendarv1 extends React.Component {
     }
 
     //The variable below tells us if the current month we are at is today's month
-    var sameDate = this.props.dateObject.format("DD/MM/YYYY") === this.props.dateContext.format("DD/MM/YYYY");
+    var sameDate = this.props.dateObject.format("MM/YYYY") === this.props.dateContext.format("MM/YYYY");
 
     // console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
     for (var d = 1; d <= this.daysInMonth(); d++) {
