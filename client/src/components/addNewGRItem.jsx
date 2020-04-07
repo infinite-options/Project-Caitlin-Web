@@ -27,7 +27,49 @@ export default class AddNewGRItem extends Component {
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
-      is_timed: false
+      is_timed: false,
+      expected_completion_time: "01:00:00",
+      is_sublist_available: true,
+      ta_notifications:{
+          before:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          },
+          during:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:30:00"
+          },
+          after:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          }
+      },
+      user_notifications:{
+        before:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        },
+        during:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:30:00"
+        },
+        after:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        }
+      }
     }, //this is essentially the new item
     //below are references to firebase directories
     routineDocsPath: firebase
@@ -120,6 +162,40 @@ export default class AddNewGRItem extends Component {
     });
   }
 
+  convertTimeToHRMMSS =  (e) => {
+        
+    // console.log(e.target.value);
+    let num = e.target.value;
+    let hours = num/60;
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours)* 60;
+    let rminutes = Math.round(minutes);
+    if (rhours.toString().length === 1) {
+        rhours = "0" + rhours;
+    }
+    if (rminutes.toString().length === 1) {
+        rminutes = "0" + rminutes;
+    }
+    // console.log(rhours+":" + rminutes +":" + "00");
+    return rhours+":" + rminutes +":" + "00";
+  }
+
+  convertToMinutes = () => {
+      let myStr = this.state.itemToEdit.expected_completion_time.split(':');
+      let hours = myStr[0];
+      let hrToMin = hours* 60;
+      let minutes = (myStr[1] * 1 )+ hrToMin;
+      // let seconds = myStr[2];
+      
+      // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+      return minutes;
+  }
+
+  handleNotificationChange = (temp) => {
+    // console.log(temp);
+    this.setState({ itemToEdit: temp });
+  }
+
   render() {
     return (
       <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
@@ -195,15 +271,20 @@ export default class AddNewGRItem extends Component {
             <Row>
                 <Col  style = {{paddingRight: "0px" }}>  
                     <Form.Control
-                        // value={this.state.newEventNotification}
-                        // onChange={this.handleNotificationChange}
                         type="number"
                         placeholder="30"
-                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                        value = {this.convertToMinutes()}
+                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
+                        onChange={
+                            (e) => { e.stopPropagation(); 
+                            let temp = this.state.itemToEdit; 
+                            temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                            this.setState({ itemToEdit: temp }) }
+                        }
                     />
                 </Col>
                 <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                 </Col>
             </Row>
             
@@ -233,51 +314,21 @@ export default class AddNewGRItem extends Component {
                 checked={this.state.itemToEdit.is_available}
                 onChange={e => {
                   e.stopPropagation();
-                  console.log(e.target.checked);
                   let temp = this.state.itemToEdit;
-                //   console.log(temp.is_available);
                   temp.is_available = e.target.checked;
                   this.setState({ itemToEdit: temp });
                 }}
               />
             </div>
 
-            {this.state.itemToEdit.is_available && <ShowNotifications />}
-
-            {/* <div className="input-group mb-3">
-              <label className="form-check-label">Notify TA?</label>
-
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.notifies_ta}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.notifies_ta);
-                  temp.notifies_ta = !temp.notifies_ta;
-                  this.setState({ itemToEdit: temp });
-                }}
+            {this.state.itemToEdit.is_available && 
+              <ShowNotifications 
+                itemToEditPassedIn = {this.state.itemToEdit}
+                notificationChange = {this.handleNotificationChange}
               />
-            </div>
+            }
 
-            <div className="input-group mb-3">
-              <label className="form-check-label">Remind User? </label>
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.reminds_user}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.reminds_user);
-                  temp.reminds_user = !temp.reminds_user;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div> */}
+            
           </div>
         </Modal.Body>
         <Modal.Footer>

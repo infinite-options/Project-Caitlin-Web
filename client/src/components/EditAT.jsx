@@ -57,6 +57,38 @@ export default class editAT extends Component {
             }
         )
     }
+    convertTimeToHRMMSS =  (e) => {
+        
+        // console.log(e.target.value);
+        let num = e.target.value;
+        let hours = num/60;
+        let rhours = Math.floor(hours);
+        let minutes = (hours - rhours)* 60;
+        let rminutes = Math.round(minutes);
+        if (rhours.toString().length == 1) {
+            rhours = "0" + rhours;
+        }
+        if (rminutes.toString().length == 1) {
+            rminutes = "0" + rminutes;
+        }
+        // console.log(rhours+":" + rminutes +":" + "00");
+        return rhours+":" + rminutes +":" + "00";
+    }
+
+    convertToMinutes = () => {
+        let myStr = this.state.itemToEdit.expected_completion_time.split(':');
+        let hours = myStr[0];
+        let hrToMin = hours* 60;
+        let minutes = (myStr[1] * 1 )+ hrToMin;
+        let seconds = myStr[2];
+        
+        // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+        return minutes;
+    }
+    handleNotificationChange = (temp) => {
+        // console.log(temp);
+        this.setState({ itemToEdit: temp });
+    }
 
     editATForm = () => {
         return (
@@ -101,7 +133,7 @@ export default class editAT extends Component {
                             } />
                         </div >
 
-                        {/* <label>This Takes Me</label>
+                        <label>This Takes Me</label>
                         <Row>
                             <Col  style = {{paddingRight: "0px" }}>  
                                 <Form.Control
@@ -109,29 +141,19 @@ export default class editAT extends Component {
                                     // onChange={this.handleNotificationChange}
                                     type="number"
                                     placeholder="30"
-                                    style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                                    value = {this.convertToMinutes()}
+                                    // value = {this.state.itemToEdit.expected_completion_time}
+                                    style = {{ marginTop:".25rem", paddingRight:"0px"}}
+                                    onChange={
+                                        // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
+                                        (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.expected_completion_time = this.convertTimeToHRMMSS(e); this.setState({ itemToEdit: temp }) }
+                                    }
                                 />
                             </Col>
                             <Col xs={8} style = {{paddingLeft:"0px"}} >
-                                <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                                <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                             </Col>
-                        </Row> */}
-
-                    <label>This Takes Me</label>
-                    <Row>
-                        <Col  style = {{paddingRight: "0px" }}>  
-                            <Form.Control
-                                // value={this.state.newEventNotification}
-                                // onChange={this.handleNotificationChange}
-                                type="number"
-                                placeholder="30"
-                                style = {{ marginTop:".25rem", paddingRight:"0px"}}
-                            />
-                        </Col>
-                        <Col xs={8} style = {{paddingLeft:"0px"}} >
-                            <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-                        </Col>
-                    </Row>
+                        </Row>
 
                         <div className="input-group mb-3" style ={{marginTop:"10px"}}>
                             <label className="form-check-label">Time?</label>
@@ -165,7 +187,12 @@ export default class editAT extends Component {
                                 }} />
                         </div >
 
-                        {this.state.itemToEdit.is_available && <ShowNotifications />}
+                        {this.state.itemToEdit.is_available && 
+                            <ShowNotifications 
+                                itemToEditPassedIn = {this.state.itemToEdit}
+                                notificationChange = {this.handleNotificationChange}
+                            />
+                        }
                         
 
                         

@@ -24,18 +24,60 @@ export default class AddNewATItem extends Component {
         available_end_time: "23:59:59",
         available_start_time: "00:00:00",
         datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
+        datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
         is_timed: false,
-        datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT"
+        expected_completion_time: "00:11:00",
+        is_sublist_available: true,
+        ta_notifications:{
+          before:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          },
+          during:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:30:00"
+          },
+          after:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          }
+        },
+        user_notifications:{
+          before:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          },
+          during:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:30:00"
+          },
+          after:{
+            is_enabled: false,
+            is_set: false,
+            message: "",
+            time: "00:05:00"
+          }
+        }
       }
     };
   }
 
   componentDidMount() {
-    console.log("AddNewATItem did mount");
-    console.log(this.props.ATItem);
-    console.log(this.props.ATItem.fbPath);
-    console.log(this.props.ATItem.arr);
-    console.log(this.props.ATArray);
+    // console.log("AddNewATItem did mount");
+    // console.log(this.props.ATItem);
+    // console.log(this.props.ATItem.fbPath);
+    // console.log(this.props.ATItem.arr);
+    // console.log(this.props.ATArray);
   }
 
   newInputSubmit = () => {
@@ -43,7 +85,7 @@ export default class AddNewATItem extends Component {
       alert("Invalid Input");
       return;
     }
-    console.log("Submitting Input: " + this.state.itemToEdit.title);
+    // console.log("Submitting Input: " + this.state.itemToEdit.title);
     this.addNewDoc();
   };
 
@@ -83,6 +125,40 @@ export default class AddNewATItem extends Component {
       }
     });
   };
+
+  convertTimeToHRMMSS =  (e) => {
+        
+    // console.log(e.target.value);
+    let num = e.target.value;
+    let hours = num/60;
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours)* 60;
+    let rminutes = Math.round(minutes);
+    if (rhours.toString().length == 1) {
+        rhours = "0" + rhours;
+    }
+    if (rminutes.toString().length == 1) {
+        rminutes = "0" + rminutes;
+    }
+    // console.log(rhours+":" + rminutes +":" + "00");
+    return rhours+":" + rminutes +":" + "00";
+  }
+
+  convertToMinutes = () => {
+      let myStr = this.state.itemToEdit.expected_completion_time.split(':');
+      let hours = myStr[0];
+      let hrToMin = hours* 60;
+      let minutes = (myStr[1] * 1 )+ hrToMin;
+      let seconds = myStr[2];
+      
+      // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+      return minutes;
+  }
+
+  handleNotificationChange = (temp) => {
+    // console.log(temp);
+    this.setState({ itemToEdit: temp });
+  }
 
   render() {
     return (
@@ -167,11 +243,18 @@ export default class AddNewATItem extends Component {
                     <Form.Control
                         type="number"
                         placeholder="30"
-                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                        value = {this.convertToMinutes()}
+                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
+                        onChange={
+                            (e) => { e.stopPropagation(); 
+                            let temp = this.state.itemToEdit; 
+                            temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                             this.setState({ itemToEdit: temp }) }
+                        }
                     />
                 </Col>
                 <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                 </Col>
             </Row>
 
@@ -185,7 +268,6 @@ export default class AddNewATItem extends Component {
                 onChange={e => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.is_timed);
                   temp.is_timed = !temp.is_timed;
                   this.setState({ itemToEdit: temp });
                 }}
@@ -202,50 +284,19 @@ export default class AddNewATItem extends Component {
                 onChange={e => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.is_available);
                   temp.is_available = !temp.is_available;
                   this.setState({ itemToEdit: temp });
                 }}
               />
             </div>
 
-            {this.state.itemToEdit.is_available && <ShowNotifications />}
+            {this.state.itemToEdit.is_available && 
+              <ShowNotifications 
+                itemToEditPassedIn = {this.state.itemToEdit}
+                notificationChange = {this.handleNotificationChange}
+              />
+            }
             
-
-            {/* <div className="input-group mb-3">
-              <label className="form-check-label">Notify TA?</label>
-
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.notifies_ta}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.notifies_ta);
-                  temp.notifies_ta = !temp.notifies_ta;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
-            <div className="input-group mb-3">
-              <label className="form-check-label">Remind User? </label>
-              <input
-                style={{ marginTop: "5px", marginLeft: "5px" }}
-                name="Timed"
-                type="checkbox"
-                checked={this.state.itemToEdit.reminds_user}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  console.log(temp.reminds_user);
-                  temp.reminds_user = !temp.reminds_user;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div> */}
           </div>
         </Modal.Body>
         <Modal.Footer>
