@@ -8,7 +8,7 @@ import {
   Col,
   Modal,
   Dropdown,
-  DropdownButton
+  DropdownButton,
 } from "react-bootstrap";
 import Firebasev2 from "./Firebasev2.jsx";
 import "./App.css";
@@ -20,13 +20,14 @@ import DayEvents from "./DayEvents.jsx";
 import WeekEvents from "./WeekEvents.jsx";
 import WeekRoutines from "./WeekRoutines.jsx";
 import WeekGoals from "./WeekGoals.jsx";
+import AboutModal from "./AboutModal.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
 // import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
-  faImage
+  faImage,
 } from "@fortawesome/free-solid-svg-icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -50,15 +51,12 @@ export default class MainPage extends React.Component {
       newEventLocation: "",
       newEventNotification: 30,
       newEventDescription: "",
-      // newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
-      // newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      // selectedDay: null, // Any use of this variable should be deleted in future revisions
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
@@ -84,7 +82,7 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
+        6: "",
       },
       byDay_temp: {
         0: "",
@@ -93,9 +91,10 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
+        6: "",
       },
-      repeatSummary: ""
+      repeatSummary: "",
+      recurrenceRule: "",
       // repeatOccurrence: newEventStart0
     };
   }
@@ -106,42 +105,42 @@ export default class MainPage extends React.Component {
         ...this.state.byDay_temp,
         [this.state.newEventStart0.getDay()]: week_days[
           this.state.newEventStart0.getDay()
-        ]
+        ],
       };
       this.setState({
         repeatDropDown_temp: eventKey,
-        byDay_temp: newByDay
+        byDay_temp: newByDay,
       });
     }
     this.setState({
-      repeatDropDown_temp: eventKey
+      repeatDropDown_temp: eventKey,
     });
   };
 
-  handleRepeatMonthlyDropDown = eventKey => {
+  handleRepeatMonthlyDropDown = (eventKey) => {
     this.setState({
-      repeatMonthlyDropDown: eventKey
+      repeatMonthlyDropDown: eventKey,
     });
   };
 
-  handleRepeatEndDate = date => {
+  handleRepeatEndDate = (date) => {
     this.setState(
       {
-        repeatEndDate_temp: date
+        repeatEndDate_temp: date,
       },
       console.log("handleRepeatEndDate", date, this.state.repeatEndDate)
     );
   };
 
-  handleRepeatInputValue = eventKey => {
+  handleRepeatInputValue = (eventKey) => {
     this.setState({
-      repeatInputValue_temp: eventKey
+      repeatInputValue_temp: eventKey,
     });
   };
 
-  handleRepeatOccurrence = eventKey => {
+  handleRepeatOccurrence = (eventKey) => {
     this.setState({
-      repeatOccurrence_temp: eventKey
+      repeatOccurrence_temp: eventKey,
     });
   };
 
@@ -159,21 +158,22 @@ export default class MainPage extends React.Component {
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
-        params: {}
+        params: {},
       })
-      .then(response => {
+      .then((response) => {
         var events = response.data;
         this.setState({ originalEvents: events }, () => {
-          console.log("New Events Arrived cdm", response.data);
+          console.log("New Events Arrived cdm", events);
         });
       })
-      .catch(error => {
+      .catch((error) => {
         //console.log('Error Occurred ' + error);
       });
   };
 
-  handleDayEventClick = A => {
+  handleDayEventClick = (A) => {
     var guestList = "";
+    console.log(A, "handleDayEventClick");
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
         return guestList + " " + nextGuest.email;
@@ -221,7 +221,7 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
+        6: "",
       },
       byDay_temp: {
         0: "",
@@ -230,8 +230,8 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
-      }
+        6: "",
+      },
     });
   };
 
@@ -296,6 +296,319 @@ export default class MainPage extends React.Component {
         6: ""
       }
     });
+  repeatSummaryCompute = () => {
+    const { recurrenceRule } = this.state;
+
+    let untilSubString = "";
+    let untilIndex = recurrenceRule.indexOf("UNTIL");
+    if (untilIndex !== -1) {
+      untilSubString = recurrenceRule.substring(untilIndex);
+    }
+    if (untilSubString.includes(";")) {
+      let endUntilIndex = untilSubString.indexOf(";");
+      untilSubString = moment(untilSubString.substring(6, endUntilIndex))
+        .add(-1, "days")
+        .format("LL");
+    } else if (untilSubString) {
+      untilSubString = moment(untilSubString.substring(5))
+        .add(-1, "days")
+        .format("LL");
+    }
+    console.log(untilSubString);
+
+    let countSubString = "";
+    let countIndex = recurrenceRule.indexOf("COUNT");
+    if (countIndex !== -1) {
+      countSubString = recurrenceRule.substring(countIndex);
+    }
+    if (countSubString.includes(";")) {
+      let endCountIndex = countSubString.indexOf(";");
+      countSubString = countSubString.substring(6, endCountIndex);
+    } else if (countSubString) {
+      countSubString = countSubString.substring(5);
+    }
+
+    console.log(countSubString, "countSubString");
+
+    let intervalSubString = "";
+    let intervalIndex = recurrenceRule.indexOf("INTERVAL");
+    if (intervalIndex !== -1) {
+      intervalSubString = recurrenceRule.substring(intervalIndex);
+    }
+    if (intervalSubString.includes(";")) {
+      let endIntervalIndex = intervalSubString.indexOf(";");
+      intervalSubString = intervalSubString.substring(9, endIntervalIndex);
+    } else if (intervalSubString) {
+      intervalSubString = intervalSubString.substring(9);
+    }
+
+    let byDaySubString = "";
+    let byDayArray = [];
+    let byDayIndex = recurrenceRule.indexOf("BYDAY");
+    if (byDayIndex !== -1) {
+      byDaySubString = recurrenceRule.substring(byDayIndex);
+    }
+    console.log(byDaySubString);
+
+    if (byDaySubString.includes(";")) {
+      let endByDayIndex = byDaySubString.indexOf(";");
+      byDaySubString = byDaySubString.substring(6, endByDayIndex);
+    } else if (byDaySubString) {
+      byDaySubString = byDaySubString.substring(6);
+    }
+
+    byDayArray = byDaySubString.split(",");
+    console.log(byDayArray);
+
+    // If freq is daily in rrule
+    if (recurrenceRule.includes("FREQ=DAILY")) {
+      if (intervalSubString === "1") {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: "Daily",
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Daily, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Daily, ${countSubString} times`,
+            });
+          }
+        }
+      } else {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} days`,
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} days, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} days, ${countSubString} times`,
+            });
+          }
+        }
+      }
+    }
+
+    // If freq is weekly in rrule
+    else if (recurrenceRule.includes("FREQ=WEEKLY")) {
+      if (intervalSubString === "1") {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          if (byDayArray.length === 7) {
+            this.setState({
+              repeatOptionDropDown: "Weekly on all days",
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Weekly on ${byDayArray.join(", ")}`,
+            });
+          }
+        } else if (recurrenceRule.includes("UNTIL")) {
+          if (byDayArray.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Weekly on all days, until ${untilSubString}`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Weekly on ${byDayArray.join(
+                ", "
+              )}, until ${untilSubString}`,
+            });
+          }
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            if (byDayArray.length === 7) {
+              this.setState({
+                repeatOptionDropDown: `Weekly on all days, ${countSubString} times`,
+              });
+            } else {
+              this.setState({
+                repeatOptionDropDown: `Weekly on ${byDayArray.join(
+                  ", "
+                )}, ${countSubString} times`,
+              });
+            }
+          }
+        }
+      } else {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          if (byDayArray.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} weeks on all days`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} weeks on ${byDayArray.join(
+                ", "
+              )}`,
+            });
+          }
+        } else if (recurrenceRule.includes("UNTIL")) {
+          if (byDayArray.length === 7) {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} weeks on all days, until ${untilSubString}`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} weeks on ${byDayArray.join(
+                ", "
+              )}, until ${untilSubString}`,
+            });
+          }
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: "Once",
+            });
+          } else {
+            if (byDayArray.length === 7) {
+              this.setState({
+                repeatOptionDropDown: `Every ${intervalSubString} weeks on all days, ${countSubString} times`,
+              });
+            } else {
+              this.setState({
+                repeatOptionDropDown: `Every ${intervalSubString} weeks on ${byDayArray.join(
+                  ", "
+                )}, ${countSubString} times`,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // If freq is monthly in rrule
+    else if (recurrenceRule.includes("FREQ=MONTHLY")) {
+      if (intervalSubString === "1") {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: "Monthly",
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Monthly, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Monthly, ${countSubString} times`,
+            });
+          }
+        }
+      } else {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} months`,
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} months, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} months, ${countSubString} times`,
+            });
+          }
+        }
+      }
+    }
+
+    // If freq is yearly in rrule
+    else if (recurrenceRule.includes("FREQ=YEARLY")) {
+      if (intervalSubString === "1") {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: "Annually",
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Annually, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Annually, ${countSubString} times`,
+            });
+          }
+        }
+      } else {
+        if (
+          !recurrenceRule.includes("COUNT") &&
+          !recurrenceRule.includes("UNTIL")
+        ) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} years`,
+          });
+        } else if (recurrenceRule.includes("UNTIL")) {
+          this.setState({
+            repeatOptionDropDown: `Every ${intervalSubString} years, until ${untilSubString}`,
+          });
+        } else if (recurrenceRule.includes("COUNT")) {
+          if (countSubString === "1") {
+            this.setState({
+              repeatOptionDropDown: `Once`,
+            });
+          } else {
+            this.setState({
+              repeatOptionDropDown: `Every ${intervalSubString} years, ${countSubString} times`,
+            });
+          }
+        }
+      }
+    }
   };
 
   /*
@@ -306,10 +619,29 @@ export default class MainPage extends React.Component {
 
   TODO: set dateContext to the date clicked
   */
-  handleEventClick = i => {
+  handleEventClick = (i) => {
     // bind with an arrow function
     let A = this.state.originalEvents[i];
-    console.log("A", A);
+    console.log("A", A.recurringEventId);
+    if (A.recurringEventId) {
+      axios
+        .get("/getRecurringRules", {
+          params: {
+            recurringEventId: A.recurringEventId,
+          },
+        })
+        .then((res) => {
+          console.log(res.data, "getRecurringRules");
+          this.setState(
+            {
+              recurrenceRule: res.data[0],
+            },
+            () => {
+              this.repeatSummaryCompute();
+            }
+          );
+        });
+    }
     //Guest list erroneously includes owner's email as well
     var guestList = "";
     if (A.attendees) {
@@ -360,7 +692,7 @@ export default class MainPage extends React.Component {
           3: "",
           4: "",
           5: "",
-          6: ""
+          6: "",
         },
         byDay_temp: {
           0: "",
@@ -369,8 +701,8 @@ export default class MainPage extends React.Component {
           3: "",
           4: "",
           5: "",
-          6: ""
-        }
+          6: "",
+        },
       },
       () => {
         console.log("callback from handEventClick");
@@ -418,7 +750,7 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
+        6: "",
       },
       byDay_temp: {
         0: "",
@@ -427,8 +759,8 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
-      }
+        6: "",
+      },
     });
   };
 
@@ -438,7 +770,7 @@ export default class MainPage extends React.Component {
   the user with a new form to create a event
   */
   //TODO: Initialize Date, set other properties to empty
-  handleDateClick = arg => {
+  handleDateClick = (arg) => {
     var newStart = new Date(arg);
     newStart.setHours(0, 0, 0, 0);
     var newEnd = new Date(arg);
@@ -478,7 +810,7 @@ export default class MainPage extends React.Component {
           3: "",
           4: "",
           5: "",
-          6: ""
+          6: "",
         },
         byDay_temp: {
           0: "",
@@ -487,8 +819,8 @@ export default class MainPage extends React.Component {
           3: "",
           4: "",
           5: "",
-          6: ""
-        }
+          6: "",
+        },
       },
       console.log("handledateclick")
     );
@@ -526,13 +858,13 @@ export default class MainPage extends React.Component {
 
   // handleSubmit:
 
-  handleExpandClick = arg => {
+  handleExpandClick = (arg) => {
     let newDate = new Date(arg);
     console.log(newDate);
     this.setState(
       {
         dateContext: moment(newDate),
-        calendarView: "Day"
+        calendarView: "Day",
       },
       this.updateEventsArray
     );
@@ -542,7 +874,7 @@ export default class MainPage extends React.Component {
 
   // submits the data to be passed up to be integrated into google calendar
 
-  handleSubmit = event => {
+  handleSubmit = (event) => {
     if (this.state.start === "" || this.state.end === "") {
       console.log("invalid params");
       return;
@@ -555,7 +887,7 @@ export default class MainPage extends React.Component {
     }
   };
 
-  updateEventClick = event => {
+  updateEventClick = (event) => {
     event.preventDefault();
     const isValid = this.validate();
     if (isValid) {
@@ -575,17 +907,17 @@ export default class MainPage extends React.Component {
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = index => {
+  updateRequest = (index) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
       /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g
     );
     if (emailList) {
-      formattedEmail = emailList.map(guests => {
+      formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
-          responseStatus: "needsAction"
+          responseStatus: "needsAction",
         };
       });
     }
@@ -610,32 +942,30 @@ export default class MainPage extends React.Component {
       overrides: [
         {
           method: "popup",
-          minutes: minutesNotification
-        }
+          minutes: minutesNotification,
+        },
       ],
       useDefault: false,
-      sequence: 0
+      sequence: 0,
     };
 
     axios
       .put("/updateEvent", {
         extra: updatedEvent,
-        ID: this.state.newEventID
+        ID: this.state.newEventID,
       })
-      .then(response => {
+      .then((response) => {
         this.setState({
           dayEventSelected: false,
           newEventName: "",
-          // newEventStart: '',
-          // newEventEnd: '',
           newEventStart0: new Date(),
-          newEventEnd0: new Date()
+          newEventEnd0: new Date(),
         });
 
         this.updateEventsArray();
       })
 
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -695,19 +1025,16 @@ export default class MainPage extends React.Component {
     }
     axios
       .post("/deleteEvent", {
-        ID: this.state.newEventID
+        ID: this.state.newEventID,
       })
       .then(response => {
-        // console.log(response);
         this.setState({
           dayEventSelected: false
-          // newEventStart: "",
-          // newEventEnd: ""
         });
         this.updateEventsArray();
       })
 
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -734,17 +1061,17 @@ export default class MainPage extends React.Component {
    * email: localPart@domainPart
    */
   //Note: This works, but does not email the guests that they are invited to the event
-  createEvent = newTitle => {
+  createEvent = (newTitle) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
       /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*(\.)?/g
     );
     if (emailList) {
-      formattedEmail = emailList.map(guests => {
+      formattedEmail = emailList.map((guests) => {
         return {
           email: guests,
-          responseStatus: "needsAction"
+          responseStatus: "needsAction",
         };
       });
     }
@@ -764,20 +1091,20 @@ export default class MainPage extends React.Component {
         overrides: [
           {
             method: "popup",
-            minutes: minutesNotification
-          }
-        ]
+            minutes: minutesNotification,
+          },
+        ],
       },
       start: {
         dateTime: this.state.newEventStart0.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       end: {
         dateTime: this.state.newEventEnd0.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       },
       recurrence: this.state.repeatOption && this.defineRecurrence(),
-      attendees: formattedEmail
+      attendees: formattedEmail,
     };
     axios
       .post("/createNewEvent", {
@@ -785,16 +1112,16 @@ export default class MainPage extends React.Component {
         reminderTime: minutesNotification,
         title: newTitle,
         start: this.state.newEventStart0.toISOString(),
-        end: this.state.newEventEnd0.toISOString()
+        end: this.state.newEventEnd0.toISOString(),
       })
-      .then(response => {
+      .then((response) => {
         console.log("createnewevent", response);
         this.setState({
-          dayEventSelected: false
+          dayEventSelected: false,
         });
         this.updateEventsArray();
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // console.log(error);
       });
   };
@@ -816,7 +1143,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        originalEvents: []
+        originalEvents: [],
       },
       this.updateEventsArray
     );
@@ -828,7 +1155,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        originalEvents: []
+        originalEvents: [],
       },
       this.updateEventsArray
     );
@@ -840,7 +1167,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        dayEvents: []
+        dayEvents: [],
       },
       this.updateEventsArray
     );
@@ -852,7 +1179,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        dayEvents: []
+        dayEvents: [],
       },
       this.updateEventsArray
     );
@@ -919,7 +1246,7 @@ export default class MainPage extends React.Component {
   this will open repeat modal.
   */
   openRepeatModal = () => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return { showRepeatModal: !prevState.showRepeatModal };
     });
   };
@@ -929,18 +1256,18 @@ export default class MainPage extends React.Component {
   this will close repeat modal.
   */
   closeRepeatModal = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showRepeatModal: false,
       repeatInputValue_temp: prevState.repeatInputValue,
       repeatOccurrence_temp: prevState.repeatOccurrence,
       repeatDropDown_temp: prevState.repeatDropDown,
       repeatRadio_temp: prevState.repeatRadio,
       repeatEndDate_temp: prevState.repeatEndDate,
-      byDay_temp: prevState.byDay
+      byDay_temp: prevState.byDay,
     }));
     if (!this.state.repeatOption) {
       this.setState({
-        repeatOptionDropDown: "Does not repeat"
+        repeatOptionDropDown: "Does not repeat",
       });
     }
   };
@@ -957,9 +1284,10 @@ export default class MainPage extends React.Component {
       repeatOccurrence_temp,
       repeatRadio_temp,
       repeatEndDate_temp,
-      byDay_temp
+      byDay_temp,
     } = this.state;
-    this.setState(prevState => ({
+
+    this.setState((prevState) => ({
       showRepeatModal: false,
       repeatOption: true,
       repeatInputValue: prevState.repeatInputValue_temp,
@@ -967,7 +1295,7 @@ export default class MainPage extends React.Component {
       repeatDropDown: prevState.repeatDropDown_temp,
       repeatRadio: prevState.repeatRadio_temp,
       repeatEndDate: prevState.repeatEndDate_temp,
-      byDay: prevState.byDay_temp
+      byDay: prevState.byDay_temp,
     }));
 
     // If repeatDropDown_temp is DAY
@@ -975,44 +1303,44 @@ export default class MainPage extends React.Component {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: "Daily"
+            repeatOptionDropDown: "Daily",
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
             repeatOptionDropDown: `Daily, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Daily, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Daily, ${repeatOccurrence_temp} times`,
             });
           }
         }
       } else {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: `Every ${repeatInputValue_temp} days`
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} days`,
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
             repeatOptionDropDown: `Every ${repeatInputValue_temp} days, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Every ${repeatInputValue_temp} days, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} days, ${repeatOccurrence_temp} times`,
             });
           }
         }
@@ -1030,11 +1358,11 @@ export default class MainPage extends React.Component {
         if (repeatRadio_temp === "Never") {
           if (selectedDays.length === 7) {
             this.setState({
-              repeatOptionDropDown: "Weekly on all days"
+              repeatOptionDropDown: "Weekly on all days",
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Weekly on ${selectedDays.join(", ")}`
+              repeatOptionDropDown: `Weekly on ${selectedDays.join(", ")}`,
             });
           }
         } else if (repeatRadio_temp === "On") {
@@ -1042,30 +1370,30 @@ export default class MainPage extends React.Component {
             this.setState({
               repeatOptionDropDown: `Weekly on all days, until ${moment(
                 repeatEndDate_temp
-              ).format("LL")}`
+              ).format("LL")}`,
             });
           } else {
             this.setState({
               repeatOptionDropDown: `Weekly on ${selectedDays.join(
                 ", "
-              )}, until ${moment(repeatEndDate_temp).format("LL")}`
+              )}, until ${moment(repeatEndDate_temp).format("LL")}`,
             });
           }
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             if (selectedDays.length === 7) {
               this.setState({
-                repeatOptionDropDown: `Weekly on all days, , ${repeatOccurrence_temp} times`
+                repeatOptionDropDown: `Weekly on all days, , ${repeatOccurrence_temp} times`,
               });
             } else {
               this.setState({
                 repeatOptionDropDown: `Weekly on ${selectedDays.join(
                   ", "
-                )}, ${repeatOccurrence_temp} times`
+                )}, ${repeatOccurrence_temp} times`,
               });
             }
           }
@@ -1074,13 +1402,13 @@ export default class MainPage extends React.Component {
         if (repeatRadio_temp === "Never") {
           if (selectedDays.length === 7) {
             this.setState({
-              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days`
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days`,
             });
           } else {
             this.setState({
               repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
                 ", "
-              )}`
+              )}`,
             });
           }
         } else if (repeatRadio_temp === "On") {
@@ -1088,30 +1416,30 @@ export default class MainPage extends React.Component {
             this.setState({
               repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, until ${moment(
                 repeatEndDate_temp
-              ).format("LL")}`
+              ).format("LL")}`,
             });
           } else {
             this.setState({
               repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
                 ", "
-              )}, until ${moment(repeatEndDate_temp).format("LL")}`
+              )}, until ${moment(repeatEndDate_temp).format("LL")}`,
             });
           }
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: "Once"
+              repeatOptionDropDown: "Once",
             });
           } else {
             if (selectedDays.length === 7) {
               this.setState({
-                repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, ${repeatOccurrence_temp} times`
+                repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on all days, ${repeatOccurrence_temp} times`,
               });
             } else {
               this.setState({
                 repeatOptionDropDown: `Every ${repeatInputValue_temp} weeks on ${selectedDays.join(
                   ", "
-                )}, ${repeatOccurrence_temp} times`
+                )}, ${repeatOccurrence_temp} times`,
               });
             }
           }
@@ -1124,44 +1452,44 @@ export default class MainPage extends React.Component {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: "Monthly"
+            repeatOptionDropDown: "Monthly",
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
             repeatOptionDropDown: `Monthly, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Monthly, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Monthly, ${repeatOccurrence_temp} times`,
             });
           }
         }
       } else {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: `Every ${repeatInputValue_temp} months`
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} months`,
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
             repeatOptionDropDown: `Every ${repeatInputValue_temp} months, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Every ${repeatInputValue_temp} months, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} months, ${repeatOccurrence_temp} times`,
             });
           }
         }
@@ -1173,44 +1501,44 @@ export default class MainPage extends React.Component {
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: "Yearly"
+            repeatOptionDropDown: "Annually",
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
-            repeatOptionDropDown: `Yearly, until ${moment(
+            repeatOptionDropDown: `Annually, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Yearly, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Annually, ${repeatOccurrence_temp} times`,
             });
           }
         }
       } else {
         if (repeatRadio_temp === "Never") {
           this.setState({
-            repeatOptionDropDown: `Every ${repeatInputValue_temp} years`
+            repeatOptionDropDown: `Every ${repeatInputValue_temp} years`,
           });
         } else if (repeatRadio_temp === "On") {
           this.setState({
             repeatOptionDropDown: `Every ${repeatInputValue_temp} years, until ${moment(
               repeatEndDate_temp
-            ).format("LL")}`
+            ).format("LL")}`,
           });
         } else {
           if (repeatOccurrence_temp === "1") {
             this.setState({
-              repeatOptionDropDown: `Once`
+              repeatOptionDropDown: `Once`,
             });
           } else {
             this.setState({
-              repeatOptionDropDown: `Every ${repeatInputValue_temp} years, ${repeatOccurrence_temp} times`
+              repeatOptionDropDown: `Every ${repeatInputValue_temp} years, ${repeatOccurrence_temp} times`,
             });
           }
         }
@@ -1218,11 +1546,19 @@ export default class MainPage extends React.Component {
     }
   };
 
+
+  hideAboutForm = e => {
+    this.setState({
+      showAboutModal: false
+    });
+  };
+
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
-      return this.aboutFormAbstracted();
+      // return this.aboutFormAbstracted();
+      return <AboutModal CameBackFalse={this.hideAboutForm}/>
     }
   };
 
@@ -1249,7 +1585,7 @@ export default class MainPage extends React.Component {
         style={{
           marginLeft: "0px",
           height: "100%",
-          width: "2000px"
+          width: "2000px",
           // width: "100%",
           // display: "flex",
           // flexDirection: "column",
@@ -1259,10 +1595,37 @@ export default class MainPage extends React.Component {
         }}
       >
         <div
+          style = {{
+            margin:'0',
+            padding:"0",
+            width:"100%"
+          }}
+        >
+          <Row style={{ margin: "0"}} className="d-flex flex-row">
+            <div style={{float: "right", width: "80px", height: "70px"}}>
+              <FontAwesomeIcon icon={faImage} size="5x"/> 
+            </div>
+            <div style={{float: "left", width: "227px", height: "50px"}}>
+              <p style = {{ marginTop:"25px"}}>First Last</p>
+            </div>
+            {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
+              <FontAwesomeIcon icon={faImage} size="5x"/> 
+            </Col>
+            <Col xs={9} style = {{paddingLeft: "0px"}}>
+              <p style = {{marginBottom:"0px", marginTop:"15px"}}>First Last</p>
+            </Col> */}
+              {/* <col style = {{marginLeft:"20px", marginRight:"20px"}}>
+                <FontAwesomeIcon icon={faImage} size="5x"/> 
+                <p style = {{marginBottom:"0px"}}>First Last</p>
+              </span> */}
+          </Row>
+        </div>
+
+        <div
           style={{
             margin: "0",
             padding: "0",
-            width: "100%"
+            width: "100%",
           }}
         >
           {this.abstractedMainEventGRShowButtons()}
@@ -1271,7 +1634,7 @@ export default class MainPage extends React.Component {
           fluid
           style={{
             marginTop: "15px",
-            marginLeft: "0"
+            marginLeft: "0",
             // display: "flex",
             // flexDirection: "column",
             // justifyContent: "center",
@@ -1279,10 +1642,9 @@ export default class MainPage extends React.Component {
             // width: "100%"
           }}
         >
-          {/* Within this container essentially contains all the UI of the App */}
           <Row
             style={{
-              marginTop: "0"
+              marginTop: "0",
               // width: "100%",
               // display: "flex",
               // flexDirection: "column",
@@ -1319,7 +1681,8 @@ export default class MainPage extends React.Component {
                 Dedicated to Caitlin Little
               </div>
             </Col>
-            <Col style={{ marginLeft: "25px" }}>
+            {/* <Col style={{ marginLeft: "25px" }}> */}
+            <Col >
               {this.showDayViewOrAboutView()}
             </Col>
           </Row>
@@ -1339,7 +1702,7 @@ export default class MainPage extends React.Component {
           padding: "20px",
           // border:"1px black solid",
           boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Container>
@@ -1351,7 +1714,7 @@ export default class MainPage extends React.Component {
                   icon={faChevronLeft}
                   size="2x"
                   className="X"
-                  onClick={e => {
+                  onClick={(e) => {
                     this.prevDay();
                   }}
                 />
@@ -1369,7 +1732,7 @@ export default class MainPage extends React.Component {
                 icon={faChevronRight}
                 size="2x"
                 className="X"
-                onClick={e => {
+                onClick={(e) => {
                   this.nextDay();
                 }}
               />
@@ -1463,7 +1826,7 @@ export default class MainPage extends React.Component {
     this.setState({
       showRoutineModal: !this.state.showRoutineModal,
       showGoalModal: false,
-      showRoutineGoalModal: false
+      showRoutineGoalModal: false,
     });
   };
 
@@ -1471,7 +1834,7 @@ export default class MainPage extends React.Component {
     this.setState({
       showGoalModal: !this.state.showGoalModal,
       showRoutineModal: false,
-      showRoutineGoalModal: false
+      showRoutineGoalModal: false,
     });
   };
 
@@ -1491,8 +1854,6 @@ export default class MainPage extends React.Component {
 
     this.setState({
       newEventID: "",
-      // newEventStart: newStart.toString(),
-      // newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: "",
@@ -1500,14 +1861,14 @@ export default class MainPage extends React.Component {
       newEventLocation: "",
       newEventDescription: "",
       dayEventSelected: true,
-      isEvent: false
+      isEvent: false,
     });
   };
 
-  changeCalendarView = view => {
+  changeCalendarView = (view) => {
     this.setState(
       {
-        calendarView: view
+        calendarView: view,
       },
       this.updateEventsArray
     );
@@ -1518,12 +1879,16 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
-      <div
+      // <Row>
+      
+        
+      
+      <Row
         style={{
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          paddingRight: "165px"
+          paddingRight: "165px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1534,7 +1899,7 @@ export default class MainPage extends React.Component {
             display: "inline-block",
             margin: "10px",
             marginBottom: "0",
-            marginTop: "10px"
+            marginTop: "10px",
           }}
         >
         <DropdownButton
@@ -1586,7 +1951,7 @@ export default class MainPage extends React.Component {
           onClick={() => {
             this.setState(
               {
-                showAboutModal: false
+                showAboutModal: false,
                 // dayEventSelected: !this.state.dayEventSelected
               },
               () => {
@@ -1622,25 +1987,31 @@ export default class MainPage extends React.Component {
             this.setState({
               showRoutineGoalModal: !this.state.showRoutineGoalModal,
               showGoalModal: false,
-              showRoutineModal: false
+              showRoutineModal: false,
             });
           }}
         >
           Current Status
         </Button>
         <Button
-          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginRight:"200px"}}
           variant="outline-primary"
           onClick={() => {
             this.setState({
               showAboutModal: !this.state.showAboutModal,
-              dayEventSelected: false
+              dayEventSelected: false,
             });
           }}
         >
           About
         </Button>
-      </div>
+       
+      </Row>
+        // <Button >
+        //   <FontAwesomeIcon icon={faImage} size="5x"/> 
+        //   <p>First Last</p>
+        // </Button>
+      // </Row>
     );
   };
 
@@ -1655,7 +2026,7 @@ export default class MainPage extends React.Component {
           padding: "45px",
           paddingBottom: "10px",
           boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <div>
@@ -1667,7 +2038,7 @@ export default class MainPage extends React.Component {
                   icon={faChevronLeft}
                   size="2x"
                   className="X"
-                  onClick={e => {
+                  onClick={(e) => {
                     this.prevMonth();
                   }}
                 />
@@ -1684,7 +2055,7 @@ export default class MainPage extends React.Component {
                 icon={faChevronRight}
                 size="2x"
                 className="X"
-                onClick={e => {
+                onClick={(e) => {
                   this.nextMonth();
                 }}
               />
@@ -1705,138 +2076,6 @@ export default class MainPage extends React.Component {
     );
   };
 
-  /***     About Modal ***** */
-  aboutFormAbstracted = () => {
-    return (
-      <Modal.Dialog
-        style={{
-          borderRadius: "15px",
-          boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "70px",
-          width: "350px",
-          marginTop: "0"
-        }}
-      >
-        <Modal.Header
-          closeButton
-          onHide={() => {
-            this.setState({
-              showAboutModal: false
-            });
-          }}
-        >
-          <Modal.Title>
-            <h5 className="normalfancytext">About Me</h5>{" "}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Col>
-              <FontAwesomeIcon
-                // style={{ marginLeft: "50%" }}
-                icon={faImage}
-                size="4x"
-                // className="X"
-              />
-            </Col>
-            <Col xs={9}>
-              <label for="ProfileImage">Upload A New Image</label>
-              <input
-                type="file"
-                onChange={this.handleFileSelected}
-                id="ProfileImage"
-              />
-            </Col>
-          </Row>
-
-          <Form.Group controlId="AboutMessage" style={{ marginTop: "10px" }}>
-            <Form.Label>Message (My Day):</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows="4"
-              // value={this.state.newEventDescription}
-              // onChange={this.handleDescriptionChange}
-              type="text"
-              placeholder="You are a strong ..."
-              // style={{textAlign:"center"}}
-            />
-          </Form.Group>
-          <Form.Group controlId="AboutMessageCard">
-            <Form.Label>Message (My Card):</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows="4"
-              // value={this.state.newEventDescription}
-              // onChange={this.handleDescriptionChange}
-              type="text"
-              placeholder="You are a safe ..."
-              // style={{textAlign:"center"}}
-            />
-          </Form.Group>
-          <Form.Group controlId="ImportantPeople">
-            <Form.Label>Important People</Form.Label>
-            <Row>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "20px" }}>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "20px" }}>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-          </Form.Group>
-
-          {/* <button onClick={this.imageUploadHandler}> Upload</button> */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Container fluid>
-            <Row>
-              <Col xs={4}>
-                <Button variant="info" type="submit">
-                  Save
-                </Button>
-              </Col>
-              <Col xs={4}>
-                <Button variant="secondary" onClick={this.hideAboutForm}>
-                  Cancel
-                </Button>
-              </Col>
-            </Row>
-          </Container>
-        </Modal.Footer>
-      </Modal.Dialog>
-    );
-  };
-
-  imageUploadHandler = () => {};
-  handleFileSelected = event => {
-    console.log(event.target.files[0]);
-  };
-
-  hideAboutForm = e => {
-    this.setState({
-      showAboutModal: false
-    });
-  };
   /**
    * This is where the event form is made
    *
@@ -1848,9 +2087,9 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "70px",
+          marginLeft: "35px",
           width: "350px",
-          marginTop: "0"
+          marginTop: "0",
         }}
       >
         <Modal.Header
@@ -1858,7 +2097,7 @@ export default class MainPage extends React.Component {
           onHide={() => {
             this.setState({
               dayEventSelected: false,
-              repeatOptionDropDown: "Does not repeat"
+              repeatOptionDropDown: "Does not repeat",
             });
           }}
         >
@@ -1867,12 +2106,13 @@ export default class MainPage extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {this.state.showRepeatModal && this.repeatModal()
-          // <RepeatModal
-          //   closeRepeatModal={this.closeRepeatModal}
-          //   todayObject={this.state.todayDateObject}
-          //   newEventStart0={this.state.newEventStart0}
-          // />
+          {
+            this.state.showRepeatModal && this.repeatModal()
+            // <RepeatModal
+            //   closeRepeatModal={this.closeRepeatModal}
+            //   todayObject={this.state.todayDateObject}
+            //   newEventStart0={this.state.newEventStart0}
+            // />
           }
           {this.eventFormInputArea()}
         </Modal.Body>
@@ -1953,7 +2193,7 @@ export default class MainPage extends React.Component {
       "Wednesday",
       "Thursday",
       "Friday",
-      "Saturday"
+      "Saturday",
     ];
 
     const d = new Date();
@@ -1965,7 +2205,7 @@ export default class MainPage extends React.Component {
       left: "50%",
       top: "50%",
       transform: "translate(-50%, -50%)",
-      width: "400px"
+      width: "400px",
     };
 
     const inputStyle = {
@@ -1975,18 +2215,18 @@ export default class MainPage extends React.Component {
       border: "none",
       width: "70px",
       borderRadius: "4px",
-      marginRight: "8px"
+      marginRight: "8px",
     };
 
     const selectStyle = {
-      display: "inline-block"
+      display: "inline-block",
     };
 
     const weekStyle = {
       display: "flex",
       alignItems: "center",
       textAlign: "center",
-      marginTop: "10px"
+      marginTop: "10px",
     };
 
     // const radioInputStyle = { display: "flex", alignItems: "center" };
@@ -1998,16 +2238,16 @@ export default class MainPage extends React.Component {
         curClass.remove("selected");
         const newByDay = { ...this.state.byDay_temp, [index]: "" };
         this.setState({
-          byDay_temp: newByDay
+          byDay_temp: newByDay,
         });
       } else {
         curClass.add("selected");
         const newByDay = {
           ...this.state.byDay_temp,
-          [index]: week_days[index]
+          [index]: week_days[index],
         };
         this.setState({
-          byDay_temp: newByDay
+          byDay_temp: newByDay,
         });
       }
     };
@@ -2027,14 +2267,18 @@ export default class MainPage extends React.Component {
                 <span
                   key={i}
                   className="dot selected"
-                  onClick={e => selectedDot(e, i)}
+                  onClick={(e) => selectedDot(e, i)}
                 >
                   {day.charAt(0)}
                 </span>
               );
             } else {
               return (
-                <span key={i} className="dot" onClick={e => selectedDot(e, i)}>
+                <span
+                  key={i}
+                  className="dot"
+                  onClick={(e) => selectedDot(e, i)}
+                >
                   {day.charAt(0)}
                 </span>
               );
@@ -2080,7 +2324,7 @@ export default class MainPage extends React.Component {
               style={{
                 display: "flex",
                 alignItems: "center",
-                marginLeft: "5px"
+                marginLeft: "5px",
               }}
             >
               Repeat every
@@ -2090,7 +2334,7 @@ export default class MainPage extends React.Component {
                 max="10000"
                 value={this.state.repeatInputValue_temp}
                 style={inputStyle}
-                onChange={e => this.handleRepeatInputValue(e.target.value)}
+                onChange={(e) => this.handleRepeatInputValue(e.target.value)}
               />
               <DropdownButton
                 title={this.state.repeatDropDown_temp}
@@ -2099,13 +2343,13 @@ export default class MainPage extends React.Component {
               >
                 <Dropdown.Item
                   eventKey="DAY"
-                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                  onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   day
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="WEEK"
-                  onSelect={eventKey =>
+                  onSelect={(eventKey) =>
                     this.handleRepeatDropDown(eventKey, week_days)
                   }
                 >
@@ -2113,13 +2357,13 @@ export default class MainPage extends React.Component {
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="MONTH"
-                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                  onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   month
                 </Dropdown.Item>
                 <Dropdown.Item
                   eventKey="YEAR"
-                  onSelect={eventKey => this.handleRepeatDropDown(eventKey)}
+                  onSelect={(eventKey) => this.handleRepeatDropDown(eventKey)}
                 >
                   year
                 </Dropdown.Item>
@@ -2136,13 +2380,13 @@ export default class MainPage extends React.Component {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 marginTop: "20px",
-                marginLeft: "5px"
+                marginLeft: "5px",
               }}
               className="repeat-form"
-              onChange={e => {
+              onChange={(e) => {
                 if (e.target.type === "radio") {
                   this.setState({
-                    repeatRadio_temp: e.target.value
+                    repeatRadio_temp: e.target.value,
                   });
                 }
               }}
@@ -2176,7 +2420,7 @@ export default class MainPage extends React.Component {
                   <DatePicker
                     className="date-picker-btn btn btn-light"
                     selected={this.state.repeatEndDate_temp}
-                    onChange={date => this.handleRepeatEndDate(date)}
+                    onChange={(date) => this.handleRepeatEndDate(date)}
                   ></DatePicker>
                 </Form.Check.Label>
               </Form.Check>
@@ -2198,7 +2442,7 @@ export default class MainPage extends React.Component {
                       min="1"
                       max="10000"
                       value={this.state.repeatOccurrence_temp}
-                      onChange={e =>
+                      onChange={(e) =>
                         this.handleRepeatOccurrence(e.target.value)
                       }
                       style={inputStyle}
@@ -2263,10 +2507,10 @@ export default class MainPage extends React.Component {
                 >
                   <Dropdown.Item
                     eventKey="Does not repeat"
-                    onSelect={eventKey =>
+                    onSelect={(eventKey) =>
                       this.setState({
                         repeatOptionDropDown: eventKey,
-                        repeatOption: false
+                        repeatOption: false,
                       })
                     }
                   >
@@ -2274,7 +2518,7 @@ export default class MainPage extends React.Component {
                   </Dropdown.Item>
                   <Dropdown.Item
                     eventKey="Custom..."
-                    onSelect={eventKey => {
+                    onSelect={(eventKey) => {
                       this.openRepeatModal();
                       // this.setState({ repeatOptionDropDown: eventKey });
                     }}
@@ -2301,7 +2545,7 @@ export default class MainPage extends React.Component {
                   placeholder="Location"
                 />
               </Form.Group>
-              <Form.Group controlId="Notification">
+              <Form.Group >
                 <Form.Label>Notifications:</Form.Label>
                 <Row>
                   <Col style={{ paddingRight: "0px" }}>
@@ -2562,7 +2806,7 @@ export default class MainPage extends React.Component {
     );
   };
 
-  notifyBefore = e => {
+  notifyBefore = (e) => {
     console.log("this is result of checked:");
     console.log(e.target.checked);
     let beforeChecked = e.target.checked;
@@ -2576,10 +2820,10 @@ export default class MainPage extends React.Component {
         className="form-control"
         type="text"
         selected={this.state.newEventStart0}
-        onChange={date => {
+        onChange={(date) => {
           this.setState(
             {
-              newEventStart0: date
+              newEventStart0: date,
             },
             () => {
               console.log("starttimepicker", this.state.newEventStart0);
@@ -2602,10 +2846,10 @@ export default class MainPage extends React.Component {
         type="text"
         style={{ width: "100%" }}
         selected={this.state.newEventEnd0}
-        onChange={date => {
+        onChange={(date) => {
           this.setState(
             {
-              newEventEnd0: date
+              newEventEnd0: date,
             },
             () => {
               console.log(this.state.newEventEnd0);
@@ -2644,11 +2888,11 @@ export default class MainPage extends React.Component {
   hideEventForm:
   Hides the create/edit events form when a date or event is clicked
   */
-  hideEventForm = e => {
+  hideEventForm = (e) => {
     //console.log("Tyler says: Hello");
     this.setState({
       dayEventSelected: false,
-      repeatOptionDropDown: "Does not repeat"
+      repeatOptionDropDown: "Does not repeat",
     });
   };
 
@@ -2657,23 +2901,23 @@ All functions below will change a variables
 when there is a change in the event form
 */
 
-  handleNameChange = event => {
+  handleNameChange = (event) => {
     this.setState({ newEventName: event.target.value });
   };
 
-  handleGuestChange = event => {
+  handleGuestChange = (event) => {
     this.setState({ newEventGuests: event.target.value });
   };
 
-  handleLocationChange = event => {
+  handleLocationChange = (event) => {
     this.setState({ newEventLocation: event.target.value });
   };
 
-  handleNotificationChange = event => {
+  handleNotificationChange = (event) => {
     this.setState({ newEventNotification: event.target.value });
   };
 
-  handleDescriptionChange = event => {
+  handleDescriptionChange = (event) => {
     this.setState({ newEventDescription: event.target.value });
   };
 
@@ -2693,10 +2937,10 @@ when there is a change in the event form
         //get normal google calendar data for possible future use
         params: {
           start: start0,
-          end: end0
-        }
+          end: end0,
+        },
       })
-      .then(response => {
+      .then((response) => {
         var events = response.data;
         this.setState(
           {
@@ -2704,14 +2948,14 @@ when there is a change in the event form
             newEventName: "",
             // newEventStart: "",
             // newEventEnd: "",
-            originalEvents: events
+            originalEvents: events,
           },
           () => {
-            console.log("New Events Arrived");
+            console.log("New Events Arrived", events);
           }
         );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Error Occurred " + error);
       });
   };
@@ -2720,27 +2964,27 @@ when there is a change in the event form
    * getEventsByIntervalDayVersion:
    * gets exactly the days worth of events from the google calendar
    */
-  getEventsByIntervalDayVersion = day => {
+  getEventsByIntervalDayVersion = (day) => {
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
           start: day.toString(),
-          end: day.toString()
-        }
+          end: day.toString(),
+        },
       })
-      .then(response => {
+      .then((response) => {
         var events = response.data;
         this.setState(
           {
-            dayEvents: events
+            dayEvents: events,
           },
           () => {
             console.log("New Events Arrived", events);
           }
         );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Error Occurred " + error);
       });
   };

@@ -52,7 +52,7 @@ Given start and end parameters from request, it will return all events from
 the google calendar BUT convert it to the format that is accepted by Full Calendar
 
 */
-app.get("/fullCalByInterval", function(req, result) {
+app.get("/fullCalByInterval", function (req, result) {
   console.log("server get fullCalByInterval");
   // console.log("passed in params start date "  + req.query.start);
   // console.log("passed in params end date"  + req.query.end);
@@ -65,7 +65,12 @@ app.get("/fullCalByInterval", function(req, result) {
   } else {
     var startParam = new Date(req.query.start);
     var endParam = new Date(req.query.end);
-    console.log("start : ", startParam, " end:", endParam);
+    console.log(
+      "start : ",
+      startParam.toISOString(),
+      " end:",
+      endParam.toISOString()
+    );
     startParam.setHours(0, 0, 0, 0);
     endParam.setHours(23, 59, 59, 999);
   }
@@ -76,7 +81,7 @@ app.get("/fullCalByInterval", function(req, result) {
       timeMax: endParam.toISOString(),
       maxResults: 999,
       singleEvents: true,
-      orderBy: "startTime"
+      orderBy: "startTime",
     },
     (err, res) => {
       //CallBack
@@ -93,7 +98,7 @@ app.get("/fullCalByInterval", function(req, result) {
             id: B[i].id,
             title: B[i].summary,
             start: B[i].start.dateTime,
-            end: B[i].end.dateTime
+            end: B[i].end.dateTime,
           };
         } else {
           var start0 = new Date(B[i].start.date);
@@ -105,7 +110,7 @@ app.get("/fullCalByInterval", function(req, result) {
             allDay: true,
             title: B[i].summary,
             start: start0,
-            end: end0
+            end: end0,
           };
         }
         A.push(temp);
@@ -124,7 +129,7 @@ app.get("/x", (req, res) => {
 The below does a query to the google calendar API and gets all the events of the current
 month and then renders them On the month template
 */
-app.get("/a", function(req, result) {
+app.get("/a", function (req, result) {
   var date = new Date();
   var firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -135,15 +140,38 @@ app.get("/a", function(req, result) {
       timeMax: lastDayOfMonth.toISOString(),
       maxResults: 999,
       singleEvents: true,
-      orderBy: "startTime"
+      orderBy: "startTime",
     },
     (err, res) => {
       //CallBack
       if (err) return console.log("The API returned an error: " + err);
       events = res.data.items;
+      result.json(events);
+      console.log(events, "/a events");
       result.render("month", { events: events });
     }
   );
+});
+
+app.get("/getRecurringRules", (req, result) => {
+  console.log(req.query.recurringEventId, "req getRecurringRules");
+
+  if (req.query.recurringEventId) {
+    calendar.events.get(
+      {
+        calendarId: calendarID,
+        eventId: req.query.recurringEventId,
+      },
+      (err, res) => {
+        //CallBack
+        if (err) {
+          return result.send("The get request returned an error: " + err);
+        }
+        console.log(res.data.recurrence, "getRecurringRules");
+        result.json(res.data.recurrence);
+      }
+    );
+  }
 });
 
 /*
@@ -159,9 +187,9 @@ data is retrieve.
 *
 *
 */
-app.get("/getEventsByInterval", function(req, result) {
-  console.log("passed in params start date " + req.query.start);
-  console.log("passed in params end date" + req.query.end);
+app.get("/getEventsByInterval", function (req, result) {
+  console.log("passed in params start date ", req.query.start);
+  // console.log("passed in params end date", req);
 
   if (!req.query.start || !req.query.end) {
     var date = new Date();
@@ -182,13 +210,14 @@ app.get("/getEventsByInterval", function(req, result) {
       timeMax: endParam.toISOString(),
       maxResults: 999,
       singleEvents: true,
-      orderBy: "startTime"
+      orderBy: "startTime",
     },
     (err, res) => {
       //CallBack
       if (err) {
         return result.send("The post request returned an error: " + err);
       }
+      console.log(res.data, "geteventsbyinterval");
       result.json(res.data.items);
     }
   );
@@ -199,7 +228,7 @@ Delete ROUTE:
 Given the event's id, it look send it up to google calendar API
 and delete it.
 */
-app.post("/deleteEvent", function(req, result) {
+app.post("/deleteEvent", function (req, result) {
   console.log(req.body.ID);
   calendar.events.delete(
     { calendarId: calendarID, eventId: req.body.ID },
@@ -219,7 +248,7 @@ getEventsByInterval:
 given a start and a end date from req, it will query those In the
 google calendar and return events between those dates
 */
-app.post("/getEventsByInterval", function(req, result) {
+app.post("/getEventsByInterval", function (req, result) {
   if (!req.body.time.start || !req.body.time.end) {
     //If no parameters is passed, we return the current months events
     var date = new Date();
@@ -239,7 +268,7 @@ app.post("/getEventsByInterval", function(req, result) {
       timeMax: endParam.toISOString(),
       maxResults: 999,
       singleEvents: true,
-      orderBy: "startTime"
+      orderBy: "startTime",
     },
     (err, res) => {
       //CallBack
@@ -256,7 +285,7 @@ UPDATE ROUTE:
 Given the event's id, it look send it up to google calendar API
 and delete it.
 */
-app.put("/updateEvent", function(req, result) {
+app.put("/updateEvent", function (req, result) {
   console.log("update request recieved");
   console.log(req.body.extra);
 
@@ -279,14 +308,14 @@ app.listen(3001, function):
 sets up the localhost with port 3001 as default address
 for testing
 */
-app.listen(port, function() {
+app.listen(port, function () {
   console.log("Webpage listening on port 5000, Time: " + new Date());
 });
 
 /*
 create new Event
 */
-app.post("/createNewEvent", function(req, res) {
+app.post("/createNewEvent", function (req, res) {
   console.log(req.body);
   // console.log((new Date()).toISOString());
   console.log("inside create event route");
@@ -311,9 +340,9 @@ app.post("/createNewEvent", function(req, res) {
       auth: calenAuth,
       // calendarId: 'iodevcalendar@gmail.com',
       calendarId: calendarID,
-      resource: req.body.newEvent
+      resource: req.body.newEvent,
     },
-    function(err, event) {
+    function (err, event) {
       if (err) {
         console.log(
           "There was an error contacting the Calendar service: " + err
@@ -372,20 +401,20 @@ function authorize(credentials, callback) {
 function getAccessToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
-    scope: SCOPES
+    scope: SCOPES,
   });
   console.log("Authorize this app by visiting this url:", authUrl);
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
-  rl.question("Enter the code from that page here: ", code => {
+  rl.question("Enter the code from that page here: ", (code) => {
     rl.close();
     oAuth2Client.getToken(code, (err, token) => {
       if (err) return console.error("Error retrieving access token", err);
       oAuth2Client.setCredentials(token);
       // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), err => {
+      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
         if (err) return console.error(err);
         console.log("Token stored to", TOKEN_PATH);
       });
@@ -400,6 +429,8 @@ function getAccessToken(oAuth2Client, callback) {
  */
 function saveCredentials(auth) {
   //Tyler: saveCredentials has been altered to just set-up, no listing events
+  console.log("saveCredentials", auth);
+
   if (calenAuth == null) calenAuth = auth;
   if (calendar == null) calendar = google.calendar({ version: "v3", auth });
 }
