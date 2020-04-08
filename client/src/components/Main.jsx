@@ -59,7 +59,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Week", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -173,6 +173,69 @@ export default class MainPage extends React.Component {
   };
 
   handleDayEventClick = A => {
+    var guestList = "";
+    if (A.attendees) {
+      guestList = A.attendees.reduce((guestList, nextGuest) => {
+        return guestList + " " + nextGuest.email;
+      }, "");
+      console.log("Guest List:", A.attendees, guestList);
+    }
+    this.setState({
+      newEventID: A.id,
+      newEventStart0: A.start.dateTime
+        ? new Date(A.start.dateTime)
+        : new Date(A.start.date),
+      newEventEnd0: A.end.dateTime
+        ? new Date(A.end.dateTime)
+        : new Date(A.end.date),
+      newEventName: A.summary,
+      newEventGuests: guestList,
+      newEventLocation: A.location ? A.location : "",
+      newEventNotification: A.reminders.overrides
+        ? A.reminders.overrides[0].minutes
+        : "",
+      newEventDescription: A.description ? A.description : "",
+      dayEventSelected: true,
+      isEvent: true,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: ""
+      }
+    });
+  };
+
+  handleWeekEventClick = A => {
     var guestList = "";
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
@@ -1382,6 +1445,7 @@ export default class MainPage extends React.Component {
               <WeekEvents
                 weekEvents={this.state.weekEvents}
                 dateContext={this.state.dateContext}
+                eventClick={this.handleWeekEventClick}
               />
           </Row>
           <Row>
@@ -2697,10 +2761,10 @@ when there is a change in the event form
           {
             weekEvents: events
           },
-          () => {
-            console.log("New Events Arrived");
-            console.log(this.state.weekEvents)
-          }
+          // () => {
+          //   console.log("New Events Arrived");
+          //   console.log(this.state.weekEvents)
+          // }
         );
       })
       .catch(error => {
