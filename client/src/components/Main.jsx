@@ -38,7 +38,7 @@ export default class MainPage extends React.Component {
       showGoalModal: false,
       showRoutineModal: false,
       showAboutModal: false,
-      dayEventSelected: false, //use to show modal to create new event
+      dayEventSelected: true, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
       newEventName: "",
@@ -55,7 +55,7 @@ export default class MainPage extends React.Component {
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -93,6 +93,7 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
+      showDeleteRecurringModal: true,
       // repeatOccurrence: newEventStart0
     };
   }
@@ -2025,6 +2026,7 @@ export default class MainPage extends React.Component {
             //   newEventStart0={this.state.newEventStart0}
             // />
           }
+          {this.state.showDeleteRecurringModal && this.deleteRecurringModal()}
           {this.eventFormInputArea()}
         </Modal.Body>
         <Modal.Footer>
@@ -2076,7 +2078,7 @@ export default class MainPage extends React.Component {
                 <Button
                   style={this.state.isEvent ? {} : { display: "none" }}
                   variant="danger"
-                  onClick={this.deleteSubmit}
+                  onClick={() => this.openDeleteRecurringModal()}
                 >
                   {" "}
                   Delete
@@ -2372,6 +2374,125 @@ export default class MainPage extends React.Component {
             Cancel
           </Button>
           <Button variant="primary" onClick={this.saveRepeatChanges}>
+            Save changes
+          </Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
+  };
+
+  openDeleteRecurringModal = () => {
+    console.log("opendeleterecurringmodal called");
+    this.setState((prevState) => {
+      return { showDeleteRecurringModal: !prevState.showDeleteRecurringModal };
+    });
+  };
+
+  closeDeleteRecurringModal = () => {
+    this.setState({
+      showDeleteRecurringModal: false,
+    });
+    // if (!this.state.repeatOption) {
+    //   this.setState({
+    //     repeatOptionDropDown: "Does not repeat",
+    //   });
+    // }
+  };
+
+  deleteRecurring = () => {
+    console.log("deleteRecurring");
+  };
+
+  deleteRecurringModal = () => {
+    const modalStyle = {
+      position: "absolute",
+      left: "50%",
+      zIndex: "5",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "400px",
+    };
+
+    return (
+      <Modal.Dialog style={modalStyle}>
+        <Modal.Header closeButton onHide={this.closeDeleteRecurringModal}>
+          <Modal.Title>
+            <h5 className="normalfancytext">Delete Recurring Event</h5>
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            // padding: "85px 0",
+            height: "250px",
+            margin: "auto",
+          }}
+        >
+          <Form
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Form.Group
+              style={{
+                height: "60%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+              className="delete-repeat-form"
+            >
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This event"
+                    name="radios"
+                    // defaultChecked={
+                    //   this.state.repeatRadio_temp === "Never" && true
+                    // }
+                  />
+                  This event
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This and following events"
+                    name="radios"
+                    // defaultChecked={
+                    //   this.state.repeatRadio_temp === "Never" && true
+                    // }
+                  />
+                  This and following events
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="All events"
+                    name="radios"
+                    // defaultChecked={
+                    //   this.state.repeatRadio_temp === "Never" && true
+                    // }
+                  />
+                  All events
+                </Form.Check.Label>
+              </Form.Check>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.closeDeleteRecurringModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.deleteRecurring}>
             Save changes
           </Button>
         </Modal.Footer>

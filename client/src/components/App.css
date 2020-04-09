@@ -195,7 +195,8 @@ img {
   background: #1a73e8;
 }
 
-.repeat-form input {
+.repeat-form input,
+.delete-repeat-form input {
   transform: scale(1.5);
   cursor: pointer;
   -webkit-transform: scale(1.5);
