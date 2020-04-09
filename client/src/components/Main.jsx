@@ -296,6 +296,7 @@ export default class MainPage extends React.Component {
         6: ""
       }
     });
+  }
   repeatSummaryCompute = () => {
     const { recurrenceRule } = this.state;
 
@@ -1569,7 +1570,7 @@ export default class MainPage extends React.Component {
       return this.dayViewAbstracted()
     else if(this.state.calendarView === "Week")
       return this.weekViewAbstracted()
-  }
+  };
 
   render() {
     //The variable below will help decide whether to center the Calendar object or not
