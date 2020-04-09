@@ -296,6 +296,7 @@ export default class MainPage extends React.Component {
         6: ""
       }
     });
+  }
   repeatSummaryCompute = () => {
     const { recurrenceRule } = this.state;
 
