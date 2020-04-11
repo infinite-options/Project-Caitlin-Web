@@ -11,8 +11,7 @@ export default class DayGoals extends Component {
         this.state = {
             firebaseRootPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy'),
             goals: [], //array to hold all  goals
-            routines: [], // array to hold all routines
-            dayEvents: [], //holds google events data for a single day
+            routines: [], // array to hold all routine
             pxPerHour: "30px", //preset size for all columns
             pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
             zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
