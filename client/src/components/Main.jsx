@@ -57,7 +57,7 @@ export default class MainPage extends React.Component {
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Week", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -890,14 +890,20 @@ export default class MainPage extends React.Component {
 
   updateEventClick = (event) => {
     event.preventDefault();
+    let eventList = this.state.originalEvents;
+    if(this.state.calendarView === "Day") {
+      eventList = this.state.dayEvents;
+    } else if (this.state.calendarView === "Week") {
+      eventList = this.state.weekEvents;
+    }
     const isValid = this.validate();
     if (isValid) {
       if (this.state.newEventID === "") {
         return;
       } else {
-        for (let i = 0; i < this.state.originalEvents.length; i++) {
-          if (this.state.originalEvents[i].id === this.state.newEventID) {
-            this.updateRequest(i);
+        for (let i = 0; i < eventList.length; i++) {
+          if (eventList[i].id === this.state.newEventID) {
+            this.updateRequest(eventList,i);
           }
         }
       }
@@ -908,7 +914,7 @@ export default class MainPage extends React.Component {
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = (index) => {
+  updateRequest = (eventList,index) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -928,7 +934,7 @@ export default class MainPage extends React.Component {
       minutesNotification = this.state.newEventNotification;
     }
 
-    let updatedEvent = this.state.originalEvents[index];
+    let updatedEvent = eventList[index];
     updatedEvent.summary = this.state.newEventName;
     updatedEvent.attendees = formattedEmail;
     updatedEvent.location = this.state.newEventLocation;
@@ -1604,19 +1610,19 @@ export default class MainPage extends React.Component {
         >
           <Row style={{ margin: "0"}} className="d-flex flex-row">
             <div style={{float: "right", width: "80px", height: "70px"}}>
-              <FontAwesomeIcon icon={faImage} size="5x"/> 
+              <FontAwesomeIcon icon={faImage} size="5x"/>
             </div>
             <div style={{float: "left", width: "227px", height: "50px"}}>
               <p style = {{ marginTop:"25px"}}>First Last</p>
             </div>
             {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
-              <FontAwesomeIcon icon={faImage} size="5x"/> 
+              <FontAwesomeIcon icon={faImage} size="5x"/>
             </Col>
             <Col xs={9} style = {{paddingLeft: "0px"}}>
               <p style = {{marginBottom:"0px", marginTop:"15px"}}>First Last</p>
             </Col> */}
               {/* <col style = {{marginLeft:"20px", marginRight:"20px"}}>
-                <FontAwesomeIcon icon={faImage} size="5x"/> 
+                <FontAwesomeIcon icon={faImage} size="5x"/>
                 <p style = {{marginBottom:"0px"}}>First Last</p>
               </span> */}
           </Row>
@@ -1721,10 +1727,10 @@ export default class MainPage extends React.Component {
                 />
               </div>
             </Col>
-            <Col style={{ textAlign: "center" }} className="bigfancytext">
+            <Col md="auto" style={{ textAlign: "center" }} className="bigfancytext">
               <p>
                 {" "}
-                {this.getDay()} {this.getMonth()} {this.getYear()}{" "}
+                {this.state.dateContext.format('dddd')} {this.getDay()} {this.getMonth()} {this.getYear()}{" "}
               </p>
             </Col>
             <Col>
@@ -1881,15 +1887,15 @@ export default class MainPage extends React.Component {
 
     return (
       // <Row>
-      
-        
-      
+
+
+
       <Row
         style={{
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          paddingRight: "165px",
+          // paddingRight: "165px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1909,14 +1915,6 @@ export default class MainPage extends React.Component {
         >
           <Dropdown.Item
             onClick={e => {
-              this.changeCalendarView("Month");
-            }}
-          >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
               this.changeCalendarView("Day");
             }}
           >
@@ -1930,6 +1928,14 @@ export default class MainPage extends React.Component {
           >
             {" "}
             Week{" "}
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={e => {
+              this.changeCalendarView("Month");
+            }}
+          >
+            {" "}
+            Month{" "}
           </Dropdown.Item>
         </DropdownButton>
         </div>
@@ -2006,10 +2012,10 @@ export default class MainPage extends React.Component {
         >
           About
         </Button>
-       
+
       </Row>
         // <Button >
-        //   <FontAwesomeIcon icon={faImage} size="5x"/> 
+        //   <FontAwesomeIcon icon={faImage} size="5x"/>
         //   <p>First Last</p>
         // </Button>
       // </Row>
