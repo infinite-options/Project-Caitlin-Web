@@ -36,14 +36,55 @@ export default class AddNewISItem extends Component {
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
-      is_timed: false
+      is_timed: false,
+      expected_completion_time: "00:10:00",
+      ta_notifications:{
+        before:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        },
+        during:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:30:00"
+        },
+        after:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        }
+      },
+      user_notifications:{
+        before:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        },
+        during:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:30:00"
+        },
+        after:{
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00"
+        }
+      }
     }
   };
 
   componentDidMount() {
-    console.log("AddNewISItem did mount");
-    console.log(this.props.ISArray);
-    console.log(this.props.ISItem);
+    // console.log("AddNewISItem did mount");
+    // console.log(this.props.ISArray);
+    // console.log(this.props.ISItem);
   }
 
   handleInputChange = e => {
@@ -83,6 +124,40 @@ export default class AddNewISItem extends Component {
         }
       });
   };
+
+  convertTimeToHRMMSS =  (e) => {
+        
+    // console.log(e.target.value);
+    let num = e.target.value;
+    let hours = num/60;
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours)* 60;
+    let rminutes = Math.round(minutes);
+    if (rhours.toString().length == 1) {
+        rhours = "0" + rhours;
+    }
+    if (rminutes.toString().length == 1) {
+        rminutes = "0" + rminutes;
+    }
+    // console.log(rhours+":" + rminutes +":" + "00");
+    return rhours+":" + rminutes +":" + "00";
+  }
+
+  convertToMinutes = () => {
+      let myStr = this.state.itemToEdit.expected_completion_time.split(':');
+      let hours = myStr[0];
+      let hrToMin = hours* 60;
+      let minutes = (myStr[1] * 1 )+ hrToMin;
+      let seconds = myStr[2];
+      
+      // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+      return minutes;
+  }
+
+  handleNotificationChange = (temp) => {
+    // console.log(temp);
+    this.setState({ itemToEdit: temp });
+  }
 
   render() {
     return (
@@ -169,11 +244,17 @@ export default class AddNewISItem extends Component {
                         // onChange={this.handleNotificationChange}
                         type="number"
                         placeholder="30"
-                        style = {{ width:"70px", marginTop:".25rem", paddingRight:"0px"}}
+                        value = {this.convertToMinutes()}
+                        // value = {this.state.itemToEdit.expected_completion_time}
+                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
+                        onChange={
+                            // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
+                            (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.expected_completion_time = this.convertTimeToHRMMSS(e); this.setState({ itemToEdit: temp }) }
+                        }
                     />
                 </Col>
                 <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"0px", marginTop:"5px"}}>minutes</p>
+                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
                 </Col>
             </Row>
 
@@ -187,7 +268,6 @@ export default class AddNewISItem extends Component {
                 onChange={e => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.is_timed);
                   temp.is_timed = !temp.is_timed;
                   this.setState({ itemToEdit: temp });
                 }}
@@ -204,14 +284,18 @@ export default class AddNewISItem extends Component {
                 onChange={e => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.is_available);
                   temp.is_available = !temp.is_available;
                   this.setState({ itemToEdit: temp });
                 }}
               />
             </div>
 
-            {this.state.itemToEdit.is_available && <ShowNotifications />}
+            {this.state.itemToEdit.is_available && 
+              <ShowNotifications 
+                itemToEditPassedIn = {this.state.itemToEdit}
+                notificationChange = {this.handleNotificationChange}
+              />
+            }
 
           </div>
         </Modal.Body>

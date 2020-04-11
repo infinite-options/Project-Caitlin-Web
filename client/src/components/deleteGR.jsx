@@ -77,11 +77,13 @@ export default class deleteGR extends Component {
     render() {
         return (
             <div  style={{ marginLeft: "5px" }}>
+            
             <FontAwesomeIcon 
                 title = "Delete Item"
                 onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
                 onMouseOut ={event => {event.target.style.color = "#000000";}}
                 style ={{marginRight: '15px', color:  "#000000" }}
+                // style ={{ color:  "#000000" }}
                 onClick={(e)=>{ e.stopPropagation(); this.confirmation()}}
                 icon={faTrashAlt} size="lg" 
             />

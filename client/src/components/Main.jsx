@@ -17,6 +17,10 @@ import TylersCalendarv1 from "./TCal.jsx";
 import DayRoutines from "./DayRoutines.jsx";
 import DayGoals from "./DayGoals.jsx";
 import DayEvents from "./DayEvents.jsx";
+import WeekEvents from "./WeekEvents.jsx";
+import WeekRoutines from "./WeekRoutines.jsx";
+import WeekGoals from "./WeekGoals.jsx";
+import AboutModal from "./AboutModal.jsx";
 // import RepeatModal from "./RepeatModal.jsx";
 // import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -34,6 +38,7 @@ export default class MainPage extends React.Component {
     this.state = {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
+      weekEvents: [], //holds google events data for a week
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -46,16 +51,13 @@ export default class MainPage extends React.Component {
       newEventLocation: "",
       newEventNotification: 30,
       newEventDescription: "",
-      // newEventStart: "", //this variable and any use of it in the code should be DELETED in future revisions
-      // newEventEnd: "", //this variable and any use of it in the code should be DELETED in future revisions
       newEventStart0: new Date(), //start and end for a event... it's currently set to today
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      // selectedDay: null, // Any use of this variable should be deleted in future revisions
-      calendarView: "Month", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -234,6 +236,68 @@ export default class MainPage extends React.Component {
     });
   };
 
+  handleWeekEventClick = (A) => {
+    var guestList = "";
+    if (A.attendees) {
+      guestList = A.attendees.reduce((guestList, nextGuest) => {
+        return guestList + " " + nextGuest.email;
+      }, "");
+      console.log("Guest List:", A.attendees, guestList);
+    }
+    this.setState({
+      newEventID: A.id,
+      newEventStart0: A.start.dateTime
+        ? new Date(A.start.dateTime)
+        : new Date(A.start.date),
+      newEventEnd0: A.end.dateTime
+        ? new Date(A.end.dateTime)
+        : new Date(A.end.date),
+      newEventName: A.summary,
+      newEventGuests: guestList,
+      newEventLocation: A.location ? A.location : "",
+      newEventNotification: A.reminders.overrides
+        ? A.reminders.overrides[0].minutes
+        : "",
+      newEventDescription: A.description ? A.description : "",
+      dayEventSelected: true,
+      isEvent: true,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+    });
+  };
   repeatSummaryCompute = () => {
     const { recurrenceRule } = this.state;
 
@@ -896,8 +960,6 @@ export default class MainPage extends React.Component {
         this.setState({
           dayEventSelected: false,
           newEventName: "",
-          // newEventStart: '',
-          // newEventEnd: '',
           newEventStart0: new Date(),
           newEventEnd0: new Date(),
         });
@@ -968,11 +1030,8 @@ export default class MainPage extends React.Component {
         ID: this.state.newEventID,
       })
       .then((response) => {
-        // console.log(response);
         this.setState({
           dayEventSelected: false,
-          // newEventStart: "",
-          // newEventEnd: ""
         });
         this.updateEventsArray();
       })
@@ -1128,6 +1187,30 @@ export default class MainPage extends React.Component {
     );
   };
 
+  nextWeek = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).add(1, "week");
+    this.setState(
+      {
+        dateContext: dateContext,
+        dayEvents: [],
+      },
+      this.updateEventsArray
+    );
+  };
+
+  prevWeek = () => {
+    let dateContext = Object.assign({}, this.state.dateContext);
+    dateContext = moment(dateContext).subtract(1, "week");
+    this.setState(
+      {
+        dateContext: dateContext,
+        dayEvents: [],
+      },
+      this.updateEventsArray
+    );
+  };
+
   /*
   updateEventsArray:
   updates the array if the month view changes to a different month.
@@ -1148,6 +1231,17 @@ export default class MainPage extends React.Component {
     } else if (this.state.calendarView === "Day") {
       this.getEventsByIntervalDayVersion(
         this.state.dateContext.format("MM/DD/YYYY")
+      );
+    } else if (this.state.calendarView === "Week") {
+      let startObject = this.state.dateContext.clone();
+      let endObject = this.state.dateContext.clone();
+      let startDay = startObject.startOf("week");
+      let endDay = endObject.endOf("week");
+      let startDate = new Date(startDay.format("MM/DD/YYYY"));
+      let endDate = new Date(endDay.format("MM/DD/YYYY"));
+      this.getEventsByIntervalWeekVersion(
+        startObject.toDate(),
+        endObject.toDate()
       );
     }
   };
@@ -1457,12 +1551,26 @@ export default class MainPage extends React.Component {
     }
   };
 
+  hideAboutForm = (e) => {
+    this.setState({
+      showAboutModal: false,
+    });
+  };
+
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
-      return this.aboutFormAbstracted();
+      // return this.aboutFormAbstracted();
+      return <AboutModal CameBackFalse={this.hideAboutForm} />;
     }
+  };
+
+  showCalendarView = () => {
+    if (this.state.calendarView === "Month") return this.calendarAbstracted();
+    else if (this.state.calendarView === "Day") return this.dayViewAbstracted();
+    else if (this.state.calendarView === "Week")
+      return this.weekViewAbstracted();
   };
 
   render() {
@@ -1495,6 +1603,33 @@ export default class MainPage extends React.Component {
             width: "100%",
           }}
         >
+          <Row style={{ margin: "0" }} className="d-flex flex-row">
+            <div style={{ float: "right", width: "80px", height: "70px" }}>
+              <FontAwesomeIcon icon={faImage} size="5x" />
+            </div>
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              <p style={{ marginTop: "25px" }}>First Last</p>
+            </div>
+            {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
+              <FontAwesomeIcon icon={faImage} size="5x"/> 
+            </Col>
+            <Col xs={9} style = {{paddingLeft: "0px"}}>
+              <p style = {{marginBottom:"0px", marginTop:"15px"}}>First Last</p>
+            </Col> */}
+            {/* <col style = {{marginLeft:"20px", marginRight:"20px"}}>
+                <FontAwesomeIcon icon={faImage} size="5x"/> 
+                <p style = {{marginBottom:"0px"}}>First Last</p>
+              </span> */}
+          </Row>
+        </div>
+
+        <div
+          style={{
+            margin: "0",
+            padding: "0",
+            width: "100%",
+          }}
+        >
           {this.abstractedMainEventGRShowButtons()}
         </div>
         <Container
@@ -1509,7 +1644,6 @@ export default class MainPage extends React.Component {
             // width: "100%"
           }}
         >
-          {/* Within this container essentially contains all the UI of the App */}
           <Row
             style={{
               marginTop: "0",
@@ -1541,16 +1675,16 @@ export default class MainPage extends React.Component {
               lg="auto"
               style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
-              {this.state.calendarView === "Month"
-                ? this.calendarAbstracted()
-                : this.dayViewAbstracted()}
-              <div style={{ marginTop: "50px" }} className="fancytext">
+              {this.showCalendarView()}
+              <div
+                style={{ marginTop: "50px", textAlign: "center" }}
+                className="fancytext"
+              >
                 Dedicated to Caitlin Little
               </div>
             </Col>
-            <Col style={{ marginLeft: "25px" }}>
-              {this.showDayViewOrAboutView()}
-            </Col>
+            {/* <Col style={{ marginLeft: "25px" }}> */}
+            <Col>{this.showDayViewOrAboutView()}</Col>
           </Row>
         </Container>
       </div>
@@ -1611,11 +1745,81 @@ export default class MainPage extends React.Component {
             eventClickDayView={this.handleDayEventClick}
             handleDateClick={this.handleDateClickOnDayView}
             dayEvents={this.state.dayEvents}
-            getEventsByInterval={this.state.getEventsByIntervalDayVersion}
+            getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
           <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
           <DayGoals dayGoalClick={this.toggleShowGoal} />
         </Row>
+      </div>
+    );
+  };
+
+  weekViewAbstracted = () => {
+    let startObject = this.state.dateContext.clone();
+    let startWeek = startObject.startOf("week");
+    return (
+      <div
+        style={{
+          borderRadius: "20px",
+          backgroundColor: "white",
+          width: "100%",
+          marginLeft: "10px",
+          padding: "20px",
+          // border:"1px black solid",
+          boxShadow:
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}
+      >
+        <Container>
+          <Container>
+            <Row style={{ marginTop: "0px" }}>
+              <Col>
+                <div>
+                  <FontAwesomeIcon
+                    style={{ marginLeft: "50%" }}
+                    icon={faChevronLeft}
+                    size="2x"
+                    className="X"
+                    onClick={(e) => {
+                      this.prevWeek();
+                    }}
+                  />
+                </div>
+              </Col>
+              <Col
+                md="auto"
+                style={{ textAlign: "center" }}
+                className="bigfancytext"
+              >
+                <p> Week of {startWeek.format("D MMMM YYYY")} </p>
+              </Col>
+              <Col>
+                <FontAwesomeIcon
+                  style={{ marginLeft: "50%" }}
+                  icon={faChevronRight}
+                  size="2x"
+                  className="X"
+                  onClick={(e) => {
+                    this.nextWeek();
+                  }}
+                />
+              </Col>
+            </Row>
+          </Container>
+          <Row>
+            <WeekEvents
+              weekEvents={this.state.weekEvents}
+              dateContext={this.state.dateContext}
+              eventClick={this.handleWeekEventClick}
+            />
+          </Row>
+          <Row>
+            <WeekGoals />
+          </Row>
+          <Row>
+            <WeekRoutines />
+          </Row>
+        </Container>
       </div>
     );
   };
@@ -1652,8 +1856,6 @@ export default class MainPage extends React.Component {
 
     this.setState({
       newEventID: "",
-      // newEventStart: newStart.toString(),
-      // newEventEnd: newEnd.toString(),
       newEventStart0: newStart,
       newEventEnd0: newEnd,
       newEventName: "",
@@ -1679,7 +1881,9 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
-      <div
+      // <Row>
+
+      <Row
         style={{
           display: "block",
           textAlign: "center",
@@ -1718,15 +1922,26 @@ export default class MainPage extends React.Component {
               {" "}
               Day{" "}
             </Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => {
+                this.changeCalendarView("Week");
+              }}
+            >
+              {" "}
+              Week{" "}
+            </Dropdown.Item>
           </DropdownButton>
         </div>
         <Button
           style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
-            this.setState({
-              dateContext: moment(),
-            });
+            this.setState(
+              {
+                dateContext: moment(),
+              },
+              this.updateEventsArray
+            );
           }}
         >
           Today
@@ -1780,7 +1995,12 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-          style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
+          style={{
+            display: "inline-block",
+            margin: "10px",
+            marginBottom: "0",
+            marginRight: "200px",
+          }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -1791,7 +2011,12 @@ export default class MainPage extends React.Component {
         >
           About
         </Button>
-      </div>
+      </Row>
+      // <Button >
+      //   <FontAwesomeIcon icon={faImage} size="5x"/>
+      //   <p>First Last</p>
+      // </Button>
+      // </Row>
     );
   };
 
@@ -1856,138 +2081,6 @@ export default class MainPage extends React.Component {
     );
   };
 
-  /***     About Modal ***** */
-  aboutFormAbstracted = () => {
-    return (
-      <Modal.Dialog
-        style={{
-          borderRadius: "15px",
-          boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "70px",
-          width: "350px",
-          marginTop: "0",
-        }}
-      >
-        <Modal.Header
-          closeButton
-          onHide={() => {
-            this.setState({
-              showAboutModal: false,
-            });
-          }}
-        >
-          <Modal.Title>
-            <h5 className="normalfancytext">About Me</h5>{" "}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Col>
-              <FontAwesomeIcon
-                // style={{ marginLeft: "50%" }}
-                icon={faImage}
-                size="4x"
-                // className="X"
-              />
-            </Col>
-            <Col xs={9}>
-              <label for="ProfileImage">Upload A New Image</label>
-              <input
-                type="file"
-                onChange={this.handleFileSelected}
-                id="ProfileImage"
-              />
-            </Col>
-          </Row>
-
-          <Form.Group controlId="AboutMessage" style={{ marginTop: "10px" }}>
-            <Form.Label>Message (My Day):</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows="4"
-              // value={this.state.newEventDescription}
-              // onChange={this.handleDescriptionChange}
-              type="text"
-              placeholder="You are a strong ..."
-              // style={{textAlign:"center"}}
-            />
-          </Form.Group>
-          <Form.Group controlId="AboutMessageCard">
-            <Form.Label>Message (My Card):</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows="4"
-              // value={this.state.newEventDescription}
-              // onChange={this.handleDescriptionChange}
-              type="text"
-              placeholder="You are a safe ..."
-              // style={{textAlign:"center"}}
-            />
-          </Form.Group>
-          <Form.Group controlId="ImportantPeople">
-            <Form.Label>Important People</Form.Label>
-            <Row>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "20px" }}>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "20px" }}>
-              <Col>
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              </Col>
-              <Col xs={8}>
-                <Form.Control type="text" placeholder="Relationship" />
-                <Form.Control type="text" placeholder="Phone Number" />
-              </Col>
-            </Row>
-          </Form.Group>
-
-          {/* <button onClick={this.imageUploadHandler}> Upload</button> */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Container fluid>
-            <Row>
-              <Col xs={4}>
-                <Button variant="info" type="submit">
-                  Save
-                </Button>
-              </Col>
-              <Col xs={4}>
-                <Button variant="secondary" onClick={this.hideAboutForm}>
-                  Cancel
-                </Button>
-              </Col>
-            </Row>
-          </Container>
-        </Modal.Footer>
-      </Modal.Dialog>
-    );
-  };
-
-  imageUploadHandler = () => {};
-  handleFileSelected = (event) => {
-    console.log(event.target.files[0]);
-  };
-
-  hideAboutForm = (e) => {
-    this.setState({
-      showAboutModal: false,
-    });
-  };
   /**
    * This is where the event form is made
    *
@@ -1999,7 +2092,7 @@ export default class MainPage extends React.Component {
           borderRadius: "15px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-          marginLeft: "70px",
+          marginLeft: "35px",
           width: "350px",
           marginTop: "0",
         }}
@@ -2577,7 +2670,7 @@ export default class MainPage extends React.Component {
                   placeholder="Location"
                 />
               </Form.Group>
-              <Form.Group controlId="Notification">
+              <Form.Group>
                 <Form.Label>Notifications:</Form.Label>
                 <Row>
                   <Col style={{ paddingRight: "0px" }}>
@@ -2585,7 +2678,7 @@ export default class MainPage extends React.Component {
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
@@ -2702,7 +2795,7 @@ export default class MainPage extends React.Component {
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
-                      placeholder="30"
+                      placeholder="5"
                       style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
@@ -3010,6 +3103,33 @@ when there is a change in the event form
           () => {
             console.log("New Events Arrived", events);
           }
+        );
+      })
+      .catch((error) => {
+        console.log("Error Occurred " + error);
+      });
+  };
+
+  //Get and store events by week, take first and last day of the week as parameters as date object
+  getEventsByIntervalWeekVersion = (start0, end0) => {
+    axios
+      .get("/getEventsByInterval", {
+        //get normal google calendar data for possible future use
+        params: {
+          start: start0,
+          end: end0,
+        },
+      })
+      .then((response) => {
+        var events = response.data;
+        this.setState(
+          {
+            weekEvents: events,
+          }
+          // () => {
+          //   console.log("New Events Arrived");
+          //   console.log(this.state.weekEvents)
+          // }
         );
       })
       .catch((error) => {

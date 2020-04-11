@@ -8,47 +8,89 @@ export default class ShowATList extends React.Component {
     constructor(props) {
         super(props)
         this.state={
-            iconShowATModal: true
+            iconShow: true
         };
     }
+    componentDidUpdate() {}
 
+    componentDidMount() {
+        let items = [...this.props.Array];
+        // console.log("this is the item");
+        // console.log(items[this.props.Index]);
+        this.setState({iconShow: items[this.props.Index]['is_sublist_available']});
+    }
+    // ListFalse = e => {
+    //   this.props.ListCameBackFalse();  
+    //   this.setState({iconShow: !this.state.iconShow}); 
+    // };
+
+    editFirBaseFalse = e =>{
+      // console.log("this should be false");
+      this.setState({iconShow: false}, () => {
+        let items = [...this.props.Array];
+        items[this.props.Index]['is_sublist_available'] = false;
+        this.props.Path.update({ 'goals&routines': items }).then(
+            (doc) => {
+            }
+        )
+      })
+      // this.setState({iconShow: false});
+      // // console.log(this.state.iconShow);
+      // let items = [...this.props.Array];
+      // // console.log("this is the item");
+      // // console.log(items[this.props.Index]);
+      
+      //   items[this.props.Index]['is_sublist_available'] = false;
+      //   this.props.Path.update({ 'goals&routines': items }).then(
+      //       (doc) => {
+      //       }
+      //   )
+    }
+
+    editFirBaseTrue = e =>{
+      this.setState({iconShow: true}, () => {
+        let items = [...this.props.Array];
+        items[this.props.Index]['is_sublist_available'] = true;
+        this.props.Path.update({ 'goals&routines': items }).then(
+            (doc) => {
+            }
+        )
+      })
+    }
 
     render() {
         return (
             <div>
-                {this.state.iconShowATModal &&  
+                {this.state.iconShow &&  
                     <div  >
                         <FontAwesomeIcon
                             icon={faList}
-                            title = "Show List Item"
-                            // onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
-                            // onMouseOut ={event => {event.target.style.color = "#D6A34C";}}
-                            style ={{ color:   "#D6A34C", marginTop:"10px"}}
-                            onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: !this.state.iconShowATModal})}}
+                            title = "SubList Available"
+                            style ={{ color:   "#D6A34C", marginLeft:"20px"}}
+                            // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShow: false}); this.editFirBaseFalse()}}
+                            onClick={(e)=>{ e.stopPropagation(); this.editFirBaseFalse()}}
+                            //onClick={this.ListFalse}
                             size="lg" 
                             />
                     </div>
                 }
-                {!this.state.iconShowATModal &&  
-                  <div style={{ marginLeft: "10px" }} onMouseOver ={event => { event.target.style.color = "#48D6D2"; }}
-                  onMouseOut ={event => {event.target.style.color = "#000000";}} 
-                  onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: !this.state.iconShowATModal})}}>
-                {/* <div  > */}
-                    <span className ="fa-layers fa-fw" >
+                {!this.state.iconShow &&  
+                  <div  
+                  // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: false})}}>
+                  >
+                    <span className ="fa-layers fa-fw" style = {{marginLeft:"20px"}} >
                       <FontAwesomeIcon
-                          style ={{color:"#000000", marginTop:"10px"}}
-                        //   color="#000000"
+                          style ={{color:"#000000"}}
                           icon={faList} 
-                          title = "Don't Show List Item"
-                          onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: !this.state.iconShowATModal})}}
+                          title = "SubList Unavailable"
+                          onClick={(e)=>{ e.stopPropagation();  this.editFirBaseTrue()}}
                           size="lg" 
                         />
                       <FontAwesomeIcon
-                          style ={{color:"#000000", marginTop:"10px"}}
-                        //   color="#000000"
+                          style ={{color:"#000000"}}
                           icon={faSlash} 
-                          title = "Don't Show List Item"
-                          onClick={(e)=>{ e.stopPropagation(); this.setState({iconShowATModal: !this.state.iconShowATModal})}}
+                          title = "SubList Unavilable"
+                          onClick={(e)=>{ e.stopPropagation(); this.editFirBaseTrue()}}
                           size="lg" 
                       />
                     </span>
