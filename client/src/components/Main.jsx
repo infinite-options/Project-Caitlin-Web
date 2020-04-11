@@ -43,9 +43,10 @@ export default class MainPage extends React.Component {
       showGoalModal: false,
       showRoutineModal: false,
       showAboutModal: false,
-      dayEventSelected: true, //use to show modal to create new event
+      dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
+      newEventRecurringID: "",
       newEventName: "",
       newEventGuests: "",
       newEventLocation: "",
@@ -57,7 +58,7 @@ export default class MainPage extends React.Component {
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Month", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -95,7 +96,8 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
-      showDeleteRecurringModal: true,
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
       // repeatOccurrence: newEventStart0
     };
   }
@@ -306,15 +308,16 @@ export default class MainPage extends React.Component {
     if (untilIndex !== -1) {
       untilSubString = recurrenceRule.substring(untilIndex);
     }
+    console.log(untilSubString);
+
     if (untilSubString.includes(";")) {
       let endUntilIndex = untilSubString.indexOf(";");
-      untilSubString = moment(untilSubString.substring(6, endUntilIndex))
-        .add(-1, "days")
-        .format("LL");
+      untilSubString = moment(
+        untilSubString.substring(6, endUntilIndex)
+      ).format("LL");
     } else if (untilSubString) {
-      untilSubString = moment(untilSubString.substring(5))
-        .add(-1, "days")
-        .format("LL");
+      console.log(moment("20200406T065959Z").format("LL"));
+      untilSubString = moment(untilSubString.substring(6, 14)).format("LL");
     }
     console.log(untilSubString);
 
@@ -327,7 +330,7 @@ export default class MainPage extends React.Component {
       let endCountIndex = countSubString.indexOf(";");
       countSubString = countSubString.substring(6, endCountIndex);
     } else if (countSubString) {
-      countSubString = countSubString.substring(5);
+      countSubString = countSubString.substring(6);
     }
 
     console.log(countSubString, "countSubString");
@@ -655,6 +658,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
+        newEventRecurringID: A.recurringEventId,
         newEventStart0: A.start.dateTime
           ? new Date(A.start.dateTime)
           : new Date(A.start.date),
@@ -1032,10 +1036,10 @@ export default class MainPage extends React.Component {
       .then((response) => {
         this.setState({
           dayEventSelected: false,
+          showDeleteRecurringModal: false,
         });
         this.updateEventsArray();
       })
-
       .catch(function (error) {
         console.log(error);
       });
@@ -1270,7 +1274,10 @@ export default class MainPage extends React.Component {
       repeatEndDate_temp: prevState.repeatEndDate,
       byDay_temp: prevState.byDay,
     }));
-    if (!this.state.repeatOption) {
+    if (
+      !this.state.repeatOption &&
+      this.state.repeatOptionDropDown === "Custom..."
+    ) {
       this.setState({
         repeatOptionDropDown: "Does not repeat",
       });
@@ -1888,7 +1895,7 @@ export default class MainPage extends React.Component {
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          paddingRight: "165px",
+          paddingRight: "170px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1999,7 +2006,7 @@ export default class MainPage extends React.Component {
             display: "inline-block",
             margin: "10px",
             marginBottom: "0",
-            marginRight: "200px",
+            // marginRight: "200px",
           }}
           variant="outline-primary"
           onClick={() => {
@@ -2171,7 +2178,11 @@ export default class MainPage extends React.Component {
                 <Button
                   style={this.state.isEvent ? {} : { display: "none" }}
                   variant="danger"
-                  onClick={() => this.openDeleteRecurringModal()}
+                  onClick={() =>
+                    this.state.newEventRecurringID
+                      ? this.openDeleteRecurringModal()
+                      : this.deleteSubmit()
+                  }
                 >
                   {" "}
                   Delete
@@ -2493,7 +2504,86 @@ export default class MainPage extends React.Component {
   };
 
   deleteRecurring = () => {
-    console.log("deleteRecurring");
+    const {
+      deleteRecurringOption,
+      newEventRecurringID,
+      newEventStart0,
+      recurrenceRule,
+    } = this.state;
+    if (deleteRecurringOption === "This event") {
+      this.deleteSubmit();
+    } else if (deleteRecurringOption === "This and following events") {
+      let untilSubString = "";
+      let untilIndex = recurrenceRule.indexOf("UNTIL");
+      if (untilIndex !== -1) {
+        untilSubString = recurrenceRule.substring(untilIndex);
+      }
+      if (untilSubString.includes(";")) {
+        let endUntilIndex = untilSubString.indexOf(";");
+        untilSubString = untilSubString.substring(6, endUntilIndex);
+      } else if (untilSubString) {
+        untilSubString = untilSubString = untilSubString.substring(6);
+      }
+      axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: newEventRecurringID,
+            timeMin: newEventStart0,
+            timeMax: moment(untilSubString).toISOString(),
+          },
+        })
+        .then((res) => {
+          res.data.forEach((event) => {
+            axios
+              .delete("/deleteRecurringEvent", {
+                params: {
+                  eventId: event.id,
+                },
+              })
+              .then((res) => {
+                this.setState({
+                  dayEventSelected: false,
+                  showDeleteRecurringModal: false,
+                });
+                this.updateEventsArray();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
+        });
+
+      // axios
+      //   .delete("/")
+      // axios
+      // .post("/deleteEvent", {
+      //   ID: this.state.newEventID,
+      // })
+      // .then((response) => {
+      //   this.setState({
+      //     dayEventSelected: false,
+      //   });
+      //   this.updateEventsArray();
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
+    } else if (deleteRecurringOption === "All events") {
+      axios
+        .post("/deleteEvent", {
+          ID: newEventRecurringID,
+        })
+        .then((response) => {
+          this.setState({
+            dayEventSelected: false,
+            showDeleteRecurringModal: false,
+          });
+          this.updateEventsArray();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
 
   deleteRecurringModal = () => {
@@ -2537,6 +2627,13 @@ export default class MainPage extends React.Component {
                 justifyContent: "space-around",
               }}
               className="delete-repeat-form"
+              onChange={(e) => {
+                if (e.target.type === "radio") {
+                  this.setState({
+                    deleteRecurringOption: e.target.value,
+                  });
+                }
+              }}
             >
               <Form.Check type="radio">
                 <Form.Check.Label style={{ marginLeft: "5px" }}>
@@ -2544,9 +2641,9 @@ export default class MainPage extends React.Component {
                     type="radio"
                     value="This event"
                     name="radios"
-                    // defaultChecked={
-                    //   this.state.repeatRadio_temp === "Never" && true
-                    // }
+                    defaultChecked={
+                      this.state.deleteRecurringOption === "This event" && true
+                    }
                   />
                   This event
                 </Form.Check.Label>
@@ -2557,9 +2654,10 @@ export default class MainPage extends React.Component {
                     type="radio"
                     value="This and following events"
                     name="radios"
-                    // defaultChecked={
-                    //   this.state.repeatRadio_temp === "Never" && true
-                    // }
+                    defaultChecked={
+                      this.state.deleteRecurringOption ===
+                        "This and following events" && true
+                    }
                   />
                   This and following events
                 </Form.Check.Label>
@@ -2570,9 +2668,9 @@ export default class MainPage extends React.Component {
                     type="radio"
                     value="All events"
                     name="radios"
-                    // defaultChecked={
-                    //   this.state.repeatRadio_temp === "Never" && true
-                    // }
+                    defaultChecked={
+                      this.state.deleteRecurringOption === "All events" && true
+                    }
                   />
                   All events
                 </Form.Check.Label>
@@ -2586,7 +2684,7 @@ export default class MainPage extends React.Component {
             Cancel
           </Button>
           <Button variant="primary" onClick={this.deleteRecurring}>
-            Save changes
+            OK
           </Button>
         </Modal.Footer>
       </Modal.Dialog>

@@ -174,6 +174,33 @@ app.get("/getRecurringRules", (req, result) => {
   }
 });
 
+app.get("/getRecurringEventInstances", (req, result) => {
+  console.log(
+    req.query.timeMin,
+    "getRecurringEventInstances",
+    req.query.timeMax
+  );
+
+  if (req.query.recurringEventId) {
+    calendar.events.instances(
+      {
+        calendarId: calendarID,
+        eventId: req.query.recurringEventId,
+        timeMin: req.query.timeMin,
+        timeMax: req.query.timeMax,
+      },
+      (err, res) => {
+        //CallBack
+        if (err) {
+          return result.send("The get request returned an error: " + err);
+        }
+        console.log(res.data, "getRecurringEventInstances");
+        result.json(res.data.items);
+      }
+    );
+  }
+});
+
 /*
 *
 *
@@ -237,6 +264,23 @@ app.post("/deleteEvent", function (req, result) {
       //CallBack
       if (err) {
         return result.send("The post request returned an error: " + err);
+      }
+      result.send("delete");
+    }
+  );
+});
+
+app.delete("/deleteRecurringEvent", (req, result) => {
+  console.log(req.query.eventId, "deleteRecurringEvent");
+  calendar.events.delete(
+    {
+      calendarId: calendarID,
+      eventId: req.query.eventId,
+    },
+    (err, res) => {
+      //CallBack
+      if (err) {
+        return result.send("The delete request returned an error: " + err);
       }
       result.send("delete");
     }
