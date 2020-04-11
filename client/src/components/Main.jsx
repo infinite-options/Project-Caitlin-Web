@@ -57,7 +57,7 @@ export default class MainPage extends React.Component {
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      calendarView: "Day", // decides which type of calendar to display
+      calendarView: "Week", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
