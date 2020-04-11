@@ -46,6 +46,7 @@ export default class MainPage extends React.Component {
       dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
       newEventID: "", //save the event ID for possible future use
+      newEventRecurringID: "",
       newEventName: "",
       newEventGuests: "",
       newEventLocation: "",
@@ -95,6 +96,8 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
       // repeatOccurrence: newEventStart0
     };
   }
@@ -235,7 +238,7 @@ export default class MainPage extends React.Component {
     });
   };
 
-  handleWeekEventClick = A => {
+  handleWeekEventClick = (A) => {
     var guestList = "";
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
@@ -284,7 +287,7 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
+        6: "",
       },
       byDay_temp: {
         0: "",
@@ -293,10 +296,10 @@ export default class MainPage extends React.Component {
         3: "",
         4: "",
         5: "",
-        6: ""
-      }
+        6: "",
+      },
     });
-  }
+  };
   repeatSummaryCompute = () => {
     const { recurrenceRule } = this.state;
 
@@ -305,15 +308,16 @@ export default class MainPage extends React.Component {
     if (untilIndex !== -1) {
       untilSubString = recurrenceRule.substring(untilIndex);
     }
+    console.log(untilSubString);
+
     if (untilSubString.includes(";")) {
       let endUntilIndex = untilSubString.indexOf(";");
-      untilSubString = moment(untilSubString.substring(6, endUntilIndex))
-        .add(-1, "days")
-        .format("LL");
+      untilSubString = moment(
+        untilSubString.substring(6, endUntilIndex)
+      ).format("LL");
     } else if (untilSubString) {
-      untilSubString = moment(untilSubString.substring(5))
-        .add(-1, "days")
-        .format("LL");
+      console.log(moment("20200406T065959Z").format("LL"));
+      untilSubString = moment(untilSubString.substring(6, 14)).format("LL");
     }
     console.log(untilSubString);
 
@@ -326,7 +330,7 @@ export default class MainPage extends React.Component {
       let endCountIndex = countSubString.indexOf(";");
       countSubString = countSubString.substring(6, endCountIndex);
     } else if (countSubString) {
-      countSubString = countSubString.substring(5);
+      countSubString = countSubString.substring(6);
     }
 
     console.log(countSubString, "countSubString");
@@ -654,6 +658,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         newEventID: A.id,
+        newEventRecurringID: A.recurringEventId,
         newEventStart0: A.start.dateTime
           ? new Date(A.start.dateTime)
           : new Date(A.start.date),
@@ -1034,13 +1039,13 @@ export default class MainPage extends React.Component {
       .post("/deleteEvent", {
         ID: this.state.newEventID,
       })
-      .then(response => {
+      .then((response) => {
         this.setState({
-          dayEventSelected: false
+          dayEventSelected: false,
+          showDeleteRecurringModal: false,
         });
         this.updateEventsArray();
       })
-
       .catch(function (error) {
         console.log(error);
       });
@@ -1198,7 +1203,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        dayEvents: []
+        dayEvents: [],
       },
       this.updateEventsArray
     );
@@ -1210,7 +1215,7 @@ export default class MainPage extends React.Component {
     this.setState(
       {
         dateContext: dateContext,
-        dayEvents: []
+        dayEvents: [],
       },
       this.updateEventsArray
     );
@@ -1237,14 +1242,17 @@ export default class MainPage extends React.Component {
       this.getEventsByIntervalDayVersion(
         this.state.dateContext.format("MM/DD/YYYY")
       );
-    } else if (this.state.calendarView === 'Week') {
+    } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
       let startDay = startObject.startOf("week");
       let endDay = endObject.endOf("week");
       let startDate = new Date(startDay.format("MM/DD/YYYY"));
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
-      this.getEventsByIntervalWeekVersion(startObject.toDate(),endObject.toDate());
+      this.getEventsByIntervalWeekVersion(
+        startObject.toDate(),
+        endObject.toDate()
+      );
     }
   };
 
@@ -1272,7 +1280,10 @@ export default class MainPage extends React.Component {
       repeatEndDate_temp: prevState.repeatEndDate,
       byDay_temp: prevState.byDay,
     }));
-    if (!this.state.repeatOption) {
+    if (
+      !this.state.repeatOption &&
+      this.state.repeatOptionDropDown === "Custom..."
+    ) {
       this.setState({
         repeatOptionDropDown: "Does not repeat",
       });
@@ -1553,10 +1564,9 @@ export default class MainPage extends React.Component {
     }
   };
 
-
-  hideAboutForm = e => {
+  hideAboutForm = (e) => {
     this.setState({
-      showAboutModal: false
+      showAboutModal: false,
     });
   };
 
@@ -1565,18 +1575,16 @@ export default class MainPage extends React.Component {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       // return this.aboutFormAbstracted();
-      return <AboutModal CameBackFalse={this.hideAboutForm}/>
+      return <AboutModal CameBackFalse={this.hideAboutForm} />;
     }
   };
 
   showCalendarView = () => {
-    if(this.state.calendarView === "Month")
-      return this.calendarAbstracted()
-    else if(this.state.calendarView === "Day")
-      return this.dayViewAbstracted()
-    else if(this.state.calendarView === "Week")
-      return this.weekViewAbstracted()
-  }
+    if (this.state.calendarView === "Month") return this.calendarAbstracted();
+    else if (this.state.calendarView === "Day") return this.dayViewAbstracted();
+    else if (this.state.calendarView === "Week")
+      return this.weekViewAbstracted();
+  };
 
   render() {
     //The variable below will help decide whether to center the Calendar object or not
@@ -1602,18 +1610,18 @@ export default class MainPage extends React.Component {
         }}
       >
         <div
-          style = {{
-            margin:'0',
-            padding:"0",
-            width:"100%"
+          style={{
+            margin: "0",
+            padding: "0",
+            width: "100%",
           }}
         >
           <Row style={{ margin: "0"}} className="d-flex flex-row">
             <div style={{float: "right", width: "80px", height: "70px"}}>
               <FontAwesomeIcon icon={faImage} size="5x"/>
             </div>
-            <div style={{float: "left", width: "227px", height: "50px"}}>
-              <p style = {{ marginTop:"25px"}}>First Last</p>
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              <p style={{ marginTop: "25px" }}>First Last</p>
             </div>
             {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
               <FontAwesomeIcon icon={faImage} size="5x"/>
@@ -1689,9 +1697,7 @@ export default class MainPage extends React.Component {
               </div>
             </Col>
             {/* <Col style={{ marginLeft: "25px" }}> */}
-            <Col >
-              {this.showDayViewOrAboutView()}
-            </Col>
+            <Col>{this.showDayViewOrAboutView()}</Col>
           </Row>
         </Container>
       </div>
@@ -1763,71 +1769,73 @@ export default class MainPage extends React.Component {
 
   weekViewAbstracted = () => {
     let startObject = this.state.dateContext.clone();
-    let startWeek = startObject.startOf('week')
+    let startWeek = startObject.startOf("week");
     return (
       <div
         style={{
-        borderRadius: "20px",
-        backgroundColor: "white",
-        width: "100%",
-        marginLeft: "10px",
-        padding: "20px",
-        // border:"1px black solid",
-        boxShadow:
-          "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
-      }}>
+          borderRadius: "20px",
+          backgroundColor: "white",
+          width: "100%",
+          marginLeft: "10px",
+          padding: "20px",
+          // border:"1px black solid",
+          boxShadow:
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}
+      >
         <Container>
-        <Container>
-          <Row style={{ marginTop: "0px" }}>
-            <Col>
-              <div>
+          <Container>
+            <Row style={{ marginTop: "0px" }}>
+              <Col>
+                <div>
+                  <FontAwesomeIcon
+                    style={{ marginLeft: "50%" }}
+                    icon={faChevronLeft}
+                    size="2x"
+                    className="X"
+                    onClick={(e) => {
+                      this.prevWeek();
+                    }}
+                  />
+                </div>
+              </Col>
+              <Col
+                md="auto"
+                style={{ textAlign: "center" }}
+                className="bigfancytext"
+              >
+                <p> Week of {startWeek.format("D MMMM YYYY")} </p>
+              </Col>
+              <Col>
                 <FontAwesomeIcon
                   style={{ marginLeft: "50%" }}
-                  icon={faChevronLeft}
+                  icon={faChevronRight}
                   size="2x"
                   className="X"
-                  onClick={e => {
-                    this.prevWeek();
+                  onClick={(e) => {
+                    this.nextWeek();
                   }}
                 />
-              </div>
-            </Col>
-            <Col md="auto" style={{ textAlign: "center" }} className="bigfancytext">
-              <p>
-                {" "}
-                Week of {startWeek.format('D MMMM YYYY')}{" "}
-              </p>
-            </Col>
-            <Col>
-              <FontAwesomeIcon
-                style={{ marginLeft: "50%" }}
-                icon={faChevronRight}
-                size="2x"
-                className="X"
-                onClick={e => {
-                  this.nextWeek();
-                }}
-              />
-            </Col>
-          </Row>
-        </Container>
+              </Col>
+            </Row>
+          </Container>
           <Row>
-              <WeekEvents
-                weekEvents={this.state.weekEvents}
-                dateContext={this.state.dateContext}
-                eventClick={this.handleWeekEventClick}
-              />
+            <WeekEvents
+              weekEvents={this.state.weekEvents}
+              dateContext={this.state.dateContext}
+              eventClick={this.handleWeekEventClick}
+            />
           </Row>
           <Row>
-              <WeekGoals />
+            <WeekGoals />
           </Row>
           <Row>
-              <WeekRoutines />
+            <WeekRoutines />
           </Row>
         </Container>
       </div>
-    )
-  }
+    );
+  };
 
   toggleShowRoutine = () => {
     this.setState({
@@ -1888,14 +1896,12 @@ export default class MainPage extends React.Component {
     return (
       // <Row>
 
-
-
       <Row
         style={{
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          // paddingRight: "165px",
+          paddingRight: "170px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1943,11 +1949,12 @@ export default class MainPage extends React.Component {
           style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
-            this.setState({
-              dateContext: moment()
-            },
-            this.updateEventsArray
-          );
+            this.setState(
+              {
+                dateContext: moment(),
+              },
+              this.updateEventsArray
+            );
           }}
         >
           Today
@@ -2001,7 +2008,12 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-          style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginRight:"200px"}}
+          style={{
+            display: "inline-block",
+            margin: "10px",
+            marginBottom: "0",
+            // marginRight: "200px",
+          }}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -2121,6 +2133,7 @@ export default class MainPage extends React.Component {
             //   newEventStart0={this.state.newEventStart0}
             // />
           }
+          {this.state.showDeleteRecurringModal && this.deleteRecurringModal()}
           {this.eventFormInputArea()}
         </Modal.Body>
         <Modal.Footer>
@@ -2172,7 +2185,11 @@ export default class MainPage extends React.Component {
                 <Button
                   style={this.state.isEvent ? {} : { display: "none" }}
                   variant="danger"
-                  onClick={this.deleteSubmit}
+                  onClick={() =>
+                    this.state.newEventRecurringID
+                      ? this.openDeleteRecurringModal()
+                      : this.deleteSubmit()
+                  }
                 >
                   {" "}
                   Delete
@@ -2475,6 +2492,212 @@ export default class MainPage extends React.Component {
     );
   };
 
+  openDeleteRecurringModal = () => {
+    console.log("opendeleterecurringmodal called");
+    this.setState((prevState) => {
+      return { showDeleteRecurringModal: !prevState.showDeleteRecurringModal };
+    });
+  };
+
+  closeDeleteRecurringModal = () => {
+    this.setState({
+      showDeleteRecurringModal: false,
+    });
+    // if (!this.state.repeatOption) {
+    //   this.setState({
+    //     repeatOptionDropDown: "Does not repeat",
+    //   });
+    // }
+  };
+
+  deleteRecurring = () => {
+    const {
+      deleteRecurringOption,
+      newEventRecurringID,
+      newEventStart0,
+      recurrenceRule,
+    } = this.state;
+    if (deleteRecurringOption === "This event") {
+      this.deleteSubmit();
+    } else if (deleteRecurringOption === "This and following events") {
+      let untilSubString = "";
+      let untilIndex = recurrenceRule.indexOf("UNTIL");
+      if (untilIndex !== -1) {
+        untilSubString = recurrenceRule.substring(untilIndex);
+      }
+      if (untilSubString.includes(";")) {
+        let endUntilIndex = untilSubString.indexOf(";");
+        untilSubString = untilSubString.substring(6, endUntilIndex);
+      } else if (untilSubString) {
+        untilSubString = untilSubString = untilSubString.substring(6);
+      }
+      axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: newEventRecurringID,
+            timeMin: newEventStart0,
+            timeMax: moment(untilSubString).toISOString(),
+          },
+        })
+        .then((res) => {
+          res.data.forEach((event) => {
+            axios
+              .delete("/deleteRecurringEvent", {
+                params: {
+                  eventId: event.id,
+                },
+              })
+              .then((res) => {
+                this.setState({
+                  dayEventSelected: false,
+                  showDeleteRecurringModal: false,
+                });
+                this.updateEventsArray();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          });
+        });
+
+      // axios
+      //   .delete("/")
+      // axios
+      // .post("/deleteEvent", {
+      //   ID: this.state.newEventID,
+      // })
+      // .then((response) => {
+      //   this.setState({
+      //     dayEventSelected: false,
+      //   });
+      //   this.updateEventsArray();
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
+    } else if (deleteRecurringOption === "All events") {
+      axios
+        .post("/deleteEvent", {
+          ID: newEventRecurringID,
+        })
+        .then((response) => {
+          this.setState({
+            dayEventSelected: false,
+            showDeleteRecurringModal: false,
+          });
+          this.updateEventsArray();
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  };
+
+  deleteRecurringModal = () => {
+    const modalStyle = {
+      position: "absolute",
+      left: "50%",
+      zIndex: "5",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "400px",
+    };
+
+    return (
+      <Modal.Dialog style={modalStyle}>
+        <Modal.Header closeButton onHide={this.closeDeleteRecurringModal}>
+          <Modal.Title>
+            <h5 className="normalfancytext">Delete Recurring Event</h5>
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            // padding: "85px 0",
+            height: "250px",
+            margin: "auto",
+          }}
+        >
+          <Form
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Form.Group
+              style={{
+                height: "60%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+              className="delete-repeat-form"
+              onChange={(e) => {
+                if (e.target.type === "radio") {
+                  this.setState({
+                    deleteRecurringOption: e.target.value,
+                  });
+                }
+              }}
+            >
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This event"
+                    name="radios"
+                    defaultChecked={
+                      this.state.deleteRecurringOption === "This event" && true
+                    }
+                  />
+                  This event
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This and following events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.deleteRecurringOption ===
+                        "This and following events" && true
+                    }
+                  />
+                  This and following events
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="All events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.deleteRecurringOption === "All events" && true
+                    }
+                  />
+                  All events
+                </Form.Check.Label>
+              </Form.Check>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.closeDeleteRecurringModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.deleteRecurring}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
+  };
+
   eventFormInputArea = () => {
     return (
       <Form>
@@ -2552,7 +2775,7 @@ export default class MainPage extends React.Component {
                   placeholder="Location"
                 />
               </Form.Group>
-              <Form.Group >
+              <Form.Group>
                 <Form.Label>Notifications:</Form.Label>
                 <Row>
                   <Col style={{ paddingRight: "0px" }}>
@@ -2560,10 +2783,8 @@ export default class MainPage extends React.Component {
                       value={this.state.newEventNotification}
                       onChange={this.handleNotificationChange}
                       type="number"
-
                       placeholder="5"
-                      style = {{width:"70px", marginTop:".25rem"}}
-
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
                   <Col xs={8} style={{ paddingLeft: "0px" }}>
@@ -2679,10 +2900,8 @@ export default class MainPage extends React.Component {
                       // value={this.state.newEventNotification}
                       // onChange={this.handleNotificationChange}
                       type="number"
-
                       placeholder="5"
-                      style = {{width:"70px", marginTop:".25rem"}}
-
+                      style={{ width: "70px", marginTop: ".25rem" }}
                     />
                   </Col>
                   <Col xs={8} style={{ paddingLeft: "0px" }}>
@@ -3003,22 +3222,22 @@ when there is a change in the event form
         //get normal google calendar data for possible future use
         params: {
           start: start0,
-          end: end0
-        }
+          end: end0,
+        },
       })
-      .then(response => {
+      .then((response) => {
         var events = response.data;
         this.setState(
           {
-            weekEvents: events
-          },
+            weekEvents: events,
+          }
           // () => {
           //   console.log("New Events Arrived");
           //   console.log(this.state.weekEvents)
           // }
         );
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("Error Occurred " + error);
       });
   };
