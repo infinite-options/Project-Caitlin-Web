@@ -15,8 +15,6 @@ export default class WeekEvents extends Component {
           eventBoxSize: 80, //width size for event box
           marginFromLeft: 0
       }
-      // console.log(this.props.dateContext.format('MM/DD/YYYY'))
-      // dateContext prop should be Sunday of current week
   }
 
 
@@ -80,6 +78,8 @@ export default class WeekEvents extends Component {
   getEventItem = (day, hour) => {
       let startObject = this.props.dateContext.clone();
       let startDay = startObject.startOf("week");
+      let curDate = startDay.clone();
+      curDate.add(day,'days');
       var res = []
       var tempStart = null;
       var tempEnd = null;
@@ -98,63 +98,11 @@ export default class WeekEvents extends Component {
           let tempEndTime = new Date(tempEnd);
           let startDate = moment(tempStartTime);
           let endDate = moment(tempEndTime)
-          for(let dateContext = startDate.clone(); dateContext.isSameOrBefore(endDate,'day'); dateContext.add(1,'days')) {
-            let curDate = dateContext.get('date');
-            if (dateContext.get('day') === day) {
-                if (tempStartTime.getDate() ===  curDate) {
-                    if (tempStartTime.getHours() === hour) {
-                        if (tempStartTime.getDate() !==  tempEndTime.getDate()) {
-                            let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
-                            let hourDiff = 24 - tempStartTime.getHours();
-                            let minDiff = 0;
-                            let color = 'lavender';
-                            let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
-                            sameTimeEventCount++;
-                            let newElement =
-                                (
-                                    <div key={"event" + i}>
-                                        <div
-
-                                            data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
-                                            onMouseOver={e => {
-                                                e.target.style.color = "#FFFFFF";
-                                                e.target.style.background = "RebeccaPurple";
-                                                e.target.style.zIndex = "2";
-                                            }}
-                                            onMouseOut={e => {
-                                                e.target.style.zIndex = "1";
-                                                e.target.style.color = "#000000";
-                                                e.target.style.background = color;
-                                            }}
-                                            key={i}
-                                            // value = {i}
-                                            onClick={e => this.onEventClick(e, i)}
-                                            style={{
-                                                zIndex: this.state.zIndex,
-                                                marginTop: minsToMarginTop + "px",
-                                                padding: "5px",
-                                                fontSize: fontSize + "px",
-                                                border: "1px lightgray solid ",
-                                                float: "left",
-                                                //  verticalAlign: " ",
-                                                // verticalAlign: 'text-top',
-                                                // textAlign:"left",
-                                                borderRadius: "5px",
-                                                background: color,
-                                                // width: this.state.eventBoxSize - (addmarginLeft/16),
-                                                width: itemWidth + "px",
-                                                position: "absolute",
-                                                height: height + "px",
-                                                marginLeft: addmarginLeft + "px"
-                                            }}>
-                                            {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
-                                            {arr[i].summary}
-                                        </div>
-                                    </div>
-                                );
-                            res.push(newElement);
-                        } else if (tempStartTime.getDate() ===  tempEndTime.getDate()) {
-                            // addmarginLeft = 0;
+          if(curDate.isSameOrAfter(startDate,'day') && curDate.isSameOrBefore(endDate,'day')) {
+            if (startDate.date() ===  curDate.date()) {
+                if (startDate.hour() === hour) {
+                    if(startDate.date() === endDate.date()) {
+                        // addmarginLeft = 0;
                             // itemWidth = this.state.eventBoxSize;
                             let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                             let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
@@ -241,9 +189,61 @@ export default class WeekEvents extends Component {
                                     </div>
                                 );
                             res.push(newElement);
-                        }
-                    } else if ( hour === 0 && tempStartTime.getDate() !== curDate && tempEndTime.getDate() ===  curDate) {
-                        let minsToMarginTop = 0
+                    } else if(startDate.date() !== endDate.date()) {
+                        let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
+                            let hourDiff = 24 - tempStartTime.getHours();
+                            let minDiff = 0;
+                            let color = 'lavender';
+                            let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+                            sameTimeEventCount++;
+                            let newElement =
+                                (
+                                    <div key={"event" + i}>
+                                        <div
+
+                                            data-toggle="tooltip" data-placement="right" title={arr[i].summary + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
+                                            onMouseOver={e => {
+                                                e.target.style.color = "#FFFFFF";
+                                                e.target.style.background = "RebeccaPurple";
+                                                e.target.style.zIndex = "2";
+                                            }}
+                                            onMouseOut={e => {
+                                                e.target.style.zIndex = "1";
+                                                e.target.style.color = "#000000";
+                                                e.target.style.background = color;
+                                            }}
+                                            key={i}
+                                            // value = {i}
+                                            onClick={e => this.onEventClick(e, i)}
+                                            style={{
+                                                zIndex: this.state.zIndex,
+                                                marginTop: minsToMarginTop + "px",
+                                                padding: "5px",
+                                                fontSize: fontSize + "px",
+                                                border: "1px lightgray solid ",
+                                                float: "left",
+                                                //  verticalAlign: " ",
+                                                // verticalAlign: 'text-top',
+                                                // textAlign:"left",
+                                                borderRadius: "5px",
+                                                background: color,
+                                                // width: this.state.eventBoxSize - (addmarginLeft/16),
+                                                width: itemWidth + "px",
+                                                position: "absolute",
+                                                height: height + "px",
+                                                marginLeft: addmarginLeft + "px"
+                                            }}>
+                                            {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
+                                            {arr[i].summary}
+                                        </div>
+                                    </div>
+                                );
+                            res.push(newElement);
+                    }
+                }
+            } else if (hour === 0) {
+                if(endDate.date() ===  curDate.date()) {
+                    let minsToMarginTop = 0
                         let hourDiff = tempEndTime.getHours();
                         let minDiff = (tempEndTime.getMinutes()) / 60;
                         let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
@@ -291,10 +291,9 @@ export default class WeekEvents extends Component {
                                 </div>
                             );
                             res.push(newElement);
-                    } else if (hour === 0 && tempStartTime.getDate() < curDate &&tempEndTime.getDate() > curDate) {
-                        let minsToMarginTop = 0
-                        let hourDiff = 24
-                        let height = (hourDiff) * this.state.pxPerHourForConversion;
+                } else {
+                    let minsToMarginTop = 0
+                        let height = 24 * this.state.pxPerHourForConversion;
                         let color = 'lavender';
                         sameTimeEventCount++;
                         let newElement =
@@ -338,11 +337,10 @@ export default class WeekEvents extends Component {
                                     </div>
                                 </div>
                             );
-                        res.push(newElement);
-                    }
+                            res.push(newElement);
                 }
             }
-        }
+          }
       }
       return res;
   }
