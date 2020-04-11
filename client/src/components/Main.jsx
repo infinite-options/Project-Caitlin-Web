@@ -1727,7 +1727,7 @@ export default class MainPage extends React.Component {
                 />
               </div>
             </Col>
-            <Col style={{ textAlign: "center" }} className="bigfancytext">
+            <Col md="auto" style={{ textAlign: "center" }} className="bigfancytext">
               <p>
                 {" "}
                 {this.state.dateContext.format('dddd')} {this.getDay()} {this.getMonth()} {this.getYear()}{" "}
@@ -1915,14 +1915,6 @@ export default class MainPage extends React.Component {
         >
           <Dropdown.Item
             onClick={e => {
-              this.changeCalendarView("Month");
-            }}
-          >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
               this.changeCalendarView("Day");
             }}
           >
@@ -1936,6 +1928,14 @@ export default class MainPage extends React.Component {
           >
             {" "}
             Week{" "}
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={e => {
+              this.changeCalendarView("Month");
+            }}
+          >
+            {" "}
+            Month{" "}
           </Dropdown.Item>
         </DropdownButton>
         </div>

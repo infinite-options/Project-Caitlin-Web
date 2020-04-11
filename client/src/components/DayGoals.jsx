@@ -13,7 +13,6 @@ export default class DayGoals extends Component {
             goals: [], //array to hold all  goals
             routines: [], // array to hold all routines
             dayEvents: [], //holds google events data for a single day
-            todayDateObject: moment("03/02/2020"), //this is the date of interset for events to be displaye
             pxPerHour: "30px", //preset size for all columns
             pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
             zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
@@ -82,7 +81,7 @@ export default class DayGoals extends Component {
         }
         return arr
     }
-   
+
     GoalClicked  = ()=>{
         this.props.dayGoalClick();
     }
@@ -151,12 +150,12 @@ export default class DayGoals extends Component {
                         // overlapEvent++;
                     }
                 }
-                
-                
+
+
                 if(sameTimeEventCount > 1  ){
                     // console.log("In here because same hour  ");
                     // console.log("add 20");
-                     addmarginLeft += 20; 
+                     addmarginLeft += 20;
                     // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
                     // itemWidth = itemWidth/(sameHourItems-1);
                     itemWidth = itemWidth - 20;
@@ -165,12 +164,12 @@ export default class DayGoals extends Component {
                 }
                 // console.log(addmarginLeft);
                 // console.log("end of this element ");
-                
-                //chnage font size if not enough space 
+
+                //chnage font size if not enough space
                 if((tempEndTime.getHours() - tempStartTime.getHours()) < 2){
                     fontSize = 8;
                 }
-                // change color if more than one event in same time. 
+                // change color if more than one event in same time.
                 if(sameTimeEventCount <= 1){
                      color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                 }
@@ -207,10 +206,10 @@ export default class DayGoals extends Component {
                             // fontSize: "10px",
                             border: "1px lightgray solid ",
                             // float: "left",
-                            borderRadius: "5px", 
+                            borderRadius: "5px",
                             // background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
                             // width: this.state.eventBoxSize,
-                            position: "absolute", 
+                            position: "absolute",
                             height: height + "px",
 
                             fontSize: fontSize + "px",

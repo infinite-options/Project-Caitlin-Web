@@ -9,8 +9,6 @@ export default class WeekGoals extends Component {
       super(props);
       // console.log(this.props.dateContext);
       this.state = {
-          dayEvents: [], //holds google events data for a single day
-          todayDateObject: moment("03/07/2020"), //this is the date of interset for events to be displaye
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
