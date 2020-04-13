@@ -20,6 +20,9 @@ Bugs
 a time, it will mess up the calendar display.
 */
 
+//  Adding the firebase storage 
+// var admin = require("firebase-admin");
+
 var express = require("express");
 var app = express();
 app.use(express.static(__dirname + "/build")); //REC

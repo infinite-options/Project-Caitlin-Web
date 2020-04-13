@@ -133,10 +133,10 @@ export default class AddNewISItem extends Component {
     let rhours = Math.floor(hours);
     let minutes = (hours - rhours)* 60;
     let rminutes = Math.round(minutes);
-    if (rhours.toString().length == 1) {
+    if (rhours.toString().length === 1) {
         rhours = "0" + rhours;
     }
-    if (rminutes.toString().length == 1) {
+    if (rminutes.toString().length === 1) {
         rminutes = "0" + rminutes;
     }
     // console.log(rhours+":" + rminutes +":" + "00");

@@ -10,6 +10,7 @@ import {
   Dropdown,
   DropdownButton,
 } from "react-bootstrap";
+import firebase from "./firebase";
 import Firebasev2 from "./Firebasev2.jsx";
 import "./App.css";
 import moment from "moment";
@@ -21,8 +22,6 @@ import WeekEvents from "./WeekEvents.jsx";
 import WeekRoutines from "./WeekRoutines.jsx";
 import WeekGoals from "./WeekGoals.jsx";
 import AboutModal from "./AboutModal.jsx";
-// import RepeatModal from "./RepeatModal.jsx";
-// import EventBeforeChecked from "./EventBeforeChecked.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -95,7 +94,8 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
-      // repeatOccurrence: newEventStart0
+      profilePicUrl: "",
+      profileName: ""
     };
   }
 
@@ -148,7 +148,35 @@ export default class MainPage extends React.Component {
 
   componentDidMount() {
     this.updateEventsArray();
+    this.updateProfilePicFromFirebase();
   }
+
+
+  /*Grabs the URL the the profile pic from the about me modal to 
+  display on the top left corner.
+  */
+  updateProfilePicFromFirebase = ()=> {
+    const db = firebase.firestore();
+    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          var x = doc.data();
+          x = x["about_me"];
+          this.setState({
+            profilePicUrl: x.pic,
+            profileName: x.name
+          });
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+  }
+
   /*
   getThisMonthEvents:
   By passing in a empty interval, this method will get a response from the server with
@@ -1554,22 +1582,24 @@ export default class MainPage extends React.Component {
     });
   };
 
+
+
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       // return this.aboutFormAbstracted();
-      return <AboutModal CameBackFalse={this.hideAboutForm}/>
+      return <AboutModal CameBackFalse={this.hideAboutForm} />
     }
   };
 
   showCalendarView = () => {
     if(this.state.calendarView === "Month")
-      return this.calendarAbstracted()
+      return this.calendarAbstracted();
     else if(this.state.calendarView === "Day")
-      return this.dayViewAbstracted()
+      return this.dayViewAbstracted();
     else if(this.state.calendarView === "Week")
-      return this.weekViewAbstracted()
+      return this.weekViewAbstracted();
   };
 
   render() {
@@ -1586,7 +1616,7 @@ export default class MainPage extends React.Component {
         style={{
           marginLeft: "0px",
           height: "100%",
-          width: "2000px",
+          width: "2000px"
           // width: "100%",
           // display: "flex",
           // flexDirection: "column",
@@ -1603,22 +1633,27 @@ export default class MainPage extends React.Component {
           }}
         >
           <Row style={{ margin: "0"}} className="d-flex flex-row">
-            <div style={{float: "right", width: "80px", height: "70px"}}>
-              <FontAwesomeIcon icon={faImage} size="5x"/> 
-            </div>
-            <div style={{float: "left", width: "227px", height: "50px"}}>
-              <p style = {{ marginTop:"25px"}}>First Last</p>
-            </div>
-            {/* <Col xs={1} style = {{paddingRight:"0px", textAlign:"left"}}>
-              <FontAwesomeIcon icon={faImage} size="5x"/> 
-            </Col>
-            <Col xs={9} style = {{paddingLeft: "0px"}}>
-              <p style = {{marginBottom:"0px", marginTop:"15px"}}>First Last</p>
-            </Col> */}
-              {/* <col style = {{marginLeft:"20px", marginRight:"20px"}}>
-                <FontAwesomeIcon icon={faImage} size="5x"/> 
-                <p style = {{marginBottom:"0px"}}>First Last</p>
-              </span> */}
+            <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px"}}>
+            {(this.state.profilePicUrl === ""  ? 
+              <FontAwesomeIcon icon={faImage} size="5x"/> : 
+              <img style = 
+                  {{display: "block",
+                  marginLeft: "auto",
+                  marginRight:"auto" ,
+                  width: "100%",
+                  height:"70px",
+                  }}
+                  src={this.state.profilePicUrl}
+                  alt="Profile"
+              /> )}
+              </div>
+              
+              <div style={{float: "left", width: "227px", height: "50px"}}>
+                 {(this.state.profileName === "" ? 
+                  <p style = {{ marginTop:"25px", marginLeft:"10px"}}>First Last</p>:
+                  <p style = {{ marginTop:"25px", marginLeft:"10px"}}>{this.state.profileName}</p>
+                 )}
+              </div>   
           </Row>
         </div>
 
@@ -1626,7 +1661,7 @@ export default class MainPage extends React.Component {
           style={{
             margin: "0",
             padding: "0",
-            width: "100%",
+            width: "100%"
           }}
         >
           {this.abstractedMainEventGRShowButtons()}
@@ -1635,7 +1670,7 @@ export default class MainPage extends React.Component {
           fluid
           style={{
             marginTop: "15px",
-            marginLeft: "0",
+            marginLeft: "0"
             // display: "flex",
             // flexDirection: "column",
             // justifyContent: "center",
@@ -1645,7 +1680,7 @@ export default class MainPage extends React.Component {
         >
           <Row
             style={{
-              marginTop: "0",
+              marginTop: "0"
               // width: "100%",
               // display: "flex",
               // flexDirection: "column",
@@ -1880,16 +1915,13 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
-      // <Row>
-      
-        
-      
+      // <Row>    
       <Row
         style={{
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          paddingRight: "165px",
+          paddingRight: "170px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -1995,7 +2027,7 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-          style={{ display: "inline-block", margin: "10px", marginBottom: "0", marginRight:"200px"}}
+          style={{ display: "inline-block", margin: "10px", marginBottom: "0"}}
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -2005,14 +2037,8 @@ export default class MainPage extends React.Component {
           }}
         >
           About
-        </Button>
-       
+        </Button>  
       </Row>
-        // <Button >
-        //   <FontAwesomeIcon icon={faImage} size="5x"/> 
-        //   <p>First Last</p>
-        // </Button>
-      // </Row>
     );
   };
 
