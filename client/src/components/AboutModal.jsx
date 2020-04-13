@@ -1,43 +1,82 @@
 import React from 'react';
+import firebase from "./firebase";
 import { Form,Row,Col ,Modal,Button,Container} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImage
 } from "@fortawesome/free-solid-svg-icons";
+import { storage } from './firebase';
 
 class AboutModal extends React.Component{
 
     constructor(props) {
         super(props);
         this.state={
+            firebaseRootPath: firebase
+            .firestore()
+            .collection("users")
+            .doc("7R6hAVmDrNutRkG3sVRy"),
             file: null,
-            // image1Click: null
             file2: null,
             file3: null,
-            file4: null
+            file4: null,
+            aboutMeObject: {},
+            peopleObject: {},
+            saveButtonEnabled: true
         }
     }
 
+    componentDidMount() {
+        this.grabFireBaseAboutMeData();
+        this.grabFireBasePeopleData();
+        // console.log('INSIDE', this.state.aboutMeObject);
+    }t
+
     handleFileSelected = event => {
-      console.log(event.target.files[0]);
-      if(event.target.files[0] != null){
-      event.preventDefault(); event.stopPropagation()
-      this.setState({
-        file: URL.createObjectURL(event.target.files[0])
-      });
-     }
+        event.preventDefault(); 
+        event.stopPropagation();                
+        const file = event.target.files[0];
+        this.setState({
+            saveButtonEnabled: false
+        }, ()=>{
+            let targetFile = file
+            if(targetFile != null && Object.keys(this.state.aboutMeObject).length != 0 ){
+                let temp = this.state.aboutMeObject;
+    
+                // Create a reference to the firebase storage. 
+                var storageRef = storage.ref('Profile_Pics/' + targetFile.name);
+                //upload file to firebase storage
+                var task = storageRef.put(targetFile);
+                //check on the the upload progress
+                task.on('state_changed',
+                    function progress(snapshot){
+                        //get percentage uplaoded 
+                        var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
+                        console.log(percentage);
+    
+                    },
+                    function error(err){
+                        console.log(err);
+                    },
+                    (snapshot) =>{
+                        temp.have_pic = true;
+                        console.log("completed");
+                        storage.ref('Profile_Pics').child(targetFile.name).getDownloadURL().then(url => {
+                            // console.log(url);
+                            temp.pic = url;
+                            this.setState({
+                                aboutMeObject: temp,
+                                saveButtonEnabled: true
+                            }); 
+                        });
+                    }
+                );     
+            }}); 
     };
   
     hideAboutForm = e => {
       this.props.CameBackFalse();   
     };
-
-    // handleImageClick = ()=> {
-    //     console.log("I am in here");
-    //     this.setState({
-    //         image1Click: true
-    //       });
-    // }
 
     handleImpPeople1 = (event) =>{
         if(event.target.files[0] != null){
@@ -46,6 +85,7 @@ class AboutModal extends React.Component{
           });
         }
     }
+
     handleImpPeople2 = (event) =>{
         if(event.target.files[0] != null){
         this.setState({
@@ -53,6 +93,7 @@ class AboutModal extends React.Component{
           });
         }
     }
+
     handleImpPeople3 = (event) =>{
         if(event.target.files[0] != null){
         this.setState({
@@ -61,7 +102,63 @@ class AboutModal extends React.Component{
         }
     }
 
+    grabFireBasePeopleData = () =>{
+        // const db = firebase.firestore();
+        // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy").collection("people").doc("dRyk732Hqs6qqUxgUDe");
+        // docRef
+        //   .get()
+        //   .then(doc => {
+        //     if (doc.exists) {
+        //       var x = doc.data()['people'];
+              
+        //       console.log("this is people object", x);
+        //       this.setState({
+        //         peopleObject: x
+        //       });
+              
+        //     } else {
+        //       console.log("No such document!");
+        //     }
+        //   })
+        //   .catch(function(error) {
+        //     console.log("Error getting document:", error);
+        //   });
+    }
+
+    grabFireBaseAboutMeData = () => {
+        const db = firebase.firestore();
+        const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+        docRef
+          .get()
+          .then(doc => {
+            if (doc.exists) {
+              var x = doc.data();
+              x = x["about_me"];
+              this.setState({
+                aboutMeObject: x
+              });
+              
+            } else {
+              console.log("No such document!");
+            }
+          })
+          .catch(function(error) {
+            console.log("Error getting document:", error);
+          });
+      };
+
+    newInputSubmit = () => {
+        let newArr = this.state.aboutMeObject;
+        this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
+            (doc) => {
+                this.hideAboutForm();   
+            }
+        )
+    }
+
     render(){
+        // console.log("looook heere");
+        // console.log('IN', this.state.aboutMeObject.pic);
         return (
             <div>
                 <Modal.Dialog
@@ -77,9 +174,6 @@ class AboutModal extends React.Component{
                 <Modal.Header
                 closeButton
                 onHide={() => {
-                    // this.setState({
-                    // showAboutModal: false
-                    // });
                     this.hideAboutForm();
                 }}
                 >
@@ -88,9 +182,20 @@ class AboutModal extends React.Component{
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Name:</Form.Label>
+                        <Form.Control
+                        type="text"
+                        placeholder="First Last"
+                        value={this.state.aboutMeObject.name}
+                        onChange={
+                            (e) => { e.stopPropagation(); let temp = this.state.aboutMeObject; temp.name = e.target.value; this.setState({ aboutMeObject: temp }) }
+                        }
+                        />
+                    </Form.Group>
                     <Row>
-                        <Col>
-                            {(this.state.file === null ? 
+                        <Col>  
+                            {(this.state.aboutMeObject.have_pic === false  ? 
                             <FontAwesomeIcon icon={faImage} size="6x"/> : 
                             <img style = 
                                 {{display: "block",
@@ -99,13 +204,15 @@ class AboutModal extends React.Component{
                                 width: "100%",
                                 height:"70px",
                                 }}
-                                accept="image/*"
-                                src={this.state.file } alt="Profile Picture"
-                            /> )}
+                                src={this.state.aboutMeObject.pic}
+                                alt="Profile"
+                            /> )
+                            }
                         </Col>
                         <Col xs={8}>
                         <label >Upload A New Image</label>
                         <input
+                             accept="image/*"
                             type="file"
                             onChange={this.handleFileSelected}
                             id="ProfileImage"
@@ -118,9 +225,12 @@ class AboutModal extends React.Component{
                         <Form.Control
                         as="textarea"
                         rows="4"
-                        // value={this.state.newEventDescription}
                         type="text"
                         placeholder="You are a strong ..."
+                        value={this.state.aboutMeObject.message_day}
+                        onChange={
+                             (e) => { e.stopPropagation(); let temp = this.state.aboutMeObject; temp.message_day = e.target.value; this.setState({ aboutMeObject: temp }) }
+                        }
                         />
                     </Form.Group>
                     <Form.Group controlId="AboutMessageCard">
@@ -130,6 +240,10 @@ class AboutModal extends React.Component{
                         rows="4"
                         type="text"
                         placeholder="You are a safe ..."
+                        value={this.state.aboutMeObject.message_card}
+                        onChange={
+                            (e) => { e.stopPropagation(); let temp = this.state.aboutMeObject; temp.message_card = e.target.value; this.setState({ aboutMeObject: temp }) }
+                       }
                         />
                     </Form.Group>
                     <Form.Group >
@@ -179,7 +293,6 @@ class AboutModal extends React.Component{
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
-                                {/* <FontAwesomeIcon icon={faImage} size="5x" /> */}
                                 {(this.state.file4 === null ? 
                                 <FontAwesomeIcon icon={faImage} size="6x"  /> : 
                                 <img style = 
@@ -204,9 +317,16 @@ class AboutModal extends React.Component{
                     <Container fluid>
                         <Row>
                             <Col xs={4}>
-                                <Button variant="info" type="submit">
-                                Save
-                                </Button>
+                            {(this.state.saveButtonEnabled === false  ? 
+                            <Button variant="info" type="submit" disabled>
+                            Save
+                            </Button>: 
+                            <Button variant="info" type="submit" onClick={(e) => {e.stopPropagation(); this.newInputSubmit()}}>
+                            Save
+                            </Button>)}
+                                {/* // <Button variant="info" type="submit" onClick={(e) => {e.stopPropagation(); this.newInputSubmit()}} disabled>
+                                // Save
+                                // </Button> */}
                             </Col>
                             <Col xs={4}>
                                 <Button variant="secondary" onClick={this.hideAboutForm}>

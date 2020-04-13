@@ -1,4 +1,6 @@
 import * as firebase from 'firebase';
+// import { storage } from 'firebase-admin';
+import 'firebase/storage';
 
 var firebaseConfig = {
     apiKey: "AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE",
@@ -11,4 +13,16 @@ var firebaseConfig = {
     measurementId: "G-DCQF4LY5ZH"
   };
 
-export default !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+  firebase.initializeApp(firebaseConfig);
+  firebase.auth().signInAnonymously().catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ...
+  });
+  var storage = firebase.storage();
+  // var admin = require("firebase-admin");
+  // var storage = firebase.storage();
+
+// export default !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+export {storage, firebase as default};
