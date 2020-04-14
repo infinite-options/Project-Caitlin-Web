@@ -20,7 +20,7 @@ Bugs
 a time, it will mess up the calendar display.
 */
 
-//  Adding the firebase storage 
+//  Adding the firebase storage
 // var admin = require("firebase-admin");
 
 var express = require("express");
@@ -334,12 +334,19 @@ and delete it.
 */
 app.put("/updateEvent", function (req, result) {
   console.log("update request recieved");
-  console.log(req.body.extra);
+  console.log(req.body.ID, req.body.extra);
 
   let newEvent = req.body.extra;
 
   calendar.events.update(
-    { calendarId: calendarID, eventId: req.body.ID, resource: newEvent },
+    {
+      calendarId: calendarID,
+      eventId: req.body.ID,
+      // start: newEvent.start,
+      // end: newEvent.end,
+      resource: newEvent,
+      // summary: newEvent.summary,
+    },
     (err, res) => {
       //CallBack
       if (err) {
