@@ -185,22 +185,39 @@ app.get("/getRecurringEventInstances", (req, result) => {
   );
 
   if (req.query.recurringEventId) {
-    calendar.events.instances(
-      {
-        calendarId: calendarID,
-        eventId: req.query.recurringEventId,
-        timeMin: req.query.timeMin,
-        timeMax: req.query.timeMax,
-      },
-      (err, res) => {
-        //CallBack
-        if (err) {
-          return result.send("The get request returned an error: " + err);
+    if (!req.query.timeMin) {
+      calendar.events.instances(
+        {
+          calendarId: calendarID,
+          eventId: req.query.recurringEventId,
+        },
+        (err, res) => {
+          //CallBack
+          if (err) {
+            return result.send("The get request returned an error: " + err);
+          }
+          console.log(res.data, "getRecurringEventInstances");
+          result.json(res.data.items);
         }
-        console.log(res.data, "getRecurringEventInstances");
-        result.json(res.data.items);
-      }
-    );
+      );
+    } else {
+      calendar.events.instances(
+        {
+          calendarId: calendarID,
+          eventId: req.query.recurringEventId,
+          timeMin: req.query.timeMin,
+          timeMax: req.query.timeMax,
+        },
+        (err, res) => {
+          //CallBack
+          if (err) {
+            return result.send("The get request returned an error: " + err);
+          }
+          console.log(res.data, "getRecurringEventInstances");
+          result.json(res.data.items);
+        }
+      );
+    }
   }
 });
 

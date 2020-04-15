@@ -99,6 +99,8 @@ export default class MainPage extends React.Component {
       profileName: "",
       showDeleteRecurringModal: false,
       deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     };
   }
 
@@ -262,6 +264,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
 
@@ -325,6 +333,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
   repeatSummaryCompute = () => {
@@ -654,7 +668,7 @@ export default class MainPage extends React.Component {
   handleEventClick = (i) => {
     // bind with an arrow function
     let A = this.state.originalEvents[i];
-    console.log("A", A.recurringEventId);
+    console.log("A", A);
     if (A.recurringEventId) {
       axios
         .get("/getRecurringRules", {
@@ -684,6 +698,7 @@ export default class MainPage extends React.Component {
     }
     this.setState(
       {
+        newEvent: A,
         newEventID: A.id,
         newEventRecurringID: A.recurringEventId,
         newEventStart0: A.start.dateTime
@@ -736,6 +751,12 @@ export default class MainPage extends React.Component {
           5: "",
           6: "",
         },
+        repeatSummary: "",
+        recurrenceRule: "",
+        showDeleteRecurringModal: false,
+        deleteRecurringOption: "This event",
+        showEditRecurringModal: false,
+        editRecurringOption: "",
       },
       () => {
         console.log("callback from handEventClick");
@@ -794,6 +815,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
 
@@ -854,6 +881,12 @@ export default class MainPage extends React.Component {
           5: "",
           6: "",
         },
+        repeatSummary: "",
+        recurrenceRule: "",
+        showDeleteRecurringModal: false,
+        deleteRecurringOption: "This event",
+        showEditRecurringModal: false,
+        editRecurringOption: "",
       },
       console.log("handledateclick")
     );
@@ -946,7 +979,7 @@ export default class MainPage extends React.Component {
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = (eventList, index) => {
+  updateRequest = async (eventList, index) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -1000,18 +1033,94 @@ export default class MainPage extends React.Component {
       description: updatedEvent.description,
       start: updatedEvent.start,
       end: updatedEvent.end,
-      recurrence: updatedEvent.recurrence,
+      recurrence: updatedEvent.recurrence ? updatedEvent.recurrence : false,
       reminders: updatedEvent.reminders,
     };
 
     console.log(updatedEvent, "updatedEvent");
 
+    let ID = "";
+    if (this.state.editRecurringOption === "All events") {
+      ID = updatedEvent.recurringEventId;
+      console.log("All events");
+
+      await axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: updatedEvent.recurringEventId,
+          },
+        })
+        .then((res) => {
+          event.start = res.data[0].start;
+          event.end = res.data[0].end;
+        });
+    } else if (this.state.editRecurringOption === "This event") {
+      ID = this.state.newEventID;
+      event.recurrence = null;
+    } else if (this.state.editRecurringOption === "This and following events") {
+      ID = updatedEvent.recurringEventId;
+      let newEvent = {
+        reminders: this.state.newEvent.reminders,
+        creator: this.state.newEvent.creator,
+        created: this.state.newEvent.created,
+        organizer: this.state.newEvent.organizer,
+        sequence: this.state.newEvent.sequence,
+        status: this.state.newEvent.status,
+      };
+      let newRecurrenceRule = this.state.recurrenceRule;
+      let newUntilSubString = `${moment(this.state.newEventStart0).format(
+        "YYYYMMDD"
+      )}`;
+
+      let untilSubString = "";
+      let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
+      if (untilIndex !== -1) {
+        untilSubString = this.state.recurrenceRule.substring(untilIndex);
+      }
+      if (untilSubString.includes(";")) {
+        let endUntilIndex = untilSubString.indexOf(";");
+        untilSubString = untilSubString.substring(6, endUntilIndex);
+      } else if (untilSubString) {
+        untilSubString = untilSubString = untilSubString.substring(6);
+      }
+
+      newRecurrenceRule = newRecurrenceRule.replace(
+        untilSubString,
+        newUntilSubString
+      );
+      console.log(newEvent.summary, this.state.newEvent.summary);
+      await axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: updatedEvent.recurringEventId,
+          },
+        })
+        .then((res) => {
+          newEvent.start = res.data[0].start;
+          newEvent.end = res.data[0].end;
+          newEvent.recurrence = [newRecurrenceRule];
+          newEvent.summary = res.data[0].summary;
+          axios
+            .post("/createNewEvent", {
+              newEvent: newEvent,
+            })
+            .then((res) => {
+              console.log("createnewevent", res);
+              this.setState({
+                dayEventSelected: false,
+              });
+              this.updateEventsArray();
+            })
+            .catch(function (error) {
+              // console.log(error);
+            });
+        });
+    }
+
     axios
       .put("/updateEvent", {
         extra: event,
-        ID: updatedEvent.recurringEventId
-          ? updatedEvent.recurringEventId
-          : this.state.newEventID,
+        ID: updatedEvent.recurringEventId ? ID : this.state.newEventID,
         // start: updatedEvent.start,
         // end: updatedEvent.end,
       })
@@ -2203,6 +2312,7 @@ export default class MainPage extends React.Component {
             // />
           }
           {this.state.showDeleteRecurringModal && this.deleteRecurringModal()}
+          {this.state.showEditRecurringModal && this.editRecurringModal()}
           {this.eventFormInputArea()}
         </Modal.Body>
         <Modal.Footer>
@@ -2239,7 +2349,11 @@ export default class MainPage extends React.Component {
                 xs={4}
               >
                 <Button
-                  onClick={this.updateEventClick}
+                  onClick={(e) =>
+                    this.state.newEventRecurringID
+                      ? this.openEditRecurringModal()
+                      : this.updateEventClick(e)
+                  }
                   className="btn btn-info"
                 >
                   Update
@@ -2561,6 +2675,19 @@ export default class MainPage extends React.Component {
     );
   };
 
+  openEditRecurringModal = () => {
+    console.log("openeditrecurringmodal called");
+    this.setState((prevState) => {
+      return { showEditRecurringModal: !prevState.showEditRecurringModal };
+    });
+  };
+
+  closeEditRecurringModal = () => {
+    this.setState({
+      showEditRecurringModal: false,
+    });
+  };
+
   openDeleteRecurringModal = () => {
     console.log("opendeleterecurringmodal called");
     this.setState((prevState) => {
@@ -2621,11 +2748,11 @@ export default class MainPage extends React.Component {
                   dayEventSelected: false,
                   showDeleteRecurringModal: false,
                 });
+                this.updateEventsArray();
               })
               .catch(function (error) {
                 console.log(error);
               });
-            this.updateEventsArray();
           });
         });
 
@@ -2660,6 +2787,115 @@ export default class MainPage extends React.Component {
           console.log(error);
         });
     }
+  };
+
+  editRecurringModal = () => {
+    const modalStyle = {
+      position: "absolute",
+      left: "50%",
+      zIndex: "5",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "400px",
+    };
+
+    return (
+      <Modal.Dialog style={modalStyle}>
+        <Modal.Header closeButton onHide={this.closeEditRecurringModal}>
+          <Modal.Title>
+            <h5 className="normalfancytext">Edit Recurring Event</h5>
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            // padding: "85px 0",
+            height: "250px",
+            margin: "auto",
+          }}
+        >
+          <Form
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Form.Group
+              style={{
+                height: "60%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+              className="delete-repeat-form"
+              onChange={(e) => {
+                if (e.target.type === "radio") {
+                  this.setState({
+                    editRecurringOption: e.target.value,
+                  });
+                }
+              }}
+            >
+              {this.state.newEvent.summary !== this.state.newEventName &&
+                !this.state.repeatOption && (
+                  <Form.Check type="radio">
+                    <Form.Check.Label style={{ marginLeft: "5px" }}>
+                      <Form.Check.Input
+                        type="radio"
+                        value="This event"
+                        name="radios"
+                        defaultChecked={
+                          this.state.editRecurringOption === "This event" &&
+                          true
+                        }
+                      />
+                      This event
+                    </Form.Check.Label>
+                  </Form.Check>
+                )}
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This and following events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.editRecurringOption ===
+                        "This and following events" && true
+                    }
+                  />
+                  This and following events
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="All events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.editRecurringOption === "All events" && true
+                    }
+                  />
+                  All events
+                </Form.Check.Label>
+              </Form.Check>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.closeEditRecurringModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.updateEventClick}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
   };
 
   deleteRecurringModal = () => {
