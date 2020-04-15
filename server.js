@@ -20,7 +20,7 @@ Bugs
 a time, it will mess up the calendar display.
 */
 
-//  Adding the firebase storage 
+//  Adding the firebase storage
 // var admin = require("firebase-admin");
 
 var express = require("express");
@@ -185,22 +185,39 @@ app.get("/getRecurringEventInstances", (req, result) => {
   );
 
   if (req.query.recurringEventId) {
-    calendar.events.instances(
-      {
-        calendarId: calendarID,
-        eventId: req.query.recurringEventId,
-        timeMin: req.query.timeMin,
-        timeMax: req.query.timeMax,
-      },
-      (err, res) => {
-        //CallBack
-        if (err) {
-          return result.send("The get request returned an error: " + err);
+    if (!req.query.timeMin) {
+      calendar.events.instances(
+        {
+          calendarId: calendarID,
+          eventId: req.query.recurringEventId,
+        },
+        (err, res) => {
+          //CallBack
+          if (err) {
+            return result.send("The get request returned an error: " + err);
+          }
+          console.log(res.data, "getRecurringEventInstances");
+          result.json(res.data.items);
         }
-        console.log(res.data, "getRecurringEventInstances");
-        result.json(res.data.items);
-      }
-    );
+      );
+    } else {
+      calendar.events.instances(
+        {
+          calendarId: calendarID,
+          eventId: req.query.recurringEventId,
+          timeMin: req.query.timeMin,
+          timeMax: req.query.timeMax,
+        },
+        (err, res) => {
+          //CallBack
+          if (err) {
+            return result.send("The get request returned an error: " + err);
+          }
+          console.log(res.data, "getRecurringEventInstances");
+          result.json(res.data.items);
+        }
+      );
+    }
   }
 });
 
@@ -334,12 +351,19 @@ and delete it.
 */
 app.put("/updateEvent", function (req, result) {
   console.log("update request recieved");
-  console.log(req.body.extra);
+  console.log(req.body.ID, req.body.extra);
 
   let newEvent = req.body.extra;
 
   calendar.events.update(
-    { calendarId: calendarID, eventId: req.body.ID, resource: newEvent },
+    {
+      calendarId: calendarID,
+      eventId: req.body.ID,
+      // start: newEvent.start,
+      // end: newEvent.end,
+      resource: newEvent,
+      // summary: newEvent.summary,
+    },
     (err, res) => {
       //CallBack
       if (err) {
