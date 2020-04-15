@@ -155,7 +155,7 @@ export default class MainPage extends React.Component {
   }
 
 
-  /*Grabs the URL the the profile pic from the about me modal to 
+  /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
   updateProfilePicFromFirebase = ()=> {
@@ -1656,6 +1656,7 @@ export default class MainPage extends React.Component {
         >
           <Row style={{ margin: "0"}} className="d-flex flex-row">
 
+
             <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
             {(this.state.profilePicUrl === ""  ? 
               <FontAwesomeIcon icon={faImage} size="5x"/> : 
@@ -1670,13 +1671,15 @@ export default class MainPage extends React.Component {
                   alt="Profile"
               /> )}
               </div>
-              
+
               <div style={{float: "left", width: "227px", height: "50px"}}>
+
                  {(this.state.profileName === "" ? 
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
+
                  )}
-              </div>   
+              </div>
 
           </Row>
         </div>
@@ -1940,7 +1943,7 @@ export default class MainPage extends React.Component {
 
     return (
 
-      // <Row>    
+      // <Row>
 
       <Row
         style={{
@@ -2072,7 +2075,7 @@ export default class MainPage extends React.Component {
         >
           About
 
-        </Button>  
+        </Button>
       </Row>
 
     );
