@@ -437,7 +437,7 @@ export default class FirebaseV2 extends React.Component {
                   Path={this.state.singleGR.fbPath}
                 />
               </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} class="d-flex " >
+              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
                 <DeleteAT
                   deleteIndex={i}
                   type={"actions&tasks"}
@@ -647,7 +647,7 @@ export default class FirebaseV2 extends React.Component {
             </Row>
             ) : (
               <div>
-              <Row style ={{marginLeft:"100px"}} class="d-flex " >
+              <Row style ={{marginLeft:"100px"}} className="d-flex " >
                   {tempAvailable ? (
                   <div style={{ marginLeft: "5px" }}>
                     <FontAwesomeIcon
@@ -677,7 +677,7 @@ export default class FirebaseV2 extends React.Component {
                 )}
                 {/* <ShowATList /> */}
               </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} class="d-flex " >
+              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
                 <DeleteISItem
                   deleteIndex={i}
                   ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
@@ -1095,7 +1095,7 @@ export default class FirebaseV2 extends React.Component {
                   Path={this.state.firebaseRootPath}
                 />
               </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} class="d-flex " >
+              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
                 <DeleteGR
                   deleteIndex={this.findIndexByID(tempID)}
                   Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
