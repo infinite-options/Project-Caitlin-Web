@@ -57,7 +57,7 @@ export default class MainPage extends React.Component {
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      calendarView: "Month", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -156,7 +156,8 @@ export default class MainPage extends React.Component {
     this.updateProfilePicFromFirebase();
   }
 
-  /*Grabs the URL the the profile pic from the about me modal to 
+
+  /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
   updateProfilePicFromFirebase = () => {
@@ -1728,13 +1729,19 @@ export default class MainPage extends React.Component {
     });
   };
 
+  updatePic = (url,name) => {
+    this.setState({
+      profilePicUrl: url,
+      profileName: name
+    });
+  };
+
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       // return this.aboutFormAbstracted();
-
-      return <AboutModal CameBackFalse={this.hideAboutForm} />;
+      return <AboutModal CameBackFalse={this.hideAboutForm}  updateProfilePic= {this.updatePic}/>
     }
   };
 
@@ -1775,31 +1782,32 @@ export default class MainPage extends React.Component {
             width: "100%",
           }}
         >
-          <Row style={{ margin: "0" }} className="d-flex flex-row">
-            <div
-              style={{
-                float: "right",
-                width: "80px",
-                height: "70px",
-                marginLeft: "50px",
-              }}
-            >
-              {this.state.profilePicUrl === "" ? (
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              ) : (
-                <img
-                  style={{
-                    display: "block",
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                    width: "100%",
-                    height: "70px",
+          <Row style={{ margin: "0"}} className="d-flex flex-row">
+
+
+            <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
+            {(this.state.profilePicUrl === ""  ? 
+              <FontAwesomeIcon icon={faImage} size="5x"/> : 
+              <img style = 
+                  {{display: "block",
+                  marginLeft: "auto",
+                  marginRight:"auto" ,
+                  width: "100%",
+                  height:"70px",
                   }}
                   src={this.state.profilePicUrl}
                   alt="Profile"
-                />
-              )}
-            </div>
+              /> )}
+              </div>
+
+              <div style={{float: "left", width: "227px", height: "50px"}}>
+
+                 {(this.state.profileName === "" ? 
+                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
+                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
+
+                 )}
+              </div>
 
             <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
@@ -2078,6 +2086,7 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
+
       // <Row>
 
       <Row
@@ -3259,66 +3268,6 @@ export default class MainPage extends React.Component {
                   </Col>
                 </Row>
               </Form.Group>
-
-              {/* <Form.Group controlId="formBasicCheckbox">
-                <Row style={{ height: "30px" }}>
-                  <Col>
-                    <Form.Check type="checkbox">
-                      <Form.Check.Input
-                        type="checkbox"
-                        onChange={e => this.notifyBefore(e)}
-                        style={{ width: "20px", height: "20px" }}
-                      />
-                    </Form.Check>
-                  </Col>
-                  <Col>
-                    <Form.Check type="checkbox">
-                      <Form.Check.Input
-                        type="checkbox"
-                        onChange={e => this.notifyBefore(e)}
-                        style={{ width: "20px", height: "20px" }}
-                      />
-                      <Form.Check.Label style={{ marginLeft: "10px" }}>
-                        Before
-                      </Form.Check.Label>
-                    </Form.Check>
-                  </Col>
-                </Row>
-                {this.state.notificationBeforeChecked && <EventBeforeChecked />}
-              </Form.Group>
-
-              <Form.Group controlId="formBasicCheckbox">
-                <Row style={{ height: "30px" }}>
-                  <Col>
-                    <Form.Check type="checkbox">
-                      <Form.Check.Input
-                        type="checkbox"
-                        style={{ width: "20px", height: "20px" }}
-                      />
-                      <Form.Check.Label style={{ marginLeft: "10px" }}>
-                        During
-                      </Form.Check.Label>
-                    </Form.Check>
-                  </Col>
-                </Row>
-              </Form.Group>
-              <Form.Group controlId="formBasicCheckbox">
-                <Row style={{ height: "30px" }}>
-                  <Col>
-                    <Form.Check type="checkbox">
-                      <Form.Check.Input
-                        type="checkbox"
-                        style={{ width: "20px", height: "20px" }}
-                      />
-                      <Form.Check.Label style={{ marginLeft: "10px" }}>
-                        After
-                      </Form.Check.Label>
-                    </Form.Check>
-                  </Col>
-                </Row>
-              </Form.Group> */}
-
-              {/* End here */}
               <Form.Group controlId="Description">
                 <Form.Label>Description:</Form.Label>
                 <Form.Control

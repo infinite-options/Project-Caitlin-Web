@@ -42,6 +42,10 @@ export default class WeekEvents extends Component {
     this.props.eventClick(arr[i]);
 }
 
+    onWeekClick = (event, day, hour) => {
+        console.log(day,hour)
+    }
+
   weekViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
       var res= [];
       for (let i = 0; i < 7; ++i) {
@@ -58,6 +62,7 @@ export default class WeekEvents extends Component {
                           height: this.state.pxPerHour,
                           width: '80px',
                       }}
+                      onClick={e => this.onWeekClick(e, i, j)}
                   >
                       {this.getEventItem(i,j)}
                   </Col >
@@ -74,7 +79,6 @@ export default class WeekEvents extends Component {
       return res;
   }
 
-  // TODO: Fix problem with events spanning multiple days in same week
   getEventItem = (day, hour) => {
       let startObject = this.props.dateContext.clone();
       let startDay = startObject.startOf("week");
