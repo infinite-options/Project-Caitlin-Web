@@ -356,6 +356,11 @@ class AboutModal extends React.Component{
                    
             }
         )
+        this.state.importantPeople3DocRef.update(this.state.importantPeople3).then(
+            (doc) => {
+                   
+            }
+        )
         this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
             (doc) => {
                 this.props.updateProfilePic(this.state.aboutMeObject.pic, this.state.aboutMeObject.name);
