@@ -57,7 +57,7 @@ export default class MainPage extends React.Component {
       //////////New additions for new calendar
       dateContext: moment(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
-      calendarView: "Week", // decides which type of calendar to display
+      calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
       repeatOptionDropDown: "Does not repeat",
@@ -155,7 +155,7 @@ export default class MainPage extends React.Component {
   }
 
 
-  /*Grabs the URL the the profile pic from the about me modal to 
+  /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
   updateProfilePicFromFirebase = ()=> {
@@ -1651,9 +1651,9 @@ export default class MainPage extends React.Component {
           <Row style={{ margin: "0"}} className="d-flex flex-row">
 
             <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px"}}>
-            {(this.state.profilePicUrl === ""  ? 
-              <FontAwesomeIcon icon={faImage} size="5x"/> : 
-              <img style = 
+            {(this.state.profilePicUrl === ""  ?
+              <FontAwesomeIcon icon={faImage} size="5x"/> :
+              <img style =
                   {{display: "block",
                   marginLeft: "auto",
                   marginRight:"auto" ,
@@ -1664,13 +1664,13 @@ export default class MainPage extends React.Component {
                   alt="Profile"
               /> )}
               </div>
-              
+
               <div style={{float: "left", width: "227px", height: "50px"}}>
-                 {(this.state.profileName === "" ? 
+                 {(this.state.profileName === "" ?
                   <p style = {{ marginTop:"25px", marginLeft:"10px"}}>First Last</p>:
                   <p style = {{ marginTop:"25px", marginLeft:"10px"}}>{this.state.profileName}</p>
                  )}
-              </div>   
+              </div>
 
           </Row>
         </div>
@@ -1934,7 +1934,7 @@ export default class MainPage extends React.Component {
 
     return (
 
-      // <Row>    
+      // <Row>
 
       <Row
         style={{
@@ -2066,7 +2066,7 @@ export default class MainPage extends React.Component {
         >
           About
 
-        </Button>  
+        </Button>
       </Row>
 
     );
