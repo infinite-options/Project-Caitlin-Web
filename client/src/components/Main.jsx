@@ -38,6 +38,8 @@ export default class MainPage extends React.Component {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       weekEvents: [], //holds google events data for a week
+      goals: [], //Hold goals and routines so day and week view can access it
+      routines: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -1658,9 +1660,9 @@ export default class MainPage extends React.Component {
 
 
             <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
-            {(this.state.profilePicUrl === ""  ? 
-              <FontAwesomeIcon icon={faImage} size="5x"/> : 
-              <img style = 
+            {(this.state.profilePicUrl === ""  ?
+              <FontAwesomeIcon icon={faImage} size="5x"/> :
+              <img style =
                   {{display: "block",
                   marginLeft: "auto",
                   marginRight:"auto" ,
@@ -1674,7 +1676,7 @@ export default class MainPage extends React.Component {
 
               <div style={{float: "left", width: "227px", height: "50px"}}>
 
-                 {(this.state.profileName === "" ? 
+                 {(this.state.profileName === "" ?
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
 
