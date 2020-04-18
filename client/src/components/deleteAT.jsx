@@ -21,6 +21,33 @@ export default class deleteAT extends Component {
     }
 
     tempdeleteArrPortion = () => {
+        
+        //Delete from the firebase
+        let arr = [...this.props.Array];
+        let j = this.props.deleteIndex;
+        var id = arr[j]['id']
+        const url = "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+        const Data = {
+            data : {
+                "path" : this.props.Item.fbPath.path + "/" + this.props.type + "/" + id//<<<<< Entire path of the document to delete
+            }
+        };
+        console.log("path " +  this.props.Item.fbPath.path);
+        
+        const param = {
+            headers:{
+                //"content-type":"application/json; charset=UTF-8"
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(Data),
+            method: "POST"
+        };
+        
+        fetch(url, param)
+        .then((response) => response.json())
+        .then((result) => { console.log(result); } )
+        .catch((error) => { console.error(error); });
+        
         // console.log("request was made to delete this index " + this.props.deleteIndex);
         let items = [...this.props.Array];
         let i = this.props.deleteIndex;
@@ -47,6 +74,29 @@ export default class deleteAT extends Component {
      * it will update the array in firestore and refresh the page once that is completed
     */
     deleteArrPortion = () => {
+        
+        //Delete from the firebase
+        const url = "https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+        const Data = {
+            data : {
+                "path" : this.props.Item.fbPath  //<<<<< Entire path of the document to delete
+            }
+        };
+        //console.log("path " +  this.props.ISItem.fbPath);
+        
+        const param = {
+            headers:{
+                "content-type":"application/json; charset=UTF-8"
+            },
+            body:Data,
+            method:"POST"
+        };
+        
+        fetch(url, param)
+        .then(data=>{return data.json()})
+        .then(res=>{console.log(res)})
+        .catch(error=>console.log(error))
+        
         // console.log("request was made to delete this  element " + this.props.deleteIndex);
         let items = [...this.props.Array];
         // console.log("delete with: ");
