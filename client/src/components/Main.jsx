@@ -38,7 +38,8 @@ export default class MainPage extends React.Component {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       weekEvents: [], //holds google events data for a week
-      goals: [], //Hold goals and routines so day and week view can access it
+      originalGoalsAndRoutineArr: [], //Hold goals and routines so day and week view can access it
+      goals: [],
       routines: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
@@ -103,6 +104,52 @@ export default class MainPage extends React.Component {
       deleteRecurringOption: "This event",
     };
   }
+
+/**
+   * grabFireBaseRoutinesGoalsData:
+   * this function grabs the goals&routines array from the path located in this function
+   * which will then populate the goals, routines,originalGoalsAndRoutineArr array
+   * separately. The arrays will be used for display and data manipulation later.
+   *
+   */
+  grabFireBaseRoutinesGoalsData = () => {
+    const db = firebase.firestore();
+    // console.log("FirebaseV2 component did mount");
+    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          // console.log(doc.data());
+          var x = doc.data();
+          // console.log(x["goals&routines"]);
+          x = x["goals&routines"];
+          let routine = [];
+          let goal = [];
+          for (let i = 0; i < x.length; ++i) {
+            if (!x[i]["deleted"] && x[i]["is_persistent"]) {
+              // console.log("routine " + x[i]["title"]);
+              routine.push(x[i]);
+            } else if (!x[i]["deleted"] && !x[i]["is_persistent"]) {
+              // console.log("not routine " + x[i]["title"]);
+              goal.push(x[i]);
+            }
+          }
+          this.setState({
+            originalGoalsAndRoutineArr: x,
+            goals: goal,
+            addNewGRModalShow: false,
+            routines: routine
+          });
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+  };
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
@@ -1719,6 +1766,10 @@ export default class MainPage extends React.Component {
           >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
+              grabFireBaseRoutinesGoalsData={this.grabFireBaseRoutinesGoalsData}
+              originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+              goals={this.state.goals}
+              routines={this.state.routines}
               closeRoutineGoalModal={() => {
                 this.setState({ showRoutineGoalModal: false });
               }}
