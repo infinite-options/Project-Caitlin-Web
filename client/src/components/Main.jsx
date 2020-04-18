@@ -744,6 +744,61 @@ export default class MainPage extends React.Component {
     );
   };
 
+  //Create event from clicking empty space from week view
+  //Note arg is moment object of the time pressed
+  handleDateClickOnWeekView = (arg) => {
+    let newStart = arg.toDate();
+    arg.add(1,'hour');
+    let newEnd = arg.toDate();
+    this.setState({
+      newEventID: "",
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
+      newEventName: "",
+      newEventGuests: "",
+      newEventLocation: "",
+      newEventNotification: 30,
+      newEventDescription: "",
+      dayEventSelected: true,
+      isEvent: false,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+    });
+  }
+
   handleDateClickOnDayView = (arg, i) => {
     var newStart = new Date(arg);
     newStart.setHours(i, 0, 0);
@@ -1658,9 +1713,9 @@ export default class MainPage extends React.Component {
 
 
             <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
-            {(this.state.profilePicUrl === ""  ? 
-              <FontAwesomeIcon icon={faImage} size="5x"/> : 
-              <img style = 
+            {(this.state.profilePicUrl === ""  ?
+              <FontAwesomeIcon icon={faImage} size="5x"/> :
+              <img style =
                   {{display: "block",
                   marginLeft: "auto",
                   marginRight:"auto" ,
@@ -1674,7 +1729,7 @@ export default class MainPage extends React.Component {
 
               <div style={{float: "left", width: "227px", height: "50px"}}>
 
-                 {(this.state.profileName === "" ? 
+                 {(this.state.profileName === "" ?
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
                   <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
 
@@ -1872,6 +1927,7 @@ export default class MainPage extends React.Component {
               weekEvents={this.state.weekEvents}
               dateContext={this.state.dateContext}
               eventClick={this.handleWeekEventClick}
+              onDayClick={this.handleDateClickOnWeekView}
             />
           </Row>
           <Row>

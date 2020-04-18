@@ -46,8 +46,8 @@ export default class WeekEvents extends Component {
     let startObject = this.props.dateContext.clone();
     let startDay = startObject.startOf("week");
     let curDate = startDay.clone();
-    curDate.add(day,'days');
-    console.log(day,hour);
+    curDate.add(24*day+hour,'hour');
+    this.props.onDayClick(curDate);
   }
 
   weekViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
