@@ -1731,6 +1731,8 @@ export default class MainPage extends React.Component {
               }}
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal}
+              goals={this.state.goals}
+              routines={this.state.routines}
             />
             <Col
               sm="auto"
