@@ -51,8 +51,9 @@ export default class deleteAT extends Component {
         // console.log("request was made to delete this index " + this.props.deleteIndex);
         let items = [...this.props.Array];
         let i = this.props.deleteIndex;
-        items[i]['deleted'] = true;
-        this.props.Item.fbPath.update({ 'actions&tasks': items }).then(
+        //items[i]['deleted'] = true;
+        const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+        this.props.Item.fbPath.update({ 'actions&tasks': newArr }).then(
             (doc) => {
                 // console.log('updateEntireArray Finished')
                 // console.log(doc);
@@ -74,28 +75,6 @@ export default class deleteAT extends Component {
      * it will update the array in firestore and refresh the page once that is completed
     */
     deleteArrPortion = () => {
-        
-        //Delete from the firebase
-        const url = "https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-        const Data = {
-            data : {
-                "path" : this.props.Item.fbPath  //<<<<< Entire path of the document to delete
-            }
-        };
-        //console.log("path " +  this.props.ISItem.fbPath);
-        
-        const param = {
-            headers:{
-                "content-type":"application/json; charset=UTF-8"
-            },
-            body:Data,
-            method:"POST"
-        };
-        
-        fetch(url, param)
-        .then(data=>{return data.json()})
-        .then(res=>{console.log(res)})
-        .catch(error=>console.log(error))
         
         // console.log("request was made to delete this  element " + this.props.deleteIndex);
         let items = [...this.props.Array];

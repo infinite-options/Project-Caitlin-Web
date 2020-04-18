@@ -49,8 +49,11 @@ export default class deleteGR extends Component {
         .catch((error) => { console.error(error); });
         
         let items = [...this.props.Array];
-        items[this.props.deleteIndex]['deleted'] = true;
-        this.props.Path.update({ 'goals&routines': items }).then(
+        //items[this.props.deleteIndex]['deleted'] = true;
+        let i = this.props.deleteIndex;
+        const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
+        
+        this.props.Path.update({ 'goals&routines': newArr }).then(
             (doc) => {
                 // console.log('updateEntireArray Finished')
                 // console.log(doc);
@@ -66,28 +69,6 @@ export default class deleteGR extends Component {
     }
 
     deleteArrPortion = () => {
-        
-        //Delete from the firebase
-        const url = "https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-        const Data = {
-            data : {
-                "path" : this.props.Path  //<<<<< Entire path of the document to delete
-            }
-        };
-        //console.log("path " +  this.props.ISItem.fbPath);
-        
-        const param = {
-            headers:{
-                "content-type":"application/json; charset=UTF-8"
-            },
-            body:Data,
-            method:"POST"
-        };
-        
-        fetch(url, param)
-        .then(data=>{return data.json()})
-        .then(res=>{console.log(res)})
-        .catch(error=>console.log(error))
         
         // console.log("request was made to delete this  element " +  this.props.deleteIndex);
         let items = [...this.props.Array];
