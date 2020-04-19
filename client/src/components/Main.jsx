@@ -1863,8 +1863,14 @@ export default class MainPage extends React.Component {
             dayEvents={this.state.dayEvents}
             getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
-          <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
-          <DayGoals dayGoalClick={this.toggleShowGoal} />
+          <DayRoutines
+            routines={this.state.routines}
+            dayRoutineClick={this.toggleShowRoutine}
+          />
+          <DayGoals
+            goals={this.state.goals}
+            dayGoalClick={this.toggleShowGoal}
+          />
         </Row>
       </div>
     );
@@ -1930,10 +1936,14 @@ export default class MainPage extends React.Component {
             />
           </Row>
           <Row>
-            <WeekGoals />
+            <WeekGoals
+              goals={this.state.goals}
+            />
           </Row>
           <Row>
-            <WeekRoutines />
+            <WeekRoutines
+              routines={this.state.routines}
+            />
           </Row>
         </Container>
       </div>
