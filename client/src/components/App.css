@@ -231,3 +231,16 @@ input.date-picker-btn {
   word-break: break-all;
   text-align: left;
 }
+
+.editGR-datepicker .react-datepicker__input-container {
+  width: inherit;
+}
+
+.editGR-datepicker .react-datepicker-wrapper {
+  width: 100px;
+}
+
+.editGR-datepicker .react-datepicker__input-container input {
+  width: 110px;
+  margin-left: 75px;
+}

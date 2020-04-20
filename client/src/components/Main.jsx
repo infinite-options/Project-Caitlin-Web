@@ -156,7 +156,6 @@ export default class MainPage extends React.Component {
     this.updateProfilePicFromFirebase();
   }
 
-
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
@@ -1729,10 +1728,10 @@ export default class MainPage extends React.Component {
     });
   };
 
-  updatePic = (url,name) => {
+  updatePic = (url, name) => {
     this.setState({
       profilePicUrl: url,
-      profileName: name
+      profileName: name,
     });
   };
 
@@ -1741,7 +1740,12 @@ export default class MainPage extends React.Component {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       // return this.aboutFormAbstracted();
-      return <AboutModal CameBackFalse={this.hideAboutForm}  updateProfilePic= {this.updatePic}/>
+      return (
+        <AboutModal
+          CameBackFalse={this.hideAboutForm}
+          updateProfilePic={this.updatePic}
+        />
+      );
     }
   };
 
@@ -1782,32 +1786,44 @@ export default class MainPage extends React.Component {
             width: "100%",
           }}
         >
-          <Row style={{ margin: "0"}} className="d-flex flex-row">
-
-
-            <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
-            {(this.state.profilePicUrl === ""  ? 
-              <FontAwesomeIcon icon={faImage} size="5x"/> : 
-              <img style = 
-                  {{display: "block",
-                  marginLeft: "auto",
-                  marginRight:"auto" ,
-                  width: "100%",
-                  height:"70px",
+          <Row style={{ margin: "0" }} className="d-flex flex-row">
+            <div
+              style={{
+                float: "right",
+                width: "80px",
+                height: "70px",
+                marginLeft: "50px",
+                marginTop: "5px",
+              }}
+            >
+              {this.state.profilePicUrl === "" ? (
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              ) : (
+                <img
+                  style={{
+                    display: "block",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    width: "100%",
+                    height: "70px",
                   }}
                   src={this.state.profilePicUrl}
                   alt="Profile"
-              /> )}
-              </div>
+                />
+              )}
+            </div>
 
-              <div style={{float: "left", width: "227px", height: "50px"}}>
-
-                 {(this.state.profileName === "" ? 
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
-
-                 )}
-              </div>
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              {this.state.profileName === "" ? (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  First Last
+                </p>
+              ) : (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  {this.state.profileName}
+                </p>
+              )}
+            </div>
 
             <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
@@ -2086,7 +2102,6 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
-
       // <Row>
 
       <Row
