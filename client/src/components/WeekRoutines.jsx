@@ -11,9 +11,6 @@ export default class WeekRoutines extends Component {
       super(props);
       // console.log(this.props.dateContext);
       this.state = {
-          firebaseRootPath: firebase.firestore().collection('users').doc('7R6hAVmDrNutRkG3sVRy'),
-          goals: [], //array to hold all  goals
-          routines: [], // array to hold all routines
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
@@ -22,57 +19,9 @@ export default class WeekRoutines extends Component {
       }
   }
 
-  componentDidMount() {
-    this.grabFireBaseRoutinesGoalsData();
-  }
-
-  /**
- * grabFireBaseRoutinesGoalsData:
- * this function grabs the goals&routines array from the path located in this function
- * which will then populate the goals, routines,originalGoalsAndRoutineArr array
- * separately. The arrays will be used for display and data manipulation later.
- *
-*/
-grabFireBaseRoutinesGoalsData = () => {
-  const db = firebase.firestore();
-  // console.log('DayRoutine component did mount');
-  const docRef = db.collection('users').doc('7R6hAVmDrNutRkG3sVRy');
-  docRef.get().then((doc) => {
-      if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data();
-          // console.log("from DayRoutines");
-          // console.log(x['goals&routines']);
-          x = x['goals&routines'];
-          let routine = [];
-          let goal = [];
-          for (let i = 0; i < x.length; ++i) {
-              if (!x[i]['deleted'] && x[i]['is_persistent']) {
-                  // console.log("routine " + x[i]['title']);
-                  routine.push(x[i]);
-              }
-              else if (!x[i]['deleted'] && !x[i]['is_persistent']) {
-                  // console.log("not routine " + x[i]['title']);
-                  goal.push(x[i]);
-              }
-          }
-          this.setState({
-              originalGoalsAndRoutineArr: x,
-              goals: goal,
-              routines: routine
-          })
-      } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-      }
-  }).catch(function (error) {
-      console.log("Error getting document:", error);
-  });
-}
-
 getEventItem = (day, hour) => {
   var res = []
-  var arr = this.state.routines;
+  var arr = this.props.routines;
   var sameTimeEventCount = 0;
   let itemWidth = this.state.eventBoxSize;
   // var overlapEvent = 0;

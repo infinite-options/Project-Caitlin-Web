@@ -38,6 +38,9 @@ export default class MainPage extends React.Component {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       weekEvents: [], //holds google events data for a week
+      originalGoalsAndRoutineArr: [], //Hold goals and routines so day and week view can access it
+      goals: [],
+      routines: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -103,6 +106,52 @@ export default class MainPage extends React.Component {
       editRecurringOption: "",
     };
   }
+
+  /**
+   * grabFireBaseRoutinesGoalsData:
+   * this function grabs the goals&routines array from the path located in this function
+   * which will then populate the goals, routines,originalGoalsAndRoutineArr array
+   * separately. The arrays will be used for display and data manipulation later.
+   *
+   */
+  grabFireBaseRoutinesGoalsData = () => {
+    const db = firebase.firestore();
+    // console.log("FirebaseV2 component did mount");
+    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    docRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          // console.log(doc.data());
+          var x = doc.data();
+          // console.log(x["goals&routines"]);
+          x = x["goals&routines"];
+          let routine = [];
+          let goal = [];
+          for (let i = 0; i < x.length; ++i) {
+            if (!x[i]["deleted"] && x[i]["is_persistent"]) {
+              // console.log("routine " + x[i]["title"]);
+              routine.push(x[i]);
+            } else if (!x[i]["deleted"] && !x[i]["is_persistent"]) {
+              // console.log("not routine " + x[i]["title"]);
+              goal.push(x[i]);
+            }
+          }
+          this.setState({
+            originalGoalsAndRoutineArr: x,
+            goals: goal,
+            addNewGRModalShow: false,
+            routines: routine,
+          });
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+  };
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
@@ -762,6 +811,61 @@ export default class MainPage extends React.Component {
         console.log("callback from handEventClick");
       }
     );
+  };
+
+  //Create event from clicking empty space from week view
+  //Note arg is moment object of the time pressed
+  handleDateClickOnWeekView = (arg) => {
+    let newStart = arg.toDate();
+    arg.add(1, "hour");
+    let newEnd = arg.toDate();
+    this.setState({
+      newEventID: "",
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
+      newEventName: "",
+      newEventGuests: "",
+      newEventLocation: "",
+      newEventNotification: 30,
+      newEventDescription: "",
+      dayEventSelected: true,
+      isEvent: false,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+    });
   };
 
   handleDateClickOnDayView = (arg, i) => {
@@ -1827,6 +1931,18 @@ export default class MainPage extends React.Component {
 
             <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  First Last
+                </p>
+              ) : (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  {this.state.profileName}
+                </p>
+              )}
+            </div>
+
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              {this.state.profileName === "" ? (
                 <p style={{ marginTop: "25px", marginLeft: "10px" }}>
                   First Last
                 </p>
@@ -1872,6 +1988,10 @@ export default class MainPage extends React.Component {
           >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
+              grabFireBaseRoutinesGoalsData={this.grabFireBaseRoutinesGoalsData}
+              originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+              goals={this.state.goals}
+              routines={this.state.routines}
               closeRoutineGoalModal={() => {
                 this.setState({ showRoutineGoalModal: false });
               }}
@@ -1884,6 +2004,8 @@ export default class MainPage extends React.Component {
               }}
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal}
+              goals={this.state.goals}
+              routines={this.state.routines}
             />
             <Col
               sm="auto"
@@ -1968,8 +2090,14 @@ export default class MainPage extends React.Component {
             dayEvents={this.state.dayEvents}
             getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
-          <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
-          <DayGoals dayGoalClick={this.toggleShowGoal} />
+          <DayRoutines
+            routines={this.state.routines}
+            dayRoutineClick={this.toggleShowRoutine}
+          />
+          <DayGoals
+            goals={this.state.goals}
+            dayGoalClick={this.toggleShowGoal}
+          />
         </Row>
       </div>
     );
@@ -2032,13 +2160,14 @@ export default class MainPage extends React.Component {
               weekEvents={this.state.weekEvents}
               dateContext={this.state.dateContext}
               eventClick={this.handleWeekEventClick}
+              onDayClick={this.handleDateClickOnWeekView}
             />
           </Row>
           <Row>
-            <WeekGoals />
+            <WeekGoals goals={this.state.goals} />
           </Row>
           <Row>
-            <WeekRoutines />
+            <WeekRoutines routines={this.state.routines} />
           </Row>
         </Container>
       </div>
