@@ -122,6 +122,15 @@ export default class AddNewGRItem extends Component {
       alert("Invalid Input");
       return;
     }
+    if (this.state.itemToEdit.photo === ""){
+        if (this.props.isRoutine) {
+            this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
+        }
+        else {
+            this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
+        }
+            
+    }
     this.addNewDoc();
   };
 
