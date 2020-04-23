@@ -981,7 +981,7 @@ export default class FirebaseV2 extends React.Component {
                         <div style={{ marginLeft: "5px" }}>
                           <FontAwesomeIcon
                             title="Available to Cailin"
-                            style={{ color: this.props.availabilityColorCode }}
+                            style={{ color: this.state.availabilityColorCode }}
                             onClick={(e) => {
                               e.stopPropagation();
                               alert("Item Is Availble to Caitlin");
@@ -1117,9 +1117,7 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-
               </Row>
-
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
                   <div className="fancytext">
