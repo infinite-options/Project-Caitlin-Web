@@ -22,6 +22,7 @@ import WeekEvents from "./WeekEvents.jsx";
 import WeekRoutines from "./WeekRoutines.jsx";
 import WeekGoals from "./WeekGoals.jsx";
 import AboutModal from "./AboutModal.jsx";
+import CreateNewAccountModal from "./CreateNewAccountModal.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -74,7 +75,6 @@ export default class MainPage extends React.Component {
       repeatEndDate_temp: "",
       showNoTitleError: "",
       showDateError: "",
-      notificationBeforeChecked: false,
       byDay: {
         0: "",
         1: "",
@@ -97,6 +97,8 @@ export default class MainPage extends React.Component {
       recurrenceRule: "",
       profilePicUrl: "",
       profileName: "",
+      showNewAccountmodal: false,
+      eventNotifications: {},
       showDeleteRecurringModal: false,
       deleteRecurringOption: "This event",
     };
@@ -152,9 +154,31 @@ export default class MainPage extends React.Component {
   componentDidMount() {
     this.updateEventsArray();
     this.updateProfilePicFromFirebase();
+    this.getEventNotifications();
   }
 
-
+  /*This will obtain the notifications from the database
+  */ 
+ getEventNotifications = () => {
+  const db = firebase.firestore();
+  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy").collection("events").doc("o0AHviYhmL7VJLXIREg2");
+  docRef
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        var x = doc.data();
+        console.log("this is the event notification from fb ", x);
+        this.setState({
+          eventNotifications: x,
+        });
+      } else {
+        console.log("No such document!");
+      }
+    })
+    .catch(function(error) {
+      console.log("Error getting document:", error);
+    });
+ }
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
@@ -166,10 +190,13 @@ export default class MainPage extends React.Component {
       .then(doc => {
         if (doc.exists) {
           var x = doc.data();
+          var firstName = x.first_name;
+          var lastName = x.last_name;
+          console.log("this is x.data", x.last_name);
           x = x["about_me"];
           this.setState({
             profilePicUrl: x.pic,
-            profileName: x.name
+            profileName: firstName + " " +lastName
           });
         } else {
           console.log("No such document!");
@@ -1592,6 +1619,12 @@ export default class MainPage extends React.Component {
     }
   };
 
+  hideNewAccountForm = () => {
+    this.setState({
+      showNewAccountmodal: false,
+    });
+  }
+
   hideAboutForm = (e) => {
     this.setState({
       showAboutModal: false,
@@ -1610,10 +1643,7 @@ export default class MainPage extends React.Component {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
-      // return this.aboutFormAbstracted();
-
       return <AboutModal CameBackFalse={this.hideAboutForm}  updateProfilePic= {this.updatePic}/>
-
     }
   };
 
@@ -1657,31 +1687,55 @@ export default class MainPage extends React.Component {
           <Row style={{ margin: "0"}} className="d-flex flex-row">
 
 
-            <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
+            {/* <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}> */}
+            <Col xs={1} style = {{ height:"70px", marginLeft: "50px", marginTop:"5px", paddingRight:"0px"}}>
             {(this.state.profilePicUrl === ""  ? 
               <FontAwesomeIcon icon={faImage} size="5x"/> : 
               <img style = 
                   {{display: "block",
                   marginLeft: "auto",
                   marginRight:"auto" ,
-                  width: "100%",
+                  marginTop:"5px",
+                  width:"80px",
+                  float: "right",
+                  // width: "100%",
                   height:"70px",
                   }}
                   src={this.state.profilePicUrl}
                   alt="Profile"
               /> )}
-              </div>
+            </Col>
+              {/* </div> */}
 
-              <div style={{float: "left", width: "227px", height: "50px"}}>
+              {/* <div style={{float: "left", width: "227px", height: "50px"}}> */}
+            <Col style = {{paddingLeft:"0px"}}>
+                {(this.state.profileName === "" ? 
+                <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
+                <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
 
-                 {(this.state.profileName === "" ? 
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
+                )}
+            </Col>
+            {/* <Col>
+            {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
+            </Col> */}
+            
 
-                 )}
-              </div>
+              {/* </div> */}
 
           </Row>
+          <Row style={{ margin: "0"}} className="d-flex flex-row">
+            <Col xs={3}>
+            {/* <Button style = {{marginTop:"10px", marginLeft:"100px"}} onClick = {(e) => {this.setState({showNewAccountmodal: true})}}>
+              Create New User
+            </Button> */}
+            
+            </Col>
+            {/* <Col>
+            {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
+            </Col> */}
+            
+          </Row>
+          {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
         </div>
 
         <div
@@ -2827,8 +2881,8 @@ export default class MainPage extends React.Component {
                 <Row>
                   <Col style={{ paddingRight: "0px" }}>
                     <Form.Control
-                      value={this.state.newEventNotification}
-                      onChange={this.handleNotificationChange}
+                      // value={this.state.newEventNotification}
+                      // onChange={this.handleNotificationChange}
                       type="number"
                       placeholder="5"
                       style={{ width: "70px", marginTop: ".25rem" }}
@@ -3019,12 +3073,7 @@ export default class MainPage extends React.Component {
     );
   };
 
-  notifyBefore = (e) => {
-    console.log("this is result of checked:");
-    console.log(e.target.checked);
-    let beforeChecked = e.target.checked;
-    this.setState({ notificationBeforeChecked: beforeChecked });
-  };
+ 
 
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
