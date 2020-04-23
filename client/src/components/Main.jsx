@@ -1945,14 +1945,14 @@ export default class MainPage extends React.Component {
               {/* </div> */}
 
               {/* <div style={{float: "left", width: "227px", height: "50px"}}> */}
-            <Col style = {{paddingLeft:"0px"}}>
+            {/* <Col style = {{paddingLeft:"0px"}}>
                 {(this.state.profileName === "" ? 
                 <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
                 <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
 
 
                 )}
-            </Col>
+            </Col> */}
             {/* <Col>
             {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
             </Col> */}
