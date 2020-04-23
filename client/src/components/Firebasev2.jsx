@@ -51,9 +51,6 @@ export default class FirebaseV2 extends React.Component {
       .firestore()
       .collection("users")
       .doc("7R6hAVmDrNutRkG3sVRy"),
-    originalGoalsAndRoutineArr: [],
-    goals: [],
-    routines: [],
     is_sublist_available: true,
     //This single GR item is passed to AddNewATItem to help processed the new item
     singleGR: {
@@ -163,42 +160,7 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   grabFireBaseRoutinesGoalsData = () => {
-    const db = firebase.firestore();
-    // console.log("FirebaseV2 component did mount");
-    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-    docRef
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data();
-          // console.log(x["goals&routines"]);
-          x = x["goals&routines"];
-          let routine = [];
-          let goal = [];
-          for (let i = 0; i < x.length; ++i) {
-            if (!x[i]["deleted"] && x[i]["is_persistent"]) {
-              // console.log("routine " + x[i]["title"]);
-              routine.push(x[i]);
-            } else if (!x[i]["deleted"] && !x[i]["is_persistent"]) {
-              // console.log("not routine " + x[i]["title"]);
-              goal.push(x[i]);
-            }
-          }
-          this.setState({
-            originalGoalsAndRoutineArr: x,
-            goals: goal,
-            addNewGRModalShow: false,
-            routines: routine
-          });
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function(error) {
-        console.log("Error getting document:", error);
-      });
+    this.props.grabFireBaseRoutinesGoalsData();
   };
 
   componentWillUnmount() {
@@ -326,7 +288,7 @@ export default class FirebaseV2 extends React.Component {
             </Col>
           </Row>
 
-              
+
           {tempPhoto ? (
           <Row >
             <Col xs={7}
@@ -374,12 +336,12 @@ export default class FirebaseV2 extends React.Component {
                       />
                     </div>
                   )}
-                  {/* Index={this.findIndexByID(tempID)} 
+                  {/* Index={this.findIndexByID(tempID)}
                     Array={this.state.originalGoalsAndRoutineArr}
                     Path={this.state.firebaseRootPath} */}
                   <ShowISList
-                    Index={i} 
-                    Array={this.state.singleATitemArr} 
+                    Index={i}
+                    Array={this.state.singleATitemArr}
                     Path={this.state.singleGR.fbPath}
                    />
                 </Row>
@@ -431,9 +393,9 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                <ShowISList 
-                  Index={i} 
-                  Array={this.state.singleATitemArr} 
+                <ShowISList
+                  Index={i}
+                  Array={this.state.singleATitemArr}
                   Path={this.state.singleGR.fbPath}
                 />
               </Row>
@@ -454,7 +416,7 @@ export default class FirebaseV2 extends React.Component {
                 />
               </Row>
               </div>
-            
+
             )}
 
 
@@ -577,7 +539,7 @@ export default class FirebaseV2 extends React.Component {
             variant="light"
             style={{ width: "100%", marginBottom: "3px" }}
           >
-           
+
           <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
             <Col>
               <div className="fancytext">{tempTitle}</div>
@@ -694,7 +656,7 @@ export default class FirebaseV2 extends React.Component {
                 />
               </Row>
               </div>
-            
+
             )}
           </ListGroup.Item>
         </div>
@@ -774,7 +736,7 @@ export default class FirebaseV2 extends React.Component {
    * return the index with the corresonding id
    */
   findIndexByID = id => {
-    let originalGoalsAndRoutineArr = this.state.originalGoalsAndRoutineArr;
+    let originalGoalsAndRoutineArr = this.props.originalGoalsAndRoutineArr;
     for (let i = 0; i < originalGoalsAndRoutineArr.length; i++) {
       if (id === originalGoalsAndRoutineArr[i].id) {
         return i;
@@ -791,12 +753,12 @@ export default class FirebaseV2 extends React.Component {
 
   getRoutines = () => {
     let displayRoutines = [];
-    if (this.state.routines.length !== 0) {
+    if (this.props.routines.length !== 0) {
       //Check to make sure routines exists
-      for (let i = 0; i < this.state.routines.length; i++) {
-        let tempTitle = this.state.routines[i]["title"];
-        let tempID = this.state.routines[i]["id"];
-        let tempPersist = this.state.routines[i]["is_persistent"];
+      for (let i = 0; i < this.props.routines.length; i++) {
+        let tempTitle = this.props.routines[i]["title"];
+        let tempID = this.props.routines[i]["id"];
+        let tempPersist = this.props.routines[i]["is_persistent"];
 
         displayRoutines.push(
           <div key={"test0" + i}>
@@ -808,21 +770,21 @@ export default class FirebaseV2 extends React.Component {
               variant="light"
               style={{ marginBottom: "3px" }}
             >
-            
+
           <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
             <Col>
                   <div className="fancytext">
-                    {this.state.routines[i]["title"]}
+                    {this.props.routines[i]["title"]}
                   </div>
                 </Col>
           </Row>
-           {this.state.routines[i]["photo"] ? (
+           {this.props.routines[i]["photo"] ? (
           <Row >
             <Col xs={7}
                 style={{  paddingRight:"0px"}}
               >
                   <img
-                    src={this.state.routines[i]["photo"]}
+                    src={this.props.routines[i]["photo"]}
                     alt="Routines"
                     className="center"
                     height="80px"
@@ -831,185 +793,7 @@ export default class FirebaseV2 extends React.Component {
               </Col>
               <Col style = {{paddingLeft: "0px"}}>
                 <Row style = {{marginTop:"10px"}}>
-                    {this.state.routines[i]["is_available"]  ? (
-                    <div style={{ marginLeft: "5px" }}>
-                      <FontAwesomeIcon
-                        title="Available to Cailin"
-                        style={{ color: this.state.availabilityColorCode }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
-                        }}
-                        icon={faUser}
-                        size="lg"
-                      />{" "}
-                    </div>
-                  ) : (
-                    <div >
-                      <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
-                        style={{ color: "#000000" }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
-                        }}
-                        icon={faUserAltSlash}
-                        size="lg"
-                      />
-                    </div>
-                  )}
-                  <ShowATList  
-                    Index={this.findIndexByID(tempID)}
-                    Array={this.state.originalGoalsAndRoutineArr}
-                    Path={this.state.firebaseRootPath}
-                    // ListCameBackFalse= {this.ListFalse}
-                  />
-                </Row>
-                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
-                  <DeleteGR
-                    deleteIndex={this.findIndexByID(tempID)}
-                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData}
-                  />
-                 
-                  <EditGR
-                    marginLeftV= "-170px"
-                    i={this.findIndexByID(tempID)} //index to edit
-                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    is_sublist_available= {this.is_sublist_available}
-                  />
-                </Row>
-              </Col>
-            </Row>
-            ) : (
-              <div>
-              <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {this.state.routines[i]["is_available"] ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div>
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
-                    />
-                  </div>
-                )}
-                <ShowATList 
-                  Index={this.findIndexByID(tempID)}
-                  Array={this.state.originalGoalsAndRoutineArr}
-                  Path={this.state.firebaseRootPath}
-                  />
-              </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
-                <DeleteGR
-                  deleteIndex={this.findIndexByID(tempID)}
-                  Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData}
-                />
-                <EditGR
-                  marginLeftV= "-130px"
-                  i={this.findIndexByID(tempID)} //index to edit
-                  ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                />
-              </Row>
-             </div>
-            )}
-              <Row>
-                <div style={{ fontSize: "12px" }}>
-                  {this.state.routines[i]["datetime_started"] ? (
-                    <div style={{ marginTop: "3px" }}>
-                      {"Previous Start Time: " +
-                        this.formatDateTime(
-                          this.state.routines[i]["datetime_started"]
-                        )}{" "}
-                    </div>
-                  ) : (
-                    <div> </div>
-                  )}
-                  {this.state.routines[i]["datetime_completed"] ? (
-                    <div>
-                      {"Previous Completed Time: " +
-                        this.formatDateTime(
-                          this.state.routines[i]["datetime_completed"]
-                        )}{" "}
-                    </div>
-                  ) : (
-                    <div> </div>
-                  )}
-                </div>
-              </Row>
-            </ListGroup.Item>
-          </div>
-        );
-      }
-    }
-    return displayRoutines;
-  };
-
-  getGoals = () => {
-    let displayGoals = [];
-    if (this.state.goals.length != null) {
-      //Check to make sure routines exists
-      for (let i = 0; i < this.state.goals.length; i++) {
-        let tempTitle = this.state.goals[i]["title"];
-        let tempID = this.state.goals[i]["id"];
-        let tempPersist = this.state.goals[i]["is_persistent"];
-        displayGoals.push(
-          <div key={"test1" + i}>
-            <ListGroup.Item
-              action
-              onClick={() => {
-                this.GRonClickEvent(tempTitle, tempID, tempPersist);
-              }}
-              variant="light"
-              style={{ marginBottom: "3px" }}
-            >
-            
-
-            <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
-            <Col>
-              <div className="fancytext">{tempTitle}</div>
-            </Col>
-          </Row>
-           {this.state.goals[i]["photo"] ? (
-          <Row >
-            <Col xs={7}
-                style={{  paddingRight:"0px"}}
-              >
-                  <img
-                    src={this.state.goals[i]["photo"]}
-                    alt="Instructions/Steps"
-                    className="center"
-                    height="80px"
-                    width="auto"
-                  />
-              </Col>
-              <Col style = {{paddingLeft: "0px"}}>
-                <Row style = {{marginTop:"10px"}}>
-                    {this.state.goals[i]["is_available"] ? (
+                    {this.props.routines[i]["is_available"]  ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
                         title="Available to Cailin"
@@ -1037,24 +821,27 @@ export default class FirebaseV2 extends React.Component {
                     </div>
                   )}
                   <ShowATList
-                    Index={this.findIndexByID(tempID)} 
-                    Array={this.state.originalGoalsAndRoutineArr}
+                    Index={this.findIndexByID(tempID)}
+                    Array={this.props.originalGoalsAndRoutineArr}
                     Path={this.state.firebaseRootPath}
-                    />
+                    // ListCameBackFalse= {this.ListFalse}
+                  />
                 </Row>
                 <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
                   <DeleteGR
                     deleteIndex={this.findIndexByID(tempID)}
-                    Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                     Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                     refresh={this.grabFireBaseRoutinesGoalsData}
                   />
+
                   <EditGR
                     marginLeftV= "-170px"
                     i={this.findIndexByID(tempID)} //index to edit
-                    ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                     refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    is_sublist_available= {this.is_sublist_available}
                   />
                 </Row>
               </Col>
@@ -1062,7 +849,7 @@ export default class FirebaseV2 extends React.Component {
             ) : (
               <div>
               <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {this.state.goals[i]["is_available"] ? (
+                  {this.props.routines[i]["is_available"] ? (
                   <div style={{ marginLeft: "5px" }}>
                     <FontAwesomeIcon
                       title="Available to Cailin"
@@ -1089,29 +876,204 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                <ShowATList 
-                  Index={this.findIndexByID(tempID)} 
-                  Array={this.state.originalGoalsAndRoutineArr}
+                <ShowATList
+                  Index={this.findIndexByID(tempID)}
+                  Array={this.props.originalGoalsAndRoutineArr}
                   Path={this.state.firebaseRootPath}
-                />
+                  />
               </Row>
               <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
                 <DeleteGR
                   deleteIndex={this.findIndexByID(tempID)}
-                  Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                  Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                   Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                   refresh={this.grabFireBaseRoutinesGoalsData}
                 />
                 <EditGR
                   marginLeftV= "-130px"
                   i={this.findIndexByID(tempID)} //index to edit
-                  ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                  ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                  FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                  refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                />
+              </Row>
+             </div>
+            )}
+              <Row>
+                <div style={{ fontSize: "12px" }}>
+                  {this.props.routines[i]["datetime_started"] ? (
+                    <div style={{ marginTop: "3px" }}>
+                      {"Previous Start Time: " +
+                        this.formatDateTime(
+                          this.props.routines[i]["datetime_started"]
+                        )}{" "}
+                    </div>
+                  ) : (
+                    <div> </div>
+                  )}
+                  {this.props.routines[i]["datetime_completed"] ? (
+                    <div>
+                      {"Previous Completed Time: " +
+                        this.formatDateTime(
+                          this.props.routines[i]["datetime_completed"]
+                        )}{" "}
+                    </div>
+                  ) : (
+                    <div> </div>
+                  )}
+                </div>
+              </Row>
+            </ListGroup.Item>
+          </div>
+        );
+      }
+    }
+    return displayRoutines;
+  };
+
+  getGoals = () => {
+    let displayGoals = [];
+    if (this.props.goals.length != null) {
+      //Check to make sure routines exists
+      for (let i = 0; i < this.props.goals.length; i++) {
+        let tempTitle = this.props.goals[i]["title"];
+        let tempID = this.props.goals[i]["id"];
+        let tempPersist = this.props.goals[i]["is_persistent"];
+        displayGoals.push(
+          <div key={"test1" + i}>
+            <ListGroup.Item
+              action
+              onClick={() => {
+                this.GRonClickEvent(tempTitle, tempID, tempPersist);
+              }}
+              variant="light"
+              style={{ marginBottom: "3px" }}
+            >
+
+
+            <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
+            <Col>
+              <div className="fancytext">{tempTitle}</div>
+            </Col>
+          </Row>
+           {this.props.goals[i]["photo"] ? (
+          <Row >
+            <Col xs={7}
+                style={{  paddingRight:"0px"}}
+              >
+                  <img
+                    src={this.props.goals[i]["photo"]}
+                    alt="Instructions/Steps"
+                    className="center"
+                    height="80px"
+                    width="auto"
+                  />
+              </Col>
+              <Col style = {{paddingLeft: "0px"}}>
+                <Row style = {{marginTop:"10px"}}>
+                    {this.props.goals[i]["is_available"] ? (
+                    <div style={{ marginLeft: "5px" }}>
+                      <FontAwesomeIcon
+                        title="Available to Cailin"
+                        style={{ color: this.props.availabilityColorCode }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          alert("Item Is Availble to Caitlin");
+                        }}
+                        icon={faUser}
+                        size="lg"
+                      />{" "}
+                    </div>
+                  ) : (
+                    <div >
+                      <FontAwesomeIcon
+                        title="Unavailable to Caitlin"
+                        style={{ color: "#000000" }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          alert("Item Is NOT Availble to Caitlin");
+                        }}
+                        icon={faUserAltSlash}
+                        size="lg"
+                      />
+                    </div>
+                  )}
+                  <ShowATList
+                    Index={this.findIndexByID(tempID)}
+                    Array={this.props.originalGoalsAndRoutineArr}
+                    Path={this.state.firebaseRootPath}
+                    />
+                </Row>
+                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
+                  <DeleteGR
+                    deleteIndex={this.findIndexByID(tempID)}
+                    Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                    refresh={this.grabFireBaseRoutinesGoalsData}
+                  />
+                  <EditGR
+                    marginLeftV= "-170px"
+                    i={this.findIndexByID(tempID)} //index to edit
+                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                  />
+                </Row>
+              </Col>
+            </Row>
+            ) : (
+              <div>
+              <Row style ={{marginLeft:"100px"}} className="d-flex " >
+                  {this.props.goals[i]["is_available"] ? (
+                  <div style={{ marginLeft: "5px" }}>
+                    <FontAwesomeIcon
+                      title="Available to Cailin"
+                      style={{ color: this.state.availabilityColorCode }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        alert("Item Is Availble to Caitlin");
+                      }}
+                      icon={faUser}
+                      size="lg"
+                    />{" "}
+                  </div>
+                ) : (
+                  <div>
+                    <FontAwesomeIcon
+                      title="Unavailable to Caitlin"
+                      style={{ color: "#000000" }}
+                      onClick={e => {
+                        e.stopPropagation();
+                        alert("Item Is NOT Availble to Caitlin");
+                      }}
+                      icon={faUserAltSlash}
+                      size="lg"
+                    />
+                  </div>
+                )}
+                <ShowATList
+                  Index={this.findIndexByID(tempID)}
+                  Array={this.props.originalGoalsAndRoutineArr}
+                  Path={this.state.firebaseRootPath}
+                />
+              </Row>
+              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
+                <DeleteGR
+                  deleteIndex={this.findIndexByID(tempID)}
+                  Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                  Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                  refresh={this.grabFireBaseRoutinesGoalsData}
+                />
+                <EditGR
+                  marginLeftV= "-130px"
+                  i={this.findIndexByID(tempID)} //index to edit
+                  ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                   FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                   refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                 />
               </Row>
               </div>
-            
+
             )}
 
 
@@ -1152,9 +1114,9 @@ export default class FirebaseV2 extends React.Component {
                     />
                   </div>
                 )}
-                 
+
               </Row>
-             
+
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
                   <div className="fancytext">
@@ -1208,22 +1170,22 @@ export default class FirebaseV2 extends React.Component {
               </Row>  */}
 
               <div style={{ fontSize: "12px" }}>
-                {this.state.goals[i]["datetime_started"] ? (
+                {this.props.goals[i]["datetime_started"] ? (
                   <div style={{ marginTop: "3px" }}>
                     {"Previous Start Time: " +
                       this.formatDateTime(
-                        this.state.goals[i]["datetime_started"]
+                        this.props.goals[i]["datetime_started"]
                       )}{" "}
                   </div>
                 ) : (
                   <div> </div>
                 )}
 
-                {this.state.goals[i]["datetime_completed"] ? (
+                {this.props.goals[i]["datetime_completed"] ? (
                   <div>
                     {"Previous Completed Time: " +
                       this.formatDateTime(
-                        this.state.goals[i]["datetime_completed"]
+                        this.props.goals[i]["datetime_completed"]
                       )}{" "}
                   </div>
                 ) : (
@@ -1241,13 +1203,13 @@ export default class FirebaseV2 extends React.Component {
 
   getGoalsStatus = () => {
     let displayGoals = [];
-    if (this.state.goals.length != null) {
+    if (this.props.goals.length != null) {
       //Check to make sure routines exists
-      for (let i = 0; i < this.state.goals.length; i++) {
-        let tempTitle = this.state.goals[i]["title"];
+      for (let i = 0; i < this.props.goals.length; i++) {
+        let tempTitle = this.props.goals[i]["title"];
         // let tempID = this.state.goals[i]["id"];
-        let isComplete = this.state.goals[i]["is_complete"];
-        if (!this.state.goals[i]["is_available"]) {
+        let isComplete = this.props.goals[i]["is_complete"];
+        if (!this.props.goals[i]["is_available"]) {
           continue; //skip if not available
         }
         displayGoals.push(
@@ -1313,13 +1275,13 @@ export default class FirebaseV2 extends React.Component {
 
   getRoutinesStatus = () => {
     let displayRoutines = [];
-    if (this.state.routines.length != null) {
+    if (this.props.routines.length != null) {
       //Check to make sure routines exists
-      for (let i = 0; i < this.state.routines.length; i++) {
-        let tempTitle = this.state.routines[i]["title"];
+      for (let i = 0; i < this.props.routines.length; i++) {
+        let tempTitle = this.props.routines[i]["title"];
         // let tempID = this.state.routines[i]['id'];
-        let isComplete = this.state.routines[i]["is_complete"];
-        if (!this.state.routines[i]["is_available"]) {
+        let isComplete = this.props.routines[i]["is_complete"];
+        if (!this.props.routines[i]["is_available"]) {
           continue; //skip if not available
         }
         displayRoutines.push(
@@ -1611,7 +1573,7 @@ shows entire list of goals and routines
         closeModal={() => {
           this.setState({ addNewGRModalShow: false });
         }}
-        ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
         refresh={this.grabFireBaseRoutinesGoalsData}
         isRoutine={this.state.isRoutine}
         width={this.state.modalWidth}

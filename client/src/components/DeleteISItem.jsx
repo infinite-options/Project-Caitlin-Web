@@ -24,6 +24,29 @@ export default class DeleteISItem extends Component {
 
 
     submitRequest = () => {
+        //Delete from the firebase
+        /*const url = "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+        const Data = {
+            data : {
+                "path" : this.props.ISItem.fbPath.path //<<<<< Entire path of the document to delete
+            }
+        };
+        console.log("path " +  this.props.ISItem.fbPath.path);
+        
+        const param = {
+            headers:{
+                //"content-type":"application/json; charset=UTF-8"
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(Data),
+            method: "POST"
+        };
+        
+        fetch(url, param)
+        .then((response) => response.json())
+        .then((result) => { console.log(result); } )
+        .catch((error) => { console.error(error); });*/
+        
         // console.log("request was made to delete for element " +  this.props.deleteIndex);
         let items = [...this.props.ISArray];
         // console.log("delete with: ")

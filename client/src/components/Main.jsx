@@ -39,6 +39,9 @@ export default class MainPage extends React.Component {
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       weekEvents: [], //holds google events data for a week
+      originalGoalsAndRoutineArr: [], //Hold goals and routines so day and week view can access it
+      goals: [],
+      routines: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -101,8 +104,56 @@ export default class MainPage extends React.Component {
       eventNotifications: {},
       showDeleteRecurringModal: false,
       deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     };
   }
+
+/**
+   * grabFireBaseRoutinesGoalsData:
+   * this function grabs the goals&routines array from the path located in this function
+   * which will then populate the goals, routines,originalGoalsAndRoutineArr array
+   * separately. The arrays will be used for display and data manipulation later.
+   *
+   */
+  grabFireBaseRoutinesGoalsData = () => {
+    const db = firebase.firestore();
+    // console.log("FirebaseV2 component did mount");
+    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    docRef
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          // console.log(doc.data());
+          var x = doc.data();
+          // console.log(x["goals&routines"]);
+          x = x["goals&routines"];
+          let routine = [];
+          let goal = [];
+          for (let i = 0; i < x.length; ++i) {
+            if (!x[i]["deleted"] && x[i]["is_persistent"]) {
+              // console.log("routine " + x[i]["title"]);
+              routine.push(x[i]);
+            } else if (!x[i]["deleted"] && !x[i]["is_persistent"]) {
+              // console.log("not routine " + x[i]["title"]);
+              goal.push(x[i]);
+            }
+          }
+          this.setState({
+            originalGoalsAndRoutineArr: x,
+            goals: goal,
+            addNewGRModalShow: false,
+            routines: routine
+          });
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+      });
+  };
 
   handleRepeatDropDown = (eventKey, week_days) => {
     if (eventKey === "WEEK") {
@@ -182,12 +233,12 @@ export default class MainPage extends React.Component {
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
-  updateProfilePicFromFirebase = ()=> {
+  updateProfilePicFromFirebase = () => {
     const db = firebase.firestore();
     const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
     docRef
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           var x = doc.data();
           var firstName = x.first_name;
@@ -197,15 +248,16 @@ export default class MainPage extends React.Component {
           this.setState({
             profilePicUrl: x.pic,
             profileName: firstName + " " +lastName
+
           });
         } else {
           console.log("No such document!");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
       });
-  }
+  };
 
   /*
   getThisMonthEvents:
@@ -290,6 +342,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
 
@@ -353,6 +411,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
   repeatSummaryCompute = () => {
@@ -422,7 +486,7 @@ export default class MainPage extends React.Component {
 
     // If freq is daily in rrule
     if (recurrenceRule.includes("FREQ=DAILY")) {
-      if (intervalSubString === "1") {
+      if (intervalSubString === "1" || !intervalSubString) {
         if (
           !recurrenceRule.includes("COUNT") &&
           !recurrenceRule.includes("UNTIL")
@@ -473,7 +537,7 @@ export default class MainPage extends React.Component {
 
     // If freq is weekly in rrule
     else if (recurrenceRule.includes("FREQ=WEEKLY")) {
-      if (intervalSubString === "1") {
+      if (intervalSubString === "1" || !intervalSubString) {
         if (
           !recurrenceRule.includes("COUNT") &&
           !recurrenceRule.includes("UNTIL")
@@ -570,7 +634,7 @@ export default class MainPage extends React.Component {
 
     // If freq is monthly in rrule
     else if (recurrenceRule.includes("FREQ=MONTHLY")) {
-      if (intervalSubString === "1") {
+      if (intervalSubString === "1" || !intervalSubString) {
         if (
           !recurrenceRule.includes("COUNT") &&
           !recurrenceRule.includes("UNTIL")
@@ -621,7 +685,7 @@ export default class MainPage extends React.Component {
 
     // If freq is yearly in rrule
     else if (recurrenceRule.includes("FREQ=YEARLY")) {
-      if (intervalSubString === "1") {
+      if (intervalSubString === "1" || !intervalSubString) {
         if (
           !recurrenceRule.includes("COUNT") &&
           !recurrenceRule.includes("UNTIL")
@@ -682,7 +746,7 @@ export default class MainPage extends React.Component {
   handleEventClick = (i) => {
     // bind with an arrow function
     let A = this.state.originalEvents[i];
-    console.log("A", A.recurringEventId);
+    console.log("A", A);
     if (A.recurringEventId) {
       axios
         .get("/getRecurringRules", {
@@ -712,6 +776,7 @@ export default class MainPage extends React.Component {
     }
     this.setState(
       {
+        newEvent: A,
         newEventID: A.id,
         newEventRecurringID: A.recurringEventId,
         newEventStart0: A.start.dateTime
@@ -764,12 +829,73 @@ export default class MainPage extends React.Component {
           5: "",
           6: "",
         },
+        repeatSummary: "",
+        recurrenceRule: "",
+        showDeleteRecurringModal: false,
+        deleteRecurringOption: "This event",
+        showEditRecurringModal: false,
+        editRecurringOption: "",
       },
       () => {
         console.log("callback from handEventClick");
       }
     );
   };
+
+  //Create event from clicking empty space from week view
+  //Note arg is moment object of the time pressed
+  handleDateClickOnWeekView = (arg) => {
+    let newStart = arg.toDate();
+    arg.add(1,'hour');
+    let newEnd = arg.toDate();
+    this.setState({
+      newEventID: "",
+      newEventStart0: newStart,
+      newEventEnd0: newEnd,
+      newEventName: "",
+      newEventGuests: "",
+      newEventLocation: "",
+      newEventNotification: 30,
+      newEventDescription: "",
+      dayEventSelected: true,
+      isEvent: false,
+      showNoTitleError: "",
+      showDateError: "",
+      showRepeatModal: false,
+      showAboutModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+    });
+  }
 
   handleDateClickOnDayView = (arg, i) => {
     var newStart = new Date(arg);
@@ -822,6 +948,12 @@ export default class MainPage extends React.Component {
         5: "",
         6: "",
       },
+      repeatSummary: "",
+      recurrenceRule: "",
+      showDeleteRecurringModal: false,
+      deleteRecurringOption: "This event",
+      showEditRecurringModal: false,
+      editRecurringOption: "",
     });
   };
 
@@ -882,6 +1014,12 @@ export default class MainPage extends React.Component {
           5: "",
           6: "",
         },
+        repeatSummary: "",
+        recurrenceRule: "",
+        showDeleteRecurringModal: false,
+        deleteRecurringOption: "This event",
+        showEditRecurringModal: false,
+        editRecurringOption: "",
       },
       console.log("handledateclick")
     );
@@ -951,7 +1089,7 @@ export default class MainPage extends React.Component {
   updateEventClick = (event) => {
     event.preventDefault();
     let eventList = this.state.originalEvents;
-    if(this.state.calendarView === "Day") {
+    if (this.state.calendarView === "Day") {
       eventList = this.state.dayEvents;
     } else if (this.state.calendarView === "Week") {
       eventList = this.state.weekEvents;
@@ -963,7 +1101,7 @@ export default class MainPage extends React.Component {
       } else {
         for (let i = 0; i < eventList.length; i++) {
           if (eventList[i].id === this.state.newEventID) {
-            this.updateRequest(eventList,i);
+            this.updateRequest(eventList, i);
           }
         }
       }
@@ -974,7 +1112,7 @@ export default class MainPage extends React.Component {
   updateRequest:
   updates the google calendar based  on
   */
-  updateRequest = (eventList,index) => {
+  updateRequest = async (eventList, index) => {
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -999,12 +1137,17 @@ export default class MainPage extends React.Component {
     updatedEvent.attendees = formattedEmail;
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
-    updatedEvent.start.dateTime = this.state.newEventStart0.toISOString();
-    updatedEvent.start.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    updatedEvent.end.dateTime = this.state.newEventEnd0.toISOString();
-    updatedEvent.end.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    updatedEvent.recurrence =
-      this.state.repeatOption && this.defineRecurrence();
+    updatedEvent.start = {
+      dateTime: this.state.newEventStart0.toISOString(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+    updatedEvent.end = {
+      dateTime: this.state.newEventEnd0.toISOString(),
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+    updatedEvent.recurrence = this.state.repeatOption
+      ? this.defineRecurrence()
+      : [this.state.recurrenceRule];
     updatedEvent.reminders = {
       overrides: [
         {
@@ -1016,10 +1159,103 @@ export default class MainPage extends React.Component {
       sequence: 0,
     };
 
+    let event = {
+      summary: updatedEvent.summary,
+      attendees: updatedEvent.attendees,
+      location: updatedEvent.location,
+      description: updatedEvent.description,
+      start: updatedEvent.start,
+      end: updatedEvent.end,
+      recurrence: updatedEvent.recurrence ? updatedEvent.recurrence : false,
+      reminders: updatedEvent.reminders,
+    };
+
+    console.log(updatedEvent, "updatedEvent");
+
+    let ID = "";
+    if (this.state.editRecurringOption === "All events") {
+      ID = updatedEvent.recurringEventId;
+      console.log("All events");
+
+      await axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: updatedEvent.recurringEventId,
+          },
+        })
+        .then((res) => {
+          event.start = res.data[0].start;
+          event.end = res.data[0].end;
+        });
+    } else if (this.state.editRecurringOption === "This event") {
+      ID = this.state.newEventID;
+      event.recurrence = null;
+    } else if (this.state.editRecurringOption === "This and following events") {
+      ID = updatedEvent.recurringEventId;
+      let newEvent = {
+        reminders: this.state.newEvent.reminders,
+        creator: this.state.newEvent.creator,
+        created: this.state.newEvent.created,
+        organizer: this.state.newEvent.organizer,
+        sequence: this.state.newEvent.sequence,
+        status: this.state.newEvent.status,
+      };
+      let newRecurrenceRule = this.state.recurrenceRule;
+      let newUntilSubString = `${moment(this.state.newEventStart0).format(
+        "YYYYMMDD"
+      )}`;
+
+      let untilSubString = "";
+      let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
+      if (untilIndex !== -1) {
+        untilSubString = this.state.recurrenceRule.substring(untilIndex);
+      }
+      if (untilSubString.includes(";")) {
+        let endUntilIndex = untilSubString.indexOf(";");
+        untilSubString = untilSubString.substring(6, endUntilIndex);
+      } else if (untilSubString) {
+        untilSubString = untilSubString = untilSubString.substring(6);
+      }
+
+      newRecurrenceRule = newRecurrenceRule.replace(
+        untilSubString,
+        newUntilSubString
+      );
+      console.log(newEvent.summary, this.state.newEvent.summary);
+      await axios
+        .get("/getRecurringEventInstances", {
+          params: {
+            recurringEventId: updatedEvent.recurringEventId,
+          },
+        })
+        .then((res) => {
+          newEvent.start = res.data[0].start;
+          newEvent.end = res.data[0].end;
+          newEvent.recurrence = [newRecurrenceRule];
+          newEvent.summary = res.data[0].summary;
+          axios
+            .post("/createNewEvent", {
+              newEvent: newEvent,
+            })
+            .then((res) => {
+              console.log("createnewevent", res);
+              this.setState({
+                dayEventSelected: false,
+              });
+              this.updateEventsArray();
+            })
+            .catch(function (error) {
+              // console.log(error);
+            });
+        });
+    }
+
     axios
       .put("/updateEvent", {
-        extra: updatedEvent,
-        ID: this.state.newEventID,
+        extra: event,
+        ID: updatedEvent.recurringEventId ? ID : this.state.newEventID,
+        // start: updatedEvent.start,
+        // end: updatedEvent.end,
       })
       .then((response) => {
         this.setState({
@@ -1638,7 +1874,6 @@ export default class MainPage extends React.Component {
     });
   };
 
-
   showDayViewOrAboutView = () => {
     if (this.state.dayEventSelected) {
       return this.eventFormAbstracted();
@@ -1648,10 +1883,10 @@ export default class MainPage extends React.Component {
   };
 
   showCalendarView = () => {
-
     if (this.state.calendarView === "Month") return this.calendarAbstracted();
     else if (this.state.calendarView === "Day") return this.dayViewAbstracted();
-    else if (this.state.calendarView === "Week") return this.weekViewAbstracted();
+    else if (this.state.calendarView === "Week")
+      return this.weekViewAbstracted();
   };
 
   render() {
@@ -1668,7 +1903,7 @@ export default class MainPage extends React.Component {
         style={{
           marginLeft: "0px",
           height: "100%",
-          width: "2000px"
+          width: "2000px",
           // width: "100%",
           // display: "flex",
           // flexDirection: "column",
@@ -1687,11 +1922,13 @@ export default class MainPage extends React.Component {
           <Row style={{ margin: "0"}} className="d-flex flex-row">
 
 
+
             {/* <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}> */}
             <Col xs={1} style = {{ height:"70px", marginLeft: "50px", marginTop:"5px", paddingRight:"0px"}}>
             {(this.state.profilePicUrl === ""  ? 
               <FontAwesomeIcon icon={faImage} size="5x"/> : 
               <img style = 
+
                   {{display: "block",
                   marginLeft: "auto",
                   marginRight:"auto" ,
@@ -1713,6 +1950,7 @@ export default class MainPage extends React.Component {
                 <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
                 <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
 
+
                 )}
             </Col>
             {/* <Col>
@@ -1720,8 +1958,20 @@ export default class MainPage extends React.Component {
             </Col> */}
             
 
+
               {/* </div> */}
 
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              {this.state.profileName === "" ? (
+                <p style={{ marginTop: "25px", marginLeft: "10px" }}>
+                  First Last
+                </p>
+              ) : (
+                <p style={{ marginTop: "25px", marginLeft: "10px" }}>
+                  {this.state.profileName}
+                </p>
+              )}
+            </div>
           </Row>
           <Row style={{ margin: "0"}} className="d-flex flex-row">
             <Col xs={3}>
@@ -1742,7 +1992,7 @@ export default class MainPage extends React.Component {
           style={{
             margin: "0",
             padding: "0",
-            width: "100%"
+            width: "100%",
           }}
         >
           {this.abstractedMainEventGRShowButtons()}
@@ -1751,7 +2001,7 @@ export default class MainPage extends React.Component {
           fluid
           style={{
             marginTop: "15px",
-            marginLeft: "0"
+            marginLeft: "0",
             // display: "flex",
             // flexDirection: "column",
             // justifyContent: "center",
@@ -1761,7 +2011,7 @@ export default class MainPage extends React.Component {
         >
           <Row
             style={{
-              marginTop: "0"
+              marginTop: "0",
               // width: "100%",
               // display: "flex",
               // flexDirection: "column",
@@ -1771,6 +2021,10 @@ export default class MainPage extends React.Component {
           >
             {/* the modal for routine/goal is called Firebasev2 currently */}
             <Firebasev2
+              grabFireBaseRoutinesGoalsData={this.grabFireBaseRoutinesGoalsData}
+              originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+              goals={this.state.goals}
+              routines={this.state.routines}
               closeRoutineGoalModal={() => {
                 this.setState({ showRoutineGoalModal: false });
               }}
@@ -1783,6 +2037,8 @@ export default class MainPage extends React.Component {
               }}
               showRoutine={this.state.showRoutineModal}
               showGoal={this.state.showGoalModal}
+              goals={this.state.goals}
+              routines={this.state.routines}
             />
             <Col
               sm="auto"
@@ -1835,10 +2091,15 @@ export default class MainPage extends React.Component {
                 />
               </div>
             </Col>
-            <Col md="auto" style={{ textAlign: "center" }} className="bigfancytext">
+            <Col
+              md="auto"
+              style={{ textAlign: "center" }}
+              className="bigfancytext"
+            >
               <p>
                 {" "}
-                {this.state.dateContext.format('dddd')} {this.getDay()} {this.getMonth()} {this.getYear()}{" "}
+                {this.state.dateContext.format("dddd")} {this.getDay()}{" "}
+                {this.getMonth()} {this.getYear()}{" "}
               </p>
             </Col>
             <Col>
@@ -1862,8 +2123,14 @@ export default class MainPage extends React.Component {
             dayEvents={this.state.dayEvents}
             getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
-          <DayRoutines dayRoutineClick={this.toggleShowRoutine} />
-          <DayGoals dayGoalClick={this.toggleShowGoal} />
+          <DayRoutines
+            routines={this.state.routines}
+            dayRoutineClick={this.toggleShowRoutine}
+          />
+          <DayGoals
+            goals={this.state.goals}
+            dayGoalClick={this.toggleShowGoal}
+          />
         </Row>
       </div>
     );
@@ -1926,13 +2193,18 @@ export default class MainPage extends React.Component {
               weekEvents={this.state.weekEvents}
               dateContext={this.state.dateContext}
               eventClick={this.handleWeekEventClick}
+              onDayClick={this.handleDateClickOnWeekView}
             />
           </Row>
           <Row>
-            <WeekGoals />
+            <WeekGoals
+              goals={this.state.goals}
+            />
           </Row>
           <Row>
-            <WeekRoutines />
+            <WeekRoutines
+              routines={this.state.routines}
+            />
           </Row>
         </Container>
       </div>
@@ -2018,35 +2290,35 @@ export default class MainPage extends React.Component {
             marginTop: "10px",
           }}
         >
-        <DropdownButton
-          style={{ top: "5px" }}
-          title={this.state.calendarView}
-        >
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Day");
-            }}
+          <DropdownButton
+            style={{ top: "5px" }}
+            title={this.state.calendarView}
           >
-            {" "}
-            Day{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Week");
-            }}
-          >
-            {" "}
-            Week{" "}
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={e => {
-              this.changeCalendarView("Month");
-            }}
-          >
-            {" "}
-            Month{" "}
-          </Dropdown.Item>
-        </DropdownButton>
+            <Dropdown.Item
+              onClick={(e) => {
+                this.changeCalendarView("Day");
+              }}
+            >
+              {" "}
+              Day{" "}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => {
+                this.changeCalendarView("Week");
+              }}
+            >
+              {" "}
+              Week{" "}
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={(e) => {
+                this.changeCalendarView("Month");
+              }}
+            >
+              {" "}
+              Month{" "}
+            </Dropdown.Item>
+          </DropdownButton>
         </div>
         <Button
           style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
@@ -2111,14 +2383,12 @@ export default class MainPage extends React.Component {
           Current Status
         </Button>
         <Button
-
           style={{
             display: "inline-block",
             margin: "10px",
             marginBottom: "0",
             // marginRight: "200px",
           }}
-
           variant="outline-primary"
           onClick={() => {
             this.setState({
@@ -2128,10 +2398,8 @@ export default class MainPage extends React.Component {
           }}
         >
           About
-
         </Button>
       </Row>
-
     );
   };
 
@@ -2235,6 +2503,7 @@ export default class MainPage extends React.Component {
             // />
           }
           {this.state.showDeleteRecurringModal && this.deleteRecurringModal()}
+          {this.state.showEditRecurringModal && this.editRecurringModal()}
           {this.eventFormInputArea()}
         </Modal.Body>
         <Modal.Footer>
@@ -2271,7 +2540,11 @@ export default class MainPage extends React.Component {
                 xs={4}
               >
                 <Button
-                  onClick={this.updateEventClick}
+                  onClick={(e) =>
+                    this.state.newEventRecurringID
+                      ? this.openEditRecurringModal()
+                      : this.updateEventClick(e)
+                  }
                   className="btn btn-info"
                 >
                   Update
@@ -2593,6 +2866,19 @@ export default class MainPage extends React.Component {
     );
   };
 
+  openEditRecurringModal = () => {
+    console.log("openeditrecurringmodal called");
+    this.setState((prevState) => {
+      return { showEditRecurringModal: !prevState.showEditRecurringModal };
+    });
+  };
+
+  closeEditRecurringModal = () => {
+    this.setState({
+      showEditRecurringModal: false,
+    });
+  };
+
   openDeleteRecurringModal = () => {
     console.log("opendeleterecurringmodal called");
     this.setState((prevState) => {
@@ -2641,7 +2927,7 @@ export default class MainPage extends React.Component {
           },
         })
         .then((res) => {
-          res.data.forEach((event) => {
+          res.data.map((event) => {
             axios
               .delete("/deleteRecurringEvent", {
                 params: {
@@ -2692,6 +2978,115 @@ export default class MainPage extends React.Component {
           console.log(error);
         });
     }
+  };
+
+  editRecurringModal = () => {
+    const modalStyle = {
+      position: "absolute",
+      left: "50%",
+      zIndex: "5",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "400px",
+    };
+
+    return (
+      <Modal.Dialog style={modalStyle}>
+        <Modal.Header closeButton onHide={this.closeEditRecurringModal}>
+          <Modal.Title>
+            <h5 className="normalfancytext">Edit Recurring Event</h5>
+          </Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body
+          style={{
+            // padding: "85px 0",
+            height: "250px",
+            margin: "auto",
+          }}
+        >
+          <Form
+            style={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Form.Group
+              style={{
+                height: "60%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+              }}
+              className="delete-repeat-form"
+              onChange={(e) => {
+                if (e.target.type === "radio") {
+                  this.setState({
+                    editRecurringOption: e.target.value,
+                  });
+                }
+              }}
+            >
+              {this.state.newEvent.summary !== this.state.newEventName &&
+                !this.state.repeatOption && (
+                  <Form.Check type="radio">
+                    <Form.Check.Label style={{ marginLeft: "5px" }}>
+                      <Form.Check.Input
+                        type="radio"
+                        value="This event"
+                        name="radios"
+                        defaultChecked={
+                          this.state.editRecurringOption === "This event" &&
+                          true
+                        }
+                      />
+                      This event
+                    </Form.Check.Label>
+                  </Form.Check>
+                )}
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="This and following events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.editRecurringOption ===
+                        "This and following events" && true
+                    }
+                  />
+                  This and following events
+                </Form.Check.Label>
+              </Form.Check>
+              <Form.Check type="radio">
+                <Form.Check.Label style={{ marginLeft: "5px" }}>
+                  <Form.Check.Input
+                    type="radio"
+                    value="All events"
+                    name="radios"
+                    defaultChecked={
+                      this.state.editRecurringOption === "All events" && true
+                    }
+                  />
+                  All events
+                </Form.Check.Label>
+              </Form.Check>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.closeEditRecurringModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={this.updateEventClick}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal.Dialog>
+    );
   };
 
   deleteRecurringModal = () => {
