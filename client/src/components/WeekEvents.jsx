@@ -36,6 +36,27 @@ export default class WeekEvents extends Component {
       return arr
   }
 
+  dateDisplay = () => {
+    let arr = [];
+    let startObject = this.props.dateContext.clone();
+    let startDay = startObject.startOf("week");
+    let curDate = startDay.clone();
+    for (let i = 0; i<7; i++) {
+        arr.push(
+            <Col key={"day" + i}>
+                <Col style={{
+                    textAlign: "right",
+                    height: this.state.pxPerHour,
+                }}>
+                    {curDate.format("M/D")}
+                </Col >
+            </Col>
+        );
+        curDate.add(1,"day");
+    }
+    return arr;
+  }
+
   onEventClick = (e, i) => {
     var arr = this.props.weekEvents;
     e.stopPropagation();
@@ -362,7 +383,8 @@ export default class WeekEvents extends Component {
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
            <Row>
-             Events
+             <Col>Events </Col>
+             {this.dateDisplay()}
            </Row>
            <Row>
              <Col className="fancytext">Time</Col>
