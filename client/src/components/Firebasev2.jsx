@@ -728,7 +728,7 @@ export default class FirebaseV2 extends React.Component {
         console.log("Error getting document:", error);
         alert("Error getting document:", error);
       });
-  };
+  }; 
 
   /**
    * findIndexByID:

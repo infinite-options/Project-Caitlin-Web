@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from "./firebase";
 import AddNewPeople from "./AddNewPeople";
-import { Form,Row,Col ,Modal,Button,Container} from "react-bootstrap";
+import { Form,Row,Col ,Modal,Button,Container,Dropdown,DropdownButton,} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faImage
@@ -17,24 +17,36 @@ class AboutModal extends React.Component{
             .firestore()
             .collection("users")
             .doc("7R6hAVmDrNutRkG3sVRy"),
-            importantPeople1DocRef: null,
-            importantPeople2DocRef: null,
-            importantPeople3DocRef: null,
+            importantPeople1id: null,
+            importantPeople2id: null,
+            importantPeople3id: null,
             aboutMeObject: {},
-            importantPeople1: {},
-            importantPeople2: {},
-            importantPeople3: {},
+            firstName: "",
+            lastName: "",
+            peopleNamesArray: {},
+            importantPoeplArrayLength: "0",
+            importantPeople1: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople2: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
+            importantPeople3: {have_pic: false, important:false, name: "", phone_number:"",pic:"",relationship:"", unique_id:""},
+            ImporPersonOneChange: false,
+            ImporPersonTwoChange: false,
+            ImporPersonThreeChange: false,
+            importantPeople1Previous: {},
+            importantPeople2Previous: {},
+            importantPeople3Previous: {},
+            importantPeople1DocRefChanged: null,
+            importantPeople2DocRefChanged: null,
+            importantPeople3DocRefChanged: null,
+            showAddNewPeopleModal: false,
             saveButtonEnabled: true,
-            showAddNewPeopleModal: false
+            enableDropDown: false
+            
         }
     }
 
     componentDidMount() {
         this.grabFireBaseAboutMeData();
-        this.grabFireBasePeople1Data();
-        this.grabFireBasePeople2Data();
-        this.grabFireBasePeople3Data();
-        
+        this.grabFireBaseAllPeopleNames();  
     }
 
     hideAboutForm = e => {
@@ -210,110 +222,72 @@ class AboutModal extends React.Component{
             }});
     }
 
-
-    grabFireBasePeople1Data = () =>{
+    grabFireBaseAllPeopleNames = () => {
         const db = firebase.firestore();
-        let collectionRef = db.collection('Users');
-        let documentRefWithName = collectionRef.doc('7R6hAVmDrNutRkG3sVRy').collection("people").doc("KC3jz0SW9xyYhMgsj0v0");
-
-        db.collection('users').get()
-        .then((snapshot) => {
-            snapshot.forEach((doc) => {
-            
-            let temp = {};
-            const document_ref = doc.data()["about_me"]["important_people"][0];
-            console.log("this is document_ref",document_ref.path);
-
-            document_ref.get().then((doc2) => {
-                if (doc2.exists) {
-                    temp = doc2.data();
-                    this.setState({importantPeople1: temp, importantPeople1DocRef: document_ref}, () =>{
-                        console.log("this is the important People1", this.state.importantPeople1)
-                    });
-                } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
-                }
-                
-            }).catch(function(error: any) {
-                console.log("Error getting document:", error);
-            });
-            });
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
-        });
-    }
-
-    grabFireBasePeople2Data = () =>{
-        console.log("why is it not going here")
-        const db = firebase.firestore();
-        db.collection('users').get()
-        .then((snapshot) => {
-            snapshot.forEach((doc) => {
-            
-            let temp = {};
-            const document_ref = doc.data()["about_me"]["important_people"][1];
-            console.log("this is the docu ref 2", document_ref);
-
-            document_ref.get().then((doc2) => {
-                if (doc2.exists) {
-                    temp = doc2.data();
-
-                    this.setState({importantPeople2: temp, importantPeople2DocRef: document_ref}, () =>{
-                        console.log("this is the important People2", this.state.importantPeople2)
-                    });
-                } else {
-                    console.log("No such document!");
-                }
-                
-            }).catch(function(error: any) {
-                console.log("Error getting document:", error);
-            });
-            
-            });
-        })
-        .catch((err) => {
-            console.log('Error getting documents', err);
-        });
-    }
-
-    grabFireBasePeople3Data = () =>{
-        console.log("why is it not going here")
-        const db = firebase.firestore();
-        db.collection('users').get()
-        .then((snapshot) => {
-            snapshot.forEach((doc) => {
-            
-            let temp = {};
-            const document_ref = doc.data()["about_me"]["important_people"][2];
-            console.log("this is the docu ref 3", document_ref);
-            if(document_ref === undefined){
-                this.state.importantPeople3.have_pic =false;
-                this.state.importantPeople3.important = false;
-                this.state.importantPeople3.name = "";
-                this.state.importantPeople3.phone_number="";
-                this.state.importantPeople3.pic = "";
-                this.state.importantPeople3.relationship = "";
-                this.state.importantPeople3.unique_id = "";
-            }
-
-            document_ref.get().then((doc2) => {
-                if (doc2.exists) {
-                    temp = doc2.data();
-
-                    this.setState({importantPeople3: temp, importantPeople3DocRef: document_ref}, () =>{
-                        console.log("this is the important People3", this.state.importantPeople3)
-                    });
-                } else {
-                    console.log("No such document!");
-                }
-                
-            }).catch(function(error: any) {
-                console.log("Error getting document:", error);
-            });
-            
-            });
+        db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
+        .then((peoplesArray) => {
+            let importantPeopleArray = [];
+            let importantPeopleReferencid = [];
+            let test = {};
+            let j = 0;
+           
+            // grab the ID of all of the people in the firebase.
+            for(let i = 0; i<peoplesArray.docs.length; i++){
+                db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
+                .then( (doc) => {
+                    j++;
+                    if(doc.data().important === true){
+                        importantPeopleReferencid.push(peoplesArray.docs[i].id);
+                        importantPeopleArray.push(doc.data());
+                    }
+                    test[doc.data().unique_id] = doc.data().name;
+                    if(j === peoplesArray.docs.length){
+                        if(importantPeopleArray.length >= 3){
+                            this.setState({
+                                peopleNamesArray:test,
+                                enableDropDown: true, 
+                                importantPoeplArrayLength: importantPeopleArray.length,
+                                importantPeople1: importantPeopleArray[0],
+                                importantPeople2: importantPeopleArray[1],
+                                importantPeople3: importantPeopleArray[2],
+                                importantPeople1id: importantPeopleReferencid[0],
+                                importantPeople2id: importantPeopleReferencid[1],
+                                importantPeople3id: importantPeopleReferencid[2],
+                            });
+                        }
+                        else if(importantPeopleArray.length === 2){
+                            this.setState({
+                                peopleNamesArray:test,
+                                enableDropDown: true,
+                                importantPoeplArrayLength: importantPeopleArray.length, 
+                                importantPeople1: importantPeopleArray[0],
+                                importantPeople2: importantPeopleArray[1],
+                                importantPeople1id: importantPeopleReferencid[0],
+                                importantPeople2id: importantPeopleReferencid[1],
+                            });
+                        }
+                        else if(importantPeopleArray.length === 1){
+                            this.setState({
+                                peopleNamesArray:test,
+                                enableDropDown: true,
+                                importantPoeplArrayLength: importantPeopleArray.length, 
+                                importantPeople1: importantPeopleArray[0],
+                                importantPeople1id: importantPeopleReferencid[0],
+                            });
+                        }
+                        else if(importantPeopleArray.length === 0){
+                            this.setState({
+                                peopleNamesArray:test,
+                                enableDropDown: true,
+                                importantPoeplArrayLength: importantPeopleArray.length
+                            });
+                        }
+                    }
+                })
+                .catch((err) => {
+                    console.log('Error getting documents', err);
+                })
+            }         
         })
         .catch((err) => {
             console.log('Error getting documents', err);
@@ -328,11 +302,13 @@ class AboutModal extends React.Component{
           .then(doc => {
             if (doc.exists) {
               var x = doc.data();
+              console.log("this is x in the about modal", x);
+              var firstName = x.first_name;
+              var lastName = x.last_name;
               x = x["about_me"];
-              console.log("this is about page");
-              console.log(x);
+              console.log("this is the about modal", x);
               this.setState({
-                aboutMeObject: x
+                aboutMeObject: x, firstName:firstName, lastName:lastName
               });
               
             } else {
@@ -342,36 +318,133 @@ class AboutModal extends React.Component{
           .catch(function(error) {
             console.log("Error getting document:", error);
           });
-      };
-
-    newInputSubmit = () => {
-        let newArr = this.state.aboutMeObject;
-        this.state.importantPeople1DocRef.update(this.state.importantPeople1).then(
-            (doc) => {
-                   
-            }
-        )
-        this.state.importantPeople2DocRef.update(this.state.importantPeople2).then(
-            (doc) => {
-                   
-            }
-        )
-        this.state.importantPeople3DocRef.update(this.state.importantPeople3).then(
-            (doc) => {
-                   
-            }
-        )
-        this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
-            (doc) => {
-                this.props.updateProfilePic(this.state.aboutMeObject.pic, this.state.aboutMeObject.name);
-                this.hideAboutForm();   
-            }
-        )
-    }
+    };
 
     hidePeopleModal = () => {
         this.setState({showAddNewPeopleModal: false});
     }
+
+    updatePeopleArray = () => {
+        this.grabFireBaseAllPeopleNames();
+    }
+
+    changeImpPersonOne = (Reference) => {
+        //Set the new person as an important person.
+        this.state.firebaseRootPath.collection('people').doc(Reference).get()
+        .then((doc) => {
+           let temp  = {};
+           let temp2 = {};    
+           temp = doc.data();
+           temp.important = true;
+           if(this.state.ImporPersonOneChange === false ){
+                temp2 = this.state.importantPeople1;
+                temp2.important = false;
+           }
+           else{
+               temp2 = this.state.importantPeople1Previous;
+           }
+           this.setState({ImporPersonOneChange: true,importantPeople1Previous: temp2 , importantPeople1DocRefChanged: doc.ref.id, importantPeople1: temp});
+        })
+        .catch((err) => {
+            console.log('Error getting documents', err);
+        });
+    }
+
+    changeImpPersonTwo = (Reference) => {
+        //Set the new person as an important person.
+        this.state.firebaseRootPath.collection('people').doc(Reference).get()
+        .then((doc) => {
+           let temp  = {};
+           let temp2 = {};      
+           temp = doc.data();
+           temp.important = true;
+           if(this.state.ImporPersonTwoChange === false ){
+                temp2 = this.state.importantPeople2;
+                temp2.important = false;
+           }
+           else{
+               temp2 = this.state.importantPeople2Previous;
+           }
+           this.setState({ImporPersonTwoChange: true,importantPeople2Previous: temp2 , importantPeople2DocRefChanged: doc.ref.id, importantPeople2: temp});
+        })
+        .catch((err) => {
+            console.log('Error getting documents', err);
+        });
+    }
+    changeImpPersonThree = (Reference) => {
+        //Set the new person as an important person.
+        this.state.firebaseRootPath.collection('people').doc(Reference).get()
+        .then((doc) => {
+           let temp  = {};
+           let temp2 = {};      
+           temp = doc.data();
+           temp.important = true;
+           if(this.state.ImporPersonThreeChange === false ){
+                temp2 = this.state.importantPeople3;
+                temp2.important = false;
+           }
+           else{
+               temp2 = this.state.importantPeople3Previous;
+           }
+           this.setState({ImporPersonThreeChange: true,importantPeople3Previous: temp2 , importantPeople3DocRefChanged: doc.ref.id, importantPeople3: temp});
+        })
+        .catch((err) => {
+            console.log('Error getting documents', err);
+        });
+    }
+
+    newInputSubmit = () => {
+        if(this.state.importantPeople1.important === true){
+            if(this.state.ImporPersonOneChange === true){
+                if(this.state.importantPeople1id != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1Previous);
+                }
+                if(this.state.importantPeople1DocRefChanged != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1DocRefChanged).update(this.state.importantPeople1);
+                }
+            }
+            else{
+                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
+            }        
+        }
+        if(this.state.importantPeople2.important === true){
+            if(this.state.ImporPersonTwoChange === true){
+                if(this.state.importantPeople2id != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2Previous);
+                }
+                if(this.state.importantPeople2DocRefChanged != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2DocRefChanged).update(this.state.importantPeople2);
+                }
+            }
+            else{
+                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
+            }  
+        }
+        if(this.state.importantPeople3.important === true){
+            if(this.state.ImporPersonThreeChange === true){
+                if(this.state.importantPeople3id != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3Previous);
+                }
+                if(this.state.importantPeople3DocRefChanged != null){
+                    this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3DocRefChanged).update(this.state.importantPeople3);
+                }
+            }
+            else{
+                this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
+            } 
+        } 
+        this.state.firebaseRootPath.update({'first_name': this.state.firstName});
+        this.state.firebaseRootPath.update({'last_name': this.state.lastName});
+        let newArr = this.state.aboutMeObject;
+        let name = this.state.firstName + " " + this.state.lastName;
+        this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
+           (doc) => {
+               this.props.updateProfilePic(this.state.aboutMeObject.pic, name);
+               this.hideAboutForm();   
+           }
+       )
+   }
+
 
     render(){
         return (
@@ -399,14 +472,37 @@ class AboutModal extends React.Component{
                 <Modal.Body>
                     <Form.Group>
                         <Form.Label>Name:</Form.Label>
-                        <Form.Control
-                        type="text"
-                        placeholder="First Last"
-                        value={this.state.aboutMeObject.name || ''}
-                        onChange={
-                            (e) => { e.stopPropagation(); let temp = this.state.aboutMeObject; temp.name = e.target.value; this.setState({ aboutMeObject: temp }) }
-                        }
-                        />
+                        <Row>
+                            <Col style = {{paddingRight:"0px"}}>
+                                <label style = {{marginTop:"10px", marginLeft:"10px"}}>First:</label>
+                            </Col>
+                            <Col xs= {9} style = {{paddingLeft:"0px"}}>
+                                <Form.Control
+                                type="text"
+                                placeholder="First Last"
+                                value={this.state.firstName || ''}
+                                onChange={
+                                    (e) => { e.stopPropagation(); this.setState({ firstName: e.target.value }) }
+                                }
+                                />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col style = {{paddingRight:"0px"}}>
+                                <label style = {{marginTop:"10px", marginLeft:"10px"}}>Last:</label>
+                            </Col>
+                            <Col xs= {9} style = {{paddingLeft:"0px"}}>
+                                <Form.Control
+                                type="text"
+                                placeholder="First Last"
+                                value={this.state.lastName || ''}
+                                onChange={
+                                    (e) => { e.stopPropagation();this.setState({ lastName: e.target.value }) }
+                                }
+                                />
+                            </Col>
+                        </Row>
+                        
                     </Form.Group>
                     <Row>
                         <Col>  
@@ -462,23 +558,28 @@ class AboutModal extends React.Component{
                        }
                         />
                     </Form.Group>
+                    
                     <Form.Group >
                         <Form.Label>Important People</Form.Label>
-                        {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal}/>}
+                        {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray}/>}
                         <Row>
                             <Col>
-                            
                                 {(this.state.importantPeople1.have_pic === false ? 
-                                <div>
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"10px"}} /> 
-                                    <Form.Control
-                                    type="text"
-                                    placeholder="Name ..."
-                                    value = {this.state.importantPeople1.name || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.name = e.target.value; this.setState({ importantPeople1: temp }) }
-                                     }
+                                <div >
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    {(this.state.importantPeople1.important === false ?
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        disabled/>:
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        onChange={this.handleImpPeople1}
                                     />
+                                    )}
                                 </div>: 
                                 <div>
                                     <img style = 
@@ -491,54 +592,110 @@ class AboutModal extends React.Component{
                                         src={this.state.importantPeople1.pic } 
                                         alt="Important Person 1"
                                     /> 
-                                    <Form.Control
-                                    style = {{marginTop:"10px"}}
-                                    type="text"
-                                    placeholder="Name ..."
-                                    value = {this.state.importantPeople1.name || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.name = e.target.value; this.setState({ importantPeople1: temp }) }
-                                     }
+                                     <input 
+                                      style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                      // style = {{color: "transparent", marginTop:"10px"}}
+                                      type= "file" accept="image/*" 
+                                      onChange={this.handleImpPeople1}
                                     />
                                 </div>)} 
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Relationship"
-                                    value = {this.state.importantPeople1.relationship || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.relationship = e.target.value; this.setState({ importantPeople1: temp }) }
-                                     } 
-                                 />
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Phone Number"
-                                    value = {this.state.importantPeople1.phone_number || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.phone_number = e.target.value; this.setState({ importantPeople1: temp }) }
-                                     } 
-                                />
-                                <input 
-                                    style = {{color: "transparent", marginTop:"10px"}}
-                                    type= "file" accept="image/*" 
-                                    onChange={this.handleImpPeople1}
-                                />
+                                <div className="d-flex flex-row">
+                                    {(this.state.importantPeople1.important === false?
+                                        <Form.Control
+                                            style = {{width:"150px", display:"inline-block"}}
+                                            type="text"
+                                            placeholder="Name ..."
+                                            value = ""
+                                            disabled
+                                        />:
+                                        <Form.Control
+                                            style = {{width:"150px", display:"inline-block"}}
+                                            type="text"
+                                            placeholder="Name ..."
+                                            value = {this.state.importantPeople1.name || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.name = e.target.value; this.setState({ importantPeople1: temp }) }
+                                            }
+                                        />
+                                    )}
+                                    {this.state.enableDropDown === false? 
+                                    <DropdownButton
+                                        style={{ display:"inline-block" }}
+                                        title=""
+                                        disabled>       
+                                    </DropdownButton>:
+                                        <DropdownButton
+                                        title=""
+                                        >
+                                            {
+                                                Object.keys(this.state.peopleNamesArray).map((keyName, keyIndex) => (
+                                                    // use keyName to get current key's name
+                                                    // and a[keyName] to get its value
+                                                    <Dropdown.Item  key = {keyName} onClick= {e => {this.changeImpPersonOne(keyName)}}>
+                                                        {this.state.peopleNamesArray[keyName]}
+                                                    </Dropdown.Item>
+                                                ))
+                                            }
+                                        </DropdownButton>
+                                    }
+                                </div>
+                                {this.state.importantPeople1.important === false?
+                                    <div>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Relationship"
+                                            value = ""
+                                            disabled
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number"
+                                            value = ""
+                                            disabled
+                                        />
+                                    </div>:
+                                    <div>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Relationship"
+                                            value = {this.state.importantPeople1.relationship || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.relationship = e.target.value; this.setState({ importantPeople1: temp }) }
+                                            } 
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number"
+                                            value = {this.state.importantPeople1.phone_number || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.phone_number = e.target.value; this.setState({ importantPeople1: temp }) }
+                                            } 
+                                        />
+                                    </div>
+                                } 
                             </Col>
+                            {this.state.importantPeople1.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
                                 {(this.state.importantPeople2.have_pic === false ? 
                                 <div>
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"10px"}} /> 
-                                    <Form.Control
-                                    type="text"
-                                    placeholder="Name ..."
-                                    value = {this.state.importantPeople2.name || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.name = e.target.value; this.setState({ importantPeople2: temp }) }
-                                     }
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    {(this.state.importantPeople2.important === false ?
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        disabled/>:
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        onChange={this.handleImpPeople2}
                                     />
+                                    )} 
                                 </div>: 
                                 <div>
                                     <img style = 
@@ -550,56 +707,113 @@ class AboutModal extends React.Component{
                                        }}
                                         src={this.state.importantPeople2.pic } 
                                         alt="Important People 2"
-                                    /> 
-                                    <Form.Control
-                                        style = {{marginTop:"10px"}}
-                                        type="text"
-                                        placeholder="Name ..."
-                                        value = {this.state.importantPeople2.name || ''}
-                                        onChange={
-                                            (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.name = e.target.value; this.setState({ importantPeople2: temp }) }
-                                        }
                                     />
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*"
+                                        onChange={this.handleImpPeople2}
+                                    /> 
                                 </div>)}
                                 
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Relationship"
-                                    value = {this.state.importantPeople2.relationship || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.relationship = e.target.value; this.setState({ importantPeople2: temp }) }
-                                     }
-                                 />
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Phone Number" 
-                                    value = {this.state.importantPeople2.phone_number || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.phone_number = e.target.value; this.setState({ importantPeople2: temp }) }
-                                     }
-                                />
-                                <input 
-                                    style = {{color: "transparent", marginTop:"10px"}}
-                                    type= "file" 
-                                    accept="image/*"
-                                    onChange={this.handleImpPeople2}/>
+                                <div className="d-flex flex-row">
+                                    {(this.state.importantPeople2.important === false?
+                                        <Form.Control
+                                            style = {{width:"150px", display:"inline-block"}}
+                                            type="text"
+                                            placeholder="Name ..."
+                                            value = ""
+                                            disabled
+                                        />:
+                                        <Form.Control
+                                            style = {{width:"150px", display:"inline-block"}}
+                                            type="text"
+                                            placeholder="Name ..."
+                                            value = {this.state.importantPeople2.name || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.name = e.target.value; this.setState({ importantPeople2: temp }) }
+                                            }
+                                        />
+                                    )}
+                                   
+                                    {this.state.enableDropDown === false? 
+                                    <DropdownButton
+                                        style={{ display:"inline-block" }}
+                                        title=""
+                                        disabled>       
+                                    </DropdownButton>:
+                                        <DropdownButton
+                                        title=""
+                                        >
+                                            {
+                                                Object.keys(this.state.peopleNamesArray).map((keyName, keyIndex) => (
+                                                    // use keyName to get current key's name
+                                                    // and a[keyName] to get its value
+                                                    <Dropdown.Item  key ={keyName} onClick= {e => {this.changeImpPersonTwo(keyName)}}>
+                                                        {this.state.peopleNamesArray[keyName]}
+                                                    </Dropdown.Item>
+                                                ))
+                                            }
+                                        </DropdownButton>
+                                    }
+                                </div>
+                                {(this.state.importantPeople2.important === false?
+                                    <div>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Relationship"
+                                            value = ""
+                                            disabled
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number" 
+                                            value = ""
+                                            disabled
+                                        />
+                                    </div>:
+                                    <div>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Relationship"
+                                            value = {this.state.importantPeople2.relationship || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.relationship = e.target.value; this.setState({ importantPeople2: temp }) }
+                                            }
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number" 
+                                            value = {this.state.importantPeople2.phone_number || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.phone_number = e.target.value; this.setState({ importantPeople2: temp }) }
+                                            }
+                                        />
+                                    </div>
+                                )}   
                             </Col>
+                            {this.state.importantPeople2.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
                                 {(this.state.importantPeople3.have_pic === false ? 
                                 <div>
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"10px"}} /> 
-                                    <Form.Control
-                                    type="text"
-                                    placeholder="Name ..."
-                                    value = {this.state.importantPeople3.name || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.name = e.target.value; this.setState({ importantPeople3: temp }) }
-                                     }
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    {(this.state.importantPeople3.important === false ?
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        disabled/>:
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        onChange={this.handleImpPeople3}
                                     />
+                                    )}     
                                 </div>: 
                                 <div>
                                     <img style = 
@@ -612,44 +826,93 @@ class AboutModal extends React.Component{
                                         src={this.state.importantPeople3.pic } 
                                         alt="Important People 3"
                                     /> 
+                                    <input 
+                                        style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
+                                        type= "file" 
+                                        accept="image/*" 
+                                        onChange={this.handleImpPeople3}
+                                    />  
+                                </div>)} 
+                            </Col>
+                            <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
+                                <div className="d-flex flex-row">
+                                    {(this.state.importantPeople3.important === false?
+                                      <Form.Control
+                                        style = {{width:"150px", display:"inline-block"}}
+                                        type="text"
+                                        placeholder="Name ..."
+                                        value = ""
+                                        disabled
+                                     />:
                                     <Form.Control
-                                        style = {{marginTop:"10px"}}
+                                        style = {{width:"150px", display:"inline-block"}}
                                         type="text"
                                         placeholder="Name ..."
                                         value = {this.state.importantPeople3.name || ''}
                                         onChange={
                                             (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.name = e.target.value; this.setState({ importantPeople3: temp }) }
                                         }
-                                    />
-                                </div>)}
-                                
+                                    /> 
+                                    )}
+                                    
+                                    {this.state.enableDropDown === false? 
+                                    <DropdownButton
+                                        style={{ display:"inline-block" }}
+                                        title=""
+                                        disabled>       
+                                    </DropdownButton>:
+                                        <DropdownButton
+                                            title=""
+                                        >
+                                            {
+                                                Object.keys(this.state.peopleNamesArray).map((keyName, keyIndex) => (
+                                                    // use keyName to get current key's name
+                                                    // and a[keyName] to get its value
+                                                    <Dropdown.Item key ={keyName} onClick= {e => {this.changeImpPersonThree(keyName)}}>
+                                                        {this.state.peopleNamesArray[keyName]}
+                                                    </Dropdown.Item>
+                                                ))
+                                            }
+                                        </DropdownButton>
+                                    }
+                                </div>
+                                {(this.state.importantPeople3.important === false?
+                                    <div>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Relationship" 
+                                            value = ""
+                                            disabled
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number" 
+                                            value = ""
+                                            disabled
+                                        />
+                                    </div>:
+                                    <div>
+                                        <Form.Control 
+                                        type="text" 
+                                        placeholder="Relationship" 
+                                        value = {this.state.importantPeople3.relationship || ''}
+                                        onChange={
+                                            (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.relationship = e.target.value; this.setState({ importantPeople3: temp }) }
+                                        }
+                                        />
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Phone Number" 
+                                            value = {this.state.importantPeople3.phone_number || ''}
+                                            onChange={
+                                                (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.phone_number = e.target.value; this.setState({ importantPeople3: temp }) }
+                                            }
+                                        />
+                                    </div>
+                                )}  
                             </Col>
-                            <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Relationship" 
-                                    value = {this.state.importantPeople3.relationship || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.relationship = e.target.value; this.setState({ importantPeople3: temp }) }
-                                     }
-                                />
-                                <Form.Control 
-                                    type="text" 
-                                    placeholder="Phone Number" 
-                                    value = {this.state.importantPeople3.phone_number || ''}
-                                    onChange={
-                                        (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.phone_number = e.target.value; this.setState({ importantPeople3: temp }) }
-                                     }
-                                />
-                                <input 
-                                    style = {{color: "transparent", marginTop:"10px"}}
-                                    type= "file" 
-                                    accept="image/*" 
-                                    onChange={this.handleImpPeople3}
-                                />
-                            </Col>
-                        </Row>
-                        
+                            {this.state.importantPeople3.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
+                        </Row>     
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>

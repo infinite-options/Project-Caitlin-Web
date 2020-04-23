@@ -79,7 +79,6 @@ import { storage } from './firebase';
             temp.unique_id = ref.id;
             console.log("Added document with ID: ", ref.id);
             this.updateWithId();
-            // this.props.closeModal();
    
           });
     }
@@ -87,24 +86,11 @@ import { storage } from './firebase';
     updateWithId = ( ) => {
         this.state.peopleDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
             (doc) => {
-                if(this.state.itemToEdit.important === true){
-                    this.addToImportantPeopleInAboutModal();
-                }
-                this.props.closeModal();  
+                
+                this.props.closeModal(); 
+                this.props.newPersonAdded(); 
             }
         )
-    }
-
-    addToImportantPeopleInAboutModal = ( ) => {
-       
-        // const db = firebase.firestore();
-        // let collectionRef = db.collection('Users');
-        // let documentRefWithName = collectionRef.doc('7R6hAVmDrNutRkG3sVRy').collection("people").doc(this.state.itemToEdit.unique_id);
-        // collectionRef.doc("7R6hAVmDrNutRkG3sVRy")['about_me'].update({"important_people":documentRefWithName}).then(
-        //     (doc) => {
-        //            console.log("it madddee it hererer");
-        //     }
-        // )
     }
 
   
@@ -163,7 +149,7 @@ import { storage } from './firebase';
                 />
               </div>
               
-              <div className="input-group mb-3" style ={{marginTop:"10px"}}>
+              {/* <div className="input-group mb-3" style ={{marginTop:"10px"}}>
               <label className="form-check-label" >Important Person?</label>
               <input
                 style={{  marginLeft: "10px",width: "20px", height: "20px"}}
@@ -177,7 +163,7 @@ import { storage } from './firebase';
                   this.setState({ itemToEdit: temp });
                 }}
               />
-            </div>
+            </div> */}
             <label>Upload Photo</label>
               <div className="input-group mb-3">
               <input
