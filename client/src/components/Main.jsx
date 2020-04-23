@@ -107,7 +107,7 @@ export default class MainPage extends React.Component {
     };
   }
 
-/**
+  /**
    * grabFireBaseRoutinesGoalsData:
    * this function grabs the goals&routines array from the path located in this function
    * which will then populate the goals, routines,originalGoalsAndRoutineArr array
@@ -120,7 +120,7 @@ export default class MainPage extends React.Component {
     const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
     docRef
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           // console.log(doc.data());
           var x = doc.data();
@@ -141,14 +141,14 @@ export default class MainPage extends React.Component {
             originalGoalsAndRoutineArr: x,
             goals: goal,
             addNewGRModalShow: false,
-            routines: routine
+            routines: routine,
           });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
       });
   };
@@ -204,7 +204,6 @@ export default class MainPage extends React.Component {
     this.updateEventsArray();
     this.updateProfilePicFromFirebase();
   }
-
 
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
@@ -818,7 +817,7 @@ export default class MainPage extends React.Component {
   //Note arg is moment object of the time pressed
   handleDateClickOnWeekView = (arg) => {
     let newStart = arg.toDate();
-    arg.add(1,'hour');
+    arg.add(1, "hour");
     let newEnd = arg.toDate();
     this.setState({
       newEventID: "",
@@ -867,7 +866,7 @@ export default class MainPage extends React.Component {
         6: "",
       },
     });
-  }
+  };
 
   handleDateClickOnDayView = (arg, i) => {
     var newStart = new Date(arg);
@@ -1833,10 +1832,10 @@ export default class MainPage extends React.Component {
     });
   };
 
-  updatePic = (url,name) => {
+  updatePic = (url, name) => {
     this.setState({
       profilePicUrl: url,
-      profileName: name
+      profileName: name,
     });
   };
 
@@ -1845,7 +1844,12 @@ export default class MainPage extends React.Component {
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       // return this.aboutFormAbstracted();
-      return <AboutModal CameBackFalse={this.hideAboutForm}  updateProfilePic= {this.updatePic}/>
+      return (
+        <AboutModal
+          CameBackFalse={this.hideAboutForm}
+          updateProfilePic={this.updatePic}
+        />
+      );
     }
   };
 
@@ -1886,32 +1890,44 @@ export default class MainPage extends React.Component {
             width: "100%",
           }}
         >
-          <Row style={{ margin: "0"}} className="d-flex flex-row">
-
-
-            <div style={{float: "right", width: "80px", height: "70px", marginLeft: "50px", marginTop:"5px"}}>
-            {(this.state.profilePicUrl === ""  ?
-              <FontAwesomeIcon icon={faImage} size="5x"/> :
-              <img style =
-                  {{display: "block",
-                  marginLeft: "auto",
-                  marginRight:"auto" ,
-                  width: "100%",
-                  height:"70px",
+          <Row style={{ margin: "0" }} className="d-flex flex-row">
+            <div
+              style={{
+                float: "right",
+                width: "80px",
+                height: "70px",
+                marginLeft: "50px",
+                marginTop: "5px",
+              }}
+            >
+              {this.state.profilePicUrl === "" ? (
+                <FontAwesomeIcon icon={faImage} size="5x" />
+              ) : (
+                <img
+                  style={{
+                    display: "block",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                    width: "100%",
+                    height: "70px",
                   }}
                   src={this.state.profilePicUrl}
                   alt="Profile"
-              /> )}
-              </div>
+                />
+              )}
+            </div>
 
-              <div style={{float: "left", width: "227px", height: "50px"}}>
-
-                 {(this.state.profileName === "" ?
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>First Last</p>:
-                  <p style = {{ marginTop:"30px", marginLeft:"10px"}}>{this.state.profileName}</p>
-
-                 )}
-              </div>
+            <div style={{ float: "left", width: "227px", height: "50px" }}>
+              {this.state.profileName === "" ? (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  First Last
+                </p>
+              ) : (
+                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                  {this.state.profileName}
+                </p>
+              )}
+            </div>
 
             <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
@@ -1978,6 +1994,7 @@ export default class MainPage extends React.Component {
               showGoal={this.state.showGoalModal}
               goals={this.state.goals}
               routines={this.state.routines}
+              todayDateObject={this.state.todayDateObject}
             />
             <Col
               sm="auto"
@@ -2136,14 +2153,10 @@ export default class MainPage extends React.Component {
             />
           </Row>
           <Row>
-            <WeekGoals
-              goals={this.state.goals}
-            />
+            <WeekGoals goals={this.state.goals} />
           </Row>
           <Row>
-            <WeekRoutines
-              routines={this.state.routines}
-            />
+            <WeekRoutines routines={this.state.routines} />
           </Row>
         </Container>
       </div>
@@ -2207,7 +2220,6 @@ export default class MainPage extends React.Component {
     // enclosing div to be based on % and not 2000px
 
     return (
-
       // <Row>
 
       <Row

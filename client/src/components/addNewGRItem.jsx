@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal} from "react-bootstrap";
-import ShowNotifications from "./ShowNotifications"
-import {
-    Form,
-    Row,
-    Col
-  } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import ShowNotifications from "./ShowNotifications";
+import DatePicker from "react-datepicker";
+import { Form, Row, Col } from "react-bootstrap";
 
 export default class AddNewGRItem extends Component {
   constructor(props) {
@@ -22,6 +19,7 @@ export default class AddNewGRItem extends Component {
       photo: "",
       is_complete: false,
       is_available: true,
+      todayDateObject: this.props.todayDateObject,
       available_end_time: "23:59:59",
       available_start_time: "00:00:00",
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
@@ -30,46 +28,46 @@ export default class AddNewGRItem extends Component {
       is_timed: false,
       expected_completion_time: "01:00:00",
       is_sublist_available: true,
-      ta_notifications:{
-          before:{
-            is_enabled: false,
-            is_set: false,
-            message: "",
-            time: "00:05:00"
-          },
-          during:{
-            is_enabled: false,
-            is_set: false,
-            message: "",
-            time: "00:30:00"
-          },
-          after:{
-            is_enabled: false,
-            is_set: false,
-            message: "",
-            time: "00:05:00"
-          }
+      ta_notifications: {
+        before: {
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00",
+        },
+        during: {
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:30:00",
+        },
+        after: {
+          is_enabled: false,
+          is_set: false,
+          message: "",
+          time: "00:05:00",
+        },
       },
-      user_notifications:{
-        before:{
+      user_notifications: {
+        before: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
+          time: "00:05:00",
         },
-        during:{
+        during: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:30:00"
+          time: "00:30:00",
         },
-        after:{
+        after: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
-        }
-      }
+          time: "00:05:00",
+        },
+      },
     }, //this is essentially the new item
     //below are references to firebase directories
     routineDocsPath: firebase
@@ -80,7 +78,7 @@ export default class AddNewGRItem extends Component {
     arrPath: firebase
       .firestore()
       .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy")
+      .doc("7R6hAVmDrNutRkG3sVRy"),
   };
 
   componentDidMount() {
@@ -96,7 +94,7 @@ export default class AddNewGRItem extends Component {
     console.log(this.state.arrPath);
     this.state.arrPath
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           console.log("getGRDataFromFB DATA:");
           // console.log(doc.data());
@@ -104,14 +102,14 @@ export default class AddNewGRItem extends Component {
           x = x["goals&routines"];
           console.log(x);
           this.setState({
-            grArr: x
+            grArr: x,
           });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document! 2");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
         alert("Error getting document:", error);
       });
@@ -122,14 +120,14 @@ export default class AddNewGRItem extends Component {
       alert("Invalid Input");
       return;
     }
-    if (this.state.itemToEdit.photo === ""){
-        if (this.props.isRoutine) {
-            this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
-        }
-        else {
-            this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
-        }
-            
+    if (this.state.itemToEdit.photo === "") {
+      if (this.props.isRoutine) {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
+      } else {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
+      }
     }
     this.addNewDoc();
   };
@@ -138,9 +136,9 @@ export default class AddNewGRItem extends Component {
     this.state.routineDocsPath
       .add({
         title: this.state.itemToEdit.title,
-        "actions&tasks": []
+        "actions&tasks": [],
       })
-      .then(ref => {
+      .then((ref) => {
         if (ref.id === null) {
           alert("Fail to add new routine / goal item");
           return;
@@ -157,10 +155,10 @@ export default class AddNewGRItem extends Component {
   };
 
   //This function will below will essentially take in a array and have a key map to it
-  updateEntireArray = newArr => {
+  updateEntireArray = (newArr) => {
     // 2. update adds to the document
     let db = this.state.arrPath;
-    db.update({ "goals&routines": newArr }).then(doc => {
+    db.update({ "goals&routines": newArr }).then((doc) => {
       console.log("updateEntireArray Finished");
       console.log(doc);
       this.getGRDataFromFB();
@@ -169,41 +167,65 @@ export default class AddNewGRItem extends Component {
         this.props.refresh();
       }
     });
-  }
+  };
 
-  convertTimeToHRMMSS =  (e) => {
-        
+  convertTimeToHRMMSS = (e) => {
     // console.log(e.target.value);
     let num = e.target.value;
-    let hours = num/60;
+    let hours = num / 60;
     let rhours = Math.floor(hours);
-    let minutes = (hours - rhours)* 60;
+    let minutes = (hours - rhours) * 60;
     let rminutes = Math.round(minutes);
     if (rhours.toString().length === 1) {
-        rhours = "0" + rhours;
+      rhours = "0" + rhours;
     }
     if (rminutes.toString().length === 1) {
-        rminutes = "0" + rminutes;
+      rminutes = "0" + rminutes;
     }
     // console.log(rhours+":" + rminutes +":" + "00");
-    return rhours+":" + rminutes +":" + "00";
-  }
+    return rhours + ":" + rminutes + ":" + "00";
+  };
 
   convertToMinutes = () => {
-      let myStr = this.state.itemToEdit.expected_completion_time.split(':');
-      let hours = myStr[0];
-      let hrToMin = hours* 60;
-      let minutes = (myStr[1] * 1 )+ hrToMin;
-      // let seconds = myStr[2];
-      
-      // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
-      return minutes;
-  }
+    let myStr = this.state.itemToEdit.expected_completion_time.split(":");
+    let hours = myStr[0];
+    let hrToMin = hours * 60;
+    let minutes = myStr[1] * 1 + hrToMin;
+    // let seconds = myStr[2];
+
+    // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+    return minutes;
+  };
 
   handleNotificationChange = (temp) => {
     // console.log(temp);
     this.setState({ itemToEdit: temp });
-  }
+  };
+
+  startTimePicker = () => {
+    // const [startDate, setStartDate] = useState(new Date());
+    return (
+      <DatePicker
+        className="form-control"
+        type="text"
+        selected={this.state.todayDateObject}
+        onChange={(date) => {
+          this.setState(
+            {
+              todayDateObject: date,
+            },
+            () => {
+              console.log("starttimepicker", this.state.todayDateObject);
+            }
+          );
+        }}
+        showTimeSelect
+        timeIntervals={15}
+        timeCaption="time"
+        dateFormat="MMMM d, yyyy h:mm aa"
+      />
+    );
+  };
 
   render() {
     return (
@@ -216,50 +238,45 @@ export default class AddNewGRItem extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <label>Title</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="Enter Title"
+          <Form>
+            {/* <Row>
+          <Col>
+          <div style={{ width: "300px" }}> */}
+            <Form.Group>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
                 value={this.state.itemToEdit.title}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.title = e.target.value;
                   this.setState({ itemToEdit: temp });
                 }}
+                type="text"
+                placeholder="Enter Title"
               />
-            </div>
-            <label>Photo URL</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="Enter Photo URL "
+              <div style={{ color: "red" }}> {this.state.showNoTitleError}</div>
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Photo URL</Form.Label>
+              <Form.Control
                 value={this.state.itemToEdit.photo}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.photo = e.target.value;
                   this.setState({ itemToEdit: temp });
                 }}
+                type="text"
+                placeholder="Enter Photo URL"
               />
-            </div>
+            </Form.Group>
 
-            <label>Available Start Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 08:20:00) "
-                value={this.state.itemToEdit.available_start_time}
-                onChange={e => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_start_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
+            <Form.Group value={this.state.todayDateObject} controlId="Y">
+              <Form.Label>Start Time</Form.Label> <br />
+              {this.startTimePicker()}
+            </Form.Group>
 
             <label>Available End Time</label>
             <div className="input-group mb-3">
@@ -267,7 +284,7 @@ export default class AddNewGRItem extends Component {
                 style={{ width: "200px" }}
                 placeholder="HH:MM:SS (ex: 16:20:00) "
                 value={this.state.itemToEdit.available_end_time}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.available_end_time = e.target.value;
@@ -275,36 +292,36 @@ export default class AddNewGRItem extends Component {
                 }}
               />
             </div>
-            
+
             <label>This Takes Me</label>
             <Row>
-                <Col  style = {{paddingRight: "0px" }}>  
-                    <Form.Control
-                        type="number"
-                        placeholder="30"
-                        value = {this.convertToMinutes()}
-                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
-                        onChange={
-                            (e) => { e.stopPropagation(); 
-                            let temp = this.state.itemToEdit; 
-                            temp.expected_completion_time = this.convertTimeToHRMMSS(e);
-                            this.setState({ itemToEdit: temp }) }
-                        }
-                    />
-                </Col>
-                <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-                </Col>
+              <Col style={{ paddingRight: "0px" }}>
+                <Form.Control
+                  type="number"
+                  placeholder="30"
+                  value={this.convertToMinutes()}
+                  style={{ marginTop: ".25rem", paddingRight: "0px" }}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                    this.setState({ itemToEdit: temp });
+                  }}
+                />
+              </Col>
+              <Col xs={8} style={{ paddingLeft: "0px" }}>
+                <p style={{ marginLeft: "10px", marginTop: "5px" }}>minutes</p>
+              </Col>
             </Row>
-            
-            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
-              <label className="form-check-label" >Time?</label>
+
+            <div className="input-group mb-3" style={{ marginTop: "10px" }}>
+              <label className="form-check-label">Time?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Timed"
                 type="checkbox"
                 checked={this.state.itemToEdit.is_timed}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   console.log(temp.is_timed);
@@ -321,7 +338,7 @@ export default class AddNewGRItem extends Component {
                 name="Available"
                 type="checkbox"
                 checked={this.state.itemToEdit.is_available}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.is_available = e.target.checked;
@@ -330,15 +347,13 @@ export default class AddNewGRItem extends Component {
               />
             </div>
 
-            {this.state.itemToEdit.is_available && 
-              <ShowNotifications 
-                itemToEditPassedIn = {this.state.itemToEdit}
-                notificationChange = {this.handleNotificationChange}
+            {this.state.itemToEdit.is_available && (
+              <ShowNotifications
+                itemToEditPassedIn={this.state.itemToEdit}
+                notificationChange={this.handleNotificationChange}
               />
-            }
-
-            
-          </div>
+            )}
+          </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={this.props.closeModal}>

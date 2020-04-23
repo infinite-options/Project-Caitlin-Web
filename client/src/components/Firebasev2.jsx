@@ -7,7 +7,7 @@ import {
   Col,
   Modal,
   InputGroup,
-  FormControl
+  FormControl,
 } from "react-bootstrap";
 import AddNewGRItem from "./addNewGRItem.jsx";
 import AddNewATItem from "./addNewATItem.jsx";
@@ -25,10 +25,9 @@ import {
   faUser,
   faUserAltSlash,
   faTrophy,
-  faRunning
+  faRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
-
 
 /**
  * Notes from Tyler:
@@ -63,7 +62,7 @@ export default class FirebaseV2 extends React.Component {
       available_start_time: "", //TODO get these used
       id: null,
       arr: [],
-      fbPath: null
+      fbPath: null,
     },
 
     singleAT: {
@@ -77,7 +76,7 @@ export default class FirebaseV2 extends React.Component {
       photo: "",
       id: null, //id of Action Task
       arr: [], //array of instruction/steps formatted to display as a list
-      fbPath: null //Firebase direction to the arr
+      fbPath: null, //Firebase direction to the arr
     },
     singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
     singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
@@ -96,7 +95,7 @@ export default class FirebaseV2 extends React.Component {
 
     //isRoutine is to check whether we clicked on add routine or add goal
     isRoutine: true,
-    availabilityColorCode: "#D6A34C"
+    availabilityColorCode: "#D6A34C",
 
     //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
     // iconShowATModal: true
@@ -108,7 +107,7 @@ export default class FirebaseV2 extends React.Component {
    * list of all action task under it and singleATitemArr which just holds the raw data.
    *
    */
-  refreshATItem = arr => {
+  refreshATItem = (arr) => {
     // console.log("refreshATItem was called");
 
     this.setState({ singleATitemArr: arr });
@@ -128,11 +127,11 @@ export default class FirebaseV2 extends React.Component {
    * the normal list of instructions with
    * the one passed in.
    */
-  refreshISItem = arr => {
+  refreshISItem = (arr) => {
     // console.log("refreshISItem new arr");
     // console.log(arr);
     this.setState({
-      singleISitemArr: arr
+      singleISitemArr: arr,
     });
     let resArr = this.createListofIS(arr);
     let singleAt = this.state.singleAT;
@@ -173,7 +172,7 @@ export default class FirebaseV2 extends React.Component {
     return time.format("YYYY MMM DD HH:mm");
   }
 
-  onInputChange = e => {
+  onInputChange = (e) => {
     const inputField = e.target.value;
     // console.log("FirebaseV2.jsx :: onInputChange :: " + inputField);
   };
@@ -190,7 +189,7 @@ export default class FirebaseV2 extends React.Component {
       .doc(id);
     docRef
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           // console.log(doc.data());
           var x = doc.data()["actions&tasks"];
@@ -204,11 +203,11 @@ export default class FirebaseV2 extends React.Component {
               title: title,
               id: id,
               arr: [],
-              fbPath: docRef
+              fbPath: docRef,
             };
             this.setState({
               singleGR: singleGR,
-              singleATitemArr: []
+              singleATitemArr: [],
             });
             return;
           }
@@ -220,12 +219,12 @@ export default class FirebaseV2 extends React.Component {
             title: title,
             id: id,
             arr: [], //array of current action/task in this singular Routine
-            fbPath: docRef
+            fbPath: docRef,
           };
 
           this.setState({
             singleGR: singleGR,
-            singleATitemArr: x
+            singleATitemArr: x,
           });
 
           let resArr = this.createListofAT(x);
@@ -237,25 +236,25 @@ export default class FirebaseV2 extends React.Component {
             title: title,
             id: id,
             arr: resArr, //array of current action/task in this singular Routine
-            fbPath: docRef
+            fbPath: docRef,
           };
 
           this.setState({
-            singleGR: singleGR
+            singleGR: singleGR,
           });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
       });
   };
 
   //Creates a array of all actions/task for get getATList function
   //getATList stands for get all action/task
-  createListofAT = A => {
+  createListofAT = (A) => {
     let res = [];
     for (let i = 0; i < A.length; i++) {
       // console.log(A[i]["title"]);
@@ -282,21 +281,24 @@ export default class FirebaseV2 extends React.Component {
             variant="light"
             style={{ marginBottom: "3px" }}
           >
-          <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
-            <Col>
-              <div className="fancytext">{tempTitle}</div>
-            </Col>
-          </Row>
+            <Row
+              style={{ margin: "0", marginBottom: "10px" }}
+              className="d-flex flex-row-center"
+            >
+              <Col>
+                <div className="fancytext">{tempTitle}</div>
+              </Col>
+            </Row>
 
-
-          {tempPhoto ? (
-          <Row >
-            <Col xs={7}
-                // sm="auto"
-                // md="auto"
-                // lg="auto"
-                style={{  paddingRight:"0px"}}
-              >
+            {tempPhoto ? (
+              <Row>
+                <Col
+                  xs={7}
+                  // sm="auto"
+                  // md="auto"
+                  // lg="auto"
+                  style={{ paddingRight: "0px" }}
+                >
                   <img
                     src={tempPhoto}
                     alt="Action/Task"
@@ -306,15 +308,72 @@ export default class FirebaseV2 extends React.Component {
                     height="80px"
                     width="auto"
                   />
-              </Col>
-              <Col style = {{paddingLeft: "0px"}}>
-                <Row style = {{marginTop:"10px"}}>
+                </Col>
+                <Col style={{ paddingLeft: "0px" }}>
+                  <Row style={{ marginTop: "10px" }}>
                     {tempAvailable ? (
+                      <div style={{ marginLeft: "5px" }}>
+                        <FontAwesomeIcon
+                          title="Available to Cailin"
+                          style={{ color: this.state.availabilityColorCode }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is Availble to Caitlin");
+                          }}
+                          icon={faUser}
+                          size="lg"
+                        />{" "}
+                      </div>
+                    ) : (
+                      <div>
+                        <FontAwesomeIcon
+                          title="Unavailable to Caitlin"
+                          style={{ color: "#000000" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is NOT Availble to Caitlin");
+                          }}
+                          icon={faUserAltSlash}
+                          size="lg"
+                        />
+                      </div>
+                    )}
+                    {/* Index={this.findIndexByID(tempID)}
+                    Array={this.state.originalGoalsAndRoutineArr}
+                    Path={this.state.firebaseRootPath} */}
+                    <ShowISList
+                      Index={i}
+                      Array={this.state.singleATitemArr}
+                      Path={this.state.singleGR.fbPath}
+                    />
+                  </Row>
+                  <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                    <DeleteAT
+                      deleteIndex={i}
+                      type={"actions&tasks"}
+                      Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                      Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.refreshATItem}
+                    />
+                    <EditAT
+                      marginLeftV="-170px"
+                      i={i} //index to edit
+                      ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                      FBPath={this.state.singleGR.fbPath} //holds the path to the array data
+                      refresh={this.refreshATItem} //function to refresh AT data
+                    />
+                  </Row>
+                </Col>
+              </Row>
+            ) : (
+              <div>
+                <Row style={{ marginLeft: "100px" }} className="d-flex ">
+                  {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
                         title="Available to Cailin"
                         style={{ color: this.state.availabilityColorCode }}
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
                           alert("Item Is Availble to Caitlin");
                         }}
@@ -323,11 +382,11 @@ export default class FirebaseV2 extends React.Component {
                       />{" "}
                     </div>
                   ) : (
-                    <div >
+                    <div>
                       <FontAwesomeIcon
                         title="Unavailable to Caitlin"
                         style={{ color: "#000000" }}
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
                           alert("Item Is NOT Availble to Caitlin");
                         }}
@@ -336,90 +395,33 @@ export default class FirebaseV2 extends React.Component {
                       />
                     </div>
                   )}
-                  {/* Index={this.findIndexByID(tempID)}
-                    Array={this.state.originalGoalsAndRoutineArr}
-                    Path={this.state.firebaseRootPath} */}
                   <ShowISList
                     Index={i}
                     Array={this.state.singleATitemArr}
                     Path={this.state.singleGR.fbPath}
-                   />
+                  />
                 </Row>
-                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
+                <Row
+                  style={{ marginTop: "15px", marginLeft: "100px" }}
+                  className="d-flex "
+                >
                   <DeleteAT
-                  deleteIndex={i}
-                  type={"actions&tasks"}
-                  Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                  Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.refreshATItem}
+                    deleteIndex={i}
+                    type={"actions&tasks"}
+                    Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                    Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
+                    refresh={this.refreshATItem}
                   />
                   <EditAT
-                    marginLeftV= "-170px"
+                    marginLeftV="-130px"
                     i={i} //index to edit
                     ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                     refresh={this.refreshATItem} //function to refresh AT data
                   />
                 </Row>
-              </Col>
-            </Row>
-            ) : (
-              <div>
-              <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {tempAvailable ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div >
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
-                    />
-                  </div>
-                )}
-                <ShowISList
-                  Index={i}
-                  Array={this.state.singleATitemArr}
-                  Path={this.state.singleGR.fbPath}
-                />
-              </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
-                <DeleteAT
-                  deleteIndex={i}
-                  type={"actions&tasks"}
-                  Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                  Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.refreshATItem}
-                  />
-                <EditAT
-                  marginLeftV= "-130px"
-                  i={i} //index to edit
-                  ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.singleGR.fbPath} //holds the path to the array data
-                  refresh={this.refreshATItem} //function to refresh AT data
-                />
-              </Row>
               </div>
-
             )}
-
-
 
             {/* This is the V1 */}
             {/* <Row style={{ margin: "0" }} className="d-flex flex-row-reverse">
@@ -515,7 +517,7 @@ export default class FirebaseV2 extends React.Component {
    * takes the list of steps/instructions and returns
    * it in the form of a ListGroup for presentation
    */
-  createListofIS = A => {
+  createListofIS = (A) => {
     let res = [];
     for (let i = 0; i < A.length; i++) {
       // console.log(A[i]["title"]);
@@ -539,17 +541,17 @@ export default class FirebaseV2 extends React.Component {
             variant="light"
             style={{ width: "100%", marginBottom: "3px" }}
           >
-
-          <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
-            <Col>
-              <div className="fancytext">{tempTitle}</div>
-            </Col>
-          </Row>
-           {tempPhoto ? (
-          <Row >
-            <Col xs={7}
-                style={{  paddingRight:"0px"}}
-              >
+            <Row
+              style={{ margin: "0", marginBottom: "10px" }}
+              className="d-flex flex-row-center"
+            >
+              <Col>
+                <div className="fancytext">{tempTitle}</div>
+              </Col>
+            </Row>
+            {tempPhoto ? (
+              <Row>
+                <Col xs={7} style={{ paddingRight: "0px" }}>
                   <img
                     src={tempPhoto}
                     alt="Action/Task"
@@ -557,15 +559,65 @@ export default class FirebaseV2 extends React.Component {
                     height="80px"
                     width="auto"
                   />
-              </Col>
-              <Col style = {{paddingLeft: "0px"}}>
-                <Row style = {{marginTop:"10px"}}>
+                </Col>
+                <Col style={{ paddingLeft: "0px" }}>
+                  <Row style={{ marginTop: "10px" }}>
                     {tempAvailable ? (
+                      <div style={{ marginLeft: "5px" }}>
+                        <FontAwesomeIcon
+                          title="Available to Cailin"
+                          style={{ color: this.state.availabilityColorCode }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is Availble to Caitlin");
+                          }}
+                          icon={faUser}
+                          size="lg"
+                        />{" "}
+                      </div>
+                    ) : (
+                      <div>
+                        <FontAwesomeIcon
+                          title="Unavailable to Caitlin"
+                          style={{ color: "#000000" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is NOT Availble to Caitlin");
+                          }}
+                          icon={faUserAltSlash}
+                          size="lg"
+                        />
+                      </div>
+                    )}
+                    {/* <ShowATList /> */}
+                  </Row>
+                  <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                    <DeleteISItem
+                      deleteIndex={i}
+                      ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                      ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.refreshISItem}
+                    />
+
+                    <EditIS
+                      marginLeftV="-170px"
+                      i={i} //index to edit
+                      ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                      FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
+                      refresh={this.refreshISItem} //function to refresh IS data
+                    />
+                  </Row>
+                </Col>
+              </Row>
+            ) : (
+              <div>
+                <Row style={{ marginLeft: "100px" }} className="d-flex ">
+                  {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
                         title="Available to Cailin"
                         style={{ color: this.state.availabilityColorCode }}
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
                           alert("Item Is Availble to Caitlin");
                         }}
@@ -574,11 +626,11 @@ export default class FirebaseV2 extends React.Component {
                       />{" "}
                     </div>
                   ) : (
-                    <div >
+                    <div>
                       <FontAwesomeIcon
                         title="Unavailable to Caitlin"
                         style={{ color: "#000000" }}
-                        onClick={e => {
+                        onClick={(e) => {
                           e.stopPropagation();
                           alert("Item Is NOT Availble to Caitlin");
                         }}
@@ -589,7 +641,10 @@ export default class FirebaseV2 extends React.Component {
                   )}
                   {/* <ShowATList /> */}
                 </Row>
-                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
+                <Row
+                  style={{ marginTop: "15px", marginLeft: "100px" }}
+                  className="d-flex "
+                >
                   <DeleteISItem
                     deleteIndex={i}
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
@@ -598,65 +653,14 @@ export default class FirebaseV2 extends React.Component {
                   />
 
                   <EditIS
-                    marginLeftV= "-170px"
+                    marginLeftV="-130px"
                     i={i} //index to edit
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                     refresh={this.refreshISItem} //function to refresh IS data
                   />
                 </Row>
-              </Col>
-            </Row>
-            ) : (
-              <div>
-              <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {tempAvailable ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div >
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
-                    />
-                  </div>
-                )}
-                {/* <ShowATList /> */}
-              </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
-                <DeleteISItem
-                  deleteIndex={i}
-                  ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
-                  ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.refreshISItem}
-                />
-
-                <EditIS
-                  marginLeftV= "-130px"
-                  i={i} //index to edit
-                  ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
-                  refresh={this.refreshISItem} //function to refresh IS data
-                />
-              </Row>
               </div>
-
             )}
           </ListGroup.Item>
         </div>
@@ -665,7 +669,7 @@ export default class FirebaseV2 extends React.Component {
     return res;
   };
 
-  ISonClickEvent = title => {
+  ISonClickEvent = (title) => {
     console.log("Inside IS Click " + title);
   };
 
@@ -697,11 +701,11 @@ export default class FirebaseV2 extends React.Component {
       title: title,
       id: id,
       arr: [],
-      fbPath: stepsInstructionArrayPath
+      fbPath: stepsInstructionArrayPath,
     };
     stepsInstructionArrayPath
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           // console.log("Grabbing steps/instructions data:");
           // console.log(doc.data());
@@ -724,7 +728,7 @@ export default class FirebaseV2 extends React.Component {
           console.log("No Instruction/Step documents!");
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
         alert("Error getting document:", error);
       });
@@ -735,7 +739,7 @@ export default class FirebaseV2 extends React.Component {
    * given a id, it will loop through the original goals and routine array to
    * return the index with the corresonding id
    */
-  findIndexByID = id => {
+  findIndexByID = (id) => {
     let originalGoalsAndRoutineArr = this.props.originalGoalsAndRoutineArr;
     for (let i = 0; i < originalGoalsAndRoutineArr.length; i++) {
       if (id === originalGoalsAndRoutineArr[i].id) {
@@ -770,135 +774,138 @@ export default class FirebaseV2 extends React.Component {
               variant="light"
               style={{ marginBottom: "3px" }}
             >
-
-          <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
-            <Col>
+              <Row
+                style={{ margin: "0", marginBottom: "10px" }}
+                className="d-flex flex-row-center"
+              >
+                <Col>
                   <div className="fancytext">
                     {this.props.routines[i]["title"]}
                   </div>
                 </Col>
-          </Row>
-           {this.props.routines[i]["photo"] ? (
-          <Row >
-            <Col xs={7}
-                style={{  paddingRight:"0px"}}
-              >
-                  <img
-                    src={this.props.routines[i]["photo"]}
-                    alt="Routines"
-                    className="center"
-                    height="80px"
-                    width="auto"
-                  />
-              </Col>
-              <Col style = {{paddingLeft: "0px"}}>
-                <Row style = {{marginTop:"10px"}}>
-                    {this.props.routines[i]["is_available"]  ? (
-                    <div style={{ marginLeft: "5px" }}>
-                      <FontAwesomeIcon
-                        title="Available to Cailin"
-                        style={{ color: this.state.availabilityColorCode }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
-                        }}
-                        icon={faUser}
-                        size="lg"
-                      />{" "}
-                    </div>
-                  ) : (
-                    <div >
-                      <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
-                        style={{ color: "#000000" }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
-                        }}
-                        icon={faUserAltSlash}
-                        size="lg"
-                      />
-                    </div>
-                  )}
-                  <ShowATList
-                    Index={this.findIndexByID(tempID)}
-                    Array={this.props.originalGoalsAndRoutineArr}
-                    Path={this.state.firebaseRootPath}
-                    // ListCameBackFalse= {this.ListFalse}
-                  />
-                </Row>
-                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
-                  <DeleteGR
-                    deleteIndex={this.findIndexByID(tempID)}
-                    Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData}
-                  />
-
-                  <EditGR
-                    marginLeftV= "-170px"
-                    i={this.findIndexByID(tempID)} //index to edit
-                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    is_sublist_available= {this.is_sublist_available}
-                  />
-                </Row>
-              </Col>
-            </Row>
-            ) : (
-              <div>
-              <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {this.props.routines[i]["is_available"] ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div>
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
+              </Row>
+              {this.props.routines[i]["photo"] ? (
+                <Row>
+                  <Col xs={7} style={{ paddingRight: "0px" }}>
+                    <img
+                      src={this.props.routines[i]["photo"]}
+                      alt="Routines"
+                      className="center"
+                      height="80px"
+                      width="auto"
                     />
-                  </div>
-                )}
-                <ShowATList
-                  Index={this.findIndexByID(tempID)}
-                  Array={this.props.originalGoalsAndRoutineArr}
-                  Path={this.state.firebaseRootPath}
-                  />
-              </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
-                <DeleteGR
-                  deleteIndex={this.findIndexByID(tempID)}
-                  Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData}
-                />
-                <EditGR
-                  marginLeftV= "-130px"
-                  i={this.findIndexByID(tempID)} //index to edit
-                  ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                />
-              </Row>
-             </div>
-            )}
+                  </Col>
+                  <Col style={{ paddingLeft: "0px" }}>
+                    <Row style={{ marginTop: "10px" }}>
+                      {this.props.routines[i]["is_available"] ? (
+                        <div style={{ marginLeft: "5px" }}>
+                          <FontAwesomeIcon
+                            title="Available to Cailin"
+                            style={{ color: this.state.availabilityColorCode }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is Availble to Caitlin");
+                            }}
+                            icon={faUser}
+                            size="lg"
+                          />{" "}
+                        </div>
+                      ) : (
+                        <div>
+                          <FontAwesomeIcon
+                            title="Unavailable to Caitlin"
+                            style={{ color: "#000000" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is NOT Availble to Caitlin");
+                            }}
+                            icon={faUserAltSlash}
+                            size="lg"
+                          />
+                        </div>
+                      )}
+                      <ShowATList
+                        Index={this.findIndexByID(tempID)}
+                        Array={this.props.originalGoalsAndRoutineArr}
+                        Path={this.state.firebaseRootPath}
+                        // ListCameBackFalse= {this.ListFalse}
+                      />
+                    </Row>
+                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                      <DeleteGR
+                        deleteIndex={this.findIndexByID(tempID)}
+                        Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.grabFireBaseRoutinesGoalsData}
+                      />
+
+                      <EditGR
+                        marginLeftV="-170px"
+                        i={this.findIndexByID(tempID)} //index to edit
+                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                        is_sublist_available={this.is_sublist_available}
+                      />
+                    </Row>
+                  </Col>
+                </Row>
+              ) : (
+                <div>
+                  <Row style={{ marginLeft: "100px" }} className="d-flex ">
+                    {this.props.routines[i]["is_available"] ? (
+                      <div style={{ marginLeft: "5px" }}>
+                        <FontAwesomeIcon
+                          title="Available to Cailin"
+                          style={{ color: this.state.availabilityColorCode }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is Availble to Caitlin");
+                          }}
+                          icon={faUser}
+                          size="lg"
+                        />{" "}
+                      </div>
+                    ) : (
+                      <div>
+                        <FontAwesomeIcon
+                          title="Unavailable to Caitlin"
+                          style={{ color: "#000000" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is NOT Availble to Caitlin");
+                          }}
+                          icon={faUserAltSlash}
+                          size="lg"
+                        />
+                      </div>
+                    )}
+                    <ShowATList
+                      Index={this.findIndexByID(tempID)}
+                      Array={this.props.originalGoalsAndRoutineArr}
+                      Path={this.state.firebaseRootPath}
+                    />
+                  </Row>
+                  <Row
+                    style={{ marginTop: "15px", marginLeft: "100px" }}
+                    className="d-flex "
+                  >
+                    <DeleteGR
+                      deleteIndex={this.findIndexByID(tempID)}
+                      Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.grabFireBaseRoutinesGoalsData}
+                    />
+                    <EditGR
+                      marginLeftV="-130px"
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    />
+                  </Row>
+                </div>
+              )}
               <Row>
                 <div style={{ fontSize: "12px" }}>
                   {this.props.routines[i]["datetime_started"] ? (
@@ -949,137 +956,133 @@ export default class FirebaseV2 extends React.Component {
               variant="light"
               style={{ marginBottom: "3px" }}
             >
-
-
-            <Row style={{ margin: "0", marginBottom:"10px"}} className="d-flex flex-row-center">
-            <Col>
-              <div className="fancytext">{tempTitle}</div>
-            </Col>
-          </Row>
-           {this.props.goals[i]["photo"] ? (
-          <Row >
-            <Col xs={7}
-                style={{  paddingRight:"0px"}}
+              <Row
+                style={{ margin: "0", marginBottom: "10px" }}
+                className="d-flex flex-row-center"
               >
-                  <img
-                    src={this.props.goals[i]["photo"]}
-                    alt="Instructions/Steps"
-                    className="center"
-                    height="80px"
-                    width="auto"
-                  />
-              </Col>
-              <Col style = {{paddingLeft: "0px"}}>
-                <Row style = {{marginTop:"10px"}}>
-                    {this.props.goals[i]["is_available"] ? (
-                    <div style={{ marginLeft: "5px" }}>
-                      <FontAwesomeIcon
-                        title="Available to Cailin"
-                        style={{ color: this.props.availabilityColorCode }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
-                        }}
-                        icon={faUser}
-                        size="lg"
-                      />{" "}
-                    </div>
-                  ) : (
-                    <div >
-                      <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
-                        style={{ color: "#000000" }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
-                        }}
-                        icon={faUserAltSlash}
-                        size="lg"
+                <Col>
+                  <div className="fancytext">{tempTitle}</div>
+                </Col>
+              </Row>
+              {this.props.goals[i]["photo"] ? (
+                <Row>
+                  <Col xs={7} style={{ paddingRight: "0px" }}>
+                    <img
+                      src={this.props.goals[i]["photo"]}
+                      alt="Instructions/Steps"
+                      className="center"
+                      height="80px"
+                      width="auto"
+                    />
+                  </Col>
+                  <Col style={{ paddingLeft: "0px" }}>
+                    <Row style={{ marginTop: "10px" }}>
+                      {this.props.goals[i]["is_available"] ? (
+                        <div style={{ marginLeft: "5px" }}>
+                          <FontAwesomeIcon
+                            title="Available to Cailin"
+                            style={{ color: this.props.availabilityColorCode }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is Availble to Caitlin");
+                            }}
+                            icon={faUser}
+                            size="lg"
+                          />{" "}
+                        </div>
+                      ) : (
+                        <div>
+                          <FontAwesomeIcon
+                            title="Unavailable to Caitlin"
+                            style={{ color: "#000000" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is NOT Availble to Caitlin");
+                            }}
+                            icon={faUserAltSlash}
+                            size="lg"
+                          />
+                        </div>
+                      )}
+                      <ShowATList
+                        Index={this.findIndexByID(tempID)}
+                        Array={this.props.originalGoalsAndRoutineArr}
+                        Path={this.state.firebaseRootPath}
                       />
-                    </div>
-                  )}
-                  <ShowATList
-                    Index={this.findIndexByID(tempID)}
-                    Array={this.props.originalGoalsAndRoutineArr}
-                    Path={this.state.firebaseRootPath}
-                    />
+                    </Row>
+                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                      <DeleteGR
+                        deleteIndex={this.findIndexByID(tempID)}
+                        Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.grabFireBaseRoutinesGoalsData}
+                      />
+                      <EditGR
+                        marginLeftV="-170px"
+                        i={this.findIndexByID(tempID)} //index to edit
+                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      />
+                    </Row>
+                  </Col>
                 </Row>
-                <Row style ={{marginTop:"15px", marginBottom: "10px"}}>
-                  <DeleteGR
-                    deleteIndex={this.findIndexByID(tempID)}
-                    Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData}
-                  />
-                  <EditGR
-                    marginLeftV= "-170px"
-                    i={this.findIndexByID(tempID)} //index to edit
-                    ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                    FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                    refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                  />
-                </Row>
-              </Col>
-            </Row>
-            ) : (
-              <div>
-              <Row style ={{marginLeft:"100px"}} className="d-flex " >
-                  {this.props.goals[i]["is_available"] ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div>
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
+              ) : (
+                <div>
+                  <Row style={{ marginLeft: "100px" }} className="d-flex ">
+                    {this.props.goals[i]["is_available"] ? (
+                      <div style={{ marginLeft: "5px" }}>
+                        <FontAwesomeIcon
+                          title="Available to Cailin"
+                          style={{ color: this.state.availabilityColorCode }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is Availble to Caitlin");
+                          }}
+                          icon={faUser}
+                          size="lg"
+                        />{" "}
+                      </div>
+                    ) : (
+                      <div>
+                        <FontAwesomeIcon
+                          title="Unavailable to Caitlin"
+                          style={{ color: "#000000" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert("Item Is NOT Availble to Caitlin");
+                          }}
+                          icon={faUserAltSlash}
+                          size="lg"
+                        />
+                      </div>
+                    )}
+                    <ShowATList
+                      Index={this.findIndexByID(tempID)}
+                      Array={this.props.originalGoalsAndRoutineArr}
+                      Path={this.state.firebaseRootPath}
                     />
-                  </div>
-                )}
-                <ShowATList
-                  Index={this.findIndexByID(tempID)}
-                  Array={this.props.originalGoalsAndRoutineArr}
-                  Path={this.state.firebaseRootPath}
-                />
-              </Row>
-              <Row style={{ marginTop:"15px", marginLeft:"100px"}} className="d-flex " >
-                <DeleteGR
-                  deleteIndex={this.findIndexByID(tempID)}
-                  Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData}
-                />
-                <EditGR
-                  marginLeftV= "-130px"
-                  i={this.findIndexByID(tempID)} //index to edit
-                  ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                />
-              </Row>
-              </div>
-
-            )}
-
-
-
-
-
+                  </Row>
+                  <Row
+                    style={{ marginTop: "15px", marginLeft: "100px" }}
+                    className="d-flex "
+                  >
+                    <DeleteGR
+                      deleteIndex={this.findIndexByID(tempID)}
+                      Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.grabFireBaseRoutinesGoalsData}
+                    />
+                    <EditGR
+                      marginLeftV="-130px"
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    />
+                  </Row>
+                </div>
+              )}
 
               {/* <Row style={{ margin: "0" }} className="d-flex justify-content-between">
               <ShowATList />
@@ -1124,7 +1127,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.state.goals[i]["title"]}
                   </div>
                   {/* <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div> */}
-                {/* </Col>
+              {/* </Col>
                 <Col
                   sm="auto"
                   md="auto"
@@ -1229,7 +1232,7 @@ export default class FirebaseV2 extends React.Component {
                   margin: "0",
                   display: "flex",
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 {isComplete ? (
@@ -1239,7 +1242,7 @@ export default class FirebaseV2 extends React.Component {
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Completed");
                       }}
@@ -1254,7 +1257,7 @@ export default class FirebaseV2 extends React.Component {
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: "black" }}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Not Completed");
                       }}
@@ -1301,7 +1304,7 @@ export default class FirebaseV2 extends React.Component {
                   margin: "0",
                   display: "flex",
                   justifyContent: "center",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 {isComplete ? (
@@ -1311,7 +1314,7 @@ export default class FirebaseV2 extends React.Component {
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Completed");
                       }}
@@ -1326,7 +1329,7 @@ export default class FirebaseV2 extends React.Component {
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: "black" }}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Not Completed");
                       }}
@@ -1359,7 +1362,7 @@ export default class FirebaseV2 extends React.Component {
             style={{
               width: this.state.modalWidth,
               marginTop: "0",
-              marginRight: "15px"
+              marginRight: "15px",
             }}
             sm="auto"
             md="auto"
@@ -1369,7 +1372,7 @@ export default class FirebaseV2 extends React.Component {
               style={{
                 borderRadius: "15px",
                 boxShadow:
-                  "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                  "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
               }}
             >
               {this.abstractedRoutineGoalStatusList(
@@ -1387,7 +1390,7 @@ export default class FirebaseV2 extends React.Component {
             style={{
               width: this.state.modalWidth,
               marginTop: "0",
-              marginRight: "15px"
+              marginRight: "15px",
             }}
             sm="auto"
             md="auto"
@@ -1406,7 +1409,7 @@ export default class FirebaseV2 extends React.Component {
             style={{
               width: this.state.modalWidth,
               marginTop: "0",
-              marginRight: "15px"
+              marginRight: "15px",
             }}
             sm="auto"
             md="auto"
@@ -1427,7 +1430,7 @@ export default class FirebaseV2 extends React.Component {
 abstractedGoalsList:
 shows entire list of goals and routines
 */
-  abstractedGoalsList = displayGoals => {
+  abstractedGoalsList = (displayGoals) => {
     return (
       <Modal.Dialog
         style={{
@@ -1436,7 +1439,7 @@ shows entire list of goals and routines
           width: this.state.modalWidth,
           marginLeft: "0",
           boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeGoal} closeButton>
@@ -1452,7 +1455,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.addNewGRModalShow ? this.AddNewGRModalAbstracted() : ""}
@@ -1462,7 +1465,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.singleGR.show ? (
@@ -1496,7 +1499,7 @@ shows entire list of goals and routines
     abstractedRoutineList:
     shows entire list of routines
     */
-  abstractedRoutineList = displayRoutines => {
+  abstractedRoutineList = (displayRoutines) => {
     return (
       <Modal.Dialog
         style={{
@@ -1505,7 +1508,7 @@ shows entire list of goals and routines
           width: this.state.modalWidth,
           marginLeft: "0px",
           boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
@@ -1523,7 +1526,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.addNewGRModalShow ? this.AddNewGRModalAbstracted() : ""}
@@ -1532,7 +1535,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.singleGR.show ? (
@@ -1577,6 +1580,7 @@ shows entire list of goals and routines
         refresh={this.grabFireBaseRoutinesGoalsData}
         isRoutine={this.state.isRoutine}
         width={this.state.modalWidth}
+        todayDateObject={this.props.todayDateObject}
       />
     );
   };
@@ -1598,7 +1602,7 @@ shows entire list of goals and routines
         style={{
           marginTop: "0",
           marginLeft: "0",
-          width: this.state.modalWidth
+          width: this.state.modalWidth,
         }}
       >
         <Modal.Header
@@ -1616,7 +1620,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.addNewISModalShow ? (
@@ -1669,7 +1673,7 @@ shows entire list of goals and routines
         style={{
           marginTop: "0",
           marginLeft: "0",
-          width: this.state.modalWidth
+          width: this.state.modalWidth,
         }}
       >
         <Modal.Header
@@ -1687,7 +1691,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.addNewATModalShow ? (
@@ -1711,7 +1715,7 @@ shows entire list of goals and routines
             style={{
               borderRadius: "15px",
               boxShadow:
-                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
             }}
           >
             {this.state.singleAT.show ? (
@@ -1770,7 +1774,7 @@ shows entire list of goals and routines
           width: this.state.modalWidth,
           marginLeft: "0",
           boxShadow:
-            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)"
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeRoutineGoalModal} closeButton>
