@@ -19,7 +19,7 @@ export default class AddNewGRItem extends Component {
       photo: "",
       is_complete: false,
       is_available: true,
-      todayDateObject: this.props.todayDateObject,
+      // todayDateObject: this.props.todayDateObject,
       available_end_time: "23:59:59",
       available_start_time: "00:00:00",
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
@@ -136,7 +136,7 @@ export default class AddNewGRItem extends Component {
     this.state.routineDocsPath
       .add({
         title: this.state.itemToEdit.title,
-        "actions&tasks": [],
+        "actions&tasks": []
       })
       .then((ref) => {
         if (ref.id === null) {
@@ -154,11 +154,12 @@ export default class AddNewGRItem extends Component {
       });
   };
 
+  
   //This function will below will essentially take in a array and have a key map to it
-  updateEntireArray = (newArr) => {
+  updateEntireArray = newArr => {
     // 2. update adds to the document
     let db = this.state.arrPath;
-    db.update({ "goals&routines": newArr }).then((doc) => {
+    db.update({ "goals&routines": newArr }).then(doc => {
       console.log("updateEntireArray Finished");
       console.log(doc);
       this.getGRDataFromFB();
@@ -202,30 +203,30 @@ export default class AddNewGRItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
-  startTimePicker = () => {
-    // const [startDate, setStartDate] = useState(new Date());
-    return (
-      <DatePicker
-        className="form-control"
-        type="text"
-        selected={this.state.todayDateObject}
-        onChange={(date) => {
-          this.setState(
-            {
-              todayDateObject: date,
-            },
-            () => {
-              console.log("starttimepicker", this.state.todayDateObject);
-            }
-          );
-        }}
-        showTimeSelect
-        timeIntervals={15}
-        timeCaption="time"
-        dateFormat="MMMM d, yyyy h:mm aa"
-      />
-    );
-  };
+  // startTimePicker = () => {
+  //   // const [startDate, setStartDate] = useState(new Date());
+  //   return (
+  //     <DatePicker
+  //       className="form-control"
+  //       type="text"
+  //       selected={this.state.todayDateObject}
+  //       onChange={(date) => {
+  //         this.setState(
+  //           {
+  //             todayDateObject: date,
+  //           },
+  //           () => {
+  //             console.log("starttimepicker", this.state.todayDateObject);
+  //           }
+  //         );
+  //       }}
+  //       showTimeSelect
+  //       timeIntervals={15}
+  //       timeCaption="time"
+  //       dateFormat="MMMM d, yyyy h:mm aa"
+  //     />
+  //   );
+  // };
 
   render() {
     return (
@@ -255,7 +256,7 @@ export default class AddNewGRItem extends Component {
                 type="text"
                 placeholder="Enter Title"
               />
-              <div style={{ color: "red" }}> {this.state.showNoTitleError}</div>
+              {/* <div style={{ color: "red" }}> {this.state.showNoTitleError}</div> */}
             </Form.Group>
 
             <Form.Group>
@@ -273,10 +274,24 @@ export default class AddNewGRItem extends Component {
               />
             </Form.Group>
 
-            <Form.Group value={this.state.todayDateObject} controlId="Y">
+            <label>Available Start Time</label>
+            <div className="input-group mb-3">
+              <input
+                style={{ width: "200px" }}
+                placeholder="HH:MM:SS (ex: 08:20:00) "
+                value={this.state.itemToEdit.available_start_time}
+                onChange={e => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.available_start_time = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
+            {/* <Form.Group value={this.state.todayDateObject} controlId="Y">
               <Form.Label>Start Time</Form.Label> <br />
               {this.startTimePicker()}
-            </Form.Group>
+            </Form.Group> */}
 
             <label>Available End Time</label>
             <div className="input-group mb-3">
