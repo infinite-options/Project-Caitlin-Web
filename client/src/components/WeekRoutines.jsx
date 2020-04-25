@@ -13,7 +13,6 @@ export default class WeekRoutines extends Component {
       this.state = {
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
-          initialHour: 8, //Top-most hour displayed when week view loads
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
           eventBoxSize: 80, //width size for event box
           marginFromLeft: 0
@@ -22,7 +21,10 @@ export default class WeekRoutines extends Component {
   }
 
   componentDidMount  () {
-    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * this.state.initialHour;
+    // Set top most time to be current hour
+    // Browser scrolls to the bottom if hour >= 18
+    let curHour = new Date().getHours();
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
   }
 
 getEventItem = (day, hour) => {
