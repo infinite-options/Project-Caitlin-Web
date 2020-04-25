@@ -11,12 +11,17 @@ export default class WeekEvents extends Component {
       this.state = {
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
+          initialHour: 6, //Top-most hour displayed when week view loads
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
           eventBoxSize: 80, //width size for event box
           marginFromLeft: 0
       }
+      this.hourDisplay = React.createRef();
   }
 
+  componentDidMount  () {
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * this.state.initialHour;
+  }
 
   timeDisplay = () => { //this essentially creates the time row
       let arr = [];
@@ -45,7 +50,7 @@ export default class WeekEvents extends Component {
         arr.push(
             <Col key={"day" + i}>
                 <Col style={{
-                    textAlign: "right",
+                    textAlign: "center",
                     height: this.state.pxPerHour,
                 }}>
                     {curDate.format("M/D")}
@@ -390,7 +395,7 @@ export default class WeekEvents extends Component {
              <Col className="fancytext">Time</Col>
              {weekdays}
            </Row>
-           <Row style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
+           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
              <Col>
                  <Container style={{ margin: '0', padding: '0'}}>
                      {this.timeDisplay()}

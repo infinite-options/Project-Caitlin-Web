@@ -12,9 +12,15 @@ export default class WeekGoals extends Component {
       this.state = {
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
+          initialHour: 7, //Top-most hour displayed when week view loads
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
           eventBoxSize: 80, //width size for event box
       }
+      this.hourDisplay = React.createRef();
+  }
+
+  componentDidMount  () {
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * this.state.initialHour;
   }
 
   /**
@@ -221,7 +227,7 @@ export default class WeekGoals extends Component {
              <Col className="fancytext">Time</Col>
              {weekdays}
            </Row>
-           <Row style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
+           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
              <Col >
                  <Container style={{ margin: '0', padding: '0', width: '80px' }}>
                      {this.timeDisplay()}
