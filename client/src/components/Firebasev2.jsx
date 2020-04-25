@@ -263,10 +263,6 @@ export default class FirebaseV2 extends React.Component {
         // console.log("missing title, or id at index : " + i);
         return [];
       }
-      if (A[i]["deleted"]) {
-        //item is "deleted" and should not be shown...
-        continue;
-      }
       let tempID = A[i]["id"];
       let tempPhoto = A[i]["photo"];
       // console.log(tempPhoto);

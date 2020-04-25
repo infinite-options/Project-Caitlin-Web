@@ -129,10 +129,10 @@ export default class MainPage extends React.Component {
           let routine = [];
           let goal = [];
           for (let i = 0; i < x.length; ++i) {
-            if (!x[i]["deleted"] && x[i]["is_persistent"]) {
+            if (x[i]["is_persistent"]) {
               // console.log("routine " + x[i]["title"]);
               routine.push(x[i]);
-            } else if (!x[i]["deleted"] && !x[i]["is_persistent"]) {
+            } else if (!x[i]["is_persistent"]) {
               // console.log("not routine " + x[i]["title"]);
               goal.push(x[i]);
             }
