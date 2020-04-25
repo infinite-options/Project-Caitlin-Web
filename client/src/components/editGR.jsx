@@ -478,6 +478,18 @@ export default class editGR extends Component {
     });
   };
 
+  handleRepeatInputValue = (eventKey) => {
+    this.setState({
+      repeatInputValue_temp: eventKey,
+    });
+  };
+
+  handleRepeatOccurrence = (eventKey) => {
+    this.setState({
+      repeatOccurrence_temp: eventKey,
+    });
+  };
+
   editGRForm = () => {
     return (
       // <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
