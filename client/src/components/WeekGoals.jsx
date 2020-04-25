@@ -214,9 +214,9 @@ export default class WeekGoals extends Component {
     });
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
-           <Row>
-             Goals
-           </Row>
+          <Row>
+            <Col>Goals</Col>
+          </Row>
            <Row>
              <Col className="fancytext">Time</Col>
              {weekdays}

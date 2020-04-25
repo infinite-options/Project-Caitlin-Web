@@ -210,7 +210,9 @@ getEventItem = (day, hour) => {
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
            <Row>
-             Routines
+             <Col>
+              Routines
+             </Col>
            </Row>
            <Row>
              <Col className="fancytext">Time</Col>
