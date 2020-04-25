@@ -15,6 +15,14 @@ export default class WeekGoals extends Component {
           zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
           eventBoxSize: 80, //width size for event box
       }
+      this.hourDisplay = React.createRef();
+  }
+
+  componentDidMount  () {
+    // Set top most time to be current hour
+    // Browser scrolls to the bottom if hour >= 18
+    let curHour = new Date().getHours();
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
   }
 
   /**
@@ -214,14 +222,14 @@ export default class WeekGoals extends Component {
     });
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
-           <Row>
-             Goals
-           </Row>
+          <Row>
+            <Col>Goals</Col>
+          </Row>
            <Row>
              <Col className="fancytext">Time</Col>
              {weekdays}
            </Row>
-           <Row style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
+           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
              <Col >
                  <Container style={{ margin: '0', padding: '0', width: '80px' }}>
                      {this.timeDisplay()}

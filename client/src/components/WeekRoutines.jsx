@@ -17,6 +17,14 @@ export default class WeekRoutines extends Component {
           eventBoxSize: 80, //width size for event box
           marginFromLeft: 0
       }
+      this.hourDisplay = React.createRef();
+  }
+
+  componentDidMount  () {
+    // Set top most time to be current hour
+    // Browser scrolls to the bottom if hour >= 18
+    let curHour = new Date().getHours();
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
   }
 
 getEventItem = (day, hour) => {
@@ -210,13 +218,15 @@ getEventItem = (day, hour) => {
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
            <Row>
-             Routines
+             <Col>
+              Routines
+             </Col>
            </Row>
            <Row>
              <Col className="fancytext">Time</Col>
              {weekdays}
            </Row>
-           <Row style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
+           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
              <Col >
                  <Container style={{ margin: '0', padding: '0', width: '80px' }}>
                      {this.timeDisplay()}

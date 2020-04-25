@@ -15,8 +15,15 @@ export default class WeekEvents extends Component {
           eventBoxSize: 80, //width size for event box
           marginFromLeft: 0
       }
+      this.hourDisplay = React.createRef();
   }
 
+  componentDidMount  () {
+    // Set top most time to be current hour
+    // Browser scrolls to the bottom if hour >= 18 (tested with Chrome and Firefox)
+    let curHour = new Date().getHours();
+    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
+  }
 
   timeDisplay = () => { //this essentially creates the time row
       let arr = [];
@@ -34,6 +41,27 @@ export default class WeekEvents extends Component {
           )
       }
       return arr
+  }
+
+  dateDisplay = () => {
+    let arr = [];
+    let startObject = this.props.dateContext.clone();
+    let startDay = startObject.startOf("week");
+    let curDate = startDay.clone();
+    for (let i = 0; i<7; i++) {
+        arr.push(
+            <Col key={"day" + i}>
+                <Col style={{
+                    textAlign: "center",
+                    height: this.state.pxPerHour,
+                }}>
+                    {curDate.format("M/D")}
+                </Col >
+            </Col>
+        );
+        curDate.add(1,"day");
+    }
+    return arr;
   }
 
   onEventClick = (e, i) => {
@@ -362,13 +390,14 @@ export default class WeekEvents extends Component {
      return (
          <Container style={{ height: 'auto', width: '1000px'}}>
            <Row>
-             Events
+             <Col>Events </Col>
+             {this.dateDisplay()}
            </Row>
            <Row>
              <Col className="fancytext">Time</Col>
              {weekdays}
            </Row>
-           <Row style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
+           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
              <Col>
                  <Container style={{ margin: '0', padding: '0'}}>
                      {this.timeDisplay()}
