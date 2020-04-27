@@ -180,7 +180,7 @@ export default class AddNewGRItem extends Component {
           alert("Fail to add new routine / goal item");
           return;
         }
-
+        console.log(ref);
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
