@@ -98,8 +98,11 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
-      profilePicUrl: "",
+      currentProfilePicUrl: "",
+      currentProfileName: "",
       profileName: "",
+      userNamesAndPics: {},
+      enableNameDropDown: false,
       showNewAccountmodal: false,
       eventNotifications: {},
       showDeleteRecurringModal: false,
@@ -205,62 +208,105 @@ export default class MainPage extends React.Component {
   componentDidMount() {
     this.updateEventsArray();
     this.updateProfilePicFromFirebase();
-    this.getEventNotifications();
+    // this.getEventNotifications();
   }
 
   /*This will obtain the notifications from the database
    */
 
-  getEventNotifications = () => {
-    const db = firebase.firestore();
-    const docRef = db
-      .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy")
-      .collection("events")
-      .doc("o0AHviYhmL7VJLXIREg2");
-    docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var x = doc.data();
-          console.log("this is the event notification from fb ", x);
-          this.setState({
-            eventNotifications: x,
-          });
-        } else {
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-  };
+  // getEventNotifications = () => {
+  //   const db = firebase.firestore();
+  //   const docRef = db
+  //     .collection("users")
+  //     .doc("7R6hAVmDrNutRkG3sVRy")
+  //     .collection("events")
+  //     .doc("o0AHviYhmL7VJLXIREg2");
+  //   docRef
+  //     .get()
+  //     .then((doc) => {
+  //       if (doc.exists) {
+  //         var x = doc.data();
+  //         console.log("this is the event notification from fb ", x);
+  //         this.setState({
+  //           eventNotifications: x,
+  //         });
+  //       } else {
+  //         console.log("No such document!");
+  //       }
+  //     })
+  //     .catch(function (error) {
+  //       console.log("Error getting document:", error);
+  //     });
+  // };
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
   updateProfilePicFromFirebase = () => {
     const db = firebase.firestore();
-    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    const docRef = db.collection("users");
     docRef
       .get()
-      .then((doc) => {
-        if (doc.exists) {
-          var x = doc.data();
-          var firstName = x.first_name;
-          var lastName = x.last_name;
-          console.log("this is x.data", x.last_name);
-          x = x["about_me"];
-          this.setState({
-            profilePicUrl: x.pic,
-            profileName: firstName + " " + lastName,
-          });
-        } else {
-          console.log("No such document!");
+      .then((usersArray)=> {
+        console.log("this is doc", usersArray.docs);
+        let namePicObject = {};
+        for(let user of usersArray.docs){
+          
+          // console.log(user.id);
+          let x= user.data();
+          // console.log(user.data());
+          let firstName = x.first_name;
+          let lastName = x.last_name;
+          let name = firstName + " " + lastName;
+          let picURL = "";
+          //  console.log(x["about_me"]);
+          if(x["about_me"] != undefined){
+            picURL = x["about_me"].pic;
+            console.log("we got in");
+          }
+         
+         console.log("this is the picURL", picURL);
+          namePicObject[picURL] = name;
+          // console.log(x["about_me"]  );
+          // db.collection("users").doc(user.id).get()
+          //   .then()
+
         }
+        this.setState({
+          userNamesAndPics: namePicObject,
+          enableNameDropDown: true,
+          currentProfilePicUrl: Object.keys(namePicObject)[0],
+          currentProfileName: namePicObject[Object.keys(namePicObject)[0]]
+        });
+        console.log(namePicObject);
+        
       })
       .catch(function (error) {
-        console.log("Error getting document:", error);
+            console.log("Error getting document:", error);
+            
       });
+    // const db = firebase.firestore();
+    // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    // docRef
+    //   .get()
+    //   .then((doc) => {
+    //     if (doc.exists) {
+          
+    //       var x = doc.data();
+    //       var firstName = x.first_name;
+    //       var lastName = x.last_name;
+    //       // console.log("this is x.data", x.last_name);
+    //       x = x["about_me"];
+    //       this.setState({
+    //         profilePicUrl: x.pic,
+    //         profileName: firstName + " " + lastName,
+    //       });
+    //     } else {
+    //       console.log("No such document!");
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error getting document:", error);
+    //   });
   };
 
   /*
@@ -1873,8 +1919,15 @@ export default class MainPage extends React.Component {
 
   updatePic = (url, name) => {
     this.setState({
-      profilePicUrl: url,
-      profileName: name,
+      currentProfilePicUrl: url,
+      currentProfileName: name,
+    });
+  };
+
+  changeUser = (picURL, name) =>{
+    this.setState({
+      currentProfilePicUrl: picURL,
+      currentProfileName: name
     });
   };
 
@@ -1928,6 +1981,8 @@ export default class MainPage extends React.Component {
             width: "100%",
           }}
         >
+          <Row>
+          <Col xs={2}>
           <Row style={{ margin: "0" }} className="d-flex flex-row">
             <div
               style={{
@@ -1938,24 +1993,51 @@ export default class MainPage extends React.Component {
                 marginTop: "5px",
               }}
             >
-              {this.state.profilePicUrl === "" ? (
+              {this.state.currentProfilePicUrl === "" ? (
                 <FontAwesomeIcon icon={faImage} size="5x" />
               ) : (
                 <img
                   style={{
                     display: "block",
-                    marginLeft: "auto",
-                    marginRight: "auto",
+                    
+                    // marginLeft: "auto",
+                    // marginRight: "auto",
                     width: "100%",
                     height: "70px",
                   }}
-                  src={this.state.profilePicUrl}
+                  src={this.state.currentProfilePicUrl}
                   alt="Profile"
                 />
               )}
             </div>
+            {this.state.enableNameDropDown === false? 
+             <DropdownButton
+                style={{ display:"inline-block" }}
+                title=""
+                disabled>       
+            </DropdownButton>: 
+            // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
+                <DropdownButton
+                    // class = "dropdown-toggle.btn.btn-secondary"
+                    variant="outline-primary"
+                    // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
+                    title= {this.state.currentProfileName || ''}
+                    style = {{marginTop:"20px", marginLeft:"10px"}}
+                >
+                    {
+                        Object.keys(this.state.userNamesAndPics).map((keyName, keyIndex) => (
+                            // use keyName to get current key's name
+                            // and a[keyName] to get its value
+                            <Dropdown.Item key ={keyName} onClick= {e => {this.changeUser(keyName, this.state.userNamesAndPics[keyName])}}>
+                                        {this.state.userNamesAndPics[keyName] || ''}
+                            </Dropdown.Item>
+                        ))
+                    }
+            </DropdownButton>
+            }
 
-            <div style={{ float: "left", width: "227px", height: "50px" }}>
+
+            {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
                 <p style={{ marginTop: "30px", marginLeft: "10px" }}>
                   First Last
@@ -1965,21 +2047,26 @@ export default class MainPage extends React.Component {
                   {this.state.profileName}
                 </p>
               )}
-            </div>
+            </div> */}
           </Row>
-          <Row style={{ margin: "0" }} className="d-flex flex-row">
-            <Col xs={3}>
-              {/* <Button style = {{marginTop:"10px", marginLeft:"100px"}} onClick = {(e) => {this.setState({showNewAccountmodal: true})}}>
+          <Row style={{ marginLeft:"50px" }} className="d-flex flex-row">
+            
+              <Button style = {{marginTop:"10px"}} onClick = {(e) => {this.setState({showNewAccountmodal: true})}}>
               Create New User
-            </Button> */}
-            </Col>
+            </Button>
+            
             {/* <Col>
             {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
             </Col> */}
           </Row>
+          </Col>
+          <Col xs={8} style={{paddingLeft:"0px"}}>
           {this.state.showNewAccountmodal && (
             <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
           )}
+          </Col>
+          </Row>
+          
         </div>
 
         <div

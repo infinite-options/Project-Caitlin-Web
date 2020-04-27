@@ -230,7 +230,7 @@ class AboutModal extends React.Component{
             let importantPeopleReferencid = [];
             let test = {};
             let j = 0;
-           
+           console.log("this is the peoples array", peoplesArray);
             // grab the ID of all of the people in the firebase.
             for(let i = 0; i<peoplesArray.docs.length; i++){
                 db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
@@ -302,11 +302,11 @@ class AboutModal extends React.Component{
           .then(doc => {
             if (doc.exists) {
               var x = doc.data();
-              console.log("this is x in the about modal", x);
+            //   console.log("this is x in the about modal", x);
               var firstName = x.first_name;
               var lastName = x.last_name;
               x = x["about_me"];
-              console.log("this is the about modal", x);
+            //   console.log("this is the about modal", x);
               this.setState({
                 aboutMeObject: x, firstName:firstName, lastName:lastName
               });
