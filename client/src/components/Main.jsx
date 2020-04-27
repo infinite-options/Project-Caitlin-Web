@@ -44,7 +44,7 @@ export default class MainPage extends React.Component {
       routines: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
-      showRoutineModal: true,
+      showRoutineModal: false,
       showAboutModal: false,
       dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal

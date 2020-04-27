@@ -166,6 +166,7 @@ export default class AddNewGRItem extends Component {
       }
     }
     this.addNewDoc();
+    this.props.closeModal();
   };
 
   addNewDoc = () => {
@@ -252,6 +253,31 @@ export default class AddNewGRItem extends Component {
             },
             () => {
               console.log("starttimepicker", this.state.startTime);
+            }
+          );
+        }}
+        showTimeSelect
+        timeIntervals={15}
+        timeCaption="time"
+        dateFormat="MMMM d, yyyy h:mm aa"
+      />
+    );
+  };
+
+  endTimePicker = () => {
+    // const [startDate, setStartDate] = useState(new Date());
+    return (
+      <DatePicker
+        className="form-control"
+        type="text"
+        selected={this.state.endTime}
+        onChange={(date) => {
+          this.setState(
+            {
+              endTime: date,
+            },
+            () => {
+              console.log("endTimepicker", this.state.endTime);
             }
           );
         }}
@@ -918,39 +944,17 @@ this will close repeat modal.
               />
             </Form.Group>
 
-            {/* <label>Available Start Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 08:20:00) "
-                value={this.state.itemToEdit.available_start_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_start_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div> */}
             <Form.Group value={this.state.startTime} controlId="Y">
               <Form.Label>Start Time</Form.Label> <br />
               {this.startTimePicker()}
             </Form.Group>
 
-            <label>Available End Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 16:20:00) "
-                value={this.state.itemToEdit.available_end_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_end_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
+            <Form.Group value={this.state.endTime} controlId="X">
+              <Form.Label>End Time</Form.Label>
+              <br />
+              {this.endTimePicker()}
+              <div style={{ color: "red" }}> {this.state.showDateError}</div>
+            </Form.Group>
 
             <div>
               <label>Repeating Options</label>

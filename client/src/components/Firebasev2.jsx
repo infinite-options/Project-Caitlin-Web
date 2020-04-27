@@ -83,7 +83,7 @@ export default class FirebaseV2 extends React.Component {
     modalWidth: "350px", //primary width size for all modals
 
     //Use to decided whether to show the respective modals
-    addNewGRModalShow: true,
+    addNewGRModalShow: false,
     addNewATModalShow: false,
     addNewISModalShow: false,
 
@@ -1554,12 +1554,7 @@ shows entire list of goals and routines
             type="button"
             className="btn btn-info btn-md"
             onClick={() => {
-              this.setState(
-                { addNewGRModalShow: true, isRoutine: true },
-                () => {
-                  this.addRoutineOnClick();
-                }
-              );
+              this.addRoutineOnClick();
             }}
           >
             Add Routine
@@ -1594,6 +1589,8 @@ shows entire list of goals and routines
         arr: [],
         fbPath: null,
       },
+      addNewGRModalShow: true,
+      isRoutine: true,
     });
   };
 
