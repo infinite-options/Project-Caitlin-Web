@@ -2121,6 +2121,8 @@ export default class MainPage extends React.Component {
               goals={this.state.goals}
               routines={this.state.routines}
               todayDateObject={this.state.todayDateObject}
+              calendarView={this.state.calendarView}
+              dateContext={this.state.dateContext}
             />
             <Col
               sm="auto"
