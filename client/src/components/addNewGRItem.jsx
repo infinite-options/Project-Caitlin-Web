@@ -13,8 +13,8 @@ export default class AddNewGRItem extends Component {
   }
   state = {
     grArr: [], //goal, routine original array,
-    startTime: this.props.singleGR.available_start_time,
-    endTime: this.props.singleGR.available_end_time,
+    // startTime: this.props.singleGR.available_start_time,
+    // endTime: this.props.singleGR.available_end_time,
     itemToEdit: {
       title: "",
       id: "",
@@ -23,8 +23,8 @@ export default class AddNewGRItem extends Component {
       is_complete: false,
       is_available: true,
       // todayDateObject: this.props.todayDateObject,
-      available_end_time: "23:59:59",
-      available_start_time: "00:00:00",
+      available_end_time: this.props.singleGR.available_end_time,
+      available_start_time: this.props.singleGR.available_start_time,
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
@@ -184,6 +184,8 @@ export default class AddNewGRItem extends Component {
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
+        temp.available_start_time = this.state.itemToEdit.available_start_time.toISOString();
+        temp.available_end_time = this.state.itemToEdit.available_end_time.toISOString();
         console.log("Added document with ID: ", ref.id);
         // this.state.grArr.push(temp);
         newArr.push(temp);
@@ -245,14 +247,19 @@ export default class AddNewGRItem extends Component {
       <DatePicker
         className="form-control"
         type="text"
-        selected={this.state.startTime}
+        selected={this.state.itemToEdit.available_start_time}
         onChange={(date) => {
           this.setState(
             {
-              startTime: date,
+              itemToEdit: {
+                available_start_time: date,
+              },
             },
             () => {
-              console.log("starttimepicker", this.state.startTime);
+              console.log(
+                "starttimepicker",
+                this.state.itemToEdit.available_start_time
+              );
             }
           );
         }}
@@ -270,14 +277,19 @@ export default class AddNewGRItem extends Component {
       <DatePicker
         className="form-control"
         type="text"
-        selected={this.state.endTime}
+        selected={this.state.itemToEdit.available_end_time}
         onChange={(date) => {
           this.setState(
             {
-              endTime: date,
+              itemToEdit: {
+                available_end_time: date,
+              },
             },
             () => {
-              console.log("endTimepicker", this.state.endTime);
+              console.log(
+                "endTimepicker",
+                this.state.itemToEdit.available_end_time
+              );
             }
           );
         }}
@@ -944,12 +956,18 @@ this will close repeat modal.
               />
             </Form.Group>
 
-            <Form.Group value={this.state.startTime} controlId="Y">
+            <Form.Group
+              value={this.state.itemToEdit.available_start_time}
+              controlId="Y"
+            >
               <Form.Label>Start Time</Form.Label> <br />
               {this.startTimePicker()}
             </Form.Group>
 
-            <Form.Group value={this.state.endTime} controlId="X">
+            <Form.Group
+              value={this.state.itemToEdit.available_end_time}
+              controlId="X"
+            >
               <Form.Label>End Time</Form.Label>
               <br />
               {this.endTimePicker()}

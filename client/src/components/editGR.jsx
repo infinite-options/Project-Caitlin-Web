@@ -547,7 +547,9 @@ export default class editGR extends Component {
           <input
             style={{ width: "200px" }}
             placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={this.state.itemToEdit.available_start_time}
+            value={moment(this.state.itemToEdit.available_start_time).format(
+              "LLL"
+            )}
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
@@ -562,7 +564,9 @@ export default class editGR extends Component {
           <input
             style={{ width: "200px" }}
             placeholder="HH:MM:SS (ex: 16:20:00) "
-            value={this.state.itemToEdit.available_end_time}
+            value={moment(this.state.itemToEdit.available_end_time).format(
+              "LLL"
+            )}
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
