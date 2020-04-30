@@ -16,11 +16,12 @@ class AboutModal extends React.Component{
             firebaseRootPath: firebase
             .firestore()
             .collection("users")
-            .doc("7R6hAVmDrNutRkG3sVRy"),
+            .doc(this.props.theCurrentUserId),
+            // .doc("7R6hAVmDrNutRkG3sVRy"),
             importantPeople1id: null,
             importantPeople2id: null,
             importantPeople3id: null,
-            aboutMeObject: {},
+            aboutMeObject: {have_pic: false, message_card:"", message_day:"",pic:""},
             firstName: "",
             lastName: "",
             peopleNamesArray: {},
@@ -224,16 +225,19 @@ class AboutModal extends React.Component{
 
     grabFireBaseAllPeopleNames = () => {
         const db = firebase.firestore();
-        db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
+        // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').get()
+        db.collection('users').doc(this.props.theCurrentUserId).collection('people').get()
         .then((peoplesArray) => {
             let importantPeopleArray = [];
             let importantPeopleReferencid = [];
             let test = {};
             let j = 0;
-           console.log("this is the peoples array", peoplesArray);
+        //    console.log("this is the peoples array", peoplesArray);
             // grab the ID of all of the people in the firebase.
             for(let i = 0; i<peoplesArray.docs.length; i++){
-                db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
+                // console.log("should not go in here");
+                // db.collection('users').doc("7R6hAVmDrNutRkG3sVRy").collection('people').doc(peoplesArray.docs[i].id).get()
+                db.collection('users').doc(this.props.theCurrentUserId).collection('people').doc(peoplesArray.docs[i].id).get()
                 .then( (doc) => {
                     j++;
                     if(doc.data().important === true){
@@ -296,20 +300,29 @@ class AboutModal extends React.Component{
 
     grabFireBaseAboutMeData = () => {
         const db = firebase.firestore();
-        const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+        // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+        const docRef = db.collection("users").doc(this.props.theCurrentUserId);
         docRef
           .get()
           .then(doc => {
+              console.log("this is the doc exists", doc.exists);
             if (doc.exists) {
               var x = doc.data();
+              console.log("this is the doc data",x)
             //   console.log("this is x in the about modal", x);
               var firstName = x.first_name;
               var lastName = x.last_name;
-              x = x["about_me"];
-            //   console.log("this is the about modal", x);
-              this.setState({
-                aboutMeObject: x, firstName:firstName, lastName:lastName
-              });
+              if(x["about_me"] != undefined){
+                x = x["about_me"];
+                this.setState({
+                    aboutMeObject: x, firstName:firstName, lastName:lastName
+                });
+              }else{
+                this.setState({
+                    firstName:firstName, lastName:lastName
+                });
+              }
+              
               
             } else {
               console.log("No such document!");
@@ -439,7 +452,7 @@ class AboutModal extends React.Component{
         let name = this.state.firstName + " " + this.state.lastName;
         this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
            (doc) => {
-               this.props.updateProfilePic(this.state.aboutMeObject.pic, name);
+               this.props.updateProfilePic(name, this.state.aboutMeObject.pic);
                this.hideAboutForm();   
            }
        )
@@ -505,7 +518,7 @@ class AboutModal extends React.Component{
                         
                     </Form.Group>
                     <Row>
-                        <Col>  
+                        <Col> 
                             {(this.state.aboutMeObject.have_pic === false  ? 
                             <FontAwesomeIcon icon={faImage} size="6x"/> : 
                             <img style = 
@@ -561,7 +574,7 @@ class AboutModal extends React.Component{
                     
                     <Form.Group >
                         <Form.Label>Important People</Form.Label>
-                        {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray}/>}
+                        {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray} currentUserId={this.props.theCurrentUserId}/>}
                         <Row>
                             <Col>
                                 {(this.state.importantPeople1.have_pic === false ? 

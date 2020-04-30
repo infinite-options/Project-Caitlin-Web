@@ -21,7 +21,8 @@ import { storage } from './firebase';
       peopleDocsPath: firebase
         .firestore()
         .collection("users")
-        .doc("7R6hAVmDrNutRkG3sVRy")
+        // .doc("7R6hAVmDrNutRkG3sVRy")
+        .doc(this.props.currentUserId)
         .collection("people")
     };
   
