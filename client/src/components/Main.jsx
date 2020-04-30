@@ -1278,7 +1278,7 @@ export default class MainPage extends React.Component {
           untilSubString = untilSubString = untilSubString.substring(6);
         }
 
-        console.log(untilSubString, "untilSubString");
+        console.log(untilSubString, newUntilSubString, "untilSubString");
 
         newRecurrenceRule = newRecurrenceRule.replace(
           untilSubString,
@@ -1288,6 +1288,10 @@ export default class MainPage extends React.Component {
         newRecurrenceRule = newRecurrenceRule.replace(
           `COUNT=${countSubString}`,
           `UNTIL=${newUntilSubString}`
+        );
+      } else {
+        newRecurrenceRule = newRecurrenceRule.concat(
+          `;UNTIL=${newUntilSubString}`
         );
       }
       await axios
@@ -1304,10 +1308,16 @@ export default class MainPage extends React.Component {
           let start = moment(newEvent.start.dateTime);
           let end = moment(this.state.newEventStart0);
           let diff = countSubString - moment.duration(end.diff(start)).asDays();
-          event.recurrence[0] = event.recurrence[0].replace(
-            countSubString,
-            diff
-          );
+          console.log(diff, "diff");
+          if (
+            event.recurrence[0].includes("COUNT") &&
+            !this.state.repeatOption
+          ) {
+            event.recurrence[0] = event.recurrence[0].replace(
+              countSubString,
+              diff
+            );
+          }
           axios
             .post("/createNewEvent", {
               newEvent: newEvent,
