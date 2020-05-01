@@ -3172,6 +3172,7 @@ export default class MainPage extends React.Component {
         .then((res) => {
           console.log(res.data, "deleterecurring");
           res.data.map((event) => {
+            console.log(event.id, "event.id");
             axios
               .delete("/deleteRecurringEvent", {
                 params: {
@@ -3189,7 +3190,7 @@ export default class MainPage extends React.Component {
               });
           });
         });
-      this.updateEventsArray();
+      // this.updateEventsArray();
       // axios
       //   .delete("/")
       // axios
