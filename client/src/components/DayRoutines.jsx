@@ -48,7 +48,6 @@ export default class DayRoutines extends Component {
   getEventItem = (hour) => {
     var res = [];
     var arr = this.props.routines;
-    console.log(arr, "geteventitem");
     var sameTimeEventCount = 0;
     let itemWidth = this.state.eventBoxSize;
     // var overlapEvent = 0;

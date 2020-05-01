@@ -23,8 +23,10 @@ export default class AddNewGRItem extends Component {
       is_complete: false,
       is_available: true,
       // todayDateObject: this.props.todayDateObject,
-      available_end_time: this.props.singleGR.available_end_time,
-      available_start_time: this.props.singleGR.available_start_time,
+      // available_end_time: this.props.singleGR.available_end_time,
+      // available_start_time: this.props.singleGR.available_start_time,
+      available_end_time: "23:59:59",
+      available_start_time: "00:00:00",
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
@@ -199,8 +201,8 @@ export default class AddNewGRItem extends Component {
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
-        temp.available_start_time = this.state.itemToEdit.available_start_time.toISOString();
-        temp.available_end_time = this.state.itemToEdit.available_end_time.toISOString();
+        temp.available_start_time = this.state.itemToEdit.available_start_time;
+        temp.available_end_time = this.state.itemToEdit.available_end_time;
         console.log("Added document with ID: ", ref.id);
         // this.state.grArr.push(temp);
         newArr.push(temp);
@@ -974,7 +976,7 @@ this will close repeat modal.
               />
             </Form.Group>
 
-            <Form.Group
+            {/* <Form.Group
               value={this.state.itemToEdit.available_start_time}
               controlId="Y"
             >
@@ -990,7 +992,37 @@ this will close repeat modal.
               <br />
               {this.endTimePicker()}
               <div style={{ color: "red" }}> {this.state.showDateError}</div>
-            </Form.Group>
+            </Form.Group> */}
+
+            <label>Available Start Time</label>
+            <div className="input-group mb-3">
+              <input
+                style={{ width: "200px" }}
+                placeholder="HH:MM:SS (ex: 16:20:00) "
+                value={this.state.itemToEdit.available_start_time}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.available_start_time = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
+
+            <label>Available End Time</label>
+            <div className="input-group mb-3">
+              <input
+                style={{ width: "200px" }}
+                placeholder="HH:MM:SS (ex: 16:20:00) "
+                value={this.state.itemToEdit.available_end_time}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.available_end_time = e.target.value;
+                  this.setState({ itemToEdit: temp });
+                }}
+              />
+            </div>
 
             <div>
               <label>Repeating Options</label>
