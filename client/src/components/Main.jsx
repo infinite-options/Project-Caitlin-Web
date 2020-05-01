@@ -148,6 +148,7 @@ export default class MainPage extends React.Component {
             addNewGRModalShow: false,
             routines: routine,
           });
+          console.log(x, "x");
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -246,43 +247,39 @@ export default class MainPage extends React.Component {
     const docRef = db.collection("users");
     docRef
       .get()
-      .then((usersArray)=> {
+      .then((usersArray) => {
         console.log("this is doc", usersArray.docs);
         let namePicObject = {};
-        for(let user of usersArray.docs){
-          
+        for (let user of usersArray.docs) {
           // console.log(user.id);
-          let x= user.data();
+          let x = user.data();
           // console.log(user.data());
           let firstName = x.first_name;
           let lastName = x.last_name;
           let name = firstName + " " + lastName;
           let picURL = "";
           //  console.log(x["about_me"]);
-          if(x["about_me"] != undefined){
+          if (x["about_me"] != undefined) {
             picURL = x["about_me"].pic;
             console.log("we got in");
           }
-         
-         console.log("this is the picURL", picURL);
+
+          console.log("this is the picURL", picURL);
           namePicObject[picURL] = name;
           // console.log(x["about_me"]  );
           // db.collection("users").doc(user.id).get()
           //   .then()
-
         }
         this.setState({
           userNamesAndPics: namePicObject,
           enableNameDropDown: true,
           currentProfilePicUrl: Object.keys(namePicObject)[0],
-          currentProfileName: namePicObject[Object.keys(namePicObject)[0]]
+          currentProfileName: namePicObject[Object.keys(namePicObject)[0]],
         });
         console.log(namePicObject);
-        
       })
       .catch(function (error) {
-            console.log("Error getting document:", error);
-            
+        console.log("Error getting document:", error);
       });
     // const db = firebase.firestore();
     // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
@@ -290,7 +287,7 @@ export default class MainPage extends React.Component {
     //   .get()
     //   .then((doc) => {
     //     if (doc.exists) {
-          
+
     //       var x = doc.data();
     //       var firstName = x.first_name;
     //       var lastName = x.last_name;
@@ -1924,10 +1921,10 @@ export default class MainPage extends React.Component {
     });
   };
 
-  changeUser = (picURL, name) =>{
+  changeUser = (picURL, name) => {
     this.setState({
       currentProfilePicUrl: picURL,
-      currentProfileName: name
+      currentProfileName: name,
     });
   };
 
@@ -1982,62 +1979,70 @@ export default class MainPage extends React.Component {
           }}
         >
           <Row>
-          <Col xs={2}>
-          <Row style={{ margin: "0" }} className="d-flex flex-row">
-            <div
-              style={{
-                float: "right",
-                width: "80px",
-                height: "70px",
-                marginLeft: "50px",
-                marginTop: "5px",
-              }}
-            >
-              {this.state.currentProfilePicUrl === "" ? (
-                <FontAwesomeIcon icon={faImage} size="5x" />
-              ) : (
-                <img
+            <Col xs={2}>
+              <Row style={{ margin: "0" }} className="d-flex flex-row">
+                <div
                   style={{
-                    display: "block",
-                    
-                    // marginLeft: "auto",
-                    // marginRight: "auto",
-                    width: "100%",
+                    float: "right",
+                    width: "80px",
                     height: "70px",
+                    marginLeft: "50px",
+                    marginTop: "5px",
                   }}
-                  src={this.state.currentProfilePicUrl}
-                  alt="Profile"
-                />
-              )}
-            </div>
-            {this.state.enableNameDropDown === false? 
-             <DropdownButton
-                style={{ display:"inline-block" }}
-                title=""
-                disabled>       
-            </DropdownButton>: 
-            // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
-                <DropdownButton
+                >
+                  {this.state.currentProfilePicUrl === "" ? (
+                    <FontAwesomeIcon icon={faImage} size="5x" />
+                  ) : (
+                    <img
+                      style={{
+                        display: "block",
+
+                        // marginLeft: "auto",
+                        // marginRight: "auto",
+                        width: "100%",
+                        height: "70px",
+                      }}
+                      src={this.state.currentProfilePicUrl}
+                      alt="Profile"
+                    />
+                  )}
+                </div>
+                {this.state.enableNameDropDown === false ? (
+                  <DropdownButton
+                    style={{ display: "inline-block" }}
+                    title=""
+                    disabled
+                  ></DropdownButton>
+                ) : (
+                  // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
+                  <DropdownButton
                     // class = "dropdown-toggle.btn.btn-secondary"
                     variant="outline-primary"
                     // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
-                    title= {this.state.currentProfileName || ''}
-                    style = {{marginTop:"20px", marginLeft:"10px"}}
-                >
-                    {
-                        Object.keys(this.state.userNamesAndPics).map((keyName, keyIndex) => (
-                            // use keyName to get current key's name
-                            // and a[keyName] to get its value
-                            <Dropdown.Item key ={keyName} onClick= {e => {this.changeUser(keyName, this.state.userNamesAndPics[keyName])}}>
-                                        {this.state.userNamesAndPics[keyName] || ''}
-                            </Dropdown.Item>
-                        ))
-                    }
-            </DropdownButton>
-            }
+                    title={this.state.currentProfileName || ""}
+                    style={{ marginTop: "20px", marginLeft: "10px" }}
+                  >
+                    {Object.keys(this.state.userNamesAndPics).map(
+                      (keyName, keyIndex) => (
+                        // use keyName to get current key's name
+                        // and a[keyName] to get its value
+                        <Dropdown.Item
+                          key={keyName}
+                          onClick={(e) => {
+                            this.changeUser(
+                              keyName,
+                              this.state.userNamesAndPics[keyName]
+                            );
+                          }}
+                        >
+                          {this.state.userNamesAndPics[keyName] || ""}
+                        </Dropdown.Item>
+                      )
+                    )}
+                  </DropdownButton>
+                )}
 
-
-            {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
+                {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
                 <p style={{ marginTop: "30px", marginLeft: "10px" }}>
                   First Last
@@ -2048,25 +2053,28 @@ export default class MainPage extends React.Component {
                 </p>
               )}
             </div> */}
-          </Row>
-          <Row style={{ marginLeft:"50px" }} className="d-flex flex-row">
-            
-              <Button style = {{marginTop:"10px"}} onClick = {(e) => {this.setState({showNewAccountmodal: true})}}>
-              Create New User
-            </Button>
-            
-            {/* <Col>
+              </Row>
+              <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
+                <Button
+                  style={{ marginTop: "10px" }}
+                  onClick={(e) => {
+                    this.setState({ showNewAccountmodal: true });
+                  }}
+                >
+                  Create New User
+                </Button>
+
+                {/* <Col>
             {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
             </Col> */}
+              </Row>
+            </Col>
+            <Col xs={8} style={{ paddingLeft: "0px" }}>
+              {this.state.showNewAccountmodal && (
+                <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
+              )}
+            </Col>
           </Row>
-          </Col>
-          <Col xs={8} style={{paddingLeft:"0px"}}>
-          {this.state.showNewAccountmodal && (
-            <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
-          )}
-          </Col>
-          </Row>
-          
         </div>
 
         <div

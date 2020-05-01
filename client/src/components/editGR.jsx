@@ -491,6 +491,14 @@ export default class editGR extends Component {
   };
 
   editGRForm = () => {
+    console.log(this.state.itemToEdit.available_end_time, "itemToEdit");
+    let start_time = moment(this.state.itemToEdit.available_start_time).format(
+      "LLL"
+    );
+    let end_time = moment(this.state.itemToEdit.available_end_time).format(
+      "LLL"
+    );
+    console.log(start_time);
     return (
       // <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
       <Row
@@ -547,9 +555,11 @@ export default class editGR extends Component {
           <input
             style={{ width: "200px" }}
             placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={moment(this.state.itemToEdit.available_start_time).format(
-              "LLL"
-            )}
+            value={
+              start_time.includes("date")
+                ? this.state.itemToEdit.available_start_time
+                : start_time
+            }
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
@@ -564,9 +574,11 @@ export default class editGR extends Component {
           <input
             style={{ width: "200px" }}
             placeholder="HH:MM:SS (ex: 16:20:00) "
-            value={moment(this.state.itemToEdit.available_end_time).format(
-              "LLL"
-            )}
+            value={
+              end_time.includes("date")
+                ? this.state.itemToEdit.available_end_time
+                : end_time
+            }
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
