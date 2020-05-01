@@ -84,9 +84,9 @@ export default class AddNewGRItem extends Component {
       .collection("users")
 
       .doc(this.props.theCurrentUserId),
-      // .doc("7R6hAVmDrNutRkG3sVRy"),
+    // .doc("7R6hAVmDrNutRkG3sVRy"),
 
-     // .doc("7R6hAVmDrNutRkG3sVRy"),
+    // .doc("7R6hAVmDrNutRkG3sVRy"),
     showRepeatModal: false,
     repeatOption: false,
     repeatOptionDropDown: "Does not repeat",
@@ -120,7 +120,6 @@ export default class AddNewGRItem extends Component {
       6: "",
     },
     repeatSummary: "",
-
   };
 
   componentDidMount() {
@@ -133,7 +132,10 @@ export default class AddNewGRItem extends Component {
 
   getGRDataFromFB = () => {
     //Grab the goals/routine array from firebase and then store it in state varible grArr
-    console.log("this is the goals and rountins from firebase",this.state.arrPath);
+    console.log(
+      "this is the goals and rountins from firebase",
+      this.state.arrPath
+    );
     this.state.arrPath
       .get()
       .then((doc) => {
@@ -141,9 +143,9 @@ export default class AddNewGRItem extends Component {
           console.log("getGRDataFromFB DATA:");
           // console.log(doc.data());
           var x = doc.data();
-          if(x["goals&routines"] != undefined){
+          if (x["goals&routines"] != undefined) {
             x = x["goals&routines"];
-            console.log("this is the goals and routines",x);
+            console.log("this is the goals and routines", x);
             this.setState({
               grArr: x,
             });
@@ -238,8 +240,7 @@ export default class AddNewGRItem extends Component {
     return rhours + ":" + rminutes + ":" + "00";
   };
 
-  convertToMinutes = () => {
-    let myStr = this.state.itemToEdit.expected_completion_time.split(":");
+  convertToMinutes = (myStr) => {
     let hours = myStr[0];
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
@@ -256,6 +257,7 @@ export default class AddNewGRItem extends Component {
 
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
+    console.log(this.state.itemToEdit.expected_completion_time);
     return (
       <DatePicker
         className="form-control"
@@ -263,11 +265,12 @@ export default class AddNewGRItem extends Component {
         selected={this.state.itemToEdit.available_start_time}
         onChange={(date) => {
           this.setState(
-            {
+            (prevState) => ({
               itemToEdit: {
+                ...prevState.itemToEdit,
                 available_start_time: date,
               },
-            },
+            }),
             () => {
               console.log(
                 "starttimepicker",
@@ -293,14 +296,15 @@ export default class AddNewGRItem extends Component {
         selected={this.state.itemToEdit.available_end_time}
         onChange={(date) => {
           this.setState(
-            {
+            (prevState) => ({
               itemToEdit: {
+                ...prevState.itemToEdit,
                 available_end_time: date,
               },
-            },
+            }),
             () => {
               console.log(
-                "endTimepicker",
+                "endtimepicker",
                 this.state.itemToEdit.available_end_time
               );
             }
@@ -1025,7 +1029,9 @@ this will close repeat modal.
                   <Form.Control
                     type="number"
                     placeholder="30"
-                    value={this.convertToMinutes()}
+                    value={this.convertToMinutes(
+                      this.state.itemToEdit.expected_completion_time
+                    )}
                     style={{ marginTop: ".25rem", paddingRight: "0px" }}
                     onChange={(e) => {
                       e.stopPropagation();
