@@ -168,13 +168,13 @@ export default class MainPage extends React.Component {
                 routines: routine,
               });
             }
-            this.setState({
-              originalGoalsAndRoutineArr: x,
-              goals: goal,
-              addNewGRModalShow: false,
-              routines: routine,
-            });
-            console.log(x, "x");
+            // this.setState({
+            //   originalGoalsAndRoutineArr: x,
+            //   goals: goal,
+            //   addNewGRModalShow: false,
+            //   routines: routine,
+            // });
+            // console.log(x, "x");
           } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
