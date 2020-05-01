@@ -211,12 +211,9 @@ export default class MainPage extends React.Component {
   };
 
   handleRepeatEndDate = (date) => {
-    this.setState(
-      {
-        repeatEndDate_temp: date,
-      },
-      console.log("handleRepeatEndDate", date, this.state.repeatEndDate)
-    );
+    this.setState({
+      repeatEndDate_temp: date,
+    });
   };
 
   handleRepeatInputValue = (eventKey) => {
@@ -2082,7 +2079,6 @@ export default class MainPage extends React.Component {
       !this.state.showRoutineGoalModal &&
       !this.state.showGoalModal &&
       !this.state.showRoutineModal;
-
     return (
       //width and height is fixed now but should be by % percentage later on
       <div
@@ -3187,7 +3183,7 @@ export default class MainPage extends React.Component {
               console.log(error);
             });
         });
-      // this.updateEventsArray();
+      this.updateEventsArray();
       // axios
       //   .delete("/")
       // axios
