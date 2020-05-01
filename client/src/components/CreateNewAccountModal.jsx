@@ -7,14 +7,51 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
       super(props);
     }
     state = {
-
-
+        itemToEdit: {
+            email_id: "",
+            first_name: "",
+            last_name: "",
+            google_auth_token:"",
+            google_refresh_token:""
+          }, 
+        //   saveChangesButtonEnabled: true,
+          UserDocsPath: firebase
+            .firestore()
+            .collection("users")
+            // .doc("7R6hAVmDrNutRkG3sVRy")
+            // .doc(this.props.theCurrentUserId)
     };
+
+    newUserInputSubmit = ()=>{
+        this.state.UserDocsPath
+          .add(this.state.itemToEdit)
+          .then(ref => {
+            if (ref.id === null) {
+              alert("Fail to add new routine / goal item");
+              return;
+            }
+   
+            let temp = this.state.itemToEdit;
+            temp.unique_id = ref.id;
+            console.log("Added document with ID: ", ref.id);
+            this.updateWithId();
+   
+          });
+    }
+
+    updateWithId = ( ) => {
+        this.state.UserDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
+            (doc) => {
+                
+                this.props.newUserAdded(); 
+            }
+        )
+    }
   
   
     render() {
       return (
-        <Modal.Dialog style={{marginLeft:"10px", width:"600px", paddingLeft:"0px"}}>
+        <Modal.Dialog style={{marginLeft:"10px", width:"600px", paddingLeft:"0px", marginTop:"10px"}}>
           {/* <Modal.Header closeButton onHide={this.props.closeModal} >
             <Modal.Title>
               <h5 className="normalfancytext">
@@ -32,6 +69,13 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
                 <input
                   style={{ width: "150px" }}
                   placeholder="Enter Email"
+                  value={this.state.itemToEdit.email_id}
+                  onChange={e => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.email_id = e.target.value;
+                    this.setState({ itemToEdit: temp });
+                  }}
                   
                 />
               </div>
@@ -43,6 +87,13 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
                 <input
                   style={{ width: "150px" }}
                   placeholder="Enter Name"
+                  value={this.state.itemToEdit.first_name}
+                  onChange={e => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.first_name = e.target.value;
+                    this.setState({ itemToEdit: temp });
+                  }}
                   
                 />
               </div>
@@ -54,6 +105,13 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
                 <input
                   style={{ width: "150px" }}
                   placeholder="Enter Name "
+                  value={this.state.itemToEdit.last_name}
+                  onChange={e => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.last_name = e.target.value;
+                    this.setState({ itemToEdit: temp });
+                  }}
                   
                 />
               </div> 
@@ -83,7 +141,7 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
              </Button>
              </Col>
              <Col xs={4}>
-             <Button variant="info" style = {{marginRight:"30px"}} type="submit" >
+             <Button variant="info" style = {{marginRight:"30px"}} type="submit" onClick={(e) => {e.stopPropagation(); this.newUserInputSubmit()}}>
                 Save changes
               </Button>
               </Col>
