@@ -240,7 +240,8 @@ export default class AddNewGRItem extends Component {
     return rhours + ":" + rminutes + ":" + "00";
   };
 
-  convertToMinutes = (myStr) => {
+  convertToMinutes = () => {
+    let myStr = this.state.itemToEdit.expected_completion_time.split(":");
     let hours = myStr[0];
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
@@ -1029,9 +1030,7 @@ this will close repeat modal.
                   <Form.Control
                     type="number"
                     placeholder="30"
-                    value={this.convertToMinutes(
-                      this.state.itemToEdit.expected_completion_time
-                    )}
+                    value={this.convertToMinutes()}
                     style={{ marginTop: ".25rem", paddingRight: "0px" }}
                     onChange={(e) => {
                       e.stopPropagation();

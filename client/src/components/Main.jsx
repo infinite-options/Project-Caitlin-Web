@@ -2082,7 +2082,7 @@ export default class MainPage extends React.Component {
       !this.state.showRoutineGoalModal &&
       !this.state.showGoalModal &&
       !this.state.showRoutineModal;
-
+    console.log("mainGR", this.state.routines);
     return (
       //width and height is fixed now but should be by % percentage later on
       <div
@@ -3187,7 +3187,7 @@ export default class MainPage extends React.Component {
               console.log(error);
             });
         });
-      // this.updateEventsArray();
+      this.updateEventsArray();
       // axios
       //   .delete("/")
       // axios
