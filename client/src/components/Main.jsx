@@ -3171,24 +3171,21 @@ export default class MainPage extends React.Component {
         })
         .then((res) => {
           console.log(res.data, "deleterecurring");
-          res.data.map((event) => {
-            console.log(event.id, "event.id");
-            axios
-              .delete("/deleteRecurringEvent", {
-                params: {
-                  eventId: event.id,
-                },
-              })
-              .then((res) => {
-                this.setState({
-                  dayEventSelected: false,
-                  showDeleteRecurringModal: false,
-                });
-              })
-              .catch(function (error) {
-                console.log(error);
+          axios
+            .delete("/deleteRecurringEvent", {
+              params: {
+                array: res.data,
+              },
+            })
+            .then((res) => {
+              this.setState({
+                dayEventSelected: false,
+                showDeleteRecurringModal: false,
               });
-          });
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         });
       // this.updateEventsArray();
       // axios

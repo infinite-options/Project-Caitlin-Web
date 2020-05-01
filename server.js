@@ -33,12 +33,12 @@ app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse c
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
 //start of google calendar API stuff
-const fs = require("fs"); 
+const fs = require("fs");
 const readline = require("readline");
 const { google } = require("googleapis");
 var calenAuth = null,
   calendar = null;
- var calendarID = "iodevcalendar@gmail.com"; //Change here for some else's calendar
+var calendarID = "iodevcalendar@gmail.com"; //Change here for some else's calendar
 // var calendarID = "pmarathay@gmail.com"
 // var calendarID = "jeremyhmanalo@gmail.com"
 //Required code for any of the above to work
@@ -293,20 +293,19 @@ app.post("/deleteEvent", function (req, result) {
 });
 
 app.delete("/deleteRecurringEvent", (req, result) => {
-  console.log(req.query.eventId, "deleteRecurringEvent");
-  calendar.events.delete(
-    {
-      calendarId: calendarID,
-      eventId: req.query.eventId,
-    },
-    (err, res) => {
-      //CallBack
-      if (err) {
-        return result.send("The delete request returned an error: " + err);
-      }
-      result.send("delete");
-    }
-  );
+  console.log(req.query.array[0].id, "deleteRecurringEvent");
+  try {
+    req.query.array.map((event) => {
+      console.log(event.id, "event.id");
+      // calendar.events.delete({
+      //   calendarId: calendarID,
+      //   eventId: event.id,
+      // });
+    });
+    result.send("delete");
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 /*
