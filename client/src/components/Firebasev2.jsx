@@ -49,7 +49,8 @@ export default class FirebaseV2 extends React.Component {
     firebaseRootPath: firebase
       .firestore()
       .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy"),
+      .doc(this.props.theCurrentUserID),
+    // .doc("7R6hAVmDrNutRkG3sVRy"),
     is_sublist_available: true,
     //This single GR item is passed to AddNewATItem to help processed the new item
     singleGR: {
@@ -181,19 +182,21 @@ export default class FirebaseV2 extends React.Component {
   //modal for the action/task
   getATList = (id, title, persist) => {
     const db = firebase.firestore();
-    // console.log("getATList function with id : " + id);
+    console.log("getATList function with id : " + id);
     let docRef = db
       .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy")
+      .doc(this.props.theCurrentUserID)
+      // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
+    console.log("this si the correct path", docRef);
     docRef
       .get()
       .then((doc) => {
         if (doc.exists) {
-          // console.log(doc.data());
+          console.log(doc.data());
           var x = doc.data()["actions&tasks"];
-          // console.log(x);
+          console.log(x);
           if (x == null) {
             // console.log("No actions&tasks array!");
             let singleGR = {
@@ -685,11 +688,16 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   ATonClickEvent = (title, id) => {
-    let stepsInstructionArrayPath = this.state.firebaseRootPath
+    // let stepsInstructionArrayPath = this.state.firebaseRootPath
+    let stepsInstructionArrayPath = firebase
+      .firestore()
+      .collection("users")
+      .doc(this.props.theCurrentUserID)
       .collection("goals&routines")
       .doc(this.state.singleGR.id)
       .collection("actions&tasks")
       .doc(id);
+    console.log(this.state.singleGR.id);
     console.log(id, title);
     let temp = {
       show: true,
@@ -699,12 +707,14 @@ export default class FirebaseV2 extends React.Component {
       arr: [],
       fbPath: stepsInstructionArrayPath,
     };
+    console.log("this is the path", stepsInstructionArrayPath);
     stepsInstructionArrayPath
       .get()
       .then((doc) => {
+        console.log("ths is the doc that doesn exist", doc);
         if (doc.exists) {
-          // console.log("Grabbing steps/instructions data:");
-          // console.log(doc.data());
+          console.log("Grabbing steps/instructions data:");
+          console.log(doc.data());
           var x = doc.data();
           x = x["instructions&steps"];
           if (x == null) {
@@ -823,7 +833,11 @@ export default class FirebaseV2 extends React.Component {
                       <ShowATList
                         Index={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr}
-                        Path={this.state.firebaseRootPath}
+                        // Path={this.state.firebaseRootPath}
+                        Path={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                         // ListCameBackFalse= {this.ListFalse}
                       />
                     </Row>
@@ -831,7 +845,11 @@ export default class FirebaseV2 extends React.Component {
                       <DeleteGR
                         deleteIndex={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        Path={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
 
@@ -839,7 +857,15 @@ export default class FirebaseV2 extends React.Component {
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        FBPath={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
+                        FBPath={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                         is_sublist_available={this.is_sublist_available}
                       />
@@ -879,7 +905,11 @@ export default class FirebaseV2 extends React.Component {
                     <ShowATList
                       Index={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr}
-                      Path={this.state.firebaseRootPath}
+                      // Path={this.state.firebaseRootPath}
+                      Path={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                     />
                   </Row>
                   <Row
@@ -889,14 +919,22 @@ export default class FirebaseV2 extends React.Component {
                     <DeleteGR
                       deleteIndex={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      Path={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
                     <EditGR
                       marginLeftV="-130px"
                       i={this.findIndexByID(tempID)} //index to edit
                       ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                     />
                   </Row>
@@ -1003,21 +1041,33 @@ export default class FirebaseV2 extends React.Component {
                       <ShowATList
                         Index={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr}
-                        Path={this.state.firebaseRootPath}
+                        // Path={this.state.firebaseRootPath}
+                        Path={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                       />
                     </Row>
                     <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                       <DeleteGR
                         deleteIndex={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        Path={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                        FBPath={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                       />
                     </Row>
@@ -1056,7 +1106,11 @@ export default class FirebaseV2 extends React.Component {
                     <ShowATList
                       Index={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr}
-                      Path={this.state.firebaseRootPath}
+                      // Path={this.state.firebaseRootPath}
+                      Path={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                     />
                   </Row>
                   <Row
@@ -1066,14 +1120,22 @@ export default class FirebaseV2 extends React.Component {
                     <DeleteGR
                       deleteIndex={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      Path={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
                     <EditGR
                       marginLeftV="-130px"
                       i={this.findIndexByID(tempID)} //index to edit
                       ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                     />
                   </Row>
@@ -1574,6 +1636,8 @@ shows entire list of goals and routines
       newEnd.setHours(23, 59, 59, 59);
     }
 
+    console.log(newStart, newEnd, "newstart");
+
     this.setState({
       singleGR: {
         id: "",
@@ -1605,6 +1669,7 @@ shows entire list of goals and routines
         isRoutine={this.state.isRoutine}
         width={this.state.modalWidth}
         todayDateObject={this.props.todayDateObject}
+        theCurrentUserId={this.props.theCurrentUserID}
         singleGR={this.state.singleGR}
       />
     );

@@ -33,12 +33,14 @@ app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse c
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
 //start of google calendar API stuff
-const fs = require("fs");
+const fs = require("fs"); 
 const readline = require("readline");
 const { google } = require("googleapis");
 var calenAuth = null,
   calendar = null;
-var calendarID = "iodevcalendar@gmail.com"; //Change here for some else's calendar
+ var calendarID = "iodevcalendar@gmail.com"; //Change here for some else's calendar
+// var calendarID = "pmarathay@gmail.com"
+// var calendarID = "jeremyhmanalo@gmail.com"
 //Required code for any of the above to work
 // If modifying these scopes, delete token.json.
 const SCOPES = ["https://www.googleapis.com/auth/calendar"];
