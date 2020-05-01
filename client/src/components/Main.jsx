@@ -2182,13 +2182,13 @@ export default class MainPage extends React.Component {
             </Col> */}
               </Row>
             </Col>
-            <Col xs={8} style={{ paddingLeft: "0px" }}>
+            {/* <Col xs={8} style={{ paddingLeft: "0px" }}>
               {this.state.showNewAccountmodal && (
                 <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
               )}
             </Col>
-          </Row>
-          </Col>
+          </Row> */}
+          {/* </Col> */}
           <Col xs={8} style={{paddingLeft:"0px"}}>
           {this.state.showNewAccountmodal && (
             <CreateNewAccountModal closeModal={this.hideNewAccountForm} newUserAdded ={this.theNewUserAdded}/>
@@ -2198,6 +2198,7 @@ export default class MainPage extends React.Component {
           
 
         </div>
+
 
         <div
           style={{
