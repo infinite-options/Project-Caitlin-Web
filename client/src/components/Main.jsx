@@ -98,17 +98,21 @@ export default class MainPage extends React.Component {
       },
       repeatSummary: "",
       recurrenceRule: "",
-      currentProfilePicUrl: "",
-      currentProfileName: "",
-      profileName: "",
-      userNamesAndPics: {},
-      enableNameDropDown: false,
-      showNewAccountmodal: false,
       eventNotifications: {},
       showDeleteRecurringModal: false,
       deleteRecurringOption: "This event",
       showEditRecurringModal: false,
       editRecurringOption: "",
+
+      currentUserPicUrl: "",
+      currentUserName: "",
+      currentUserId: "",
+      // profileName: "",
+      userIdAndNames: {},
+      userPicsArray:[],
+      enableNameDropDown: false,
+      showNewAccountmodal: false,
+
     };
   }
 
@@ -122,32 +126,50 @@ export default class MainPage extends React.Component {
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
     // console.log("FirebaseV2 component did mount");
-    const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+     console.log("this is the current userid", this.state.currentUserId);
+    if(this.state.currentUserId != ""){
+      //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    const docRef = db.collection("users").doc(this.state.currentUserId);
+    console.log("this is suppose tto be the path", docRef)
     docRef
       .get()
       .then((doc) => {
         if (doc.exists) {
           // console.log(doc.data());
           var x = doc.data();
+          console.log("this is the data",x);
           // console.log(x["goals&routines"]);
-          x = x["goals&routines"];
+          // x = x["goals&routines"];
           let routine = [];
-          let goal = [];
-          for (let i = 0; i < x.length; ++i) {
-            if (x[i]["is_persistent"]) {
-              // console.log("routine " + x[i]["title"]);
-              routine.push(x[i]);
-            } else if (!x[i]["is_persistent"]) {
-              // console.log("not routine " + x[i]["title"]);
-              goal.push(x[i]);
+            let goal = [];
+          if(x["goals&routines"] != undefined){
+            x = x["goals&routines"]
+             console.log("this is the goals and routines",x);
+            
+            for (let i = 0; i < x.length; ++i) {
+              if (x[i]["is_persistent"]) {
+                // console.log("routine " + x[i]["title"]);
+                routine.push(x[i]);
+              } else if (!x[i]["is_persistent"]) {
+                // console.log("not routine " + x[i]["title"]);
+                goal.push(x[i]);
+              }
             }
+            this.setState({
+              originalGoalsAndRoutineArr: x,
+              goals: goal,
+              addNewGRModalShow: false,
+              routines: routine,
+              
+            });
+          }else{
+            this.setState({
+              originalGoalsAndRoutineArr: [],
+              goals: goal,
+              addNewGRModalShow: false,
+              routines: routine,
+            });
           }
-          this.setState({
-            originalGoalsAndRoutineArr: x,
-            goals: goal,
-            addNewGRModalShow: false,
-            routines: routine,
-          });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -156,6 +178,8 @@ export default class MainPage extends React.Component {
       .catch(function (error) {
         console.log("Error getting document:", error);
       });
+    }
+    
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -207,7 +231,7 @@ export default class MainPage extends React.Component {
 
   componentDidMount() {
     this.updateEventsArray();
-    this.updateProfilePicFromFirebase();
+    this.updateProfileFromFirebase();
     // this.getEventNotifications();
   }
 
@@ -241,41 +265,77 @@ export default class MainPage extends React.Component {
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
-  updateProfilePicFromFirebase = () => {
+  updateProfileFromFirebase = () => {
     const db = firebase.firestore();
     const docRef = db.collection("users");
     docRef
       .get()
-      .then((usersArray) => {
-        console.log("this is doc", usersArray.docs);
-        let namePicObject = {};
-        for (let user of usersArray.docs) {
-          // console.log(user.id);
-          let x = user.data();
+      .then((usersArray)=> {
+        // console.log("this is doc", usersArray.docs);
+        let nameIdObject = {};
+        let profilePicURLArray = [];
+        let theCurrentUserName = "";
+        let theCurrentUserPic = "";
+        let theCurrentUserId = "";
+        for(let user of usersArray.docs){
+          // console.log("this is x before", user.id);
+          let id = user.id;
+          let x= user.data();
+          // console.log("this is the user should be 3 times", x);
+
           // console.log(user.data());
-          let firstName = x.first_name;
-          let lastName = x.last_name;
+          let firstName = x.first_name || '';
+          let lastName = x.last_name || '';
           let name = firstName + " " + lastName;
           let picURL = "";
+          // console.log("this is x", x);
           //  console.log(x["about_me"]);
           if (x["about_me"] != undefined) {
             picURL = x["about_me"].pic;
-            console.log("we got in");
+            // console.log("we got in");
           }
 
-          console.log("this is the picURL", picURL);
-          namePicObject[picURL] = name;
+          profilePicURLArray.push(picURL);
+         //I know what went wrong need to change picURL with the id bc can have multiple picurl with same thing.
+         //so have to change structure of whole thing. 
+          // console.log("this is the picURL", picURL);
+          nameIdObject[id] = name;
+          // namePicObject[picURL] = name;
+          // console.log("this si the object should happen 3 times",namePicObject);
           // console.log(x["about_me"]  );
           // db.collection("users").doc(user.id).get()
           //   .then()
+          
+          // if(this.state.currentUserId=== ""){
+            theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
+            theCurrentUserPic =  profilePicURLArray[0];
+            theCurrentUserId = Object.keys(nameIdObject)[0];
+          // }else{
+          //   theCurrentUserName = this.state.userIdAndNames[this.state.currentUserId];
+          //   theCurrentUserPic = this.state.currentUserPicUrl;
+          //   theCurrentUserId = this.state.currentUserId;
+          // }
+
+
         }
+        // console.log("this is the object for name and pic after",namePicObject);
         this.setState({
-          userNamesAndPics: namePicObject,
+          userIdAndNames: nameIdObject,
           enableNameDropDown: true,
-          currentProfilePicUrl: Object.keys(namePicObject)[0],
-          currentProfileName: namePicObject[Object.keys(namePicObject)[0]],
+          // currentProfilePicUrl: Object.keys(nameIdObject)[0],
+          userPicsArray: profilePicURLArray,
+          currentUserPicUrl: theCurrentUserPic,
+          currentUserId: theCurrentUserId,
+          currentUserName: theCurrentUserName
+          // currentUserPicUrl: profilePicURLArray[0],
+          // currentUserId: Object.keys(nameIdObject)[0],
+          // currentUserName: nameIdObject[Object.keys(nameIdObject)[0]]
+        }, ()=> {
+          this.grabFireBaseRoutinesGoalsData();
         });
-        console.log(namePicObject);
+        
+        
+
       })
       .catch(function (error) {
         console.log("Error getting document:", error);
@@ -1952,23 +2012,39 @@ export default class MainPage extends React.Component {
     });
   };
 
+  theNewUserAdded = () =>{
+    this.setState({
+      showNewAccountmodal: false,
+    }, ()=>{this.updateProfileFromFirebase()});
+  };
+
   hideAboutForm = (e) => {
     this.setState({
       showAboutModal: false,
     });
   };
 
-  updatePic = (url, name) => {
+  updatePic = (name, url) => {
+    
+    // this.updateProfileFromFirebase();
+    this.state.userIdAndNames[this.state.currentUserId] = name;
     this.setState({
-      currentProfilePicUrl: url,
-      currentProfileName: name,
+      currentUserPicUrl: url,
+      currentUserName: name,
     });
   };
 
-  changeUser = (picURL, name) => {
+
+  changeUser = (id,index, name) =>{
+    
     this.setState({
-      currentProfilePicUrl: picURL,
-      currentProfileName: name,
+      currentUserPicUrl: this.state.userPicsArray[index],
+      currentUserName: name,
+      currentUserId: id,
+      showAboutModal:false
+    }, ()=>{
+      this.grabFireBaseRoutinesGoalsData();
+
     });
   };
 
@@ -1980,6 +2056,8 @@ export default class MainPage extends React.Component {
         <AboutModal
           CameBackFalse={this.hideAboutForm}
           updateProfilePic={this.updatePic}
+          // {console.log("this is the id is it undefined at first", )}
+           theCurrentUserId={this.state.currentUserId}
         />
       );
     }
@@ -2023,68 +2101,65 @@ export default class MainPage extends React.Component {
           }}
         >
           <Row>
-            <Col xs={2}>
-              <Row style={{ margin: "0" }} className="d-flex flex-row">
-                <div
-                  style={{
-                    float: "right",
-                    width: "80px",
-                    height: "70px",
-                    marginLeft: "50px",
-                    marginTop: "5px",
-                  }}
-                >
-                  {this.state.currentProfilePicUrl === "" ? (
-                    <FontAwesomeIcon icon={faImage} size="5x" />
-                  ) : (
-                    <img
-                      style={{
-                        display: "block",
 
-                        // marginLeft: "auto",
-                        // marginRight: "auto",
-                        width: "100%",
-                        height: "70px",
-                      }}
-                      src={this.state.currentProfilePicUrl}
-                      alt="Profile"
-                    />
-                  )}
-                </div>
-                {this.state.enableNameDropDown === false ? (
-                  <DropdownButton
-                    style={{ display: "inline-block" }}
-                    title=""
-                    disabled
-                  ></DropdownButton>
-                ) : (
-                  // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
-                  <DropdownButton
+          <Col xs={3}>
+          <Row style={{ margin: "0" }} className="d-flex flex-row">
+            <div
+              style={{
+                float: "right",
+                width: "80px",
+                height: "70px",
+                marginLeft: "50px",
+                marginTop: "5px",
+              }}
+            >
+              {this.state.currentUserPicUrl === "" ? (
+                <FontAwesomeIcon icon={faImage} size="5x" style = {{marginLeft:"10px"}} />
+              ) : (
+                <img
+                  style={{
+                    display: "block",
+                    
+                    // marginLeft: "auto",
+                    // marginRight: "auto",
+                    width: "100%",
+                    height: "70px"
+                  }}
+                  src={this.state.currentUserPicUrl}
+                  alt="Profile"
+                />
+              )}
+            </div>
+            {this.state.enableNameDropDown === false? 
+             <DropdownButton
+                style={{ display:"inline-block" }}
+                title=""
+                disabled>       
+            </DropdownButton>: 
+            // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
+                <DropdownButton
                     // class = "dropdown-toggle.btn.btn-secondary"
                     variant="outline-primary"
                     // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
-                    title={this.state.currentProfileName || ""}
-                    style={{ marginTop: "20px", marginLeft: "10px" }}
-                  >
-                    {Object.keys(this.state.userNamesAndPics).map(
-                      (keyName, keyIndex) => (
-                        // use keyName to get current key's name
-                        // and a[keyName] to get its value
-                        <Dropdown.Item
-                          key={keyName}
-                          onClick={(e) => {
-                            this.changeUser(
-                              keyName,
-                              this.state.userNamesAndPics[keyName]
-                            );
-                          }}
-                        >
-                          {this.state.userNamesAndPics[keyName] || ""}
-                        </Dropdown.Item>
-                      )
-                    )}
-                  </DropdownButton>
-                )}
+                    title= {this.state.currentUserName || ''}
+                    style = {{marginTop:"20px", marginLeft:"10px"}}
+                >
+                    {
+                        Object.keys(this.state.userIdAndNames).map((keyName, keyIndex) => (
+                            // use keyName to get current key's name
+                            // and a[keyName] to get its value
+                            //keyName is the user id
+                            //keyIndex will help me find the user pic
+                            //this.state.userIdAndName[keyName] gives me the name of current user
+                            <Dropdown.Item key ={keyName} onClick= {e => {this.changeUser(keyName,keyIndex, this.state.userIdAndNames[keyName])}}>
+                                        {this.state.userIdAndNames[keyName] || ''}
+                            </Dropdown.Item>
+                        ))
+                    }
+            </DropdownButton>
+            }
+
+
 
                 {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
@@ -2113,13 +2188,23 @@ export default class MainPage extends React.Component {
             </Col> */}
               </Row>
             </Col>
-            <Col xs={8} style={{ paddingLeft: "0px" }}>
+            {/* <Col xs={8} style={{ paddingLeft: "0px" }}>
               {this.state.showNewAccountmodal && (
                 <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
               )}
             </Col>
+          </Row> */}
+          {/* </Col> */}
+          <Col xs={8} style={{paddingLeft:"0px"}}>
+          {this.state.showNewAccountmodal && (
+            <CreateNewAccountModal closeModal={this.hideNewAccountForm} newUserAdded ={this.theNewUserAdded}/>
+          )}
+          </Col>
           </Row>
+          
+
         </div>
+
 
         <div
           style={{
@@ -2153,7 +2238,9 @@ export default class MainPage extends React.Component {
             }}
           >
             {/* the modal for routine/goal is called Firebasev2 currently */}
-            <Firebasev2
+            {console.log("this is the originalGoals and rountines Arr")}
+            { (this.state.currentUserId != "") &&<Firebasev2
+              theCurrentUserID= {this.state.currentUserId}
               grabFireBaseRoutinesGoalsData={this.grabFireBaseRoutinesGoalsData}
               originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
               goals={this.state.goals}
@@ -2173,9 +2260,11 @@ export default class MainPage extends React.Component {
               goals={this.state.goals}
               routines={this.state.routines}
               todayDateObject={this.state.todayDateObject}
+
               calendarView={this.state.calendarView}
               dateContext={this.state.dateContext}
-            />
+            />}
+
             <Col
               sm="auto"
               md="auto"
@@ -2252,10 +2341,12 @@ export default class MainPage extends React.Component {
           </Row>
         </Container>
         <Row>
+        {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
           <DayEvents
             dateContext={this.state.dateContext}
             eventClickDayView={this.handleDayEventClick}
             handleDateClick={this.handleDateClickOnDayView}
+            
             dayEvents={this.state.dayEvents}
             getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
@@ -3760,6 +3851,7 @@ when there is a change in the event form
         },
       })
       .then((response) => {
+        console.log("what are the events",response.data );
         var events = response.data;
         this.setState(
           {

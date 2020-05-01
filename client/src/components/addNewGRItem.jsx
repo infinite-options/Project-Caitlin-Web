@@ -76,12 +76,17 @@ export default class AddNewGRItem extends Component {
     routineDocsPath: firebase
       .firestore()
       .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy")
+      // .doc("7R6hAVmDrNutRkG3sVRy")
+      .doc(this.props.theCurrentUserId)
       .collection("goals&routines"),
     arrPath: firebase
       .firestore()
       .collection("users")
-      .doc("7R6hAVmDrNutRkG3sVRy"),
+
+      .doc(this.props.theCurrentUserId),
+      // .doc("7R6hAVmDrNutRkG3sVRy"),
+
+     // .doc("7R6hAVmDrNutRkG3sVRy"),
     showRepeatModal: false,
     repeatOption: false,
     repeatOptionDropDown: "Does not repeat",
@@ -115,6 +120,7 @@ export default class AddNewGRItem extends Component {
       6: "",
     },
     repeatSummary: "",
+
   };
 
   componentDidMount() {
@@ -127,7 +133,7 @@ export default class AddNewGRItem extends Component {
 
   getGRDataFromFB = () => {
     //Grab the goals/routine array from firebase and then store it in state varible grArr
-    console.log(this.state.arrPath);
+    console.log("this is the goals and rountins from firebase",this.state.arrPath);
     this.state.arrPath
       .get()
       .then((doc) => {
@@ -135,11 +141,18 @@ export default class AddNewGRItem extends Component {
           console.log("getGRDataFromFB DATA:");
           // console.log(doc.data());
           var x = doc.data();
-          x = x["goals&routines"];
-          console.log(x);
-          this.setState({
-            grArr: x,
-          });
+          if(x["goals&routines"] != undefined){
+            x = x["goals&routines"];
+            console.log("this is the goals and routines",x);
+            this.setState({
+              grArr: x,
+            });
+          }
+          // x = x["goals&routines"];
+          // console.log(x);
+          // this.setState({
+          //   grArr: x,
+          // });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document! 2");
