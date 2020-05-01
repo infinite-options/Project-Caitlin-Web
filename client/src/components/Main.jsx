@@ -160,6 +160,7 @@ export default class MainPage extends React.Component {
               goals: goal,
               addNewGRModalShow: false,
               routines: routine,
+              
             });
           }else{
             this.setState({
