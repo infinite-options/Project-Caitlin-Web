@@ -59,8 +59,8 @@ export default class FirebaseV2 extends React.Component {
       type: "None",
       title: "GR Name",
       photo: "",
-      available_end_time: "", //TODO get these used
-      available_start_time: "", //TODO get these used
+      available_end_time: new Date(), //TODO get these used
+      available_start_time: new Date(), //TODO get these used
       id: null,
       arr: [],
       fbPath: null,
@@ -72,8 +72,8 @@ export default class FirebaseV2 extends React.Component {
       show: false, // Show the model
       type: "None", // Action or Task
       title: "AT Name", //Title of action task ,
-      available_end_time: "", //TODO get these used
-      available_start_time: "", //TODO get these used
+      available_end_time: new Date(), //TODO get these used
+      available_start_time: new Date(), //TODO get these used
       photo: "",
       id: null, //id of Action Task
       arr: [], //array of instruction/steps formatted to display as a list
@@ -1612,7 +1612,7 @@ shows entire list of goals and routines
             type="button"
             className="btn btn-info btn-md"
             onClick={() => {
-              this.setState({ addNewGRModalShow: true, isRoutine: true });
+              this.addRoutineOnClick();
             }}
           >
             Add Routine
@@ -1620,6 +1620,36 @@ shows entire list of goals and routines
         </Modal.Footer>
       </Modal.Dialog>
     );
+  };
+
+  addRoutineOnClick = () => {
+    let newStart, newEnd;
+    if (this.props.calendarView === "Month") {
+      newStart = new Date();
+      newStart.setHours(0, 0, 0, 0);
+      newEnd = new Date();
+      newEnd.setHours(23, 59, 59, 59);
+    } else if (this.props.calendarView === "Day") {
+      newStart = new Date(this.props.dateContext.toDate());
+      newStart.setHours(0, 0, 0, 0);
+      newEnd = new Date(this.props.dateContext.toDate());
+      newEnd.setHours(23, 59, 59, 59);
+    }
+
+    this.setState({
+      singleGR: {
+        id: "",
+        available_start_time: newStart,
+        available_end_time: newEnd,
+        type: "None",
+        title: "GR Name",
+        photo: "",
+        arr: [],
+        fbPath: null,
+      },
+      addNewGRModalShow: true,
+      isRoutine: true,
+    });
   };
 
   /**
@@ -1638,6 +1668,7 @@ shows entire list of goals and routines
         width={this.state.modalWidth}
         todayDateObject={this.props.todayDateObject}
         theCurrentUserId = {this.props.theCurrentUserID}
+
       />
     );
   };

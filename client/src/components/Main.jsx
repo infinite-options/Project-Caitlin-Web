@@ -282,6 +282,7 @@ export default class MainPage extends React.Component {
           let id = user.id;
           let x= user.data();
           // console.log("this is the user should be 3 times", x);
+
           // console.log(user.data());
           let firstName = x.first_name || '';
           let lastName = x.last_name || '';
@@ -289,10 +290,11 @@ export default class MainPage extends React.Component {
           let picURL = "";
           // console.log("this is x", x);
           //  console.log(x["about_me"]);
-          if(x["about_me"] != undefined){
+          if (x["about_me"] != undefined) {
             picURL = x["about_me"].pic;
             // console.log("we got in");
           }
+
           profilePicURLArray.push(picURL);
          //I know what went wrong need to change picURL with the id bc can have multiple picurl with same thing.
          //so have to change structure of whole thing. 
@@ -314,6 +316,7 @@ export default class MainPage extends React.Component {
           //   theCurrentUserId = this.state.currentUserId;
           // }
 
+
         }
         // console.log("this is the object for name and pic after",namePicObject);
         this.setState({
@@ -332,10 +335,10 @@ export default class MainPage extends React.Component {
         });
         
         
+
       })
       .catch(function (error) {
-            console.log("Error getting document:", error);
-            
+        console.log("Error getting document:", error);
       });
     // const db = firebase.firestore();
     // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
@@ -343,7 +346,7 @@ export default class MainPage extends React.Component {
     //   .get()
     //   .then((doc) => {
     //     if (doc.exists) {
-          
+
     //       var x = doc.data();
     //       var firstName = x.first_name;
     //       var lastName = x.last_name;
@@ -1269,11 +1272,13 @@ export default class MainPage extends React.Component {
       description: updatedEvent.description,
       start: updatedEvent.start,
       end: updatedEvent.end,
-      recurrence: updatedEvent.recurrence ? updatedEvent.recurrence : false,
+      recurrence: updatedEvent.recurringEventId
+        ? updatedEvent.recurrence
+        : false,
       reminders: updatedEvent.reminders,
     };
 
-    console.log(updatedEvent, "updatedEvent");
+    updatedEvent.recurringEventId ? console.log("true") : console.log("false");
 
     let ID = "";
     if (this.state.editRecurringOption === "All events") {
@@ -1308,23 +1313,47 @@ export default class MainPage extends React.Component {
         "YYYYMMDD"
       )}`;
 
-      let untilSubString = "";
-      let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
-      if (untilIndex !== -1) {
-        untilSubString = this.state.recurrenceRule.substring(untilIndex);
+      let countSubString = "";
+      let countIndex = this.state.recurrenceRule.indexOf("COUNT");
+      if (countIndex !== -1) {
+        countSubString = this.state.recurrenceRule.substring(countIndex);
       }
-      if (untilSubString.includes(";")) {
-        let endUntilIndex = untilSubString.indexOf(";");
-        untilSubString = untilSubString.substring(6, endUntilIndex);
-      } else if (untilSubString) {
-        untilSubString = untilSubString = untilSubString.substring(6);
+      if (countSubString.includes(";")) {
+        let endCountIndex = countSubString.indexOf(";");
+        countSubString = countSubString.substring(6, endCountIndex);
+      } else if (countSubString) {
+        countSubString = countSubString.substring(6);
       }
 
-      newRecurrenceRule = newRecurrenceRule.replace(
-        untilSubString,
-        newUntilSubString
-      );
-      console.log(newEvent.summary, this.state.newEvent.summary);
+      if (newRecurrenceRule.includes("UNTIL")) {
+        let untilSubString = "";
+        let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
+        if (untilIndex !== -1) {
+          untilSubString = this.state.recurrenceRule.substring(untilIndex);
+        }
+        if (untilSubString.includes(";")) {
+          let endUntilIndex = untilSubString.indexOf(";");
+          untilSubString = untilSubString.substring(6, endUntilIndex);
+        } else if (untilSubString) {
+          untilSubString = untilSubString = untilSubString.substring(6);
+        }
+
+        console.log(untilSubString, newUntilSubString, "untilSubString");
+
+        newRecurrenceRule = newRecurrenceRule.replace(
+          untilSubString,
+          newUntilSubString
+        );
+      } else if (newRecurrenceRule.includes("COUNT")) {
+        newRecurrenceRule = newRecurrenceRule.replace(
+          `COUNT=${countSubString}`,
+          `UNTIL=${newUntilSubString}`
+        );
+      } else {
+        newRecurrenceRule = newRecurrenceRule.concat(
+          `;UNTIL=${newUntilSubString}`
+        );
+      }
       await axios
         .get("/getRecurringEventInstances", {
           params: {
@@ -1336,6 +1365,19 @@ export default class MainPage extends React.Component {
           newEvent.end = res.data[0].end;
           newEvent.recurrence = [newRecurrenceRule];
           newEvent.summary = res.data[0].summary;
+          let start = moment(newEvent.start.dateTime);
+          let end = moment(this.state.newEventStart0);
+          let diff = countSubString - moment.duration(end.diff(start)).asDays();
+          console.log(diff, "diff");
+          if (
+            event.recurrence[0].includes("COUNT") &&
+            !this.state.repeatOption
+          ) {
+            event.recurrence[0] = event.recurrence[0].replace(
+              countSubString,
+              diff
+            );
+          }
           axios
             .post("/createNewEvent", {
               newEvent: newEvent,
@@ -1986,6 +2028,7 @@ export default class MainPage extends React.Component {
     });
   };
 
+
   changeUser = (id,index, name) =>{
     
     this.setState({
@@ -1995,6 +2038,7 @@ export default class MainPage extends React.Component {
       showAboutModal:false
     }, ()=>{
       this.grabFireBaseRoutinesGoalsData();
+
     });
   };
 
@@ -2051,6 +2095,7 @@ export default class MainPage extends React.Component {
           }}
         >
           <Row>
+
           <Col xs={3}>
           <Row style={{ margin: "0" }} className="d-flex flex-row">
             <div
@@ -2109,7 +2154,8 @@ export default class MainPage extends React.Component {
             }
 
 
-            {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
+
+                {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
               {this.state.profileName === "" ? (
                 <p style={{ marginTop: "30px", marginLeft: "10px" }}>
                   First Last
@@ -2120,16 +2166,27 @@ export default class MainPage extends React.Component {
                 </p>
               )}
             </div> */}
-          </Row>
-          <Row style={{ marginLeft:"50px" }} className="d-flex flex-row">
-            
-              <Button style = {{marginTop:"10px"}} onClick = {(e) => {this.setState({showNewAccountmodal: true})}}>
-              Create New User
-            </Button>
-            
-            {/* <Col>
+              </Row>
+              <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
+                <Button
+                  style={{ marginTop: "10px" }}
+                  onClick={(e) => {
+                    this.setState({ showNewAccountmodal: true });
+                  }}
+                >
+                  Create New User
+                </Button>
+
+                {/* <Col>
             {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
             </Col> */}
+              </Row>
+            </Col>
+            <Col xs={8} style={{ paddingLeft: "0px" }}>
+              {this.state.showNewAccountmodal && (
+                <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
+              )}
+            </Col>
           </Row>
           </Col>
           <Col xs={8} style={{paddingLeft:"0px"}}>
@@ -2139,6 +2196,7 @@ export default class MainPage extends React.Component {
           </Col>
           </Row>
           
+
         </div>
 
         <div
@@ -2195,7 +2253,11 @@ export default class MainPage extends React.Component {
               goals={this.state.goals}
               routines={this.state.routines}
               todayDateObject={this.state.todayDateObject}
+
+              calendarView={this.state.calendarView}
+              dateContext={this.state.dateContext}
             />}
+
             <Col
               sm="auto"
               md="auto"
