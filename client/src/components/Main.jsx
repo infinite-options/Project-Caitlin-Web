@@ -1368,7 +1368,10 @@ export default class MainPage extends React.Component {
           let start = moment(newEvent.start.dateTime);
           let end = moment(this.state.newEventStart0);
           let diff = countSubString - moment.duration(end.diff(start)).asDays();
-          console.log(diff, "diff");
+          console.log(start.format("YYMMDD"), "diff");
+          if (start.format("YYYYMMDD") === newUntilSubString) {
+            throw new Error("first recurring event");
+          }
           if (
             event.recurrence[0].includes("COUNT") &&
             !this.state.repeatOption
@@ -1392,6 +1395,9 @@ export default class MainPage extends React.Component {
             .catch(function (error) {
               // console.log(error);
             });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     }
 
@@ -3113,7 +3119,7 @@ export default class MainPage extends React.Component {
     // }
   };
 
-  deleteRecurring = () => {
+  deleteRecurring = async () => {
     const {
       deleteRecurringOption,
       newEventRecurringID,
@@ -3134,7 +3140,7 @@ export default class MainPage extends React.Component {
       } else if (untilSubString) {
         untilSubString = untilSubString = untilSubString.substring(6);
       }
-      axios
+      await axios
         .get("/getRecurringEventInstances", {
           params: {
             recurringEventId: newEventRecurringID,
@@ -3143,6 +3149,7 @@ export default class MainPage extends React.Component {
           },
         })
         .then((res) => {
+          console.log(res.data, "deleterecurring");
           res.data.map((event) => {
             axios
               .delete("/deleteRecurringEvent", {
@@ -3155,14 +3162,13 @@ export default class MainPage extends React.Component {
                   dayEventSelected: false,
                   showDeleteRecurringModal: false,
                 });
-                this.updateEventsArray();
               })
               .catch(function (error) {
                 console.log(error);
               });
           });
         });
-
+      this.updateEventsArray();
       // axios
       //   .delete("/")
       // axios
