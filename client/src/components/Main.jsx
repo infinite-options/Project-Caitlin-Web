@@ -59,7 +59,7 @@ export default class MainPage extends React.Component {
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
-      dateContext: moment(), //Keep track of day and month
+      dateContext: new Date(), //Keep track of day and month
       todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
@@ -1681,7 +1681,7 @@ export default class MainPage extends React.Component {
       this.getEventsByInterval(startDate.toString(), endDate.toString());
     } else if (this.state.calendarView === "Day") {
       this.getEventsByIntervalDayVersion(
-        this.state.dateContext.format("MM/DD/YYYY")
+        moment(this.state.dateContext).format("MM/DD/YYYY")
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -2342,8 +2342,9 @@ export default class MainPage extends React.Component {
             >
               <p>
                 {" "}
-                {this.state.dateContext.format("dddd")} {this.getDay()}{" "}
-                {this.getMonth()} {this.getYear()}{" "}
+                {moment(this.state.dateContext).format(
+                  "dddd"
+                )} {this.getDay()} {this.getMonth()} {this.getYear()}{" "}
               </p>
             </Col>
             <Col>
@@ -3761,7 +3762,7 @@ export default class MainPage extends React.Component {
   returns the year based on year format
   */
   getYear = () => {
-    return this.state.dateContext.format("Y");
+    return moment(this.state.dateContext).format("Y");
   };
 
   /*
@@ -3770,11 +3771,11 @@ export default class MainPage extends React.Component {
   in english word form
   */
   getMonth = () => {
-    return this.state.dateContext.format("MMMM");
+    return moment(this.state.dateContext).format("MMMM");
   };
 
   getDay = () => {
-    return this.state.dateContext.format("D");
+    return moment(this.state.dateContext).format("D");
   };
 
   /*
@@ -3870,10 +3871,10 @@ when there is a change in the event form
       .then((response) => {
         console.log("what are the events", response.data);
         var events = response.data;
-        events.map(event => {
-          event.start.datetime = new Date(event.start.datetime)
-          event.end.datetime = new Date(event.end.datetime)
-        })
+        // events.map(event => {
+        //   event.start.datetime = new Date(event.start.datetime)
+        //   event.end.datetime = new Date(event.end.datetime)
+        // })
         this.setState(
           {
             dayEvents: events,
