@@ -1,6 +1,9 @@
 import React from "react";
 import axios from "axios";
 import {
+  Redirect
+} from "react-router-dom";
+import {
   Form,
   Button,
   Container,
@@ -15,6 +18,7 @@ export default class MainPage extends React.Component {
     this.state = {
       email: '',
       password: '',
+      loggedIn: false,
     }
   }
 
@@ -70,13 +74,16 @@ export default class MainPage extends React.Component {
     console.log(event);
     axios
       .post("/TALogIn", {
-        params: {
-          username: this.state.email,
-          password: this.state.password,
-        },
+        username: this.state.email,
+        password: this.state.password,
       })
       .then((response) => {
         console.log(response.data);
+        if(response.data !== false) {
+          this.setState({
+            loggedIn: true,
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -84,13 +91,17 @@ export default class MainPage extends React.Component {
   }
 
   render() {
-    return (
-      <div style={{textAlign: "center"}}>
-        <h2>
-          Welcome to Memory Not Impossible
-        </h2>
-        {this.LogInForm()}
-      </div>
-    );
+    if(this.state.loggedIn) {
+      return (<Redirect push to="main" />);
+    } else {
+      return (
+        <div style={{textAlign: "center"}}>
+          <h2>
+            Welcome to Memory Not Impossible
+          </h2>
+          {this.LogInForm()}
+        </div>
+      );
+    }
   }
 }

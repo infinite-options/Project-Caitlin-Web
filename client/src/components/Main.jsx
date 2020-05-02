@@ -1,6 +1,9 @@
 import React from "react";
 import axios from "axios";
 import {
+  Redirect
+} from "react-router-dom";
+import {
   Form,
   Button,
   Container,
@@ -36,6 +39,8 @@ export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
+      loggedIn: false,
       originalEvents: [], //holds the google events data in it's original JSON form
       dayEvents: [], //holds google events data for a single day
       weekEvents: [], //holds google events data for a week
@@ -231,6 +236,18 @@ export default class MainPage extends React.Component {
   componentDidUpdate() {}
 
   componentDidMount() {
+    axios
+      .get("/TALogInStatus")
+      .then((response) => {
+        console.log(response.data);
+        this.setState({
+          loaded: true,
+          loggedIn: response.data,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     this.updateEventsArray();
     this.updateProfileFromFirebase();
     // this.getEventNotifications();
@@ -2079,230 +2096,234 @@ export default class MainPage extends React.Component {
       !this.state.showRoutineGoalModal &&
       !this.state.showGoalModal &&
       !this.state.showRoutineModal;
-    return (
-      //width and height is fixed now but should be by % percentage later on
-      <div
-        className="normalfancytext"
-        style={{
-          marginLeft: "0px",
-          height: "100%",
-          width: "2000px",
-          // width: "100%",
-          // display: "flex",
-          // flexDirection: "column",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // background: "lightblue",
-        }}
-      >
+    if(this.state.loaded && !this.state.loggedIn) {
+      return (<Redirect push to="/" />);
+    } else {
+      return (
+        //width and height is fixed now but should be by % percentage later on
         <div
+          className="normalfancytext"
           style={{
-            margin: "0",
-            padding: "0",
-            width: "100%",
-          }}
-        >
-          <Row>
-            <Col xs={3}>
-              <Row style={{ margin: "0" }} className="d-flex flex-row">
-                <div
-                  style={{
-                    float: "right",
-                    width: "80px",
-                    height: "70px",
-                    marginLeft: "50px",
-                    marginTop: "5px",
-                  }}
-                >
-                  {this.state.currentUserPicUrl === "" ? (
-                    <FontAwesomeIcon
-                      icon={faImage}
-                      size="5x"
-                      style={{ marginLeft: "10px" }}
-                    />
-                  ) : (
-                    <img
-                      style={{
-                        display: "block",
-
-                        // marginLeft: "auto",
-                        // marginRight: "auto",
-                        width: "100%",
-                        height: "70px",
-                      }}
-                      src={this.state.currentUserPicUrl}
-                      alt="Profile"
-                    />
-                  )}
-                </div>
-                {this.state.enableNameDropDown === false ? (
-                  <DropdownButton
-                    style={{ display: "inline-block" }}
-                    title=""
-                    disabled
-                  ></DropdownButton>
-                ) : (
-                  // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
-                  <DropdownButton
-                    // class = "dropdown-toggle.btn.btn-secondary"
-                    variant="outline-primary"
-                    // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
-                    title={this.state.currentUserName || ""}
-                    style={{ marginTop: "20px", marginLeft: "10px" }}
-                  >
-                    {Object.keys(this.state.userIdAndNames).map(
-                      (keyName, keyIndex) => (
-                        // use keyName to get current key's name
-                        // and a[keyName] to get its value
-                        //keyName is the user id
-                        //keyIndex will help me find the user pic
-                        //this.state.userIdAndName[keyName] gives me the name of current user
-                        <Dropdown.Item
-                          key={keyName}
-                          onClick={(e) => {
-                            this.changeUser(
-                              keyName,
-                              keyIndex,
-                              this.state.userIdAndNames[keyName]
-                            );
-                          }}
-                        >
-                          {this.state.userIdAndNames[keyName] || ""}
-                        </Dropdown.Item>
-                      )
-                    )}
-                  </DropdownButton>
-                )}
-
-                {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
-              {this.state.profileName === "" ? (
-                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
-                  First Last
-                </p>
-              ) : (
-                <p style={{ marginTop: "30px", marginLeft: "10px" }}>
-                  {this.state.profileName}
-                </p>
-              )}
-            </div> */}
-              </Row>
-              <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
-                <Button
-                  style={{ marginTop: "10px" }}
-                  onClick={(e) => {
-                    this.setState({ showNewAccountmodal: true });
-                  }}
-                >
-                  Create New User
-                </Button>
-
-                {/* <Col>
-            {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
-            </Col> */}
-              </Row>
-            </Col>
-            {/* <Col xs={8} style={{ paddingLeft: "0px" }}>
-              {this.state.showNewAccountmodal && (
-                <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
-              )}
-            </Col>
-          </Row> */}
-            {/* </Col> */}
-            <Col xs={8} style={{ paddingLeft: "0px" }}>
-              {this.state.showNewAccountmodal && (
-                <CreateNewAccountModal
-                  closeModal={this.hideNewAccountForm}
-                  newUserAdded={this.theNewUserAdded}
-                />
-              )}
-            </Col>
-          </Row>
-        </div>
-
-        <div
-          style={{
-            margin: "0",
-            padding: "0",
-            width: "100%",
-          }}
-        >
-          {this.abstractedMainEventGRShowButtons()}
-        </div>
-        <Container
-          fluid
-          style={{
-            marginTop: "15px",
-            marginLeft: "0",
+            marginLeft: "0px",
+            height: "100%",
+            width: "2000px",
+            // width: "100%",
             // display: "flex",
             // flexDirection: "column",
             // justifyContent: "center",
             // alignItems: "center",
-            // width: "100%"
+            // background: "lightblue",
           }}
         >
-          <Row
+          <div
             style={{
-              marginTop: "0",
-              // width: "100%",
-              // display: "flex",
-              // flexDirection: "column",
-              // justifyContent: "center"
-              // alignItems: "center"
+              margin: "0",
+              padding: "0",
+              width: "100%",
             }}
           >
-            {/* the modal for routine/goal is called Firebasev2 currently */}
-            {console.log("this is the originalGoals and rountines Arr")}
-            {this.state.currentUserId != "" && (
-              <Firebasev2
-                theCurrentUserID={this.state.currentUserId}
-                grabFireBaseRoutinesGoalsData={
-                  this.grabFireBaseRoutinesGoalsData
-                }
-                originalGoalsAndRoutineArr={
-                  this.state.originalGoalsAndRoutineArr
-                }
-                goals={this.state.goals}
-                routines={this.state.routines}
-                closeRoutineGoalModal={() => {
-                  this.setState({ showRoutineGoalModal: false });
-                }}
-                showRoutineGoalModal={this.state.showRoutineGoalModal}
-                closeGoal={() => {
-                  this.setState({ showGoalModal: false });
-                }}
-                closeRoutine={() => {
-                  this.setState({ showRoutineModal: false });
-                }}
-                showRoutine={this.state.showRoutineModal}
-                showGoal={this.state.showGoalModal}
-                goals={this.state.goals}
-                routines={this.state.routines}
-                todayDateObject={this.state.todayDateObject}
-                calendarView={this.state.calendarView}
-                dateContext={this.state.dateContext}
-              />
-            )}
+            <Row>
+              <Col xs={3}>
+                <Row style={{ margin: "0" }} className="d-flex flex-row">
+                  <div
+                    style={{
+                      float: "right",
+                      width: "80px",
+                      height: "70px",
+                      marginLeft: "50px",
+                      marginTop: "5px",
+                    }}
+                  >
+                    {this.state.currentUserPicUrl === "" ? (
+                      <FontAwesomeIcon
+                        icon={faImage}
+                        size="5x"
+                        style={{ marginLeft: "10px" }}
+                      />
+                    ) : (
+                      <img
+                        style={{
+                          display: "block",
 
-            <Col
-              sm="auto"
-              md="auto"
-              lg="auto"
-              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+                          // marginLeft: "auto",
+                          // marginRight: "auto",
+                          width: "100%",
+                          height: "70px",
+                        }}
+                        src={this.state.currentUserPicUrl}
+                        alt="Profile"
+                      />
+                    )}
+                  </div>
+                  {this.state.enableNameDropDown === false ? (
+                    <DropdownButton
+                      style={{ display: "inline-block" }}
+                      title=""
+                      disabled
+                    ></DropdownButton>
+                  ) : (
+                    // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
+                    <DropdownButton
+                      // class = "dropdown-toggle.btn.btn-secondary"
+                      variant="outline-primary"
+                      // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
+                      title={this.state.currentUserName || ""}
+                      style={{ marginTop: "20px", marginLeft: "10px" }}
+                    >
+                      {Object.keys(this.state.userIdAndNames).map(
+                        (keyName, keyIndex) => (
+                          // use keyName to get current key's name
+                          // and a[keyName] to get its value
+                          //keyName is the user id
+                          //keyIndex will help me find the user pic
+                          //this.state.userIdAndName[keyName] gives me the name of current user
+                          <Dropdown.Item
+                            key={keyName}
+                            onClick={(e) => {
+                              this.changeUser(
+                                keyName,
+                                keyIndex,
+                                this.state.userIdAndNames[keyName]
+                              );
+                            }}
+                          >
+                            {this.state.userIdAndNames[keyName] || ""}
+                          </Dropdown.Item>
+                        )
+                      )}
+                    </DropdownButton>
+                  )}
+
+                  {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
+                {this.state.profileName === "" ? (
+                  <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                    First Last
+                  </p>
+                ) : (
+                  <p style={{ marginTop: "30px", marginLeft: "10px" }}>
+                    {this.state.profileName}
+                  </p>
+                )}
+              </div> */}
+                </Row>
+                <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
+                  <Button
+                    style={{ marginTop: "10px" }}
+                    onClick={(e) => {
+                      this.setState({ showNewAccountmodal: true });
+                    }}
+                  >
+                    Create New User
+                  </Button>
+
+                  {/* <Col>
+              {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
+              </Col> */}
+                </Row>
+              </Col>
+              {/* <Col xs={8} style={{ paddingLeft: "0px" }}>
+                {this.state.showNewAccountmodal && (
+                  <CreateNewAccountModal closeModal={this.hideNewAccountForm} />
+                )}
+              </Col>
+            </Row> */}
+              {/* </Col> */}
+              <Col xs={8} style={{ paddingLeft: "0px" }}>
+                {this.state.showNewAccountmodal && (
+                  <CreateNewAccountModal
+                    closeModal={this.hideNewAccountForm}
+                    newUserAdded={this.theNewUserAdded}
+                  />
+                )}
+              </Col>
+            </Row>
+          </div>
+
+          <div
+            style={{
+              margin: "0",
+              padding: "0",
+              width: "100%",
+            }}
+          >
+            {this.abstractedMainEventGRShowButtons()}
+          </div>
+          <Container
+            fluid
+            style={{
+              marginTop: "15px",
+              marginLeft: "0",
+              // display: "flex",
+              // flexDirection: "column",
+              // justifyContent: "center",
+              // alignItems: "center",
+              // width: "100%"
+            }}
+          >
+            <Row
+              style={{
+                marginTop: "0",
+                // width: "100%",
+                // display: "flex",
+                // flexDirection: "column",
+                // justifyContent: "center"
+                // alignItems: "center"
+              }}
             >
-              {this.showCalendarView()}
-              <div
-                style={{ marginTop: "50px", textAlign: "center" }}
-                className="fancytext"
+              {/* the modal for routine/goal is called Firebasev2 currently */}
+              {console.log("this is the originalGoals and rountines Arr")}
+              {this.state.currentUserId != "" && (
+                <Firebasev2
+                  theCurrentUserID={this.state.currentUserId}
+                  grabFireBaseRoutinesGoalsData={
+                    this.grabFireBaseRoutinesGoalsData
+                  }
+                  originalGoalsAndRoutineArr={
+                    this.state.originalGoalsAndRoutineArr
+                  }
+                  goals={this.state.goals}
+                  routines={this.state.routines}
+                  closeRoutineGoalModal={() => {
+                    this.setState({ showRoutineGoalModal: false });
+                  }}
+                  showRoutineGoalModal={this.state.showRoutineGoalModal}
+                  closeGoal={() => {
+                    this.setState({ showGoalModal: false });
+                  }}
+                  closeRoutine={() => {
+                    this.setState({ showRoutineModal: false });
+                  }}
+                  showRoutine={this.state.showRoutineModal}
+                  showGoal={this.state.showGoalModal}
+                  goals={this.state.goals}
+                  routines={this.state.routines}
+                  todayDateObject={this.state.todayDateObject}
+                  calendarView={this.state.calendarView}
+                  dateContext={this.state.dateContext}
+                />
+              )}
+
+              <Col
+                sm="auto"
+                md="auto"
+                lg="auto"
+                style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
               >
-                Dedicated to Caitlin Little
-              </div>
-            </Col>
-            {/* <Col style={{ marginLeft: "25px" }}> */}
-            <Col>{this.showDayViewOrAboutView()}</Col>
-          </Row>
-        </Container>
-      </div>
-    );
+                {this.showCalendarView()}
+                <div
+                  style={{ marginTop: "50px", textAlign: "center" }}
+                  className="fancytext"
+                >
+                  Dedicated to Caitlin Little
+                </div>
+              </Col>
+              {/* <Col style={{ marginLeft: "25px" }}> */}
+              <Col>{this.showDayViewOrAboutView()}</Col>
+            </Row>
+          </Container>
+        </div>
+      );
+    }
   }
 
   dayViewAbstracted = () => {

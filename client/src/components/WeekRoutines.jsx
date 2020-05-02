@@ -4,8 +4,6 @@ import {
      Container, Row, Col
 } from 'react-bootstrap';
 
-import firebase from "./firebase";
-
 export default class WeekRoutines extends Component {
   constructor(props) {
       super(props);

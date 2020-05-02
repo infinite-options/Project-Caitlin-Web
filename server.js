@@ -29,7 +29,9 @@ app.use(express.static(__dirname + "/build")); //REC
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly
+// Use express-session for session variables to support log in functionality
 var session = require("express-session");
+app.use(session({secret: "An open secret"}));
 
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
@@ -434,8 +436,12 @@ Log in ROUTE:
 Given the trusted advisor's login, see if email and hashed password matches with what is stored in firebase. If it matches, set the session key for log in status.
 */
 app.post("/TALogIn", function (req, result) {
-  console.log(req);
-  return "test log in";
+  console.log(req.body.username,req.body.password);
+  req.session.user = req.body.username;
+  // Run following when username/password don't match
+  // result.json(false);
+  // Run following when username/passowrd matches
+  result.json(req.body.username);
 });
 
 /*
@@ -443,8 +449,11 @@ Log in status ROUTE:
 Check session variables to know if a trusted advisor has logged in, and return the user's information if it is.
 */
 app.get("/TALogInStatus", function (req, result) {
-  console.log(req);
-  return "test log in status";
+  if(req.session.user) {
+    result.json(req.session.user);
+  } else {
+    result.json(false)
+  }
 });
 
 /*
@@ -452,9 +461,40 @@ Log out ROUTE:
 Remove session key so trusted advisor is no longer lgged in.
 */
 app.get("/TALogInStatus", function (req, result) {
-  console.log(req);
-  return "test log in status";
+  req.session.destroy(function(err) {
+  })
+  result.json("success");
 });
+
+
+/**
+find the user with email id
+*/
+// exports.FindUserDoc = functions.https.onCall(async (data, context) => {
+//   // Grab the text parameter.
+//   let emailId = data.emailId;
+//   var userDetails = {id:""};
+//   let users = db.collection('trusted_advisor');
+//   let userData = users.where('email_id', '==', emailId );
+//   await userData.get()
+//       .then(snapshot => {
+//           if (snapshot.empty) {
+//               console.log('No matching documents.');
+//               return "";
+//           } else {
+//               snapshot.forEach(doc => {
+//                   userDetails.id = doc.id
+//                   console.log(userDetails);
+//               });
+//               return userDetails;
+//           }
+//       })
+//       .catch(err => {
+//       console.log('Error getting documents', err);
+//   });
+
+//   return userDetails;
+// });
 
 // Refer to the Node.js quickstart on how to setup the environment:
 // https://developers.google.com/calendar/quickstart/node

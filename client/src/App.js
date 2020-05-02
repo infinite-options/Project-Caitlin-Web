@@ -15,11 +15,13 @@ class App extends Component {
       <div>
         <header className="App-header">
           <Switch>
-            <Router exact path='/'>
-              <LandingPage />
-            </Router>
-            <Router path='/main'>
-              <MainPage />
+            <Router>
+              <Route exact path='/'>
+                <LandingPage />
+              </Route>
+              <Route path='/main'>
+                <MainPage />
+              </Route>
             </Router>
           </Switch>
         </header>
