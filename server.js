@@ -32,6 +32,16 @@ app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse c
 // Use express-session for session variables to support log in functionality
 var session = require("express-session");
 app.use(session({secret: "An open secret"}));
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+// Connect to firebase to check for matched passwords
+const firebase_tools = require('firebase-tools');
+const serviceAccount = require('../ServiceAccountKey.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+const db = admin.firestore();
+
 
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
@@ -471,27 +481,36 @@ app.get("/TALogInStatus", function (req, result) {
 find the user with email id
 */
 // exports.FindUserDoc = functions.https.onCall(async (data, context) => {
+//   const db = firebase.firestore();
 //   // Grab the text parameter.
 //   let emailId = data.emailId;
-//   var userDetails = {id:""};
-//   let users = db.collection('trusted_advisor');
-//   let userData = users.where('email_id', '==', emailId );
+//   var emailId1 = emailId.toLowerCase();
+//   var email = emailId1.split("@");
+//   email[0] = email[0].split(".").join("");
+//   email[0] = email[0].concat("@");
+//   var emailId_final = email[0].concat(email[1]);
+//   console.log(emailId1);
+//   console.log(emailId_final);
+//   var TADetails = {id:""};
+//   let TAs = db.collection('trusted_advisor');
+//   let userData = TAs.where('email_id', '==', emailId_final );
 //   await userData.get()
 //       .then(snapshot => {
 //           if (snapshot.empty) {
 //               console.log('No matching documents.');
-//               return "";
-//           } else {
-//               snapshot.forEach(doc => {
-//                   userDetails.id = doc.id
-//                   console.log(userDetails);
-//               });
-//               return userDetails;
+//               return "User Not Found";
 //           }
-//       })
+//       snapshot.forEach(doc => {
+//           userDetails.id = doc.id;
+//           console.log(userDetails);
+//       });
+//   })
 //       .catch(err => {
 //       console.log('Error getting documents', err);
 //   });
+
+//   return userDetails;
+// });
 
 //   return userDetails;
 // });
