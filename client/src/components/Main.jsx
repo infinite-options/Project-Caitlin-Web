@@ -3864,6 +3864,7 @@ when there is a change in the event form
         params: {
           start: day.toString(),
           end: day.toString(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       })
       .then((response) => {
