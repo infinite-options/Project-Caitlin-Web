@@ -3870,6 +3870,10 @@ when there is a change in the event form
       .then((response) => {
         console.log("what are the events", response.data);
         var events = response.data;
+        events.map(event => {
+          event.start.datetime = new Date(event.start.datetime)
+          event.end.datetime = new Date(event.end.datetime)
+        })
         this.setState(
           {
             dayEvents: events,
