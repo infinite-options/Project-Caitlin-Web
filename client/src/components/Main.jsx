@@ -2290,6 +2290,7 @@ export default class MainPage extends React.Component {
               style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.showCalendarView()}
+              <div>V1.0</div>
               <div
                 style={{ marginTop: "50px", textAlign: "center" }}
                 className="fancytext"
@@ -2951,7 +2952,7 @@ export default class MainPage extends React.Component {
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
           <Modal.Title>
-            <h5 className="normalfancytext">Repeating Options</h5>
+            <h5 className="normalfancytext">Repeating Options test</h5>
           </Modal.Title>
         </Modal.Header>
 
@@ -3053,7 +3054,7 @@ export default class MainPage extends React.Component {
                       this.state.repeatRadio_temp === "On" && true
                     }
                   />
-                  On
+                  Until
                   <DatePicker
                     className="date-picker-btn btn btn-light"
                     selected={this.state.repeatEndDate_temp}
