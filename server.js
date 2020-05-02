@@ -430,13 +430,30 @@ app.post("/createNewEvent", function (req, res) {
 });
 
 /*
-Delete ROUTE:
-Given the event's id, it look send it up to google calendar API
-and delete it.
+Log in ROUTE:
+Given the trusted advisor's login, see if email and hashed password matches with what is stored in firebase. If it matches, set the session key for log in status.
 */
 app.post("/TALogIn", function (req, result) {
   console.log(req);
-  return "test";
+  return "test log in";
+});
+
+/*
+Log in status ROUTE:
+Check session variables to know if a trusted advisor has logged in, and return the user's information if it is.
+*/
+app.get("/TALogInStatus", function (req, result) {
+  console.log(req);
+  return "test log in status";
+});
+
+/*
+Log out ROUTE:
+Remove session key so trusted advisor is no longer lgged in.
+*/
+app.get("/TALogInStatus", function (req, result) {
+  console.log(req);
+  return "test log in status";
 });
 
 // Refer to the Node.js quickstart on how to setup the environment:
