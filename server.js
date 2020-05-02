@@ -29,6 +29,7 @@ app.use(express.static(__dirname + "/build")); //REC
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly
+var session = require("express-session");
 
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
@@ -426,6 +427,16 @@ app.post("/createNewEvent", function (req, res) {
       res.send("Evented Created");
     }
   );
+});
+
+/*
+Delete ROUTE:
+Given the event's id, it look send it up to google calendar API
+and delete it.
+*/
+app.post("/TALogIn", function (req, result) {
+  console.log(req);
+  return "test";
 });
 
 // Refer to the Node.js quickstart on how to setup the environment:
