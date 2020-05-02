@@ -260,6 +260,7 @@ app.get("/getEventsByInterval", function (req, result) {
       maxResults: 999,
       singleEvents: true,
       orderBy: "startTime",
+      timeZone: req.query.timeZone,
     },
     (err, res) => {
       //CallBack
