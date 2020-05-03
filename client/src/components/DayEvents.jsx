@@ -69,8 +69,9 @@ export default class DayEvents extends Component {
       let tempStartTime = new Date(tempStart);
       let tempEndTime = new Date(tempEnd);
       let curDate = this.props.dateContext.get("date");
+      console.log(curDate, tempStartTime.getDate(), tempStartTime.getHours());
       if (tempStartTime.getDate() === curDate) {
-        if (tempStartTime.getHours() == hour) {
+        if (tempStartTime.getHours() === hour) {
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
