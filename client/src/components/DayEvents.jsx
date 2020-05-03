@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // import axios from 'axios';
-import moment from "moment";
+// import moment from "moment";
 import { Container, Row, Col } from "react-bootstrap";
 
 export default class DayEvents extends Component {
@@ -68,7 +68,7 @@ export default class DayEvents extends Component {
        */
       let tempStartTime = new Date(tempStart);
       let tempEndTime = new Date(tempEnd);
-      let curDate = moment(this.props.dateContext).get("date");
+      let curDate = this.props.dateContext.get("date");
       if (tempStartTime.getDate() === curDate) {
         if (tempStartTime.getHours() == hour) {
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
