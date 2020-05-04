@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import moment from 'moment';
-import axios from "axios";
+// import axios from "axios";
 import {
      Container, Row, Col
 } from 'react-bootstrap';
@@ -172,9 +172,9 @@ export default class WeekEvents extends Component {
 
                             // change color if more than one event in same time.
                             if (sameTimeEventCount <= 1) {
-                                color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                                color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                             }
-                            else if (sameTimeEventCount == 2) {
+                            else if (sameTimeEventCount === 2) {
                                 color = 'skyblue';
                             }
                             else {

@@ -125,25 +125,25 @@ export default class MainPage extends React.Component {
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
     // console.log("FirebaseV2 component did mount");
-    console.log("this is the current userid", this.state.currentUserId);
-    if (this.state.currentUserId != "") {
+    // console.log("this is the current userid", this.state.currentUserId);
+    if (this.state.currentUserId !== "") {
       //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
       const docRef = db.collection("users").doc(this.state.currentUserId);
-      console.log("this is suppose tto be the path", docRef);
+      // console.log("this is suppose tto be the path", docRef);
       docRef
         .get()
         .then((doc) => {
           if (doc.exists) {
             // console.log(doc.data());
             var x = doc.data();
-            console.log("this is the data", x);
+            // console.log("this is the data", x);
             // console.log(x["goals&routines"]);
             // x = x["goals&routines"];
             let routine = [];
             let goal = [];
-            if (x["goals&routines"] != undefined) {
+            if (x["goals&routines"] !== undefined) {
               x = x["goals&routines"];
-              console.log("this is the goals and routines", x);
+              // console.log("this is the goals and routines", x);
 
               for (let i = 0; i < x.length; ++i) {
                 if (x[i]["is_persistent"]) {
@@ -184,6 +184,7 @@ export default class MainPage extends React.Component {
           console.log("Error getting document:", error);
         });
     }
+   
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -291,7 +292,7 @@ export default class MainPage extends React.Component {
           let picURL = "";
           // console.log("this is x", x);
           //  console.log(x["about_me"]);
-          if (x["about_me"] != undefined) {
+          if (x["about_me"] !== undefined) {
             picURL = x["about_me"].pic;
             // console.log("we got in");
           }
@@ -2039,6 +2040,19 @@ export default class MainPage extends React.Component {
 
   updatePic = (name, url) => {
     // this.updateProfileFromFirebase();
+    let index = null;
+    Object.keys(this.state.userIdAndNames).map(
+      (keyName, keyIndex) => {
+        if(keyName === this.state.currentUserId){
+            index = keyIndex;
+          }
+      }
+    );
+    // console.log("thissi the index ",index);
+    if(index !== null){
+      this.state.userPicsArray[index]= url;
+    }
+    
     this.state.userIdAndNames[this.state.currentUserId] = name;
     this.setState({
       currentUserPicUrl: url,
@@ -2260,8 +2274,9 @@ export default class MainPage extends React.Component {
             }}
           >
             {/* the modal for routine/goal is called Firebasev2 currently */}
-            {console.log("this is the originalGoals and rountines Arr")}
-            {this.state.currentUserId != "" && (
+            {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
+            {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
+            {this.state.currentUserId !== "" && (
               <Firebasev2
                 theCurrentUserID={this.state.currentUserId}
                 grabFireBaseRoutinesGoalsData={
@@ -2284,8 +2299,8 @@ export default class MainPage extends React.Component {
                 }}
                 showRoutine={this.state.showRoutineModal}
                 showGoal={this.state.showGoalModal}
-                goals={this.state.goals}
-                routines={this.state.routines}
+                // goals={this.state.goals}
+                // routines={this.state.routines}
                 todayDateObject={this.state.todayDateObject}
                 calendarView={this.state.calendarView}
                 dateContext={this.state.dateContext}

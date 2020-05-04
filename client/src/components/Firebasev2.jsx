@@ -150,6 +150,7 @@ export default class FirebaseV2 extends React.Component {
   componentDidMount() {
     //Grab the
     this.grabFireBaseRoutinesGoalsData();
+    // console.log("going into compoent did mount");
   }
 
   /**
@@ -173,10 +174,10 @@ export default class FirebaseV2 extends React.Component {
     return time.format("YYYY MMM DD HH:mm");
   }
 
-  onInputChange = (e) => {
-    const inputField = e.target.value;
-    // console.log("FirebaseV2.jsx :: onInputChange :: " + inputField);
-  };
+  // onInputChange = (e) => {
+  //   const inputField = e.target.value;
+  //   // console.log("FirebaseV2.jsx :: onInputChange :: " + inputField);
+  // };
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
@@ -862,10 +863,7 @@ export default class FirebaseV2 extends React.Component {
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-                        FBPath={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
+                       
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                         is_sublist_available={this.is_sublist_available}
                       />
@@ -1059,9 +1057,11 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
+                      {/* {console.log("this si the originalGoals and Routines Arr", this.props.originalGoalsAndRoutineArr)} */}
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
+                       
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                         // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         FBPath={firebase

@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import moment from "moment";
 import { Container, Row, Col } from "react-bootstrap";
 
-import firebase from "./firebase";
+// import firebase from "./firebase";
 export default class DayRoutines extends Component {
   constructor(props) {
     super(props);
@@ -215,7 +215,7 @@ export default class DayRoutines extends Component {
   };
 
   render() {
-    console.log(this.state.routines, "dayroutines");
+    // console.log(this.state.routines, "dayroutines");
     return (
       <div
         style={{

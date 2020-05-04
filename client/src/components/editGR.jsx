@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import ShowNotifications from "./ShowNotifications";
-import ShowATList from "./ShowNotifications.jsx";
+// import ShowATList from "./ShowNotifications.jsx";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
 
@@ -48,6 +48,16 @@ export default class editGR extends Component {
       },
       repeatSummary: "",
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // console.log("this is the previous ATarry",prevProps.ATArray );
+    // console.log("this is the ATarry",this.props.ATArray );
+    if(prevProps.ATArray !== this.props.ATArray){
+      // console.log("going in here so musttttttttttttttttttttttttttttt update");
+      this.setState({itemToEdit: this.props.ATArray[this.props.i]})
+      // this.forceUpdate();
+    }   
   }
 
   newInputSubmit = () => {
@@ -117,10 +127,10 @@ export default class editGR extends Component {
     let rhours = Math.floor(hours);
     let minutes = (hours - rhours) * 60;
     let rminutes = Math.round(minutes);
-    if (rhours.toString().length == 1) {
+    if (rhours.toString().length === 1) {
       rhours = "0" + rhours;
     }
-    if (rminutes.toString().length == 1) {
+    if (rminutes.toString().length === 1) {
       rminutes = "0" + rminutes;
     }
     // console.log(rhours+":" + rminutes +":" + "00");
@@ -132,7 +142,7 @@ export default class editGR extends Component {
     let hours = myStr[0];
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
-    let seconds = myStr[2];
+    // let seconds = myStr[2];
 
     // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
     return minutes;
@@ -491,7 +501,8 @@ export default class editGR extends Component {
   };
 
   editGRForm = () => {
-    console.log(this.state.itemToEdit.available_end_time, "itemToEdit");
+    // console.log(this.state.itemToEdit.available_end_time, "itemToEdit");
+    // {console.log("this is what it is seeing ", this.state.itemToEdit)}
     let start_time = moment(this.state.itemToEdit.available_start_time).format(
       "LLL"
     );
@@ -500,6 +511,7 @@ export default class editGR extends Component {
     );
     console.log(start_time);
     return (
+      
       // <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
       <Row
         style={{
@@ -722,7 +734,7 @@ export default class editGR extends Component {
       "Saturday",
     ];
 
-    const d = new Date();
+    // const d = new Date();
 
     // Custom styles
     const modalStyle = {

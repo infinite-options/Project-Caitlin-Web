@@ -39,11 +39,13 @@ export default class DayEvents extends Component {
     return arr;
   };
 
+
   onEventClick = (e, i) => {
     var arr = this.props.dayEvents;
     e.stopPropagation();
     this.props.eventClickDayView(arr[i]);
   };
+
 
   /*
    * TODO: events spanning multiple days
@@ -59,6 +61,7 @@ export default class DayEvents extends Component {
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
     var fontSize = 10;
+
 
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start.dateTime;

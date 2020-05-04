@@ -20,6 +20,12 @@ export default class editIS extends Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.ISArray !== this.props.ISArray){
+          this.setState({itemToEdit: this.props.ISArray[this.props.i]})
+        }   
+      }
+
     newInputSubmit = () => {
         let newArr  = this.props.ISArray;
         newArr[this.props.i] = this.state.itemToEdit;
@@ -56,10 +62,10 @@ export default class editIS extends Component {
         let rhours = Math.floor(hours);
         let minutes = (hours - rhours)* 60;
         let rminutes = Math.round(minutes);
-        if (rhours.toString().length == 1) {
+        if (rhours.toString().length === 1) {
             rhours = "0" + rhours;
         }
-        if (rminutes.toString().length == 1) {
+        if (rminutes.toString().length === 1) {
             rminutes = "0" + rminutes;
         }
         // console.log(rhours+":" + rminutes +":" + "00");
@@ -71,7 +77,7 @@ export default class editIS extends Component {
         let hours = myStr[0];
         let hrToMin = hours* 60;
         let minutes = (myStr[1] * 1 )+ hrToMin;
-        let seconds = myStr[2];
+        // let seconds = myStr[2];
         
         // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
         return minutes;

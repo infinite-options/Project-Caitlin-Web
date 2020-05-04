@@ -62,7 +62,7 @@ class AboutModal extends React.Component{
             saveButtonEnabled: false
         }, ()=>{
             let targetFile = file
-            if(targetFile != null && Object.keys(this.state.aboutMeObject).length != 0 ){
+            if(targetFile !== null && Object.keys(this.state.aboutMeObject).length !== 0 ){
                 let temp = this.state.aboutMeObject;
     
                 // Create a reference to the firebase storage. 
@@ -105,7 +105,7 @@ class AboutModal extends React.Component{
             saveButtonEnabled: false
         }, ()=>{
             let targetFile = file2
-            if(targetFile != null && Object.keys(this.state.importantPeople1).length != 0 ){
+            if(targetFile !== null && Object.keys(this.state.importantPeople1).length !== 0 ){
                 let temp = this.state.importantPeople1;
     
                 // Create a reference to the firebase storage. 
@@ -147,7 +147,7 @@ class AboutModal extends React.Component{
             saveButtonEnabled: false
         }, ()=>{
             let targetFile = file3
-            if(targetFile != null && Object.keys(this.state.importantPeople2).length != 0 ){
+            if(targetFile !== null && Object.keys(this.state.importantPeople2).length !== 0 ){
                 let temp = this.state.importantPeople2;
     
                 // Create a reference to the firebase storage. 
@@ -189,7 +189,7 @@ class AboutModal extends React.Component{
             saveButtonEnabled: false
         }, ()=>{
             let targetFile = file4
-            if(targetFile != null && Object.keys(this.state.importantPeople3).length != 0 ){
+            if(targetFile !== null && Object.keys(this.state.importantPeople3).length !== 0 ){
                 let temp = this.state.importantPeople3;
     
                 // Create a reference to the firebase storage. 
@@ -312,7 +312,7 @@ class AboutModal extends React.Component{
             //   console.log("this is x in the about modal", x);
               var firstName = x.first_name;
               var lastName = x.last_name;
-              if(x["about_me"] != undefined){
+              if(x["about_me"] !== undefined){
                 x = x["about_me"];
                 this.setState({
                     aboutMeObject: x, firstName:firstName, lastName:lastName
