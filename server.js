@@ -32,16 +32,8 @@ app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse c
 // Use express-session for session variables to support log in functionality
 var session = require("express-session");
 app.use(session({secret: "An open secret"}));
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
 // Connect to firebase to check for matched passwords
-const firebase_tools = require('firebase-tools');
-const serviceAccount = require('../ServiceAccountKey.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-});
-const db = admin.firestore();
-
+import firebase from "./firebase";
 
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
@@ -448,6 +440,7 @@ Given the trusted advisor's login, see if email and hashed password matches with
 app.post("/TALogIn", function (req, result) {
   console.log(req.body.username,req.body.password);
   req.session.user = req.body.username;
+  let db = firebase.firestore();
   // Run following when username/password don't match
   // result.json(false);
   // Run following when username/passowrd matches
@@ -481,7 +474,6 @@ app.get("/TALogInStatus", function (req, result) {
 find the user with email id
 */
 // exports.FindUserDoc = functions.https.onCall(async (data, context) => {
-//   const db = firebase.firestore();
 //   // Grab the text parameter.
 //   let emailId = data.emailId;
 //   var emailId1 = emailId.toLowerCase();
