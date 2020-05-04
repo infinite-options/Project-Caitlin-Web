@@ -71,7 +71,7 @@ export default class DayEvents extends Component {
             let tempEndTime = new Date(tempEnd);
             let curDate = this.props.dateContext.get('date')
             if (tempStartTime.getDate() ===  curDate) {
-              if (tempStartTime.getHours() == hour) {
+              if (tempStartTime.getHours() === hour) {
                 if (tempStartTime.getDate() !==  tempEndTime.getDate()) {
                   let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                   let hourDiff = 24 - tempStartTime.getHours();
@@ -157,9 +157,9 @@ export default class DayEvents extends Component {
 
                   // change color if more than one event in same time.
                   if (sameTimeEventCount <= 1) {
-                      color = (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue');
+                      color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
                   }
-                  else if (sameTimeEventCount == 2) {
+                  else if (sameTimeEventCount === 2) {
                       color = 'skyblue';
                   }
                   else {

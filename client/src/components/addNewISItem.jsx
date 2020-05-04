@@ -148,7 +148,7 @@ export default class AddNewISItem extends Component {
       let hours = myStr[0];
       let hrToMin = hours* 60;
       let minutes = (myStr[1] * 1 )+ hrToMin;
-      let seconds = myStr[2];
+      // let seconds = myStr[2];
       
       // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
       return minutes;
