@@ -1681,8 +1681,17 @@ export default class MainPage extends React.Component {
       endDate.setHours(23, 59, 59);
       this.getEventsByInterval(startDate.toString(), endDate.toString());
     } else if (this.state.calendarView === "Day") {
+      let startObject = this.state.dateContext.clone();
+      let endObject = this.state.dateContext.clone();
+      let startDay = startObject.startOf("day");
+      let endDay = endObject.endOf("day");
+      let startDate = new Date(startDay.format("MM/DD/YYYY"));
+      let endDate = new Date(endDay.format("MM/DD/YYYY"));
+      startDate.setHours(0, 0, 0);
+      endDate.setHours(23, 59, 59);
       this.getEventsByIntervalDayVersion(
-        this.state.dateContext.format("MM/DD/YYYY")
+        startDate.toString(),
+        endDate.toString()
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -2305,6 +2314,7 @@ export default class MainPage extends React.Component {
               style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.showCalendarView()}
+              <div>V1.0</div>
               <div
                 style={{ marginTop: "50px", textAlign: "center" }}
                 className="fancytext"
@@ -2966,7 +2976,7 @@ export default class MainPage extends React.Component {
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
           <Modal.Title>
-            <h5 className="normalfancytext">Repeating Options</h5>
+            <h5 className="normalfancytext">Repeating Options test</h5>
           </Modal.Title>
         </Modal.Header>
 
@@ -3068,7 +3078,7 @@ export default class MainPage extends React.Component {
                       this.state.repeatRadio_temp === "On" && true
                     }
                   />
-                  On
+                  Until
                   <DatePicker
                     className="date-picker-btn btn btn-light"
                     selected={this.state.repeatEndDate_temp}
@@ -3871,24 +3881,31 @@ when there is a change in the event form
    * getEventsByIntervalDayVersion:
    * gets exactly the days worth of events from the google calendar
    */
-  getEventsByIntervalDayVersion = (day) => {
+  getEventsByIntervalDayVersion = (startDate, endDate) => {
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: day.toString(),
-          end: day.toString(),
+          start: startDate.toString(),
+          end: endDate.toString(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       })
       .then((response) => {
         console.log("what are the events", response.data);
         var events = response.data;
+        // events.map((event) => {
+        //   console.log(new Date(event.start.dateTime).getHours());
+        //   event.start.dateTime = new Date(event.start.dateTime);
+        //   event.end.dateTime = new Date(event.end.dateTime);
+        // });
         this.setState(
           {
             dayEvents: events,
           },
           () => {
             console.log("New Events Arrived", events);
+            console.log("test time", this.state.dateContext);
           }
         );
       })
