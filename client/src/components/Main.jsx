@@ -3881,6 +3881,7 @@ when there is a change in the event form
           },
           () => {
             console.log("New Events Arrived", events);
+            console.log("test time", this.state.dateContext);
           }
         );
       })
