@@ -2314,7 +2314,7 @@ export default class MainPage extends React.Component {
               style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
             >
               {this.showCalendarView()}
-              <div>V1.1</div>
+              <div>V1.2</div>
               <div
                 style={{ marginTop: "50px", textAlign: "center" }}
                 className="fancytext"
