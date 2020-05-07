@@ -231,6 +231,7 @@ export default class MainPage extends React.Component {
       })
       .then((response) => {
         console.log(response.data);
+        this.hideSignUp();
       })
       .catch((error) => {
         console.log(error);
