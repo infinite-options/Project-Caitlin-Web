@@ -11,18 +11,25 @@ export default class ShowATList extends React.Component {
             iconShow: true
         };
     }
-    componentDidUpdate() {}
+    componentDidUpdate(prevProps, prevState) {
+      if(prevProps.Array != this.props.Array){
+        // console.log("is is going in here at least");
+        let items = [...this.props.Array];
+        // console.log("this is the item");
+        // console.log("this si the for the person 2",items[this.props.Index] )
+        // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
+        this.setState({iconShow: items[this.props.Index]['is_sublist_available']});
+      }   
+    }
 
     componentDidMount() {
         let items = [...this.props.Array];
-        // console.log("this is the item");
-        // console.log(items[this.props.Index]);
+        // console.log("this si the for the person",items[this.props.Index] )
+        // console.log("this is what it is supposed to be",items[this.props.Index]['is_sublist_available']);
         this.setState({iconShow: items[this.props.Index]['is_sublist_available']});
     }
-    // ListFalse = e => {
-    //   this.props.ListCameBackFalse();  
-    //   this.setState({iconShow: !this.state.iconShow}); 
-    // };
+ 
+  
 
     editFirBaseFalse = e =>{
       // console.log("this should be false");
@@ -34,17 +41,6 @@ export default class ShowATList extends React.Component {
             }
         )
       })
-      // this.setState({iconShow: false});
-      // // console.log(this.state.iconShow);
-      // let items = [...this.props.Array];
-      // // console.log("this is the item");
-      // // console.log(items[this.props.Index]);
-      
-      //   items[this.props.Index]['is_sublist_available'] = false;
-      //   this.props.Path.update({ 'goals&routines': items }).then(
-      //       (doc) => {
-      //       }
-      //   )
     }
 
     editFirBaseTrue = e =>{
@@ -61,6 +57,7 @@ export default class ShowATList extends React.Component {
     render() {
         return (
             <div>
+              {/* {console.log("this state is ", this.state.iconShow)} */}
                 {this.state.iconShow &&  
                     <div  >
                         <FontAwesomeIcon

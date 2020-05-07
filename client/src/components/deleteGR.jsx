@@ -94,7 +94,7 @@ export default class deleteGR extends Component {
 
     confirmation = () => {
         const r = window.confirm("Confirm Delete"); 
-        if(r == true){ 
+        if(r === true){ 
             // console.log("Delete Confirm")
             this.submitRequest();
             return;

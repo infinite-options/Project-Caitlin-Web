@@ -130,25 +130,25 @@ export default class MainPage extends React.Component {
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
     // console.log("FirebaseV2 component did mount");
-    console.log("this is the current userid", this.state.currentUserId);
-    if (this.state.currentUserId != "") {
+    // console.log("this is the current userid", this.state.currentUserId);
+    if (this.state.currentUserId !== "") {
       //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
       const docRef = db.collection("users").doc(this.state.currentUserId);
-      console.log("this is suppose tto be the path", docRef);
+      // console.log("this is suppose tto be the path", docRef);
       docRef
         .get()
         .then((doc) => {
           if (doc.exists) {
             // console.log(doc.data());
             var x = doc.data();
-            console.log("this is the data", x);
+            // console.log("this is the data", x);
             // console.log(x["goals&routines"]);
             // x = x["goals&routines"];
             let routine = [];
             let goal = [];
-            if (x["goals&routines"] != undefined) {
+            if (x["goals&routines"] !== undefined) {
               x = x["goals&routines"];
-              console.log("this is the goals and routines", x);
+              // console.log("this is the goals and routines", x);
 
               for (let i = 0; i < x.length; ++i) {
                 if (x[i]["is_persistent"]) {
@@ -310,7 +310,7 @@ export default class MainPage extends React.Component {
           let picURL = "";
           // console.log("this is x", x);
           //  console.log(x["about_me"]);
-          if (x["about_me"] != undefined) {
+          if (x["about_me"] !== undefined) {
             picURL = x["about_me"].pic;
             // console.log("we got in");
           }
@@ -408,6 +408,25 @@ export default class MainPage extends React.Component {
   handleDayEventClick = (A) => {
     var guestList = "";
     console.log(A, "handleDayEventClick");
+    if (A.recurringEventId) {
+      axios
+        .get("/getRecurringRules", {
+          params: {
+            recurringEventId: A.recurringEventId,
+          },
+        })
+        .then((res) => {
+          console.log(res.data, "getRecurringRules");
+          this.setState(
+            {
+              recurrenceRule: res.data[0],
+            },
+            () => {
+              this.repeatSummaryCompute();
+            }
+          );
+        });
+    }
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
         return guestList + " " + nextGuest.email;
@@ -415,7 +434,9 @@ export default class MainPage extends React.Component {
       console.log("Guest List:", A.attendees, guestList);
     }
     this.setState({
+      newEvent: A,
       newEventID: A.id,
+      newEventRecurringID: A.recurringEventId,
       newEventStart0: A.start.dateTime
         ? new Date(A.start.dateTime)
         : new Date(A.start.date),
@@ -1317,6 +1338,7 @@ export default class MainPage extends React.Component {
       ID = this.state.newEventID;
       event.recurrence = null;
     } else if (this.state.editRecurringOption === "This and following events") {
+      console.log("updatethisandfollowing");
       ID = updatedEvent.recurringEventId;
       let newEvent = {
         reminders: this.state.newEvent.reminders,
@@ -1372,6 +1394,7 @@ export default class MainPage extends React.Component {
           `;UNTIL=${newUntilSubString}`
         );
       }
+      console.log(newRecurrenceRule, "newRecurrenceRule");
       await axios
         .get("/getRecurringEventInstances", {
           params: {
@@ -1713,8 +1736,17 @@ export default class MainPage extends React.Component {
       endDate.setHours(23, 59, 59);
       this.getEventsByInterval(startDate.toString(), endDate.toString());
     } else if (this.state.calendarView === "Day") {
+      let startObject = this.state.dateContext.clone();
+      let endObject = this.state.dateContext.clone();
+      let startDay = startObject.startOf("day");
+      let endDay = endObject.endOf("day");
+      let startDate = new Date(startDay.format("MM/DD/YYYY"));
+      let endDate = new Date(endDay.format("MM/DD/YYYY"));
+      startDate.setHours(0, 0, 0);
+      endDate.setHours(23, 59, 59);
       this.getEventsByIntervalDayVersion(
-        this.state.dateContext.format("MM/DD/YYYY")
+        startDate.toString(),
+        endDate.toString()
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -2063,6 +2095,17 @@ export default class MainPage extends React.Component {
 
   updatePic = (name, url) => {
     // this.updateProfileFromFirebase();
+    let index = null;
+    Object.keys(this.state.userIdAndNames).map((keyName, keyIndex) => {
+      if (keyName === this.state.currentUserId) {
+        index = keyIndex;
+      }
+    });
+    // console.log("thissi the index ",index);
+    if (index !== null) {
+      this.state.userPicsArray[index] = url;
+    }
+
     this.state.userIdAndNames[this.state.currentUserId] = name;
     this.setState({
       currentUserPicUrl: url,
@@ -2278,9 +2321,11 @@ export default class MainPage extends React.Component {
                 // justifyContent: "center"
                 // alignItems: "center"
               }}
-            >
+            >     
               {/* the modal for routine/goal is called Firebasev2 currently */}
-              {console.log("this is the originalGoals and rountines Arr")}
+              {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
+              {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
+              {//console.log("this is the originalGoals and rountines Arr")}
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
@@ -2304,19 +2349,22 @@ export default class MainPage extends React.Component {
                   }}
                   showRoutine={this.state.showRoutineModal}
                   showGoal={this.state.showGoalModal}
-                  goals={this.state.goals}
-                  routines={this.state.routines}
                   todayDateObject={this.state.todayDateObject}
                   calendarView={this.state.calendarView}
                   dateContext={this.state.dateContext}
                 />
-              )}
-
-              <Col
-                sm="auto"
-                md="auto"
-                lg="auto"
-                style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+            )}
+            <Col
+              sm="auto"
+              md="auto"
+              lg="auto"
+              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+            >
+              {this.showCalendarView()}
+              <div>V1.2</div>
+              <div
+                style={{ marginTop: "50px", textAlign: "center" }}
+                className="fancytext"
               >
                 {this.showCalendarView()}
                 <div
@@ -2981,7 +3029,7 @@ export default class MainPage extends React.Component {
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
           <Modal.Title>
-            <h5 className="normalfancytext">Repeating Options</h5>
+            <h5 className="normalfancytext">Repeating Options test</h5>
           </Modal.Title>
         </Modal.Header>
 
@@ -3083,7 +3131,7 @@ export default class MainPage extends React.Component {
                       this.state.repeatRadio_temp === "On" && true
                     }
                   />
-                  On
+                  Until
                   <DatePicker
                     className="date-picker-btn btn btn-light"
                     selected={this.state.repeatEndDate_temp}
@@ -3176,59 +3224,142 @@ export default class MainPage extends React.Component {
     if (deleteRecurringOption === "This event") {
       this.deleteSubmit();
     } else if (deleteRecurringOption === "This and following events") {
-      let untilSubString = "";
-      let untilIndex = recurrenceRule.indexOf("UNTIL");
-      if (untilIndex !== -1) {
-        untilSubString = recurrenceRule.substring(untilIndex);
-      }
-      if (untilSubString.includes(";")) {
-        let endUntilIndex = untilSubString.indexOf(";");
-        untilSubString = untilSubString.substring(6, endUntilIndex);
-      } else if (untilSubString) {
-        untilSubString = untilSubString = untilSubString.substring(6);
-      }
       await axios
         .get("/getRecurringEventInstances", {
           params: {
             recurringEventId: newEventRecurringID,
-            timeMin: newEventStart0,
-            timeMax: moment(untilSubString).toISOString(),
           },
         })
         .then((res) => {
-          console.log(res.data, "deleterecurring");
-          axios
-            .delete("/deleteRecurringEvent", {
-              params: {
-                array: res.data,
-              },
-            })
-            .then((res) => {
-              this.setState({
-                dayEventSelected: false,
-                showDeleteRecurringModal: false,
+          if (res.data[0].id === this.state.newEvent.id) {
+            axios
+              .post("/deleteEvent", {
+                ID: newEventRecurringID,
+              })
+              .then((response) => {
+                this.setState({
+                  dayEventSelected: false,
+                  showDeleteRecurringModal: false,
+                });
+                this.updateEventsArray();
+              })
+              .catch(function (error) {
+                console.log(error);
               });
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+          } else {
+            let newEvent = {
+              reminders: this.state.newEvent.reminders,
+              creator: this.state.newEvent.creator,
+              created: this.state.newEvent.created,
+              organizer: this.state.newEvent.organizer,
+              sequence: this.state.newEvent.sequence,
+              status: this.state.newEvent.status,
+            };
+            let newRecurrenceRule = this.state.recurrenceRule;
+            let newUntilSubString = `${moment(this.state.newEventStart0).format(
+              "YYYYMMDD"
+            )}`;
+
+            let countSubString = "";
+            let countIndex = this.state.recurrenceRule.indexOf("COUNT");
+            if (countIndex !== -1) {
+              countSubString = this.state.recurrenceRule.substring(countIndex);
+            }
+            if (countSubString.includes(";")) {
+              let endCountIndex = countSubString.indexOf(";");
+              countSubString = countSubString.substring(6, endCountIndex);
+            } else if (countSubString) {
+              countSubString = countSubString.substring(6);
+            }
+
+            let intervalSubString = "";
+            let intervalIndex = recurrenceRule.indexOf("INTERVAL");
+            if (intervalIndex !== -1) {
+              intervalSubString = recurrenceRule.substring(intervalIndex);
+            }
+            if (intervalSubString.includes(";")) {
+              let endIntervalIndex = intervalSubString.indexOf(";");
+              intervalSubString = intervalSubString.substring(
+                9,
+                endIntervalIndex
+              );
+            } else if (intervalSubString) {
+              intervalSubString = intervalSubString.substring(9);
+            }
+
+            if (newRecurrenceRule.includes("UNTIL")) {
+              let untilSubString = "";
+              let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
+              if (untilIndex !== -1) {
+                untilSubString = this.state.recurrenceRule.substring(
+                  untilIndex
+                );
+              }
+              if (untilSubString.includes(";")) {
+                let endUntilIndex = untilSubString.indexOf(";");
+                untilSubString = untilSubString.substring(6, endUntilIndex);
+              } else if (untilSubString) {
+                untilSubString = untilSubString = untilSubString.substring(6);
+              }
+
+              console.log(untilSubString, newUntilSubString, "untilSubString");
+
+              newRecurrenceRule = newRecurrenceRule.replace(
+                untilSubString,
+                newUntilSubString
+              );
+            } else if (newRecurrenceRule.includes("COUNT")) {
+              let start = moment(res.data[0].start.dateTime);
+              let end = moment(this.state.newEventStart0);
+
+              let arr = res.data.filter((e, i) => {
+                return moment(e.start.dateTime).isBefore(end);
+              });
+
+              // let diff =
+              //   moment.duration(end.diff(start)).asDays() /
+              //   parseInt(intervalSubString);
+              // console.log(diff, intervalSubString, "diff");
+              newRecurrenceRule = newRecurrenceRule.replace(
+                countSubString,
+                arr.length
+              );
+            } else {
+              newRecurrenceRule = newRecurrenceRule.concat(
+                `;UNTIL=${newUntilSubString}`
+              );
+            }
+            newEvent.start = res.data[0].start;
+            newEvent.end = res.data[0].end;
+            newEvent.recurrence = [newRecurrenceRule];
+            newEvent.summary = res.data[0].summary;
+
+            axios
+              .put("/updateEvent", {
+                extra: newEvent,
+                ID: newEventRecurringID,
+                // start: updatedEvent.start,
+                // end: updatedEvent.end,
+              })
+              .then((response) => {
+                this.setState({
+                  dayEventSelected: false,
+                  newEventName: "",
+                  newEventStart0: new Date(),
+                  newEventEnd0: new Date(),
+                });
+
+                this.updateEventsArray();
+              })
+
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      this.updateEventsArray();
-      // axios
-      //   .delete("/")
-      // axios
-      // .post("/deleteEvent", {
-      //   ID: this.state.newEventID,
-      // })
-      // .then((response) => {
-      //   this.setState({
-      //     dayEventSelected: false,
-      //   });
-      //   this.updateEventsArray();
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
     } else if (deleteRecurringOption === "All events") {
       axios
         .post("/deleteEvent", {
@@ -3886,18 +4017,24 @@ when there is a change in the event form
    * getEventsByIntervalDayVersion:
    * gets exactly the days worth of events from the google calendar
    */
-  getEventsByIntervalDayVersion = (day) => {
+  getEventsByIntervalDayVersion = (startDate, endDate) => {
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
-          start: day.toString(),
-          end: day.toString(),
+          start: startDate.toString(),
+          end: endDate.toString(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
       })
       .then((response) => {
         console.log("what are the events", response.data);
         var events = response.data;
+        // events.map((event) => {
+        //   console.log(new Date(event.start.dateTime).getHours());
+        //   event.start.dateTime = new Date(event.start.dateTime);
+        //   event.end.dateTime = new Date(event.end.dateTime);
+        // });
         this.setState(
           {
             dayEvents: events,

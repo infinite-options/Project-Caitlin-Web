@@ -214,7 +214,7 @@ export default class DayRoutines extends Component {
   };
 
   render() {
-    console.log(this.state.routines, "dayroutines");
+    // console.log(this.state.routines, "dayroutines");
     return (
       <div
         style={{
