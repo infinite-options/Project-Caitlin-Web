@@ -250,7 +250,9 @@ export default class MainPage extends React.Component {
           <br />
           {this.LogInForm()}
           {this.signUpModal()}
+          <div>V1.3</div>
         </div>
+
       );
     }
   }
