@@ -2321,11 +2321,11 @@ export default class MainPage extends React.Component {
                 // justifyContent: "center"
                 // alignItems: "center"
               }}
-            >     
+            >
               {/* the modal for routine/goal is called Firebasev2 currently */}
               {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
               {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
-              {//console.log("this is the originalGoals and rountines Arr")}
+              {/* console.log("this is the originalGoals and rountines Arr") */}
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
@@ -2373,6 +2373,7 @@ export default class MainPage extends React.Component {
                 >
                   Dedicated to Caitlin Little
                 </div>
+              </div>
               </Col>
               {/* <Col style={{ marginLeft: "25px" }}> */}
               <Col>{this.showDayViewOrAboutView()}</Col>
