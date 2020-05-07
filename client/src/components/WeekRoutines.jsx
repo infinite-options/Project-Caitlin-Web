@@ -4,8 +4,6 @@ import {
      Container, Row, Col
 } from 'react-bootstrap';
 
-
-
 export default class WeekRoutines extends Component {
   constructor(props) {
       super(props);

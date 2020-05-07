@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import moment from 'moment';
 import {  Container, Row, Col} from 'react-bootstrap';
 
-// import firebase from "./firebase";
 export default class DayGoals extends Component {
 
     constructor(props) {

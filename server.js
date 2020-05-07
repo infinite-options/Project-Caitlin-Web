@@ -29,6 +29,29 @@ app.use(express.static(__dirname + "/build")); //REC
 var bodyParser = require("body-parser"); //body-parser is use to capture req parameters
 app.use(bodyParser.json()); // <--- Here
 app.use(bodyParser.urlencoded({ extended: true })); //for body parser to parse correctly
+// Use express-session for session variables to support log in functionality
+var session = require("express-session");
+app.use(session({secret: "An open secret"}));
+// Connect to firebase to check for matched passwords
+var firebase = require("firebase");
+var firebaseConfig = {
+  apiKey: "AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE",
+  authDomain: "project-caitlin-c71a9.firebaseapp.com",
+  databaseURL: "https://project-caitlin-c71a9.firebaseio.com",
+  projectId: "project-caitlin-c71a9",
+  storageBucket: "project-caitlin-c71a9.appspot.com",
+  messagingSenderId: "711685546849",
+  appId: "1:711685546849:web:5c7a982748eb3bec35db20",
+  measurementId: "G-DCQF4LY5ZH"
+};
+
+firebase.initializeApp(firebaseConfig);
+firebase.auth().signInAnonymously().catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
 
 const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
@@ -427,6 +450,94 @@ app.post("/createNewEvent", function (req, res) {
       res.send("Evented Created");
     }
   );
+});
+
+/*
+Log in ROUTE:
+Attempt to sign in as trusted advisor
+*/
+app.post("/TALogIn", function (req, result) {
+  console.log(req.body.username,req.body.password);
+  let emailId = req.body.username;
+  let givenPass = req.body.password;
+  var emailId1 = emailId.toLowerCase();
+  var email = emailId1.split("@");
+  email[0] = email[0].split(".").join("");
+  email[0] = email[0].concat("@");
+  var emailId_final = email[0].concat(email[1]);
+  let db = firebase.firestore();
+  let TAs = db.collection('trusted_advisor');
+  TAs.where('email_id', '==', emailId_final ).get()
+    .then((snapshot) => {
+      //No email matches
+      if (snapshot.empty) {
+        console.log('no user');
+        result.json(false);
+      } else {
+        snapshot.forEach((doc) => {
+          //Matching password
+          if(givenPass === doc.data().password_key) {
+            req.session.user = req.body.username;
+            result.json(req.body.username);
+            return;
+          }
+        })
+        // Run following when username/passowrd matches
+        console.log('not matching password');
+        result.json(false);
+      }
+    })
+  .catch((err) => {
+    console.log('Error getting documents', err);
+    result.json(false);
+  })
+});
+
+/*
+Log in status ROUTE:
+Check trusted advisor login status
+*/
+app.get("/TALogInStatus", function (req, result) {
+  if(req.session.user) {
+    result.json(req.session.user);
+  } else {
+    result.json(false)
+  }
+});
+
+/*
+Log out ROUTE:
+Trusted advisor log out
+*/
+app.get("/TALogOut", function (req, result) {
+  req.session.destroy(function(err) {
+  })
+  result.json("success");
+});
+
+/*
+TA Sign up ROUTE:
+Trusted advisor sign up
+*/
+app.post("/TASignUp",function (req, result) {
+  console.log(req.body);
+  let db = firebase.firestore();
+  let newTARef = db.collection('trusted_advisor').doc();
+  newTARef
+    .set({
+      email_id: req.body.username,
+      password_key: req.body.password,
+      first_name: req.body.fName,
+      last_name: req.body.lName,
+      employer: req.body.employer,
+    })
+    .then(() =>{
+      result.json(true);
+    })
+    .catch((err) => {
+      console.log('Error writing', err);
+      result.json(false);
+    });
 });
 
 // Refer to the Node.js quickstart on how to setup the environment:
