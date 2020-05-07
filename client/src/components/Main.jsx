@@ -244,13 +244,15 @@ export default class MainPage extends React.Component {
           loaded: true,
           loggedIn: response.data,
         });
+        if(response.data) {
+          this.updateEventsArray();
+          this.updateProfileFromFirebase();
+          // this.getEventNotifications();
+        }
       })
       .catch((error) => {
         console.log(error);
       });
-    this.updateEventsArray();
-    this.updateProfileFromFirebase();
-    // this.getEventNotifications();
   }
 
   /*This will obtain the notifications from the database
@@ -1607,6 +1609,20 @@ export default class MainPage extends React.Component {
   //   });
   // };
 
+  TALogOut = () => {
+    axios.
+      get("./TALogOut")
+      .then ((response) => {
+        this.setState({
+          loggedIn: false,
+        },
+        console.log(response))
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   nextMonth = () => {
     let dateContext = Object.assign({}, this.state.dateContext);
     dateContext = moment(dateContext).add(1, "month");
@@ -2091,14 +2107,14 @@ export default class MainPage extends React.Component {
   };
 
   render() {
-    //The variable below will help decide whether to center the Calendar object or not
-    var onlyCal =
+    if(this.state.loaded && !this.state.loggedIn) {
+      return (<Redirect to="/" />);
+    } else {
+      //The variable below will help decide whether to center the Calendar object or not
+      var onlyCal =
       !this.state.showRoutineGoalModal &&
       !this.state.showGoalModal &&
       !this.state.showRoutineModal;
-    if(this.state.loaded && !this.state.loggedIn) {
-      return (<Redirect push to="/" />);
-    } else {
       return (
         //width and height is fixed now but should be by % percentage later on
         <div
@@ -2115,6 +2131,9 @@ export default class MainPage extends React.Component {
             // background: "lightblue",
           }}
         >
+          <Button style={{ float: "right", marginTop: "30px", marginRight: "12%" }} onClick={this.TALogOut}>
+            Log out
+          </Button>
           <div
             style={{
               margin: "0",
@@ -2155,6 +2174,7 @@ export default class MainPage extends React.Component {
                       />
                     )}
                   </div>
+                  <Col>
                   {this.state.enableNameDropDown === false ? (
                     <DropdownButton
                       style={{ display: "inline-block" }}
@@ -2193,18 +2213,7 @@ export default class MainPage extends React.Component {
                       )}
                     </DropdownButton>
                   )}
-
-                  {/* <div style={{ float: "left", width: "227px", height: "50px" }}>
-                {this.state.profileName === "" ? (
-                  <p style={{ marginTop: "30px", marginLeft: "10px" }}>
-                    First Last
-                  </p>
-                ) : (
-                  <p style={{ marginTop: "30px", marginLeft: "10px" }}>
-                    {this.state.profileName}
-                  </p>
-                )}
-              </div> */}
+                  </Col>
                 </Row>
                 <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
                   <Button

@@ -244,3 +244,7 @@ input.date-picker-btn {
   width: 110px;
   margin-left: 75px;
 }
+
+.formEltMargin {
+  margin: 15px;
+}
