@@ -184,7 +184,6 @@ export default class MainPage extends React.Component {
           console.log("Error getting document:", error);
         });
     }
-   
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -390,6 +389,25 @@ export default class MainPage extends React.Component {
   handleDayEventClick = (A) => {
     var guestList = "";
     console.log(A, "handleDayEventClick");
+    if (A.recurringEventId) {
+      axios
+        .get("/getRecurringRules", {
+          params: {
+            recurringEventId: A.recurringEventId,
+          },
+        })
+        .then((res) => {
+          console.log(res.data, "getRecurringRules");
+          this.setState(
+            {
+              recurrenceRule: res.data[0],
+            },
+            () => {
+              this.repeatSummaryCompute();
+            }
+          );
+        });
+    }
     if (A.attendees) {
       guestList = A.attendees.reduce((guestList, nextGuest) => {
         return guestList + " " + nextGuest.email;
@@ -397,7 +415,9 @@ export default class MainPage extends React.Component {
       console.log("Guest List:", A.attendees, guestList);
     }
     this.setState({
+      newEvent: A,
       newEventID: A.id,
+      newEventRecurringID: A.recurringEventId,
       newEventStart0: A.start.dateTime
         ? new Date(A.start.dateTime)
         : new Date(A.start.date),
@@ -1299,6 +1319,7 @@ export default class MainPage extends React.Component {
       ID = this.state.newEventID;
       event.recurrence = null;
     } else if (this.state.editRecurringOption === "This and following events") {
+      console.log("updatethisandfollowing");
       ID = updatedEvent.recurringEventId;
       let newEvent = {
         reminders: this.state.newEvent.reminders,
@@ -1354,6 +1375,7 @@ export default class MainPage extends React.Component {
           `;UNTIL=${newUntilSubString}`
         );
       }
+      console.log(newRecurrenceRule, "newRecurrenceRule");
       await axios
         .get("/getRecurringEventInstances", {
           params: {
@@ -2041,18 +2063,16 @@ export default class MainPage extends React.Component {
   updatePic = (name, url) => {
     // this.updateProfileFromFirebase();
     let index = null;
-    Object.keys(this.state.userIdAndNames).map(
-      (keyName, keyIndex) => {
-        if(keyName === this.state.currentUserId){
-            index = keyIndex;
-          }
+    Object.keys(this.state.userIdAndNames).map((keyName, keyIndex) => {
+      if (keyName === this.state.currentUserId) {
+        index = keyIndex;
       }
-    );
+    });
     // console.log("thissi the index ",index);
-    if(index !== null){
-      this.state.userPicsArray[index]= url;
+    if (index !== null) {
+      this.state.userPicsArray[index] = url;
     }
-    
+
     this.state.userIdAndNames[this.state.currentUserId] = name;
     this.setState({
       currentUserPicUrl: url,
@@ -3171,59 +3191,142 @@ export default class MainPage extends React.Component {
     if (deleteRecurringOption === "This event") {
       this.deleteSubmit();
     } else if (deleteRecurringOption === "This and following events") {
-      let untilSubString = "";
-      let untilIndex = recurrenceRule.indexOf("UNTIL");
-      if (untilIndex !== -1) {
-        untilSubString = recurrenceRule.substring(untilIndex);
-      }
-      if (untilSubString.includes(";")) {
-        let endUntilIndex = untilSubString.indexOf(";");
-        untilSubString = untilSubString.substring(6, endUntilIndex);
-      } else if (untilSubString) {
-        untilSubString = untilSubString = untilSubString.substring(6);
-      }
       await axios
         .get("/getRecurringEventInstances", {
           params: {
             recurringEventId: newEventRecurringID,
-            timeMin: newEventStart0,
-            timeMax: moment(untilSubString).toISOString(),
           },
         })
         .then((res) => {
-          console.log(res.data, "deleterecurring");
-          axios
-            .delete("/deleteRecurringEvent", {
-              params: {
-                array: res.data,
-              },
-            })
-            .then((res) => {
-              this.setState({
-                dayEventSelected: false,
-                showDeleteRecurringModal: false,
+          if (res.data[0].id === this.state.newEvent.id) {
+            axios
+              .post("/deleteEvent", {
+                ID: newEventRecurringID,
+              })
+              .then((response) => {
+                this.setState({
+                  dayEventSelected: false,
+                  showDeleteRecurringModal: false,
+                });
+                this.updateEventsArray();
+              })
+              .catch(function (error) {
+                console.log(error);
               });
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+          } else {
+            let newEvent = {
+              reminders: this.state.newEvent.reminders,
+              creator: this.state.newEvent.creator,
+              created: this.state.newEvent.created,
+              organizer: this.state.newEvent.organizer,
+              sequence: this.state.newEvent.sequence,
+              status: this.state.newEvent.status,
+            };
+            let newRecurrenceRule = this.state.recurrenceRule;
+            let newUntilSubString = `${moment(this.state.newEventStart0).format(
+              "YYYYMMDD"
+            )}`;
+
+            let countSubString = "";
+            let countIndex = this.state.recurrenceRule.indexOf("COUNT");
+            if (countIndex !== -1) {
+              countSubString = this.state.recurrenceRule.substring(countIndex);
+            }
+            if (countSubString.includes(";")) {
+              let endCountIndex = countSubString.indexOf(";");
+              countSubString = countSubString.substring(6, endCountIndex);
+            } else if (countSubString) {
+              countSubString = countSubString.substring(6);
+            }
+
+            let intervalSubString = "";
+            let intervalIndex = recurrenceRule.indexOf("INTERVAL");
+            if (intervalIndex !== -1) {
+              intervalSubString = recurrenceRule.substring(intervalIndex);
+            }
+            if (intervalSubString.includes(";")) {
+              let endIntervalIndex = intervalSubString.indexOf(";");
+              intervalSubString = intervalSubString.substring(
+                9,
+                endIntervalIndex
+              );
+            } else if (intervalSubString) {
+              intervalSubString = intervalSubString.substring(9);
+            }
+
+            if (newRecurrenceRule.includes("UNTIL")) {
+              let untilSubString = "";
+              let untilIndex = this.state.recurrenceRule.indexOf("UNTIL");
+              if (untilIndex !== -1) {
+                untilSubString = this.state.recurrenceRule.substring(
+                  untilIndex
+                );
+              }
+              if (untilSubString.includes(";")) {
+                let endUntilIndex = untilSubString.indexOf(";");
+                untilSubString = untilSubString.substring(6, endUntilIndex);
+              } else if (untilSubString) {
+                untilSubString = untilSubString = untilSubString.substring(6);
+              }
+
+              console.log(untilSubString, newUntilSubString, "untilSubString");
+
+              newRecurrenceRule = newRecurrenceRule.replace(
+                untilSubString,
+                newUntilSubString
+              );
+            } else if (newRecurrenceRule.includes("COUNT")) {
+              let start = moment(res.data[0].start.dateTime);
+              let end = moment(this.state.newEventStart0);
+
+              let arr = res.data.filter((e, i) => {
+                return moment(e.start.dateTime).isBefore(end);
+              });
+
+              // let diff =
+              //   moment.duration(end.diff(start)).asDays() /
+              //   parseInt(intervalSubString);
+              // console.log(diff, intervalSubString, "diff");
+              newRecurrenceRule = newRecurrenceRule.replace(
+                countSubString,
+                arr.length
+              );
+            } else {
+              newRecurrenceRule = newRecurrenceRule.concat(
+                `;UNTIL=${newUntilSubString}`
+              );
+            }
+            newEvent.start = res.data[0].start;
+            newEvent.end = res.data[0].end;
+            newEvent.recurrence = [newRecurrenceRule];
+            newEvent.summary = res.data[0].summary;
+
+            axios
+              .put("/updateEvent", {
+                extra: newEvent,
+                ID: newEventRecurringID,
+                // start: updatedEvent.start,
+                // end: updatedEvent.end,
+              })
+              .then((response) => {
+                this.setState({
+                  dayEventSelected: false,
+                  newEventName: "",
+                  newEventStart0: new Date(),
+                  newEventEnd0: new Date(),
+                });
+
+                this.updateEventsArray();
+              })
+
+              .catch(function (error) {
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      this.updateEventsArray();
-      // axios
-      //   .delete("/")
-      // axios
-      // .post("/deleteEvent", {
-      //   ID: this.state.newEventID,
-      // })
-      // .then((response) => {
-      //   this.setState({
-      //     dayEventSelected: false,
-      //   });
-      //   this.updateEventsArray();
-      // })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
     } else if (deleteRecurringOption === "All events") {
       axios
         .post("/deleteEvent", {
@@ -3905,7 +4008,6 @@ when there is a change in the event form
           },
           () => {
             console.log("New Events Arrived", events);
-            console.log("test time", this.state.dateContext);
           }
         );
       })

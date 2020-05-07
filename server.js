@@ -294,20 +294,20 @@ app.post("/deleteEvent", function (req, result) {
 });
 
 app.delete("/deleteRecurringEvent", (req, result) => {
-  console.log(req.query.array[0], "deleteRecurringEvent");
-  try {
-    req.query.array.map((event) => {
-      event = JSON.parse(event);
-      console.log(event.id, "event.id");
-      calendar.events.delete({
-        calendarId: calendarID,
-        eventId: event.id,
-      });
-    });
-    result.send("delete");
-  } catch (error) {
-    console.log(error);
-  }
+  console.log(req.query.eventId, "deleteRecurringEvent");
+  calendar.events.delete(
+    {
+      calendarId: calendarID,
+      eventId: req.query.eventId,
+    },
+    (err, res) => {
+      //CallBack
+      if (err) {
+        return result.send("The delete request returned an error: " + err);
+      }
+      result.send("delete");
+    }
+  );
 });
 
 /*
