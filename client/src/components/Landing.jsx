@@ -30,6 +30,17 @@ export default class MainPage extends React.Component {
     }
   }
 
+  componentDidMount() {
+    window.gapi
+      .load('auth2', () => {
+        window.gapi.auth2.init({
+          client_id: "90936803922-sfuagj2hlteagb60qur1re87d8qhtuiv.apps.googleusercontent.com"
+      }).then((response) => {
+        console.log(response);
+      })
+    })
+  }
+
   LogInForm = () => {
     return (
       <div>
@@ -111,12 +122,7 @@ export default class MainPage extends React.Component {
   }
 
   handleGoogleSignIn = () => {
-    window.gapi.load('auth2', () => {
-      window.gapi.auth2.init({
-      client_id: 90936803922-sfuagj2hlteagb60qur1re87d8qhtuiv.apps.googleusercontent.com
-    }).then({
-
-    })
+    console.log("click")
   }
 
   handleSignUp = (event) => {
