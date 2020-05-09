@@ -32,49 +32,52 @@ export default class MainPage extends React.Component {
 
   LogInForm = () => {
     return (
-      <Form as={Container} style={{
-        width: "600px",
-        margin: "auto",
-        padding: "5px 5px",
-        borderRadius: "15px",
-        boxShadow:
-          "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
-      }}>
-        <h3 className="bigfancytext">Sign In</h3>
-        <Form.Group as={Row}>
-          <Form.Label column sm="4">Email</Form.Label>
-          <Col sm="8">
-            <Form.Control
-              type="text"
-              value={this.state.email}
-              onChange={this.handleEmailChange}
-              placeholder="example@gmail.com"
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row}>
-          <Form.Label column sm="4">Password</Form.Label>
-          <Col sm="8">
-            <Form.Control
-              type="password"
-              value={this.state.password}
-              onChange={this.handlePasswordChange}
-            />
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row}>
-          <Col>
-            <Button variant="primary" type="submit" onClick={this.handleSubmit}>
-              Sign in
-            </Button>
-          </Col>
-          <Col>
-            <Button variant="primary" type="submit" onClick={this.handleSignUp}>
-              Sign Up
-            </Button>
-          </Col>
-        </Form.Group>
-      </Form>
+      <div>
+        <Form as={Container} style={{
+          width: "600px",
+          margin: "auto",
+          padding: "5px 5px",
+          borderRadius: "15px",
+          boxShadow:
+            "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}>
+          <h3 className="bigfancytext">Sign In</h3>
+          <Form.Group as={Row}>
+            <Form.Label column sm="4">Email</Form.Label>
+            <Col sm="8">
+              <Form.Control
+                type="text"
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+                placeholder="example@gmail.com"
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="4">Password</Form.Label>
+            <Col sm="8">
+              <Form.Control
+                type="password"
+                value={this.state.password}
+                onChange={this.handlePasswordChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Col>
+              <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+                Sign in
+              </Button>
+            </Col>
+            <Col>
+              <Button variant="primary" type="submit" onClick={this.handleSignUp}>
+                Sign Up
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+        <img src="/google_signin.png" alt="Google Sign In" onClick={this.handleGoogleSignIn}/>
+      </div>
     )
   }
 
@@ -105,6 +108,15 @@ export default class MainPage extends React.Component {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  handleGoogleSignIn = () => {
+    window.gapi.load('auth2', () => {
+      window.gapi.auth2.init({
+      client_id: 90936803922-sfuagj2hlteagb60qur1re87d8qhtuiv.apps.googleusercontent.com
+    }).then({
+
+    })
   }
 
   handleSignUp = (event) => {
