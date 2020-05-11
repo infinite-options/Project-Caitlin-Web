@@ -540,6 +540,36 @@ app.post("/TASignUp",function (req, result) {
     });
 });
 
+app.get("/auth-url", function (req, result) {
+  fs.readFile("credentials.json", (err, content) => {
+    if (err) return console.log("Error loading client secret file:", err);
+    // Authorize a client with credentials, then call the Google Calendar API.
+    let credentials = JSON.parse(content);
+    const {client_secret, client_id, redirect_uris} = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]);
+    const authUrl = oAuth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES,
+    });
+    result.json(authUrl);
+  });
+});
+
+app.get("/adduser", function (req, result) {
+  oAuth2Client.getToken(req.query.code, (err, token) => {
+    if (err) return console.error("Error retrieving access token", err);
+    oAuth2Client.setCredentials(token);
+    // Store the token to disk for later program executions
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+      if (err) return console.error(err);
+      console.log("Token stored to", TOKEN_PATH);
+    });
+    callback(oAuth2Client);
+  });
+  result.json("hello")
+});
+
 // Refer to the Node.js quickstart on how to setup the environment:
 // https://developers.google.com/calendar/quickstart/node
 // Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any

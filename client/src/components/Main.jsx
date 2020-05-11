@@ -2261,9 +2261,12 @@ export default class MainPage extends React.Component {
                 <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
                   <Button
                     style={{ marginTop: "10px" }}
-                    onClick={(e) => {
+                    onClick={
+                    /*(e) => {
                       this.setState({ showNewAccountmodal: true });
-                    }}
+                    }*/
+                    this.googleLogIn
+                    }
                   >
                     Create New User
                   </Button>
@@ -2376,6 +2379,18 @@ export default class MainPage extends React.Component {
         </div>
       );
     }
+  }
+
+  googleLogIn = () => {
+    axios
+      .get("/auth-url")
+      .then((response) => {
+        console.log(response);
+        window.location.href = response.data;
+      })
+      .catch((error) => {
+        console.log("Error Occurred " + error);
+      });
   }
 
   dayViewAbstracted = () => {
