@@ -66,8 +66,9 @@ var calendarID = "iodevcalendar@gmail.com"; //Change here for some else's calend
 // var calendarID = "jeremyhmanalo@gmail.com"
 //Required code for any of the above to work
 // If modifying these scopes, delete token.json.
-const SCOPES = ["https://www.googleapis.com/auth/calendar"];
-// The file token.json stores the user's access and refresh tokens, and is
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const SCOPEUSERS = ['https://www.googleapis.com/auth/calendar','https://www.googleapis.com/auth/userinfo.email'];
+// The file token.json stores the user's acalendar"ccess and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = "token.json";
@@ -550,24 +551,55 @@ app.get("/auth-url", function (req, result) {
         client_id, client_secret, redirect_uris[0]);
     const authUrl = oAuth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: SCOPES,
+      scope: SCOPEUSERS,
     });
     result.json(authUrl);
   });
 });
 
 app.get("/adduser", function (req, result) {
-  oAuth2Client.getToken(req.query.code, (err, token) => {
-    if (err) return console.error("Error retrieving access token", err);
-    oAuth2Client.setCredentials(token);
-    // Store the token to disk for later program executions
-    fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-      if (err) return console.error(err);
-      console.log("Token stored to", TOKEN_PATH);
+  const USER_TOKEN_PATH = "tokenUser.json";
+  fs.readFile("credentials.json", (err, content) => {
+    if (err) return console.log("Error loading client secret file:", err);
+    // Authorize a client with credentials, then call the Google Calendar API.
+    let credentials = JSON.parse(content);
+    const {client_secret, client_id, redirect_uris} = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]);
+    oAuth2Client.getToken(req.query.code, (err, token) => {
+      if (err) return console.error("Error retrieving access token", err);
+        oAuth2Client.setCredentials(token);
+      result.json(token);
+      // axios
+      //   .get("https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + token.access_token)
+      //   .then((response) => {
+      //     console.log(response);
+          // let db = firebase.firestore();
+          // let users = db.collection('users');
+          // users.where('email_id', '==', emailId ).get()
+          // .then((snapshot) => {
+          //   //No email matches
+          //   if (snapshot.empty) {
+          //     console.log('no user');
+          //     // Add token fields for new user
+          //     result.json(token);
+          //   } else {
+          //     snapshot.forEach((doc) => {
+          //       // Update token fields
+          //     })
+          //     result.json(token);
+          //   }
+          // })
+          // .catch((err) => {
+          //   console.log('Error getting documents', err);
+          //   result.json(false);
+          // })
+        // })
+        // .catch((error) => {
+        //   console.log("Error Occurred " + error);
+        // });
     });
-    callback(oAuth2Client);
   });
-  result.json("hello")
 });
 
 // Refer to the Node.js quickstart on how to setup the environment:
@@ -616,6 +648,7 @@ function authorize(credentials, callback) {
 function getAccessToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: "offline",
+    approval_prompt: 'force',
     scope: SCOPES,
   });
   console.log("Authorize this app by visiting this url:", authUrl);
