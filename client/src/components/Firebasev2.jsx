@@ -863,7 +863,7 @@ export default class FirebaseV2 extends React.Component {
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-                       
+
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                         is_sublist_available={this.is_sublist_available}
                       />
@@ -1061,7 +1061,7 @@ export default class FirebaseV2 extends React.Component {
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
-                       
+
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                         // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         FBPath={firebase
