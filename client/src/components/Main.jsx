@@ -1,10 +1,8 @@
 import React from "react";
 import axios from "axios";
-import queryString from 'query-string';
+import queryString from "query-string";
 
-import {
-  Redirect
-} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import {
   Form,
   Button,
@@ -239,24 +237,24 @@ export default class MainPage extends React.Component {
 
   // Entry of the page
   componentDidMount() {
-    axios
-      .get("/TALogInStatus")
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          loaded: true,
-          loggedIn: response.data,
-        });
-        if(response.data) {
-          this.updateStatesByQuery();
-          this.updateProfileFromFirebase();
-          this.updateEventsArray();
-          // this.getEventNotifications();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // axios
+    //   .get("/TALogInStatus")
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     this.setState({
+    //       loaded: true,
+    //       loggedIn: response.data,
+    //     });
+    //     if(response.data) {
+    //       this.updateStatesByQuery();
+    //       this.updateProfileFromFirebase();
+    //       this.updateEventsArray();
+    //       // this.getEventNotifications();
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   }
 
   /*This will obtain the notifications from the database
@@ -291,24 +289,23 @@ export default class MainPage extends React.Component {
   */
   getUrlParam = (name, url) => {
     if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-        results = regex.exec(url);
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
     if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  };
 
   updateStatesByQuery = () => {
-    let query = window.location.href
-    let createUserParam = this.getUrlParam("createUser", query) == "true"
+    let query = window.location.href;
+    let createUserParam = this.getUrlParam("createUser", query) == "true";
     if (createUserParam) {
-      this.setState(
-        {
-          showNewAccountmodal: createUserParam
-        });
+      this.setState({
+        showNewAccountmodal: createUserParam,
+      });
     }
-  }
+  };
 
   updateProfileFromFirebase = () => {
     const db = firebase.firestore();
@@ -1659,18 +1656,20 @@ export default class MainPage extends React.Component {
   // };
 
   TALogOut = () => {
-    axios.
-      get("./TALogOut")
-      .then ((response) => {
-        this.setState({
-          loggedIn: false,
-        },
-        console.log(response))
+    axios
+      .get("./TALogOut")
+      .then((response) => {
+        this.setState(
+          {
+            loggedIn: false,
+          },
+          console.log(response)
+        );
       })
       .catch(function (error) {
         console.log(error);
       });
-  }
+  };
 
   nextMonth = () => {
     let dateContext = Object.assign({}, this.state.dateContext);
@@ -1772,7 +1771,7 @@ export default class MainPage extends React.Component {
       endDate.setHours(23, 59, 59);
       this.getEventsByIntervalDayVersion(
         startDate.toString(),
-        endDate.toString(),
+        endDate.toString()
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -2177,14 +2176,14 @@ export default class MainPage extends React.Component {
   };
 
   render() {
-    if(this.state.loaded && !this.state.loggedIn) {
-      return (<Redirect to="/" />);
+    if (this.state.loaded && !this.state.loggedIn) {
+      return <Redirect to="/" />;
     } else {
       //The variable below will help decide whether to center the Calendar object or not
       var onlyCal =
-      !this.state.showRoutineGoalModal &&
-      !this.state.showGoalModal &&
-      !this.state.showRoutineModal;
+        !this.state.showRoutineGoalModal &&
+        !this.state.showGoalModal &&
+        !this.state.showRoutineModal;
       return (
         //width and height is fixed now but should be by % percentage later on
         <div
@@ -2201,7 +2200,10 @@ export default class MainPage extends React.Component {
             // background: "lightblue",
           }}
         >
-          <Button style={{ float: "right", marginTop: "30px", marginRight: "12%" }} onClick={this.TALogOut}>
+          <Button
+            style={{ float: "right", marginTop: "30px", marginRight: "12%" }}
+            onClick={this.TALogOut}
+          >
             Log out
           </Button>
           <div
@@ -2245,56 +2247,54 @@ export default class MainPage extends React.Component {
                     )}
                   </div>
                   <Col>
-                  {this.state.enableNameDropDown === false ? (
-                    <DropdownButton
-                      style={{ display: "inline-block" }}
-                      title=""
-                      disabled
-                    ></DropdownButton>
-                  ) : (
-                    // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
-                    <DropdownButton
-                      // class = "dropdown-toggle.btn.btn-secondary"
-                      variant="outline-primary"
-                      // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
-                      title={this.state.currentUserName || ""}
-                      style={{ marginTop: "20px", marginLeft: "10px" }}
-                    >
-                      {Object.keys(this.state.userIdAndNames).map(
-                        (keyName, keyIndex) => (
-                          // use keyName to get current key's name
-                          // and a[keyName] to get its value
-                          //keyName is the user id
-                          //keyIndex will help me find the user pic
-                          //this.state.userIdAndName[keyName] gives me the name of current user
-                          <Dropdown.Item
-                            key={keyName}
-                            onClick={(e) => {
-                              this.changeUser(
-                                keyName,
-                                keyIndex,
-                                this.state.userIdAndNames[keyName]
-                              );
-                            }}
-                          >
-                            {this.state.userIdAndNames[keyName] || ""}
-                          </Dropdown.Item>
-                        )
-                      )}
-                    </DropdownButton>
-                  )}
+                    {this.state.enableNameDropDown === false ? (
+                      <DropdownButton
+                        style={{ display: "inline-block" }}
+                        title=""
+                        disabled
+                      ></DropdownButton>
+                    ) : (
+                      // {console.log("this is what suupose to be",this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]])}
+                      <DropdownButton
+                        // class = "dropdown-toggle.btn.btn-secondary"
+                        variant="outline-primary"
+                        // title={this.state.userNamesAndPics[Object.keys(this.state.userNamesAndPics)[0]] || ''}
+                        title={this.state.currentUserName || ""}
+                        style={{ marginTop: "20px", marginLeft: "10px" }}
+                      >
+                        {Object.keys(this.state.userIdAndNames).map(
+                          (keyName, keyIndex) => (
+                            // use keyName to get current key's name
+                            // and a[keyName] to get its value
+                            //keyName is the user id
+                            //keyIndex will help me find the user pic
+                            //this.state.userIdAndName[keyName] gives me the name of current user
+                            <Dropdown.Item
+                              key={keyName}
+                              onClick={(e) => {
+                                this.changeUser(
+                                  keyName,
+                                  keyIndex,
+                                  this.state.userIdAndNames[keyName]
+                                );
+                              }}
+                            >
+                              {this.state.userIdAndNames[keyName] || ""}
+                            </Dropdown.Item>
+                          )
+                        )}
+                      </DropdownButton>
+                    )}
                   </Col>
                 </Row>
                 <Row style={{ marginLeft: "50px" }} className="d-flex flex-row">
                   <Button
                     style={{ marginTop: "10px" }}
-                    onClick={
-                    (e) => {
+                    onClick={(e) => {
                       //   this.setState({ showNewAccountmodal: true });
                       // }
-                      this.googleLogIn()
-                    }
-                  }
+                      this.googleLogIn();
+                    }}
                   >
                     Create New User
                   </Button>
@@ -2316,7 +2316,7 @@ export default class MainPage extends React.Component {
                   <CreateNewAccountModal
                     closeModal={this.hideNewAccountForm}
                     newUserAdded={this.theNewUserAdded}
-                    userNamesAndId = {this.state.userIdAndNames}
+                    userNamesAndId={this.state.userIdAndNames}
                   />
                 )}
               </Col>
@@ -2385,15 +2385,15 @@ export default class MainPage extends React.Component {
                   calendarView={this.state.calendarView}
                   dateContext={this.state.dateContext}
                 />
-            )}
-            <Col
-              sm="auto"
-              md="auto"
-              lg="auto"
-              style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
-            >
-              {this.showCalendarView()}
-              <div>V1.3</div>
+              )}
+              <Col
+                sm="auto"
+                md="auto"
+                lg="auto"
+                style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+              >
+                {this.showCalendarView()}
+                <div>V1.3</div>
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
@@ -2420,7 +2420,7 @@ export default class MainPage extends React.Component {
       .catch((error) => {
         console.log("Error Occurred " + error);
       });
-  }
+  };
 
   dayViewAbstracted = () => {
     return (
