@@ -164,9 +164,9 @@ export default class FirebaseV2 extends React.Component {
     this.props.grabFireBaseRoutinesGoalsData();
   };
 
-  componentWillUnmount() {
-    console.log(" FirebaseV2 will unmount web");
-  }
+  // componentWillUnmount() {
+  //   console.log(" FirebaseV2 will unmount web");
+  // }
 
   formatDateTime(str) {
     const formattedStr = str.replace(/\//g, "-");
@@ -190,6 +190,7 @@ export default class FirebaseV2 extends React.Component {
       // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
+    console.log("this si the goals and routines", id);
     console.log("this si the correct path", docRef);
     docRef
       .get()
@@ -776,6 +777,8 @@ export default class FirebaseV2 extends React.Component {
             <ListGroup.Item
               action
               onClick={() => {
+                console.log("this si the id from display ROutine",tempID );
+                console.log("this si the title from display ROutine",tempTitle);
                 this.GRonClickEvent(tempTitle, tempID, tempPersist);
               }}
               variant="light"

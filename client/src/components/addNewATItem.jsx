@@ -28,6 +28,9 @@ export default class AddNewATItem extends Component {
         is_timed: false,
         expected_completion_time: "00:11:00",
         is_sublist_available: true,
+        // repeating:false,
+        // repeat_number:"1",
+        // repeat_frequency:"day",
         ta_notifications:{
           before:{
             is_enabled: false,
@@ -167,7 +170,6 @@ export default class AddNewATItem extends Component {
           closeButton
           onHide={() => {
             this.props.hideNewATModal();
-            console.log("closed button clicked");
           }}
         >
           <Modal.Title>
