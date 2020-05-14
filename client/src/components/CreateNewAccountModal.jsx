@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
+import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstrap";
 
   export default class AddNewPeople extends Component {
     constructor(props) {
@@ -14,7 +14,9 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
             google_auth_token:"",
             google_refresh_token:""
           }, 
-        //   saveChangesButtonEnabled: true,
+          copy_from_user: "",
+          copy_from_user_name: "Copy Exisiting Client",
+          unique_id: "",
           UserDocsPath: firebase
             .firestore()
             .collection("users")
@@ -23,6 +25,7 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
     };
 
     newUserInputSubmit = ()=>{
+      console.log("this is the copy fron user",this.state.copy_from_user);
         this.state.UserDocsPath
           .add(this.state.itemToEdit)
           .then(ref => {
@@ -34,15 +37,41 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
             let temp = this.state.itemToEdit;
             temp.unique_id = ref.id;
             console.log("Added document with ID: ", ref.id);
-            this.updateWithId();
+            this.updateWithId(ref.id);
    
           });
     }
 
-    updateWithId = ( ) => {
-        this.state.UserDocsPath.doc(this.state.itemToEdit.unique_id).update(this.state.itemToEdit).then(
+    updateWithId = (id ) => {
+      console.log("this is the id",id);
+      // console.log("this is th old id", this.state.itemToEdit.unique_id)
+        console.log("this is the itemtoedit ", this.state.itemToEdit);
+        this.state.UserDocsPath.doc(id).update(this.state.itemToEdit).then(
             (doc) => {
-                
+                console.log("it should be going in here");
+                if(this.state.copy_from_user != ""){
+                  const url = "https://us-central1-project-caitlin-c71a9.cloudfunctions.net/CopyUserData";
+                  const Data = {
+                      data : {
+                        "copy_from_user" : this.state.copy_from_user,
+                        "copy_to_user" : id
+                      }
+                  };
+                  const param = {
+                    headers:{
+                        //"content-type":"application/json; charset=UTF-8"
+                        "content-type": "application/json"
+                    },
+                    body: JSON.stringify(Data),
+                    method: "POST"
+                  };
+                  
+                  fetch(url, param)
+                  .then((response) => response.json())
+                  .then((result) => { console.log(result); } )
+                  .catch((error) => { console.error(error); });
+        
+               }
                 this.props.newUserAdded(); 
             }
         )
@@ -121,18 +150,26 @@ import { Button, Modal, Row, Col, DropdownButton} from "react-bootstrap";
               <Row>
               <Col xs={5}>
               <DropdownButton
-                    title= "Copy Exisiting Client"
+                    title= {this.state.copy_from_user_name}
                     style = {{}}
                 >
-                    {/* {
-                        Object.keys(this.state.userNamesAndPics).map((keyName, keyIndex) => (
-                            // use keyName to get current key's name
-                            // and a[keyName] to get its value
-                            <Dropdown.Item key ={keyName} onClick= {e => {this.changeUser(keyName, this.state.userNamesAndPics[keyName])}}>
-                                        {this.state.userNamesAndPics[keyName] || ''}
-                            </Dropdown.Item>
-                        ))
-                    } */}
+                     {Object.keys(this.props.userNamesAndId).map(
+                        (keyName, keyIndex) => (
+                          // use keyName to get current key's name
+                          // and a[keyName] to get its value
+                          //keyName is the user id
+                          //keyIndex will help me find the user pic
+                          //this.state.userIdAndName[keyName] gives me the name of current user
+                          <Dropdown.Item
+                            key={keyName}
+                            onClick={(e) => {
+                              this.setState({copy_from_user: keyName, copy_from_user_name:this.props.userNamesAndId[keyName]});
+                            }}
+                          >
+                            {this.props.userNamesAndId[keyName] || ""}
+                          </Dropdown.Item>
+                        )
+                      )}
             </DropdownButton>
               </Col>
               <Col xs={3}>

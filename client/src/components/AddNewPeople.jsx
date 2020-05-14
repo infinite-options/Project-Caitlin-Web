@@ -15,6 +15,7 @@ import { storage } from './firebase';
         phone_number: "",
         pic: "",
         relationship: "",
+        speaker_id:"",
         unique_id: ""
       }, 
       saveChangesButtonEnabled: true,
