@@ -237,24 +237,24 @@ export default class MainPage extends React.Component {
 
   // Entry of the page
   componentDidMount() {
-    // axios
-    //   .get("/TALogInStatus")
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     this.setState({
-    //       loaded: true,
-    //       loggedIn: response.data,
-    //     });
-    //     if(response.data) {
-    //       this.updateStatesByQuery();
-    //       this.updateProfileFromFirebase();
-    //       this.updateEventsArray();
-    //       // this.getEventNotifications();
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    axios
+      .get("/TALogInStatus")
+      .then((response) => {
+        console.log(response.data);
+        this.setState({
+          loaded: true,
+          loggedIn: response.data,
+        });
+        if (response.data) {
+          this.updateStatesByQuery();
+          this.updateProfileFromFirebase();
+          this.updateEventsArray();
+          // this.getEventNotifications();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   /*This will obtain the notifications from the database

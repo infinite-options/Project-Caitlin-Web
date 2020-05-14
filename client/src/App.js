@@ -12,9 +12,9 @@ class App extends Component {
         <header className="App-header">
           <Switch>
             <Router>
-              {/* <Route exact path='/'>
+              <Route exact path="/">
                 <LandingPage />
-              </Route> */}
+              </Route>
               <Route path="/main">
                 <MainPage />
               </Route>
