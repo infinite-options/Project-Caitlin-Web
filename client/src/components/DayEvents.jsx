@@ -61,6 +61,7 @@ export default class DayEvents extends Component {
     var fontSize = 10;
 
     for (let i = 0; i < arr.length; i++) {
+      if(!arr[i].start) break;
       tempStart = arr[i].start.dateTime;
       tempEnd = arr[i].end.dateTime;
       /**

@@ -153,6 +153,11 @@ app.get("/fullCalByInterval", function (req, result) {
 app.get("/x", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
+app.get("/test", (req, res) => {
+  res.redirect("/main");
+});
+
 //Landing Page
 /*
 The below does a query to the google calendar API and gets all the events of the current
@@ -271,30 +276,37 @@ app.get("/getEventsByInterval", function (req, result) {
   } else {
     var startParam = new Date(req.query.start);
     var endParam = new Date(req.query.end);
+    var name = req.query.name
+    var id = req.query.id
     console.log("start : ", startParam, " end:", endParam);
     startParam.setHours(0, 0, 0, 0);
     endParam.setHours(23, 59, 59, 999);
     console.log("start : ", startParam, " end:", endParam);
   }
-  calendar.events.list(
-    {
-      calendarId: calendarID,
-      timeMin: startParam.toISOString(),
-      timeMax: endParam.toISOString(),
-      maxResults: 999,
-      singleEvents: true,
-      orderBy: "startTime",
-      timeZone: req.query.timeZone,
-    },
-    (err, res) => {
-      //CallBack
-      if (err) {
-        return result.send("The post request returned an error: " + err);
+
+  setUpAuthById(id, (auth) => {
+    calendar = google.calendar({version: 'v3', auth});
+    calendar.events.list(
+      {
+        calendarId: 'primary',
+        timeMin: startParam.toISOString(),
+        timeMax: endParam.toISOString(),
+        maxResults: 999,
+        singleEvents: true,
+        orderBy: "startTime",
+        timeZone: req.query.timeZone,
+      },
+      (err, res) => {
+        console.log(res)
+        //CallBack
+        if (err) {
+          return result.send("The post request returned an error: " + err);
+        }
+        console.log(res.data, "geteventsbyinterval");
+        result.json(res.data.items);
       }
-      console.log(res.data, "geteventsbyinterval");
-      result.json(res.data.items);
-    }
-  );
+    );
+  });
 });
 
 /*
@@ -580,7 +592,6 @@ app.get("/auth-url", function (req, result) {
           if (err) {
             result.json(err)
           } else {
-            console.log("whole token",token);
             let emailId = res.data.email;
             // Store to firebase
             let db = firebase.firestore();
@@ -595,16 +606,18 @@ app.get("/auth-url", function (req, result) {
                   email_id: emailId,
                   google_auth_token: token.access_token,
                   google_refresh_token: token.refresh_token,
+                  first_name: "New",
+                  last_name: "User"
                 })
-                .then(() =>{
-                  result.json({email:emailId,'id':doc.id,'status':'add'})
-                })
+                result.json({email:emailId,'id':doc.id,'status':'add'})
               } else {
                 snapshot.forEach((doc) => {
                   users.doc(doc.id)
                   .update({
                     google_auth_token: token.access_token,
                     google_refresh_token: token.refresh_token,
+                    first_name: "New",
+                    last_name: "User"
                   });
                   //Update token fields
                   result.json({email:emailId,'id':doc.id,'status':'update'})
@@ -613,7 +626,7 @@ app.get("/auth-url", function (req, result) {
             })
             .catch((err) => {
               console.log('Error getting firebase documents', err);
-              result.json(false);
+              result.json(err);
             })
           }
         });
@@ -656,6 +669,29 @@ app.get("/auth-url", function (req, result) {
       oAuth2Client.setCredentials(JSON.parse(token));
       callback(oAuth2Client);
     });
+  }
+
+  function authorizeById(credentials, id, callback) {
+    const { client_secret, client_id, redirect_uris } = credentials.installed;
+    let oAuth2Client = new google.auth.OAuth2(
+      client_id,
+      client_secret,
+      redirect_uris[0]
+    );
+
+    // Store to firebase
+    const db = firebase.firestore();
+    if(id)
+    {
+      db.collection('users').doc(id).get().then((snapshot) => {
+        if(snapshot.data().google_auth_token){
+          console.log(snapshot.data().google_auth_token)
+          oAuth2Client.setCredentials({access_token: snapshot.data().google_auth_token, refresh_token: snapshot.data().google_refresh_token});
+          console.log({access_token: snapshot.data().google_auth_token, refresh_token: snapshot.data().google_refresh_token})
+          callback(oAuth2Client);
+        }
+      });
+    }
   }
 
   /**
@@ -702,6 +738,14 @@ app.get("/auth-url", function (req, result) {
     if (calendar == null) calendar = google.calendar({ version: "v3", auth });
   }
 
+  function updateCredentials(auth) {
+    //Tyler: saveCredentials has been altered to just set-up, no listing events
+    console.log("saveCredentials", auth);
+
+    calenAuth = auth;
+    calendar = google.calendar({ version: "v3", auth });
+  }
+
   function setUpAuth() {
     // Load client secrets from a local file.
     fs.readFile("credentials.json", (err, content) => {
@@ -710,5 +754,14 @@ app.get("/auth-url", function (req, result) {
       authorize(JSON.parse(content), saveCredentials); //Tyler: saveCredentials has been altered to just set-up, no listing events
     });
   }
+
+  function setUpAuthById(id, callback) {
+    fs.readFile("credentials.json", (err, content) => {
+      if (err) return console.log("Error loading client secret file:", err);
+      // Authorize a client with credentials, then call the Google Calendar
+      authorizeById(JSON.parse(content), id, callback); //Tyler: saveCredentials has been altered to just set-up, no listing events
+    });
+  }
+
 
   //End of Google Auth Code

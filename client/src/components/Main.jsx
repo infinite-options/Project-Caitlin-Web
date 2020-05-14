@@ -1,5 +1,7 @@
 import React from "react";
 import axios from "axios";
+import queryString from 'query-string';
+
 import {
   Redirect
 } from "react-router-dom";
@@ -235,6 +237,7 @@ export default class MainPage extends React.Component {
 
   componentDidUpdate() {}
 
+  // Entry of the page
   componentDidMount() {
     axios
       .get("/TALogInStatus")
@@ -245,8 +248,9 @@ export default class MainPage extends React.Component {
           loggedIn: response.data,
         });
         if(response.data) {
-          this.updateEventsArray();
+          this.updateStatesByQuery();
           this.updateProfileFromFirebase();
+          this.updateEventsArray();
           // this.getEventNotifications();
         }
       })
@@ -285,6 +289,27 @@ export default class MainPage extends React.Component {
   /*Grabs the URL the the profile pic from the about me modal to
   display on the top left corner.
   */
+  getUrlParam = (name, url) => {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  updateStatesByQuery = () => {
+    let query = window.location.href
+    let createUserParam = this.getUrlParam("createUser", query) == "true"
+    if (createUserParam) {
+      this.setState(
+        {
+          showNewAccountmodal: createUserParam
+        });
+    }
+  }
+
   updateProfileFromFirebase = () => {
     const db = firebase.firestore();
     const docRef = db.collection("users");
@@ -352,6 +377,7 @@ export default class MainPage extends React.Component {
           },
           () => {
             this.grabFireBaseRoutinesGoalsData();
+            this.updateEventsArray();
           }
         );
       })
@@ -1746,7 +1772,7 @@ export default class MainPage extends React.Component {
       endDate.setHours(23, 59, 59);
       this.getEventsByIntervalDayVersion(
         startDate.toString(),
-        endDate.toString()
+        endDate.toString(),
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -2123,6 +2149,7 @@ export default class MainPage extends React.Component {
       },
       () => {
         this.grabFireBaseRoutinesGoalsData();
+        this.updateEventsArray();
       }
     );
   };
@@ -2262,11 +2289,12 @@ export default class MainPage extends React.Component {
                   <Button
                     style={{ marginTop: "10px" }}
                     onClick={
-                    /*(e) => {
-                      this.setState({ showNewAccountmodal: true });
-                    }*/
-                    this.googleLogIn
+                    (e) => {
+                      //   this.setState({ showNewAccountmodal: true });
+                      // }
+                      this.googleLogIn()
                     }
+                  }
                   >
                     Create New User
                   </Button>
@@ -4035,6 +4063,8 @@ when there is a change in the event form
           start: startDate.toString(),
           end: endDate.toString(),
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          name: this.state.currentUserName,
+          id: this.state.currentUserId,
         },
       })
       .then((response) => {
@@ -4067,6 +4097,8 @@ when there is a change in the event form
         params: {
           start: start0,
           end: end0,
+          name: this.state.currentUserName,
+          id: this.state.currentUserId,
         },
       })
       .then((response) => {
