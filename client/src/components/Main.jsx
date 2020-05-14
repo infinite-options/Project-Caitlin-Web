@@ -2316,6 +2316,7 @@ export default class MainPage extends React.Component {
                   <CreateNewAccountModal
                     closeModal={this.hideNewAccountForm}
                     newUserAdded={this.theNewUserAdded}
+                    userNamesAndId = {this.state.userIdAndNames}
                   />
                 )}
               </Col>
