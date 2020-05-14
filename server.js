@@ -57,6 +57,7 @@ const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
 //start of google calendar API stuff
 const fs = require("fs");
+const opn = require("open")
 const readline = require("readline");
 const { google } = require("googleapis");
 var calenAuth = null,
@@ -72,7 +73,7 @@ const SCOPEUSERS = ['https://www.googleapis.com/auth/calendar','https://www.goog
 // created automatically when the authorization flow completes for the first
 // time.
 const TOKEN_PATH = "token.json";
-setUpAuth(); //sets all the necessary authentication and vars "calenAuth", and "calendar"
+// setUpAuth(); //sets all the necessary authentication and vars "calenAuth", and "calendar"
 //end of calendar API stuff
 
 /*
@@ -565,7 +566,7 @@ app.get("/auth-url", function (req, result) {
     let credentials = JSON.parse(content);
     const {client_secret, client_id, redirect_uris} = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[2]);
+      client_id, client_secret, redirect_uris[0]);
       const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         prompt: 'consent',
@@ -576,13 +577,12 @@ app.get("/auth-url", function (req, result) {
   });
 
   app.get("/adduser", function (req, result) {
-    const USER_TOKEN_PATH = "tokenUser.json";
     fs.readFile("credentials.json", (err, content) => {
       if (err) return console.log("Error loading client secret file:", err);
       // Authorize a client with credentials, then call the Google Calendar API.
       let credentials = JSON.parse(content);
       const {client_secret, client_id, redirect_uris} = credentials.web;
-      const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[2]);
+      const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
       oAuth2Client.getToken(req.query.code, (err, token) => {
         if (err) {
           console.error("Error retrieving access token", err);
@@ -616,6 +616,7 @@ app.get("/auth-url", function (req, result) {
                   last_name: "User"
                 })
                 result.json({email:emailId,'id':doc.id,'status':'add'})
+                opn("https://memoryni.herokuapp.com/main", {wait: false})
               } else {
 //##############################################################################
                 // Fix this to give error not update
@@ -669,7 +670,7 @@ app.get("/auth-url", function (req, result) {
     const oAuth2Client = new google.auth.OAuth2(
       client_id,
       client_secret,
-      redirect_uris[2]
+      redirect_uris[0]
     );
 
     // Check if we have previously stored a token.
@@ -685,7 +686,7 @@ app.get("/auth-url", function (req, result) {
     let oAuth2Client = new google.auth.OAuth2(
       client_id,
       client_secret,
-      redirect_uris[2]
+      redirect_uris[0]
     );
 
     // Store to firebase
