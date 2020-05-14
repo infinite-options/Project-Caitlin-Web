@@ -465,6 +465,14 @@ calendar.events.insert(
 );
 });
 
+function formatEmail(email) {
+    email = email.toLowerCase();
+    email = email.split("@");
+    email[0] = email[0].split(".").join("");
+    email[0] = email[0].concat("@");
+    return email[0].concat(email[1]);   // The function returns the product of p1 and p2
+}
+
 /*
 Log in ROUTE:
 Attempt to sign in as trusted advisor
@@ -474,10 +482,7 @@ app.post("/TALogIn", function (req, result) {
   let emailId = req.body.username;
   let givenPass = req.body.password;
   var emailId1 = emailId.toLowerCase();
-  var email = emailId1.split("@");
-  email[0] = email[0].split(".").join("");
-  email[0] = email[0].concat("@");
-  var emailId_final = email[0].concat(email[1]);
+  emailId_final = formatEmail(emailId1);
   let db = firebase.firestore();
   let TAs = db.collection('trusted_advisor');
   TAs.where('email_id', '==', emailId_final ).get()
@@ -538,7 +543,7 @@ app.post("/TASignUp",function (req, result) {
   let newTARef = db.collection('trusted_advisor').doc();
   newTARef
   .set({
-    email_id: req.body.username,
+    email_id: formatEmail(req.body.username),
     password_key: req.body.password,
     first_name: req.body.fName,
     last_name: req.body.lName,
@@ -593,7 +598,8 @@ app.get("/auth-url", function (req, result) {
             result.json(err)
           } else {
             let emailId = res.data.email;
-            // Store to firebase
+            emailId = formatEmail(emailId);
+
             let db = firebase.firestore();
             let users = db.collection('users');
             users.where('email_id', '==', emailId ).get()
@@ -611,6 +617,9 @@ app.get("/auth-url", function (req, result) {
                 })
                 result.json({email:emailId,'id':doc.id,'status':'add'})
               } else {
+//##############################################################################
+                // Fix this to give error not update
+//##############################################################################
                 snapshot.forEach((doc) => {
                   users.doc(doc.id)
                   .update({
