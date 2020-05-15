@@ -602,7 +602,7 @@ app.get("/auth-url", function (req, result) {
 
             let db = firebase.firestore();
             let users = db.collection('users');
-            users.where('email_id', '==', emailId ).get()
+            users.where('email_id', '==', emailId).get()
             .then((snapshot) => {
               if (snapshot.empty) {
                 // Add tokens to firebase
@@ -621,17 +621,17 @@ app.get("/auth-url", function (req, result) {
 //##############################################################################
                 // Fix this to give error not update
 //##############################################################################
-                snapshot.forEach((doc) => {
-                  users.doc(doc.id)
-                  .update({
-                    google_auth_token: token.access_token,
-                    google_refresh_token: token.refresh_token,
-                    first_name: "New",
-                    last_name: "User"
-                  });
-                  //Update token fields
-                  result.json({email:emailId,'id':doc.id,'status':'update'})
-                })
+                // snapshot.forEach((doc) => {
+                //   users.doc(doc.id)
+                //   .update({
+                //     google_auth_token: token.access_token,
+                //     google_refresh_token: token.refresh_token,
+                //     first_name: "New",
+                //     last_name: "User"
+                //   });
+                //   //Update token fields
+                //   result.json({email:emailId,'id':doc.id,'status':'update'})
+                // })
               }
             })
             .catch((err) => {
