@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import queryString from "query-string";
-import { withRouter } from "react-router-dom";
+
 import { Redirect } from "react-router-dom";
 import {
   Form,
@@ -35,7 +35,7 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-class MainPage extends React.Component {
+export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -2416,9 +2416,7 @@ class MainPage extends React.Component {
       .then((response) => {
         console.log(response);
         window.location.href = response.data;
-        // window.location.href = "https://memoryni.herokuapp.com/main";
-        // this.props.history.push("/main");
-        // <Redirect to="/main" />;
+        
       })
       .catch((error) => {
         console.log("Error Occurred " + error);
@@ -4122,5 +4120,3 @@ when there is a change in the event form
       });
   };
 }
-
-export default MainPage;
