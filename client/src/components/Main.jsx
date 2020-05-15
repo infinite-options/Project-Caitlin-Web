@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import queryString from "query-string";
-
+import { useHistory } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 import {
   Form,
@@ -2411,11 +2411,13 @@ export default class MainPage extends React.Component {
   }
 
   googleLogIn = () => {
+    const history = useHistory();
     axios
       .get("/auth-url")
       .then((response) => {
         console.log(response);
-        window.location.href = response.data;
+        // window.location.href = response.data;
+        history.push("/main");
       })
       .catch((error) => {
         console.log("Error Occurred " + error);
