@@ -2416,7 +2416,8 @@ class MainPage extends React.Component {
       .then((response) => {
         console.log(response);
         // window.location.href = response.data;
-        this.props.history.push("/main");
+        window.location.href = "https://memoryni.herokuapp.com/main";
+        // this.props.history.push("/main");
         // <Redirect to="/main" />;
       })
       .catch((error) => {
@@ -4122,4 +4123,4 @@ when there is a change in the event form
   };
 }
 
-export default withRouter(MainPage);
+export default MainPage;
