@@ -17,7 +17,8 @@
     "moment": "^2.24.0",
     "open": "^7.0.3",
     "react-modal-resizable-draggable": "^0.1.4",
-    "react-router-dom": "^5.1.2",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
