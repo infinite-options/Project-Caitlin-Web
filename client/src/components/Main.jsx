@@ -2415,8 +2415,8 @@ class MainPage extends React.Component {
       .get("/auth-url")
       .then((response) => {
         console.log(response);
-        // window.location.href = response.data;
-        window.location.href = "https://memoryni.herokuapp.com/main";
+        window.location.href = response.data;
+        // window.location.href = "https://memoryni.herokuapp.com/main";
         // this.props.history.push("/main");
         // <Redirect to="/main" />;
       })
