@@ -566,7 +566,7 @@ app.get("/auth-url", function (req, result) {
     let credentials = JSON.parse(content);
     const {client_secret, client_id, redirect_uris} = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[2]);
+      client_id, client_secret, redirect_uris[0]);
       const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         prompt: 'consent',
@@ -576,75 +576,73 @@ app.get("/auth-url", function (req, result) {
     });
   });
 
-  app.get("/main", function (req, result) {
-      if (req.query.code) {
-          fs.readFile("credentials.json", (err, content) => {
-              if (err) return console.log("Error loading client secret file:", err);
-              // Authorize a client with credentials, then call the Google Calendar API.
-              let credentials = JSON.parse(content);
-              const {client_secret, client_id, redirect_uris} = credentials.web;
-              const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-              oAuth2Client.getToken(req.query.code, (err, token) => {
-                  if (err) {
-                      console.error("Error retrieving access token", err);
-                      result.json(err);
-                  }
-                  oAuth2Client.setCredentials({access_token: token.access_token});
-                  var oauth2 = google.oauth2({
-                      auth: oAuth2Client,
-                      version: 'v2'
-                  });
-                  oauth2.userinfo.get((err, res) => {
-                      if (err) {
-                          result.json(err)
-                      } else {
-                          let emailId = res.data.email;
-                          emailId = formatEmail(emailId);
+  app.get("/adduser", function (req, result) {
+    fs.readFile("credentials.json", (err, content) => {
+      if (err) return console.log("Error loading client secret file:", err);
+      // Authorize a client with credentials, then call the Google Calendar API.
+      let credentials = JSON.parse(content);
+      const {client_secret, client_id, redirect_uris} = credentials.web;
+      const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+      oAuth2Client.getToken(req.query.code, (err, token) => {
+        if (err) {
+          console.error("Error retrieving access token", err);
+          result.json(err);
+        }
+        oAuth2Client.setCredentials({access_token: token.access_token});
+        var oauth2 = google.oauth2({
+          auth: oAuth2Client,
+          version: 'v2'
+        });
+        oauth2.userinfo.get((err, res) => {
+          if (err) {
+            result.json(err)
+          } else {
+            let emailId = res.data.email;
+            emailId = formatEmail(emailId);
 
-                          let db = firebase.firestore();
-                          let users = db.collection('users');
-                          users.where('email_id', '==', emailId).get()
-                          .then((snapshot) => {
-                              if (snapshot.empty) {
-                                  // Add tokens to firebase
-                                  let newClientRef = users.doc();
-                                  newClientRef
-                                  .set({
-                                      email_id: emailId,
-                                      google_auth_token: token.access_token,
-                                      google_refresh_token: token.refresh_token,
-                                      first_name: "New",
-                                      last_name: "User"
-                                  })
-                                  result.json({email:emailId,'id':doc.id,'status':'add'})
-                                  opn("https://memoryni.herokuapp.com/main", {wait: false})
-                              } else {
-                                  //##############################################################################
-                                  // Fix this to give error not update
-                                  //##############################################################################
-                                  // snapshot.forEach((doc) => {
-                                  //   users.doc(doc.id)
-                                  //   .update({
-                                  //     google_auth_token: token.access_token,
-                                  //     google_refresh_token: token.refresh_token,
-                                  //     first_name: "New",
-                                  //     last_name: "User"
-                                  //   });
-                                  //   //Update token fields
-                                  //   result.json({email:emailId,'id':doc.id,'status':'update'})
-                                  // })
-
-                              }
-                          })
-                          .catch((err) => {
-                              console.log('Error getting firebase documents', err);
-                              result.json(err);
-                          })
-                      }
-                  });
-              });
-          });
-      }
+            let db = firebase.firestore();
+            let users = db.collection('users');
+            users.where('email_id', '==', emailId).get()
+            .then((snapshot) => {
+              if (snapshot.empty) {
+                // Add tokens to firebase
+                let newClientRef = users.doc();
+                newClientRef
+                .set({
+                  email_id: emailId,
+                  google_auth_token: token.access_token,
+                  google_refresh_token: token.refresh_token,
+                  first_name: "New",
+                  last_name: "User"
+                })
+                result.json({email:emailId,'id':doc.id,'status':'add'})
+                opn("https://memoryni.herokuapp.com/main", {wait: false})
+              } else {
+//##############################################################################
+                // Fix this to give error not update
+//##############################################################################
+                // snapshot.forEach((doc) => {
+                //   users.doc(doc.id)
+                //   .update({
+                //     google_auth_token: token.access_token,
+                //     google_refresh_token: token.refresh_token,
+                //     first_name: "New",
+                //     last_name: "User"
+                //   });
+                //   //Update token fields
+                //   result.json({email:emailId,'id':doc.id,'status':'update'})
+                // })
+                result.json({email:emailId,'id':doc.id,'status':'add'})
+              }
+            })
+            .catch((err) => {
+              console.log('Error getting firebase documents', err);
+              result.json(err);
+            })
+          }
+        });
+      });
+    });
   });
 
   // Refer to the Node.js quickstart on how to setup the environment:
