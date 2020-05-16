@@ -1,0 +1,7 @@
+{
+	"scripts": {
+		"heroku-prebuild": "cd client && npm install && npm ../server && npm install",
+		"build": "webpack --config server/webpack.config.ts",
+		"start": "node index.js"
+	}
+}
