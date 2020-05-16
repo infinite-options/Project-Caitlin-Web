@@ -1,17 +1,9 @@
-import React from "react";
-import axios from "axios";
-import {
-  Redirect
-} from "react-router-dom";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Modal,
-} from "react-bootstrap";
-import "./App.css";
+import React from 'react';
+import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
+import './App.css';
+
 
 export default class MainPage extends React.Component {
   constructor(props) {
