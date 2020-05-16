@@ -1,6 +1,4 @@
-# TS Templates
-
-Basic web starter with TypeScript and React.
+# Project Caitlin
 
 ## Install
 
