@@ -32,6 +32,6 @@
 		"react-hot-loader": "^4.12.18"
 	},
 	"engines": {
-		"node": "12.16.x"
+		"node": "10.15.1"
 	}
 }
