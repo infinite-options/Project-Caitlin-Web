@@ -614,24 +614,24 @@ app.get("/auth-url", function (req, result) {
                   google_refresh_token: token.refresh_token,
                   first_name: "New",
                   last_name: "User"
+                }).then(() => {
+                  result.redirect("/main?createUser=true");
                 })
-                result.json({email:emailId,'id':doc.id,'status':'add'})
               } else {
 //##############################################################################
                 // Fix this to give error not update
 //##############################################################################
-                // snapshot.forEach((doc) => {
-                //   users.doc(doc.id)
-                //   .update({
-                //     google_auth_token: token.access_token,
-                //     google_refresh_token: token.refresh_token,
-                //     first_name: "New",
-                //     last_name: "User"
-                //   });
-                //   //Update token fields
-                //   result.json({email:emailId,'id':doc.id,'status':'update'})
-                // })
-                result.json({email:emailId,'id':doc.id,'status':'add'})
+                snapshot.forEach((doc) => {
+                  users.doc(doc.id)
+                  .update({
+                    google_auth_token: token.access_token,
+                    google_refresh_token: token.refresh_token,
+                    first_name: "New",
+                    last_name: "User"
+                  }).then(() => {
+                    result.redirect("/main?createUser=true");
+                  })
+                })
               }
             })
             .catch((err) => {
