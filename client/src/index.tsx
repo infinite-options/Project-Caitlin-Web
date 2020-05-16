@@ -11,11 +11,11 @@ export default function Index() {
 		<header className="App-header">
 			<Router>
 				<Switch>
-					<Route exact path="/">
-						<LandingPage/>
-					</Route>
 					<Route path="/main">
 						<MainPage/>
+					</Route>
+					<Route path="/*">
+						<LandingPage/>
 					</Route>
 				</Switch>
 			</Router>
