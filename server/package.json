@@ -1,5 +1,4 @@
 {
-	"version": "10.15.1",
 	"scripts": {
 		"dev": "ts-node-dev app.ts",
 		"build": "webpack",
@@ -59,5 +58,8 @@
 		"webpack-cli": "^3.3.10",
 		"webpack-dev-middleware": "^3.7.2",
 		"webpack-hot-middleware": "^2.25.0"
+	},
+	"engines": {
+		"node": "12.16.x"
 	}
 }
