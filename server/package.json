@@ -1,4 +1,5 @@
 {
+	"version": "10.15.1",
 	"scripts": {
 		"dev": "ts-node-dev app.ts",
 		"build": "webpack",

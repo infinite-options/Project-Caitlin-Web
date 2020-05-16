@@ -1,7 +1,8 @@
 {
+	"version": "10.15.1",
 	"scripts": {
 		"heroku-prebuild": "cd client && npm install && npm ../server && npm install",
 		"build": "webpack --config server/webpack.config.ts",
-		"start": "node index.js"
+		"start": "ts-node app.ts"
 	}
 }
