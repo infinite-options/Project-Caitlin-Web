@@ -23,6 +23,7 @@ a time, it will mess up the calendar display.
 //  Adding the firebase storage
 // var admin = require("firebase-admin");
 
+var path = require("path");
 var express = require("express");
 var app = express();
 app.use(express.static(__dirname + "/build")); //REC
@@ -57,7 +58,6 @@ const port = process.env.PORT || 5000;
 app.set("view engine", "ejs");
 //start of google calendar API stuff
 const fs = require("fs");
-const opn = require("open")
 const readline = require("readline");
 const { google } = require("googleapis");
 var calenAuth = null,
@@ -151,12 +151,12 @@ app.get("/fullCalByInterval", function (req, result) {
   );
 });
 
-app.get("/x", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+app.get("/test", (req, res) => {
+  res.redirect("/main?createUser=true");
 });
 
-app.get("/test", (req, res) => {
-  res.redirect("/main");
+app.get("/main", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 //Landing Page
@@ -616,7 +616,6 @@ app.get("/auth-url", function (req, result) {
                   last_name: "User"
                 })
                 result.json({email:emailId,'id':doc.id,'status':'add'})
-                opn("https://memoryni.herokuapp.com/main", {wait: false})
               } else {
 //##############################################################################
                 // Fix this to give error not update

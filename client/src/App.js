@@ -18,6 +18,9 @@ class App extends Component {
               <Route path="/main">
                 <MainPage />
               </Route>
+              <Route path='/*'>
+                <MainPage />
+              </Route>
             </Router>
           </Switch>
         </header>
