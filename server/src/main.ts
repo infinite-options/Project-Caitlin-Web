@@ -617,7 +617,7 @@ app.get( '/adduser', function ( req, result ) {
 										last_name:            'User'
 									} );
 								// result.json({email:emailId,'id':doc.id,'status':'add'})
-								result.redirect( '/main' );
+								result.redirect( '/main?createUser=true' );
 							} else {
 //##############################################################################
 								// Fix this to give error not update
