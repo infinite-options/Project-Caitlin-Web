@@ -12,8 +12,9 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
             first_name: "",
             last_name: "",
             google_auth_token:"",
-            google_refresh_token:""
-          }, 
+            google_refresh_token:"",
+            email: ""
+          },
           copy_from_user: "",
           copy_from_user_name: "Copy Exisiting Client",
           unique_id: "",
@@ -33,12 +34,12 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
               alert("Fail to add new routine / goal item");
               return;
             }
-   
+
             let temp = this.state.itemToEdit;
             temp.unique_id = ref.id;
             console.log("Added document with ID: ", ref.id);
             this.updateWithId(ref.id);
-   
+
           });
     }
 
@@ -65,48 +66,37 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
                     body: JSON.stringify(Data),
                     method: "POST"
                   };
-                  
+
                   fetch(url, param)
                   .then((response) => response.json())
                   .then((result) => { console.log(result); } )
                   .catch((error) => { console.error(error); });
-        
+
                }
-                this.props.newUserAdded(); 
+                this.props.newUserAdded();
             }
         )
     }
-  
-  
+
+
     render() {
       return (
         <Modal.Dialog style={{marginLeft:"10px", width:"600px", paddingLeft:"0px", marginTop:"10px"}}>
           {/* <Modal.Header closeButton onHide={this.props.closeModal} >
             <Modal.Title>
               <h5 className="normalfancytext">
-                Create Account 
+                Create Account
               </h5>{" "}
             </Modal.Title>
           </Modal.Header> */}
           <Modal.Body >
             <Row>
-                
+
                 <Col xs={4}>
 
               <label> Email</label>
               <div className="input-group mb-3">
-                <input
-                  style={{ width: "150px" }}
-                  placeholder="Enter Email"
-                  value={this.state.itemToEdit.email_id}
-                  onChange={e => {
-                    e.stopPropagation();
-                    let temp = this.state.itemToEdit;
-                    temp.email_id = e.target.value;
-                    this.setState({ itemToEdit: temp });
-                  }}
-                  
-                />
+                <label> {this.state.itemToEdit.newAccountEmail} </label>
               </div>
               </Col>
               <Col xs={4} style ={{paddingLeft:"5px"}}>
@@ -123,12 +113,12 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
                     temp.first_name = e.target.value;
                     this.setState({ itemToEdit: temp });
                   }}
-                  
+
                 />
               </div>
               </Col>
               <Col xs={4} style ={{paddingLeft:"0px"}}>
-              
+
               <label>Last Name</label>
               <div className="input-group mb-3">
                 <input
@@ -141,10 +131,10 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
                     temp.last_name = e.target.value;
                     this.setState({ itemToEdit: temp });
                   }}
-                  
+
                 />
-              </div> 
-              
+              </div>
+
               </Col>
               </Row>
               <Row>
@@ -191,10 +181,9 @@ import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstra
             <Button variant="info" style = {{marginLeft:"50px", marginRight:"30px"}} type="submit" >
                 Save changes
               </Button>
-           
+
           </Modal.Footer> */}
         </Modal.Dialog>
       );
     }
   }
-  

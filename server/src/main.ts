@@ -8,6 +8,7 @@ import * as logger from 'morgan';
 import { AddressInfo } from 'net';
 import * as path from 'path';
 import * as webpack from 'webpack';
+import * as https from 'https';
 import * as webpack_dev_middleware from 'webpack-dev-middleware';
 import * as webpack_hot_middleware from 'webpack-hot-middleware';
 
@@ -90,12 +91,13 @@ Given start and end parameters from request, it will return all events from
 the google calendar BUT convert it to the format that is accepted by Full Calendar
 
 */
+
 app.get( '/fullCalByInterval', function ( req, result ) {
 	console.log( 'server get fullCalByInterval' );
 	// console.log("passed in params start date "  + req.query.start);
 	// console.log("passed in params end date"  + req.query.end);
 	// result.json({result: "We have sucessfully sent back "});
-	
+
 	if ( !req.query.start || !req.query.end ) {
 		const date = new Date();
 		var startParam = new Date( date.getFullYear(), date.getMonth(), 1 );
@@ -126,11 +128,11 @@ app.get( '/fullCalByInterval', function ( req, result ) {
 			if ( err ) {
 				return result.send( 'The post request returned an error: ' + err );
 			}
-			
+
 			const A = []; //The resultant Array
 			const B = res.data.items;
 			let temp;
-			
+
 			for ( let i = 0; i < B.length; i++ ) {
 				if ( B[ i ].start.date == null ) {
 					temp = {
@@ -165,8 +167,13 @@ app.get( '/x', ( req, res ) => {
 } );
 
 app.get( '/test', ( req, res ) => {
-	
 	res.redirect( '/' );
+} );
+
+app.get( '/.well-known/pki-validation/E7B49F940058AE2E7AC69B41A24552F4.txt', ( req, res ) => {
+	const index = path.join( __basedir, 'auth.txt' );
+	console.log(index)
+	res.sendFile( index );
 } );
 
 //Landing Page
@@ -200,7 +207,7 @@ app.get( '/a', function ( req, result ) {
 
 app.get( '/getRecurringRules', ( req, result ) => {
 	console.log( req.query.recurringEventId, 'req getRecurringRules' );
-	
+
 	if ( req.query.recurringEventId ) {
 		calendar.events.get(
 			{
@@ -225,7 +232,7 @@ app.get( '/getRecurringEventInstances', ( req, result ) => {
 		'getRecurringEventInstances',
 		req.query.timeMax
 	);
-	
+
 	if ( req.query.recurringEventId ) {
 		if ( !req.query.timeMin ) {
 			calendar.events.instances(
@@ -279,7 +286,7 @@ data is retrieve.
 app.get( '/getEventsByInterval', function ( req, result ) {
 	console.log( 'passed in params start date ', req.query.start );
 	// console.log("passed in params end date", req);
-	
+
 	if ( !req.query.start || !req.query.end ) {
 		const date = new Date();
 		var startParam = new Date( date.getFullYear(), date.getMonth(), 1 );
@@ -294,7 +301,7 @@ app.get( '/getEventsByInterval', function ( req, result ) {
 		endParam.setHours( 23, 59, 59, 999 );
 		console.log( 'start : ', startParam, ' end:', endParam );
 	}
-	
+
 	setUpAuthById( id, ( auth ) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.list(
@@ -402,9 +409,9 @@ and delete it.
 app.put( '/updateEvent', function ( req, result ) {
 	console.log( 'update request recieved' );
 	console.log( req.body.ID, req.body.extra );
-	
+
 	let newEvent = req.body.extra;
-	
+
 	calendar.events.update(
 		{
 			calendarId: calendarID,
@@ -431,7 +438,7 @@ app.post( '/createNewEvent', function ( req, res ) {
 	console.log( req.body );
 	// console.log((new Date()).toISOString());
 	console.log( 'inside create event route' );
-	
+
 	/*
 	var event = {
 	'summary': req.body.title,
@@ -600,7 +607,7 @@ app.get( '/adduser', function ( req, result ) {
 				} else {
 					let emailId = res.data.email;
 					emailId = formatEmail( emailId );
-					
+
 					let db = firebase.firestore();
 					let users = db.collection( 'users' );
 					users.where( 'email_id', '==', emailId ).get()
@@ -616,25 +623,21 @@ app.get( '/adduser', function ( req, result ) {
 										first_name:           'New',
 										last_name:            'User'
 									} );
-								// result.json({email:emailId,'id':doc.id,'status':'add'})
-								result.redirect( '/main?createUser=true' );
+								result.redirect( '/main?createUser=true&email_id'+emailId );
 							} else {
 //##############################################################################
 								// Fix this to give error not update
 //##############################################################################
-								// snapshot.forEach((doc) => {
-								//   users.doc(doc.id)
-								//   .update({
-								//     google_auth_token: token.access_token,
-								//     google_refresh_token: token.refresh_token,
-								//     first_name: "New",
-								//     last_name: "User"
-								//   });
-								//   //Update token fields
-								//   result.json({email:emailId,'id':doc.id,'status':'update'})
-								// })
-								// result.json({email:emailId,'id':doc.id,'status':'add'})
-								result.sendFile( path.join( __dirname, 'build', 'index.html' ) );
+								snapshot.forEach((doc) => {
+								  users.doc(doc.id)
+								  .update({
+								    google_auth_token: token.access_token,
+								    google_refresh_token: token.refresh_token,
+								    first_name: "New",
+								    last_name: "User"
+								  });
+								})
+								result.redirect( '/main?createUser=true&email_id'+emailId );
 							}
 						} )
 						.catch( ( err ) => {
@@ -675,7 +678,7 @@ function authorize( credentials, callback ) {
 		client_secret,
 		redirect_uris[ 0 ]
 	);
-	
+
 	// Check if we have previously stored a token.
 	fs.readFile( TOKEN_PATH, ( err, token ) => {
 		if ( err ) return getAccessToken( oAuth2Client, callback );
@@ -691,7 +694,7 @@ function authorizeById( credentials, id, callback ) {
 		client_secret,
 		redirect_uris[ 0 ]
 	);
-	
+
 	// Store to firebase
 	const db = firebase.firestore();
 	if ( id ) {
@@ -751,7 +754,7 @@ function getAccessToken( oAuth2Client, callback ) {
 function saveCredentials( auth ) {
 	//Tyler: saveCredentials has been altered to just set-up, no listing events
 	console.log( 'saveCredentials', auth );
-	
+
 	if ( calenAuth == null ) calenAuth = auth;
 	if ( calendar == null ) calendar = google.calendar( { version: 'v3', auth } );
 }
@@ -759,7 +762,7 @@ function saveCredentials( auth ) {
 function updateCredentials( auth ) {
 	//Tyler: saveCredentials has been altered to just set-up, no listing events
 	console.log( 'saveCredentials', auth );
-	
+
 	calenAuth = auth;
 	calendar = google.calendar( { version: 'v3', auth } );
 }
@@ -798,3 +801,11 @@ const listener = app.listen( process.env.PORT || 80, () => {
 	if ( process.env.NODE_ENV === 'development' )
 		debugLog( `Listening on ${address.address}:${address.port}` );
 } );
+
+
+var options = {
+  key: fs.readFileSync('privatekey.pem'),
+  cert: fs.readFileSync('certificate.pem')
+};
+
+https.createServer(options, app).listen(443);

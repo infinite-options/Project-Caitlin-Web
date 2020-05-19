@@ -241,6 +241,7 @@ export default class MainPage extends React.Component {
       .get("/TALogInStatus")
       .then((response) => {
         console.log(response.data);
+        console.log("where am I")
         this.setState({
           loaded: true,
           loggedIn: response.data,
@@ -300,9 +301,12 @@ export default class MainPage extends React.Component {
   updateStatesByQuery = () => {
     let query = window.location.href;
     let createUserParam = this.getUrlParam("createUser", query) == "true";
+    let email = this.getUrlParam("email", query)
+    console.log(email)
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
+        newAccountEmail: email
       });
     }
   };
@@ -2317,6 +2321,7 @@ export default class MainPage extends React.Component {
                     closeModal={this.hideNewAccountForm}
                     newUserAdded={this.theNewUserAdded}
                     userNamesAndId={this.state.userIdAndNames}
+                    email={this.state.newAccountEmail}
                   />
                 )}
               </Col>
@@ -2416,7 +2421,7 @@ export default class MainPage extends React.Component {
       .then((response) => {
         console.log(response);
         window.location.href = response.data;
-        
+
       })
       .catch((error) => {
         console.log("Error Occurred " + error);
