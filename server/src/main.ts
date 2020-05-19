@@ -333,18 +333,24 @@ Given the event's id, it look send it up to google calendar API
 and delete it.
 */
 app.post( '/deleteEvent', function ( req, result ) {
-	console.log( req.body.ID );
-	calendar.events.delete(
-		{ calendarId: calendarID, eventId: req.body.ID },
-		req.body.ID,
+	console.log( 'deleteEvent',req.body.username, req.body.userId, req.body.eventId );
+	var id = req.body.userId;
+	setUpAuthById(id,(auth) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.delete(
+		{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
+		req.body.eventId,
 		( err, res ) => {
 			//CallBack
 			if ( err ) {
+				console.log('delete error',err);
 				return result.send( 'The post request returned an error: ' + err );
 			}
+			console.log('delete successful');
 			result.send( 'delete' );
 		}
 	);
+	})
 } );
 
 app.delete( '/deleteRecurringEvent', ( req, result ) => {
@@ -408,27 +414,27 @@ and delete it.
 */
 app.put( '/updateEvent', function ( req, result ) {
 	console.log( 'update request recieved' );
-	console.log( req.body.ID, req.body.extra );
-
+	console.log( req.body.eventId, req.body.extra );
+	console.log(req.body.username,req.body.id)
 	let newEvent = req.body.extra;
-
-	calendar.events.update(
-		{
-			calendarId: calendarID,
-			eventId:    req.body.ID,
-			// start: newEvent.start,
-			// end: newEvent.end,
-			resource:   newEvent
-			// summary: newEvent.summary,
-		},
-		( err, res ) => {
-			//CallBack
-			if ( err ) {
-				return result.send( 'The post request returned an error: ' + err );
+	let id = req.body.id;
+  setUpAuthById( id, ( auth ) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.update(
+			{
+				calendarId: 'primary',
+				eventId:    req.body.eventId,
+				resource:   newEvent
+			},
+			( err, res ) => {
+				//CallBack
+				if ( err ) {
+					return result.send( 'The post request returned an error: ' + err );
+				}
+				result.send( 'update' );
 			}
-			result.send( 'update' );
-		}
-	);
+		);
+	});
 } );
 
 /*
@@ -436,42 +442,28 @@ create new Event
 */
 app.post( '/createNewEvent', function ( req, res ) {
 	console.log( req.body );
-	// console.log((new Date()).toISOString());
 	console.log( 'inside create event route' );
-
-	/*
-	var event = {
-	'summary': req.body.title,
-	// 'location': '800 Howard St., San Francisco, CA 94103',
-	// 'description': 'A chance to hear more about Google\'s developer products.',
-	'start': {
-	'dateTime': req.body.start,
-	'timeZone': 'America/Los_Angeles',
- },
- 'end': {
- 'dateTime': req.body.end,
- 'timeZone': 'America/Los_Angeles',
- }
- };
- */
-	calendar.events.insert(
-		{
-			auth:       calenAuth,
-			// calendarId: 'iodevcalendar@gmail.com',
-			calendarId: calendarID,
-			resource:   req.body.newEvent
-		},
-		function ( err, event ) {
-			if ( err ) {
-				console.log(
-					'There was an error contacting the Calendar service: ' + err
-				);
-				return;
+	console.log( req.body.username, req.body.id);
+	let id = req.body.id;
+	setUpAuthById( id, ( auth ) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.insert(
+			{
+				auth: auth,
+				calendarId: 'primary',
+				resource:   req.body.newEvent
+			},
+			function ( err, event ) {
+				if ( err ) {
+					console.log(
+						'There was an error contacting the Calendar service: ' + err
+					);
+					return;
+				}
+				console.log( 'Event created: %s', event.htmlLink );
+				res.send( 'Evented Created' );
 			}
-			console.log( 'Event created: %s', event.htmlLink );
-			res.send( 'Evented Created' );
-		}
-	);
+		)})
 } );
 
 function formatEmail( email ) {

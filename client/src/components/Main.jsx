@@ -1472,9 +1472,9 @@ export default class MainPage extends React.Component {
     axios
       .put("/updateEvent", {
         extra: event,
-        ID: updatedEvent.recurringEventId ? ID : this.state.newEventID,
-        // start: updatedEvent.start,
-        // end: updatedEvent.end,
+        eventId: updatedEvent.recurringEventId ? ID : this.state.newEventID,
+        username: this.state.currentUserName,
+        id: this.state.currentUserId,
       })
       .then((response) => {
         this.setState({
@@ -1547,7 +1547,9 @@ export default class MainPage extends React.Component {
     }
     axios
       .post("/deleteEvent", {
-        ID: this.state.newEventID,
+        username: this.state.currentUserName,
+        userId: this.state.currentUserId,
+        eventId: this.state.newEventID,
       })
       .then((response) => {
         this.setState({
@@ -1635,6 +1637,8 @@ export default class MainPage extends React.Component {
         title: newTitle,
         start: this.state.newEventStart0.toISOString(),
         end: this.state.newEventEnd0.toISOString(),
+        username: this.state.currentUserName,
+        id: this.state.currentUserId,
       })
       .then((response) => {
         console.log("createnewevent", response);
@@ -3382,7 +3386,9 @@ export default class MainPage extends React.Component {
             axios
               .put("/updateEvent", {
                 extra: newEvent,
-                ID: newEventRecurringID,
+                eventId: newEventRecurringID,
+                username: this.state.currentUserName,
+                id: this.state.currentUserId,
                 // start: updatedEvent.start,
                 // end: updatedEvent.end,
               })
