@@ -95,7 +95,7 @@ app.get( '/fullCalByInterval', function ( req, result ) {
 	// console.log("passed in params start date "  + req.query.start);
 	// console.log("passed in params end date"  + req.query.end);
 	// result.json({result: "We have sucessfully sent back "});
-	
+
 	if ( !req.query.start || !req.query.end ) {
 		const date = new Date();
 		var startParam = new Date( date.getFullYear(), date.getMonth(), 1 );
@@ -126,11 +126,11 @@ app.get( '/fullCalByInterval', function ( req, result ) {
 			if ( err ) {
 				return result.send( 'The post request returned an error: ' + err );
 			}
-			
+
 			const A = []; //The resultant Array
 			const B = res.data.items;
 			let temp;
-			
+
 			for ( let i = 0; i < B.length; i++ ) {
 				if ( B[ i ].start.date == null ) {
 					temp = {
@@ -165,7 +165,7 @@ app.get( '/x', ( req, res ) => {
 } );
 
 app.get( '/test', ( req, res ) => {
-	
+
 	res.redirect( '/' );
 } );
 
@@ -200,7 +200,7 @@ app.get( '/a', function ( req, result ) {
 
 app.get( '/getRecurringRules', ( req, result ) => {
 	console.log( req.query.recurringEventId, 'req getRecurringRules' );
-	
+
 	if ( req.query.recurringEventId ) {
 		calendar.events.get(
 			{
@@ -225,7 +225,7 @@ app.get( '/getRecurringEventInstances', ( req, result ) => {
 		'getRecurringEventInstances',
 		req.query.timeMax
 	);
-	
+
 	if ( req.query.recurringEventId ) {
 		if ( !req.query.timeMin ) {
 			calendar.events.instances(
@@ -279,7 +279,7 @@ data is retrieve.
 app.get( '/getEventsByInterval', function ( req, result ) {
 	console.log( 'passed in params start date ', req.query.start );
 	// console.log("passed in params end date", req);
-	
+
 	if ( !req.query.start || !req.query.end ) {
 		const date = new Date();
 		var startParam = new Date( date.getFullYear(), date.getMonth(), 1 );
@@ -294,7 +294,7 @@ app.get( '/getEventsByInterval', function ( req, result ) {
 		endParam.setHours( 23, 59, 59, 999 );
 		console.log( 'start : ', startParam, ' end:', endParam );
 	}
-	
+
 	setUpAuthById( id, ( auth ) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.list(
@@ -326,18 +326,24 @@ Given the event's id, it look send it up to google calendar API
 and delete it.
 */
 app.post( '/deleteEvent', function ( req, result ) {
-	console.log( req.body.ID );
-	calendar.events.delete(
-		{ calendarId: calendarID, eventId: req.body.ID },
-		req.body.ID,
+	console.log( 'deleteEvent',req.body.username, req.body.userId, req.body.eventId );
+	var id = req.body.userId;
+	setUpAuthById(id,(auth) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.delete(
+		{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
+		req.body.eventId,
 		( err, res ) => {
 			//CallBack
 			if ( err ) {
+				console.log('delete error',err);
 				return result.send( 'The post request returned an error: ' + err );
 			}
+			console.log('delete successful');
 			result.send( 'delete' );
 		}
 	);
+	})
 } );
 
 app.delete( '/deleteRecurringEvent', ( req, result ) => {
@@ -401,27 +407,27 @@ and delete it.
 */
 app.put( '/updateEvent', function ( req, result ) {
 	console.log( 'update request recieved' );
-	console.log( req.body.ID, req.body.extra );
-	
+	console.log( req.body.eventId, req.body.extra );
+	console.log(req.body.username,req.body.id)
 	let newEvent = req.body.extra;
-	
-	calendar.events.update(
-		{
-			calendarId: calendarID,
-			eventId:    req.body.ID,
-			// start: newEvent.start,
-			// end: newEvent.end,
-			resource:   newEvent
-			// summary: newEvent.summary,
-		},
-		( err, res ) => {
-			//CallBack
-			if ( err ) {
-				return result.send( 'The post request returned an error: ' + err );
+	let id = req.body.id;
+  setUpAuthById( id, ( auth ) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.update(
+			{
+				calendarId: 'primary',
+				eventId:    req.body.eventId,
+				resource:   newEvent
+			},
+			( err, res ) => {
+				//CallBack
+				if ( err ) {
+					return result.send( 'The post request returned an error: ' + err );
+				}
+				result.send( 'update' );
 			}
-			result.send( 'update' );
-		}
-	);
+		);
+	});
 } );
 
 /*
@@ -429,42 +435,28 @@ create new Event
 */
 app.post( '/createNewEvent', function ( req, res ) {
 	console.log( req.body );
-	// console.log((new Date()).toISOString());
 	console.log( 'inside create event route' );
-	
-	/*
-	var event = {
-	'summary': req.body.title,
-	// 'location': '800 Howard St., San Francisco, CA 94103',
-	// 'description': 'A chance to hear more about Google\'s developer products.',
-	'start': {
-	'dateTime': req.body.start,
-	'timeZone': 'America/Los_Angeles',
- },
- 'end': {
- 'dateTime': req.body.end,
- 'timeZone': 'America/Los_Angeles',
- }
- };
- */
-	calendar.events.insert(
-		{
-			auth:       calenAuth,
-			// calendarId: 'iodevcalendar@gmail.com',
-			calendarId: calendarID,
-			resource:   req.body.newEvent
-		},
-		function ( err, event ) {
-			if ( err ) {
-				console.log(
-					'There was an error contacting the Calendar service: ' + err
-				);
-				return;
+	console.log( req.body.username, req.body.id);
+	let id = req.body.id;
+	setUpAuthById( id, ( auth ) => {
+		calendar = google.calendar( { version: 'v3', auth } );
+		calendar.events.insert(
+			{
+				auth: auth,
+				calendarId: 'primary',
+				resource:   req.body.newEvent
+			},
+			function ( err, event ) {
+				if ( err ) {
+					console.log(
+						'There was an error contacting the Calendar service: ' + err
+					);
+					return;
+				}
+				console.log( 'Event created: %s', event.htmlLink );
+				res.send( 'Evented Created' );
 			}
-			console.log( 'Event created: %s', event.htmlLink );
-			res.send( 'Evented Created' );
-		}
-	);
+		)})
 } );
 
 function formatEmail( email ) {
@@ -600,7 +592,7 @@ app.get( '/adduser', function ( req, result ) {
 				} else {
 					let emailId = res.data.email;
 					emailId = formatEmail( emailId );
-					
+
 					let db = firebase.firestore();
 					let users = db.collection( 'users' );
 					users.where( 'email_id', '==', emailId ).get()
@@ -675,7 +667,7 @@ function authorize( credentials, callback ) {
 		client_secret,
 		redirect_uris[ 0 ]
 	);
-	
+
 	// Check if we have previously stored a token.
 	fs.readFile( TOKEN_PATH, ( err, token ) => {
 		if ( err ) return getAccessToken( oAuth2Client, callback );
@@ -691,7 +683,7 @@ function authorizeById( credentials, id, callback ) {
 		client_secret,
 		redirect_uris[ 0 ]
 	);
-	
+
 	// Store to firebase
 	const db = firebase.firestore();
 	if ( id ) {
@@ -751,7 +743,7 @@ function getAccessToken( oAuth2Client, callback ) {
 function saveCredentials( auth ) {
 	//Tyler: saveCredentials has been altered to just set-up, no listing events
 	console.log( 'saveCredentials', auth );
-	
+
 	if ( calenAuth == null ) calenAuth = auth;
 	if ( calendar == null ) calendar = google.calendar( { version: 'v3', auth } );
 }
@@ -759,7 +751,7 @@ function saveCredentials( auth ) {
 function updateCredentials( auth ) {
 	//Tyler: saveCredentials has been altered to just set-up, no listing events
 	console.log( 'saveCredentials', auth );
-	
+
 	calenAuth = auth;
 	calendar = google.calendar( { version: 'v3', auth } );
 }
