@@ -446,7 +446,9 @@ app.post( '/createNewEvent', function ( req, res ) {
 	console.log( req.body.username, req.body.id);
 	let id = req.body.id;
 	setUpAuthById( id, ( auth ) => {
+		console.log( 'Signed in correctly' );
 		calendar = google.calendar( { version: 'v3', auth } );
+		console.log( 'Grabbed calendar' );
 		calendar.events.insert(
 			{
 				auth: auth,
