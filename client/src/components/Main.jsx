@@ -302,8 +302,8 @@ export default class MainPage extends React.Component {
     let query = window.location.href;
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query)
-    console.log("this is so bad")
-    console.log(email)
+    console.log("this is so bad");
+    console.log(email);
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
