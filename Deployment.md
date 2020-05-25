@@ -9,4 +9,4 @@
 ## Manual deployment
 5. `sudo netstat -tulpn | grep :80` // Find the process running on 80
 6. `sudo kill -9 {pid}`
-7. `sudo npm run start &`
+7. `sudo npm run dev &`
