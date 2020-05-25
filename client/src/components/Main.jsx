@@ -53,6 +53,7 @@ export default class MainPage extends React.Component {
       showAboutModal: false,
       dayEventSelected: false, //use to show modal to create new event
       // modelSelected: false, // use to display the routine/goals modal
+      newAccountEmail: "asdf",
       newEventID: "", //save the event ID for possible future use
       newEventRecurringID: "",
       newEventName: "",
@@ -241,7 +242,6 @@ export default class MainPage extends React.Component {
       .get("/TALogInStatus")
       .then((response) => {
         console.log(response.data);
-        console.log("where am I")
         this.setState({
           loaded: true,
           loggedIn: response.data,
@@ -302,6 +302,7 @@ export default class MainPage extends React.Component {
     let query = window.location.href;
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query)
+    console.log("this is so bad")
     console.log(email)
     if (createUserParam) {
       this.setState({
@@ -314,77 +315,103 @@ export default class MainPage extends React.Component {
   updateProfileFromFirebase = () => {
     const db = firebase.firestore();
     const docRef = db.collection("users");
+    const trustedAd = db.collection("trusted_advisor");
     docRef
       .get()
       .then((usersArray) => {
-        // console.log("this is doc", usersArray.docs);
-        let nameIdObject = {};
-        let profilePicURLArray = [];
-        let theCurrentUserName = "";
-        let theCurrentUserPic = "";
-        let theCurrentUserId = "";
-        for (let user of usersArray.docs) {
-          // console.log("this is x before", user.id);
-          let id = user.id;
-          let x = user.data();
-          // console.log("this is the user should be 3 times", x);
+        trustedAd.
+        get().
+        then((advisorArray) => {
+          let nameIdObject = {};
+          let profilePicURLArray = [];
+          let theCurrentUserName = "";
+          let theCurrentUserPic = "";
+          let theCurrentUserId = "";
 
-          // console.log(user.data());
-          let firstName = x.first_name || "";
-          let lastName = x.last_name || "";
-          let name = firstName + " " + lastName;
-          let picURL = "";
-          // console.log("this is x", x);
-          //  console.log(x["about_me"]);
-          if (x["about_me"] !== undefined) {
-            picURL = x["about_me"].pic;
-            // console.log("we got in");
+          for (let user of usersArray.docs) {
+            // console.log("this is x before", user.id);
+            let id = user.id;
+            let x = user.data();
+
+            console.log(this.state.loggedIn)
+            var advisors = []
+            for (let advisor of advisorArray.docs) {
+              if (advisor.data().users) {
+                if (this.state.loggedIn == advisor.data().email_id) {
+                  for (let u of advisor.data().users) {
+                    if (u.User.id == id) {
+                      advisors.push(u.User.id)
+                    }
+                  }
+                }
+              }
+            }
+
+            if(advisors.length <= 0)
+              continue
+
+            // console.log("this is the user should be 3 times", x);
+
+            // console.log(user.data());
+            let firstName = x.first_name || "";
+            let lastName = x.last_name || "";
+            let name = firstName + " " + lastName;
+            let picURL = "";
+            // console.log("this is x", x);
+            //  console.log(x["about_me"]);
+            if (x["about_me"] !== undefined) {
+              picURL = x["about_me"].pic;
+              // console.log("we got in");
+            }
+
+            profilePicURLArray.push(picURL);
+            //I know what went wrong need to change picURL with the id bc can have multiple picurl with same thing.
+            //so have to change structure of whole thing.
+            // console.log("this is the picURL", picURL);
+            nameIdObject[id] = name;
+            // namePicObject[picURL] = name;
+            // console.log("this si the object should happen 3 times",namePicObject);
+            // console.log(x["about_me"]  );
+            // db.collection("users").doc(user.id).get()
+            //   .then()
+
+            // if(this.state.currentUserId=== ""){
+            theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
+            theCurrentUserPic = profilePicURLArray[0];
+            theCurrentUserId = Object.keys(nameIdObject)[0];
+            // }else{
+            //   theCurrentUserName = this.state.userIdAndNames[this.state.currentUserId];
+            //   theCurrentUserPic = this.state.currentUserPicUrl;
+            //   theCurrentUserId = this.state.currentUserId;
+            // }
           }
-
-          profilePicURLArray.push(picURL);
-          //I know what went wrong need to change picURL with the id bc can have multiple picurl with same thing.
-          //so have to change structure of whole thing.
-          // console.log("this is the picURL", picURL);
-          nameIdObject[id] = name;
-          // namePicObject[picURL] = name;
-          // console.log("this si the object should happen 3 times",namePicObject);
-          // console.log(x["about_me"]  );
-          // db.collection("users").doc(user.id).get()
-          //   .then()
-
-          // if(this.state.currentUserId=== ""){
-          theCurrentUserName = nameIdObject[Object.keys(nameIdObject)[0]];
-          theCurrentUserPic = profilePicURLArray[0];
-          theCurrentUserId = Object.keys(nameIdObject)[0];
-          // }else{
-          //   theCurrentUserName = this.state.userIdAndNames[this.state.currentUserId];
-          //   theCurrentUserPic = this.state.currentUserPicUrl;
-          //   theCurrentUserId = this.state.currentUserId;
-          // }
+          // console.log("this is the object for name and pic after",namePicObject);
+          this.setState(
+            {
+              userIdAndNames: nameIdObject,
+              enableNameDropDown: true,
+              // currentProfilePicUrl: Object.keys(nameIdObject)[0],
+              userPicsArray: profilePicURLArray,
+              currentUserPicUrl: theCurrentUserPic,
+              currentUserId: theCurrentUserId,
+              currentUserName: theCurrentUserName,
+              // currentUserPicUrl: profilePicURLArray[0],
+              // currentUserId: Object.keys(nameIdObject)[0],
+              // currentUserName: nameIdObject[Object.keys(nameIdObject)[0]]
+            },
+            () => {
+              this.grabFireBaseRoutinesGoalsData();
+              this.updateEventsArray();
+            }
+          );
+          })
+          .catch(function (error) {
+          console.log("Error getting document:", error);
+          });
         }
-        // console.log("this is the object for name and pic after",namePicObject);
-        this.setState(
-          {
-            userIdAndNames: nameIdObject,
-            enableNameDropDown: true,
-            // currentProfilePicUrl: Object.keys(nameIdObject)[0],
-            userPicsArray: profilePicURLArray,
-            currentUserPicUrl: theCurrentUserPic,
-            currentUserId: theCurrentUserId,
-            currentUserName: theCurrentUserName,
-            // currentUserPicUrl: profilePicURLArray[0],
-            // currentUserId: Object.keys(nameIdObject)[0],
-            // currentUserName: nameIdObject[Object.keys(nameIdObject)[0]]
-          },
-          () => {
-            this.grabFireBaseRoutinesGoalsData();
-            this.updateEventsArray();
-          }
-        );
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+      );
+        // console.log("this is doc", usersArray.docs);
+
     // const db = firebase.firestore();
     // const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
     // docRef
@@ -2326,6 +2353,7 @@ export default class MainPage extends React.Component {
                     newUserAdded={this.theNewUserAdded}
                     userNamesAndId={this.state.userIdAndNames}
                     email={this.state.newAccountEmail}
+                    loggedInEmail={this.state.loggedIn}
                   />
                 )}
               </Col>

@@ -89,7 +89,6 @@ const TOKEN_PATH = 'token.json';
 fullCalByInterval:
 Given start and end parameters from request, it will return all events from
 the google calendar BUT convert it to the format that is accepted by Full Calendar
-
 */
 
 app.get( '/fullCalByInterval', function ( req, result ) {
@@ -175,6 +174,7 @@ app.get( '/.well-known/pki-validation/E7B49F940058AE2E7AC69B41A24552F4.txt', ( r
 	console.log(index)
 	res.sendFile( index );
 } );
+
 
 //Landing Page
 /*
@@ -446,7 +446,9 @@ app.post( '/createNewEvent', function ( req, res ) {
 	console.log( req.body.username, req.body.id);
 	let id = req.body.id;
 	setUpAuthById( id, ( auth ) => {
+		console.log( 'Signed in correctly' );
 		calendar = google.calendar( { version: 'v3', auth } );
+		console.log( 'Grabbed calendar' );
 		calendar.events.insert(
 			{
 				auth: auth,
@@ -615,7 +617,7 @@ app.get( '/adduser', function ( req, result ) {
 										first_name:           'New',
 										last_name:            'User'
 									} );
-								result.redirect( '/main?createUser=true&email_id'+emailId );
+								result.redirect( '/main?createUser=true&email='+emailId );
 							} else {
 //##############################################################################
 								// Fix this to give error not update
@@ -629,7 +631,7 @@ app.get( '/adduser', function ( req, result ) {
 								    last_name: "User"
 								  });
 								})
-								result.redirect( '/main?createUser=true&email_id'+emailId );
+								result.redirect( '/main?createUser=true&email='+emailId );
 							}
 						} )
 						.catch( ( err ) => {
@@ -793,7 +795,6 @@ const listener = app.listen( process.env.PORT || 80, () => {
 	if ( process.env.NODE_ENV === 'development' )
 		debugLog( `Listening on ${address.address}:${address.port}` );
 } );
-
 
 var options = {
   key: fs.readFileSync('privatekey.pem'),

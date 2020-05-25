@@ -2,7 +2,8 @@
 	"scripts": {
 		"dev": "ts-node-dev app.ts",
 		"build": "webpack",
-		"start": "NODE_ENV=production ts-node app.ts"
+		"start": "NODE_ENV=production ts-node app.ts",
+		"stop": "forever stopall"
 	},
 	"dependencies": {
 		"axios": "^0.19.2",
