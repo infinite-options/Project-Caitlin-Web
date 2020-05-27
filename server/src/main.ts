@@ -550,7 +550,8 @@ app.post( '/TASignUp', function ( req, result ) {
 			password_key: req.body.password,
 			first_name:   req.body.fName,
 			last_name:    req.body.lName,
-			employer:     req.body.employer
+			employer:     req.body.employer,
+			users: []
 		} )
 		.then( () => {
 			result.json( true );
