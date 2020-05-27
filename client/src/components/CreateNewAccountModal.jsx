@@ -24,7 +24,7 @@ export default class AddNewPeople extends Component {
     // .doc(this.props.theCurrentUserId)
   };
 
-  newUserInputSubmit = ()=>{
+  newUserInputSubmit = ()=> {
     let advisors = firebase.firestore().collection("trusted_advisor")
     this.state.UserDocsPath.where( 'email_id', '==', this.props.email )
     .get()
@@ -54,9 +54,12 @@ export default class AddNewPeople extends Component {
                       Relationship: "advisor",
                       User: doc.ref
                     })
+                  }).then(()=>{
+                    this.props.newUserAdded();
                   });
+                } else {
+                  this.props.newUserAdded();
                 }
-                this.props.newUserAdded();
               });
             })
           });
