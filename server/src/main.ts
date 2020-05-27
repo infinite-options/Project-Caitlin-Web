@@ -30,7 +30,15 @@ app.use( cookieParser() );
 
 app.use( bodyParser.json() ); // <--- Here
 app.use( bodyParser.urlencoded( { extended: true } ) ); //for body parser to parse correctly
-app.use( session( { secret: 'An open secret' } ) );
+app.use(session({
+    key: 'user_sid',
+    secret: 'somerandonstuffs',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 600000
+    }
+}));
 
 // Connect to firebase to check for matched passwords
 const firebase = require( 'firebase' );
@@ -519,6 +527,7 @@ Log in status ROUTE:
 Check trusted advisor login status
 */
 app.get( '/TALogInStatus', function ( req, result ) {
+	console.log(req.session);
 	if ( req.session.user ) {
 		result.json( req.session.user );
 	} else {
@@ -531,8 +540,7 @@ Log out ROUTE:
 Trusted advisor log out
 */
 app.get( '/TALogOut', function ( req, result ) {
-	req.session.destroy( function ( err ) {
-	} );
+	result.clearCookie('user_sid');
 	result.json( 'success' );
 } );
 

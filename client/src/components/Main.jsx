@@ -241,7 +241,6 @@ export default class MainPage extends React.Component {
     axios
       .get("/TALogInStatus")
       .then((response) => {
-        console.log(response.data);
         this.setState({
           loaded: true,
           loggedIn: response.data,
@@ -250,6 +249,7 @@ export default class MainPage extends React.Component {
           this.updateStatesByQuery();
           this.updateProfileFromFirebase();
           this.updateEventsArray();
+          console.log(document.cookie);
           // this.getEventNotifications();
         }
       })
@@ -302,8 +302,6 @@ export default class MainPage extends React.Component {
     let query = window.location.href;
     let createUserParam = this.getUrlParam("createUser", query) == "true";
     let email = this.getUrlParam("email", query)
-    console.log("this is so bad");
-    console.log(email);
     if (createUserParam) {
       this.setState({
         showNewAccountmodal: createUserParam,
