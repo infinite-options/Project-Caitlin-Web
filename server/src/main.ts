@@ -523,6 +523,37 @@ app.post( '/TALogIn', function ( req, result ) {
 } );
 
 /*
+Log in social ROUTE:
+Attempt to sign in as trusted advisor from social media
+*/
+app.post( '/TASocialLogIn', function ( req, result ) {
+	console.log(req.body.username);
+	let emailId = req.body.username;
+	let emailId1 = emailId.toLowerCase();
+	let emailId_final = formatEmail( emailId1 );
+	let db = firebase.firestore();
+	let TAs = db.collection( 'trusted_advisor' );
+	TAs.where( 'email_id', '==', emailId_final ).get()
+		.then( ( snapshot ) => {
+				//No email matches
+				if ( snapshot.empty ) {
+					console.log( 'no user' );
+					result.json( false );
+				} else {
+					snapshot.forEach( ( doc ) => {
+						req.session.user = req.body.username;
+						result.json( req.body.username );
+						return;
+					});
+				}
+			} )
+			.catch( ( err ) => {
+				console.log( 'Error getting documents', err );
+				result.json( false );
+			} );
+}
+
+/*
 Log in status ROUTE:
 Check trusted advisor login status
 */

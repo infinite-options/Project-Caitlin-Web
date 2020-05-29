@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import './App.css';
 
@@ -66,8 +67,50 @@ export default class MainPage extends React.Component {
             </Button>
           </Col>
         </Form.Group>
+        <Form.Group as={Row}>
+          <Col>
+            <h4>Log in with Google</h4>
+          </Col>
+          <Col>
+            <GoogleLogin
+              clientId="1009120542229-9nq0m80rcnldegcpi716140tcrfl0vbt.apps.googleusercontent.com"
+              buttonText = 'Log In'
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+              isSignedIn={false}
+              disable={false}
+              cookiePolicy={"single_host_origin"}
+            />
+          </Col>
+        </Form.Group>
       </Form>
     )
+  }
+
+  responseGoogle = (response) => {
+    if(response.profileObj !== null || response.profileObj !== undefined) {
+      let e = response.profileObj.email;
+      let at = response.accessToken;
+      let rt = response.googleId;
+      let first_name = response.profileObj.givenName;
+      let last_name = response.profileObj.familyName;
+      console.log(e,at,rt,first_name,last_name)
+      axios
+        .post("/TASocialLogIn", {
+          username: e
+        })
+        .then((response) => {
+          console.log(response.data);
+          if(response.data !== false) {
+            this.setState({
+              loggedIn: true,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 
   handleEmailChange = (event) => {
@@ -242,7 +285,7 @@ export default class MainPage extends React.Component {
           <br />
           {this.LogInForm()}
           {this.signUpModal()}
-          <div>V1.3</div>
+          <div>V1.4</div>
         </div>
 
       );
