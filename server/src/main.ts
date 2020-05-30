@@ -551,7 +551,7 @@ app.post( '/TASocialLogIn', function ( req, result ) {
 				console.log( 'Error getting documents', err );
 				result.json( false );
 			} );
-}
+});
 
 /*
 Log in status ROUTE:
@@ -587,6 +587,31 @@ app.post( '/TASignUp', function ( req, result ) {
 		.set( {
 			email_id:     formatEmail( req.body.username ),
 			password_key: req.body.password,
+			first_name:   req.body.fName,
+			last_name:    req.body.lName,
+			employer:     req.body.employer,
+			users: []
+		} )
+		.then( () => {
+			result.json( true );
+		} )
+		.catch( ( err ) => {
+			console.log( 'Error writing', err );
+			result.json( false );
+		} );
+} );
+
+/*
+TA Sign up ROUTE:
+Trusted advisor sign up from Social Media
+*/
+app.post( '/TASocialSignUp', function ( req, result ) {
+	console.log( req.body );
+	let db = firebase.firestore();
+	let newTARef = db.collection( 'trusted_advisor' ).doc();
+	newTARef
+		.set( {
+			email_id:     formatEmail( req.body.username ),
 			first_name:   req.body.fName,
 			last_name:    req.body.lName,
 			employer:     req.body.employer,

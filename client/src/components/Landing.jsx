@@ -14,6 +14,7 @@ export default class MainPage extends React.Component {
       password: '',
       loggedIn: false,
       signUpModal: false,
+      socialSignUpModal: false,
       newEmail: '',
       newPassword: '',
       newFName: '',
@@ -105,6 +106,13 @@ export default class MainPage extends React.Component {
             this.setState({
               loggedIn: true,
             });
+          } else {
+            console.log('social sign up with',e)
+            this.setState({
+              socialSignUpModal: true,
+              newEmail: e,
+            })
+            console.log('social sign up modal displayed')
           }
         })
         .catch((error) => {
@@ -145,6 +153,7 @@ export default class MainPage extends React.Component {
   handleSignUp = (event) => {
     this.setState({
       signUpModal: true,
+      socialSignUpModal: false,
     });
   }
 
@@ -223,9 +232,74 @@ export default class MainPage extends React.Component {
     );
   }
 
+  socialSignUpModal = () => {
+    return (
+      <Modal show={this.state.socialSignUpModal} onHide={this.hideSignUp}>
+        <Form as={Container}>
+          <h3 className="bigfancytext formEltMargin">
+            Sign Up with Social Media
+          </h3>
+          <Form.Group as={Row} className="formEltMargin">
+            <Form.Label column sm="4">Email</Form.Label>
+            <Col sm="8">
+              <Form.Control
+                plaintext
+                readOnly
+                value={this.state.newEmail}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="formEltMargin">
+            <Form.Label column sm="2">First Name</Form.Label>
+            <Col sm="4">
+              <Form.Control
+                type="text"
+                placeholder="John"
+                value={this.state.newFName}
+                onChange={this.handleNewFNameChange}
+              />
+            </Col>
+            <Form.Label column sm="2">Last Name</Form.Label>
+            <Col sm="4">
+              <Form.Control
+                type="text"
+                placeholder="Doe"
+                value={this.state.newLName}
+                onChange={this.handleNewLNameChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="formEltMargin">
+            <Form.Label column sm="4">Employer</Form.Label>
+            <Col sm="8">
+              <Form.Control
+                type="text"
+                value={this.state.newEmployer}
+                onChange={this.handleNewEmployerChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="formEltMargin">
+            <Col>
+              <Button variant="primary" type="submit" onClick={this.handleSocialSignUpDone}>
+                Sign Up
+              </Button>
+            </Col>
+            <Col>
+              <Button variant="primary" type="submit" onClick={this.hideSignUp}>
+                Cancel
+              </Button>
+            </Col>
+          </Form.Group>
+        </Form>
+      </Modal>
+    );
+  }
+
   hideSignUp = () => {
     this.setState({
       signUpModal: false,
+      socialSignUpModal: false,
       newEmail: '',
       newPassword: '',
       newFName: '',
@@ -273,6 +347,23 @@ export default class MainPage extends React.Component {
       });
   }
 
+  handleSocialSignUpDone = () => {
+    axios
+      .post("/TASocialSignUp", {
+        username: this.state.newEmail,
+        fName: this.state.newFName,
+        lName: this.state.newLName,
+        employer: this.state.newEmployer,
+      })
+      .then((response) => {
+        console.log(response.data);
+        this.hideSignUp();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   render() {
     if(this.state.loggedIn) {
       return (<Redirect push to="main" />);
@@ -285,6 +376,7 @@ export default class MainPage extends React.Component {
           <br />
           {this.LogInForm()}
           {this.signUpModal()}
+          {this.socialSignUpModal()}
           <div>V1.4</div>
         </div>
 
