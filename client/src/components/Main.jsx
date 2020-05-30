@@ -2422,7 +2422,7 @@ giveAcessToTA = () => {
                     );
                   }}
                   >
-                  {this.state.advisorIdAndNames[keyName]['first_name'] + this.state.advisorIdAndNames[keyName]['last_name'] || ""}
+                  {this.state.advisorIdAndNames[keyName]['first_name'] + " " + this.state.advisorIdAndNames[keyName]['last_name'] || ""}
                   </Dropdown.Item>
                 )
               )}
