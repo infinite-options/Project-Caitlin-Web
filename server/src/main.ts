@@ -523,6 +523,37 @@ app.post( '/TALogIn', function ( req, result ) {
 } );
 
 /*
+Log in social ROUTE:
+Attempt to sign in as trusted advisor from social media
+*/
+app.post( '/TASocialLogIn', function ( req, result ) {
+	console.log(req.body.username);
+	let emailId = req.body.username;
+	let emailId1 = emailId.toLowerCase();
+	let emailId_final = formatEmail( emailId1 );
+	let db = firebase.firestore();
+	let TAs = db.collection( 'trusted_advisor' );
+	TAs.where( 'email_id', '==', emailId_final ).get()
+		.then( ( snapshot ) => {
+				//No email matches
+				if ( snapshot.empty ) {
+					console.log( 'no user' );
+					result.json( false );
+				} else {
+					snapshot.forEach( ( doc ) => {
+						req.session.user = req.body.username;
+						result.json( req.body.username );
+						return;
+					});
+				}
+			} )
+			.catch( ( err ) => {
+				console.log( 'Error getting documents', err );
+				result.json( false );
+			} );
+});
+
+/*
 Log in status ROUTE:
 Check trusted advisor login status
 */
@@ -556,6 +587,31 @@ app.post( '/TASignUp', function ( req, result ) {
 		.set( {
 			email_id:     formatEmail( req.body.username ),
 			password_key: req.body.password,
+			first_name:   req.body.fName,
+			last_name:    req.body.lName,
+			employer:     req.body.employer,
+			users: []
+		} )
+		.then( () => {
+			result.json( true );
+		} )
+		.catch( ( err ) => {
+			console.log( 'Error writing', err );
+			result.json( false );
+		} );
+} );
+
+/*
+TA Sign up ROUTE:
+Trusted advisor sign up from Social Media
+*/
+app.post( '/TASocialSignUp', function ( req, result ) {
+	console.log( req.body );
+	let db = firebase.firestore();
+	let newTARef = db.collection( 'trusted_advisor' ).doc();
+	newTARef
+		.set( {
+			email_id:     formatEmail( req.body.username ),
 			first_name:   req.body.fName,
 			last_name:    req.body.lName,
 			employer:     req.body.employer,
