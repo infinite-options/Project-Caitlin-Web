@@ -335,7 +335,6 @@ export default class MainPage extends React.Component {
           let id = user.id;
           let x = user.data();
 
-          console.log(this.state.loggedIn)
           var advisors = []
           for (let advisor of advisorArray.docs) {
             this.state.advisorIdAndNames[advisor.id] = advisor.data()
@@ -349,7 +348,6 @@ export default class MainPage extends React.Component {
               }
             }
           }
-          console.log(this.state.advisorIdAndNames);
           if(advisors.length <= 0)
           continue
 
@@ -4164,16 +4162,21 @@ giveAcessToTA = () => {
       *
       */
       getEventsByInterval = (start0, end0) => {
+        console.log("helllo");
         axios
         .get("/getEventsByInterval", {
           //get normal google calendar data for possible future use
           params: {
-            start: start0,
-            end: end0,
+            start: start0.toString(),
+            end: end0.toString(),
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            name: this.state.currentUserName,
+            id: this.state.currentUserId,
           },
         })
         .then((response) => {
           var events = response.data;
+          console.log(events)
           this.setState(
             {
               newEventID: "",
