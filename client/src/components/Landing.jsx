@@ -80,6 +80,7 @@ export default class MainPage extends React.Component {
               onFailure={this.responseGoogle}
               isSignedIn={false}
               disable={false}
+              redirectUri={"https://manifestmy.space"}
               cookiePolicy={"single_host_origin"}
             />
           </Col>
