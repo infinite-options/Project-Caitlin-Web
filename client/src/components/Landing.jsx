@@ -5,7 +5,6 @@ import { GoogleLogin } from 'react-google-login';
 import { Button, Col, Container, Form, Modal, Row } from 'react-bootstrap';
 import './App.css';
 
-
 export default class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -80,7 +79,8 @@ export default class MainPage extends React.Component {
               onFailure={this.responseGoogle}
               isSignedIn={false}
               disable={false}
-              redirectUri={"https://manifestmy.space"}
+              uxMode="redirect"
+              redirectUri='https://manifestmy.space'
               cookiePolicy={"single_host_origin"}
             />
           </Col>
