@@ -177,7 +177,7 @@ app.get( '/test', ( req, res ) => {
 	res.redirect( '/' );
 } );
 
-app.get( '/.well-known/pki-validation/E7B49F940058AE2E7AC69B41A24552F4.txt', ( req, res ) => {
+app.get( '/.well-known/pki-validation/6B573F01F1E6DAF81B7FD85EECA9946B.txt', ( req, res ) => {
 	const index = path.join( __basedir, 'auth.txt' );
 	console.log(index)
 	res.sendFile( index );
