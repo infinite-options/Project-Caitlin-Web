@@ -863,7 +863,10 @@ const listener = app.listen( process.env.PORT || 80, () => {
 
 var options = {
   key: fs.readFileSync('privatekey.pem'),
-  cert: fs.readFileSync('certificate.pem')
+  cert: fs.readFileSync('certificate.pem'),
+	ca: [
+		fs.readFileSync('ca_bundle.crt'),
+	]
 };
 
 https.createServer(options, app).listen(443);
