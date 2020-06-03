@@ -31,12 +31,11 @@ app.use( cookieParser() );
 app.use( bodyParser.json() ); // <--- Here
 app.use( bodyParser.urlencoded( { extended: true } ) ); //for body parser to parse correctly
 app.use(session({
-    key: 'user_sid',
     secret: 'somerandonstuffs',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        maxAge: 3600000
     }
 }));
 
@@ -864,9 +863,6 @@ const listener = app.listen( process.env.PORT || 80, () => {
 var options = {
   key: fs.readFileSync('privatekey.pem'),
   cert: fs.readFileSync('certificate.pem'),
-	ca: [
-		fs.readFileSync('ca_bundle.crt'),
-	]
 };
 
 https.createServer(options, app).listen(443);
