@@ -860,9 +860,13 @@ const listener = app.listen( process.env.PORT || 80, () => {
 		debugLog( `Listening on ${address.address}:${address.port}` );
 } );
 
-var options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem'),
-};
+var options = {}
+if (process.env.SUDO_USER == "iodevcalendar") {
+	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
+	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
+} else {
+	options["key"] = fs.readFileSync('privkey.pem');
+	options["cert"] = fs.readFileSync('fullchain.pem');
+}
 
 https.createServer(options, app).listen(443);
