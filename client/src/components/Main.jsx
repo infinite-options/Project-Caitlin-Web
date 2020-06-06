@@ -2326,7 +2326,7 @@ export default class MainPage extends React.Component {
               {/* the modal for routine/goal is called Firebasev2 currently */}
               {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
               {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
-              {/* console.log("this is the originalGoals and rountines Arr") */}
+              {/* {console.log("this is the originalGoals and rountines Arr from main", this.state.originalGoalsAndRoutineArr)} */}
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
@@ -2433,7 +2433,9 @@ export default class MainPage extends React.Component {
           </Row>
         </Container>
         <Row>
-          {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
+          {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)}
+          {console.log("these are the events that from get events by day IntervalDay version", this.state.dayEvents)}
+          {console.log("this is the date context ", this.state.dateContext)} */}
           <DayEvents
             dateContext={this.state.dateContext}
             eventClickDayView={this.handleDayEventClick}
@@ -2442,10 +2444,12 @@ export default class MainPage extends React.Component {
             getEventsByInterval={this.getEventsByIntervalDayVersion}
           />
           <DayRoutines
+            dateContext={this.state.dateContext}
             routines={this.state.routines}
             dayRoutineClick={this.toggleShowRoutine}
           />
           <DayGoals
+            dateContext={this.state.dateContext}
             goals={this.state.goals}
             dayGoalClick={this.toggleShowGoal}
           />
@@ -2515,10 +2519,16 @@ export default class MainPage extends React.Component {
             />
           </Row>
           <Row>
-            <WeekGoals goals={this.state.goals} />
+            <WeekGoals 
+              goals={this.state.goals} 
+              dateContext={this.state.dateContext}
+              />
           </Row>
           <Row>
-            <WeekRoutines routines={this.state.routines} />
+            <WeekRoutines 
+              routines={this.state.routines} 
+              dateContext={this.state.dateContext}
+            />
           </Row>
         </Container>
       </div>
@@ -4000,7 +4010,7 @@ when there is a change in the event form
             originalEvents: events,
           },
           () => {
-            console.log("New Events Arrived", events);
+            // console.log("New Events Arrived", events);
           }
         );
       })
@@ -4024,7 +4034,7 @@ when there is a change in the event form
         },
       })
       .then((response) => {
-        console.log("what are the events", response.data);
+        // console.log("what are the events", response.data);
         var events = response.data;
         // events.map((event) => {
         //   console.log(new Date(event.start.dateTime).getHours());
@@ -4036,7 +4046,7 @@ when there is a change in the event form
             dayEvents: events,
           },
           () => {
-            console.log("New Events Arrived", events);
+            // console.log("New Events Arrived", events);
           }
         );
       })

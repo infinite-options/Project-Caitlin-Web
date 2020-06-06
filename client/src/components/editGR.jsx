@@ -11,6 +11,7 @@ import { Form, Row, Col } from "react-bootstrap";
 export default class editGR extends Component {
   constructor(props) {
     super(props);
+    // console.log("this is the itemToEdit ",this.props.ATArray[this.props.i])
     this.state = {
       showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
@@ -20,40 +21,73 @@ export default class editGR extends Component {
       // repeatOptionDropDown: "Does not repeat",
       
       repeatOptionDropDown: this.props.ATArray[this.props.i].repeat === true? "Custom..." : "Does not repeat",
-      repeatDropDown: "DAY",
-      repeatDropDown_temp: "DAY",
+      repeatDropDown: this.props.ATArray[this.props.i].repeat_frequency,
+      repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency,
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: "1",
-      repeatInputValue_temp: "1",
-      repeatOccurrence: "1",
-      repeatOccurrence_temp: "1",
-      repeatRadio: "Never",
-      repeatRadio_temp: "Never",
-      repeatEndDate: "",
-      repeatEndDate_temp: "",
-      byDay: {
-        0: "",
-        1: "",
-        2: "",
-        3: "",
-        4: "",
-        5: "",
-        6: "",
-      },
-      byDay_temp: {
-        0: "",
-        1: "",
-        2: "",
-        3: "",
-        4: "",
-        5: "",
-        6: "",
-      },
-      repeatSummary: "",
+      repeatInputValue: this.props.ATArray[this.props.i].repeat_every,
+      repeatInputValue_temp: this.props.ATArray[this.props.i].repeat_every,
+      repeatOccurrence: this.props.ATArray[this.props.i].repeat_occurences,
+      repeatOccurrence_temp: this.props.ATArray[this.props.i].repeat_occurences,
+      repeatRadio: this.props.ATArray[this.props.i].repeat_ends,
+      repeatRadio_temp:this.props.ATArray[this.props.i].repeat_ends,
+      repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on,
+      repeatEndDate_temp: this.props.ATArray[this.props.i].repeat_ends_on,
+      // repeatDropDown: "DAY",
+      // repeatDropDown_temp: "DAY",
+      // repeatMonthlyDropDown: "Monthly on day 13",
+      // repeatInputValue: "1",
+      // repeatInputValue_temp: "1",
+      // repeatOccurrence: "1",
+      // repeatOccurrence_temp: "1",
+      // repeatRadio: "Never",
+      // repeatRadio_temp: "Never",
+      // repeatEndDate: "",
+      // repeatEndDate_temp: "",
+      // byDay: {
+      //   0: "",
+      //   1: "",
+      //   2: "",
+      //   3: "",
+      //   4: "",
+      //   5: "",
+      //   6: "",
+      // },
+      byDay:this.props.ATArray[this.props.i].repeat_week_days || 
+        {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: "",
+        } ,
+      
+      byDay_temp:this.props.ATArray[this.props.i].repeat_week_days || 
+          {
+          0: "",
+          1: "",
+          2: "",
+          3: "",
+          4: "",
+          5: "",
+          6: "",
+        }
+      // byDay_temp: {
+      //   0: "",
+      //   1: "",
+      //   2: "",
+      //   3: "",
+      //   4: "",
+      //   5: "",
+      //   6: "",
+      // },
+      // repeatSummary: "",
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // console.log("this is component did update");
     // console.log("this is the previous ATarry",prevProps.ATArray );
     // console.log("this is the ATarry",this.props.ATArray );
     if(prevProps.ATArray !== this.props.ATArray ){
@@ -66,17 +100,20 @@ export default class editGR extends Component {
         repeatOptionDropDown2 = "Does not repeat";
         repeatOption2 =false
       }
-      // console.log("going in here so musttttttttttttttttttttttttttttt update");
+    //  console.log("this is the props ATArray",this.props.ATArray[this.props.i]);
       this.setState({itemToEdit: this.props.ATArray[this.props.i], repeatOptionDropDown:repeatOptionDropDown2, repeatOption:repeatOption2})
-      // this.forceUpdate();
     }   
+  }
+
+  componentDidMount(){
+    this.setState({itemToEdit: this.props.ATArray[this.props.i]});
   }
 
   newInputSubmit = () => {
     // console.log("submitting GR edited formed to firebase");
     let newArr = this.props.ATArray;
     let temp = this.state.itemToEdit;
-    
+    // console.log("this is the  temp updateing the firebase", temp);
     if(!temp.repeat_ends_on){
       temp.repeat_ends_on = new Date();
     }
@@ -101,6 +138,8 @@ export default class editGR extends Component {
         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
 
+    // console.log("this is the newArr array updateing the firebase", newArr);
+
     this.props.FBPath.update({ "goals&routines": newArr }).then((doc) => {
       this.setState({ showEditModal: false });
       if (this.props != null) {
@@ -120,14 +159,14 @@ export default class editGR extends Component {
       // console.log("should be going in here");
       this.state.itemToEdit.start_day_and_time = new Date();
     }
-    console.log("thi sis wherreee tooo looooooook", this.state.itemToEdit.start_day_and_time )
+    // console.log("thi sis wherreee tooo looooooook", this.state.itemToEdit.start_day_and_time )
     this.state.itemToEdit.start_day_and_time 
       ? stored_date = new Date(this.state.itemToEdit.start_day_and_time)
       : stored_date = new Date();
   
     
-      console.log("this is the start day and time",this.state.itemToEdit.start_day_and_time );
-      console.log("this is the stored date",stored_date);
+      // console.log("this is the start day and time",this.state.itemToEdit.start_day_and_time );
+      // console.log("this is the stored date",stored_date);
     return (
       <DatePicker
         className="form-control  "
@@ -262,6 +301,7 @@ export default class editGR extends Component {
   this will close repeat modal.
   */
   saveRepeatChanges = () => {
+
     const {
       // repeatOptionDropDown,
       repeatDropDown_temp,
@@ -273,14 +313,19 @@ export default class editGR extends Component {
     } = this.state;
 
     let temp = this.state.itemToEdit;
+    // console.log("this is the full props", this.props.ATArray);
+    // console.log("this is the props",this.props.ATArray[this.props.i] );
+    // console.log("this is the temp from state", temp);
+    // console.log("this is the repeat_every option", repeatInputValue_temp);
     temp.repeat = true;
     temp.repeat_every = repeatInputValue_temp;
     temp.repeat_frequency = repeatDropDown_temp;
     temp.repeat_ends = repeatRadio_temp;
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences  = repeatOccurrence_temp;
-    console.log("this is what will be saved to FB", temp);
-    console.log("this is the dsy ", byDay_temp);
+    temp.repeat_week_days = byDay_temp;
+    // console.log("this is what will be saved to FB from the save repeat changes", temp);
+    // console.log("this is the dsy ", byDay_temp);
 
     this.setState((prevState) => ({
       itemToEdit: temp,
@@ -349,7 +394,7 @@ export default class editGR extends Component {
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
       }
-      console.log(selectedDays, "selectedDays week");
+      // console.log(selectedDays, "selectedDays week");
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           if (selectedDays.length === 7) {
@@ -556,7 +601,7 @@ export default class editGR extends Component {
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
-    console.log("is it going in here");
+    // console.log("is it going in here");
     if (eventKey === "WEEK") {
       const newByDay = {
         ...this.state.byDay_temp,
@@ -575,7 +620,7 @@ export default class editGR extends Component {
     }
     let temp = this.state.itemToEdit;
     temp.repeat_frequency = eventKey;
-    console.log("this is the repeat frequency ",temp.repeat_frequency );
+    // console.log("this is the repeat frequency ",temp.repeat_frequency );
     this.setState({
       itemToEdit:temp,
       repeatDropDown_temp: eventKey,
@@ -584,6 +629,7 @@ export default class editGR extends Component {
 
   handleRepeatInputValue = (eventKey) => {
     let temp = this.state.itemToEdit;
+    // console.log("this si the eventKey shouldn't come in here unless chaneg it",eventKey );
     temp.repeat_every = eventKey;
     this.setState({
       itemToEdit: temp,
@@ -683,63 +729,6 @@ export default class editGR extends Component {
               {this.endTimePicker()}
               <div style={{ color: "red" }}> {this.state.showDateError}</div>
             </Form.Group>
-
-        {/* <label>Available Start Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={
-              start_time.includes("date")
-                ? this.state.itemToEdit.available_start_time
-                : start_time
-            }
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_start_time = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
-        </div> */}
-
-        {/* <label>Available Start Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={
-              start_time.includes("date")
-                ? this.state.itemToEdit.available_start_time
-                : start_time
-            }
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_start_time = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
-        </div> */}
-
-        {/* <label>Available End Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 16:20:00) "
-            value={
-              end_time.includes("date")
-                ? this.state.itemToEdit.available_end_time
-                : end_time
-            }
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_end_time = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
-        </div> */}
 
         <div>
           <label>Repeating Options</label>

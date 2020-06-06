@@ -21,7 +21,7 @@ export default class AddNewGRItem extends Component {
       is_persistent: this.props.isRoutine,
       photo: "",
       is_complete: false,
-      is_available: true,
+      is_available: true, 
       // todayDateObject: this.props.todayDateObject,
       // available_end_time: this.props.singleGR.available_end_time,
       // available_start_time: this.props.singleGR.available_start_time,
@@ -43,6 +43,15 @@ export default class AddNewGRItem extends Component {
       repeat_ends:  "Never",
       repeat_ends_on: "",
       repeat_occurences: "1",
+      repeat_week_days: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
       // reapeat_day:
 
       ta_notifications: {
@@ -144,10 +153,10 @@ export default class AddNewGRItem extends Component {
 
   getGRDataFromFB = () => {
     //Grab the goals/routine array from firebase and then store it in state varible grArr
-    console.log(
-      "this is the goals and rountins from firebase",
-      this.state.arrPath
-    );
+    // console.log(
+    //   "this is the goals and rountins from firebase",
+    //   this.state.arrPath
+    // );
     this.state.arrPath
       .get()
       .then((doc) => {
@@ -207,7 +216,7 @@ export default class AddNewGRItem extends Component {
           alert("Fail to add new routine / goal item");
           return;
         }
-        console.log(ref);
+        // console.log(ref);
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
@@ -220,7 +229,7 @@ export default class AddNewGRItem extends Component {
         // this.state.grArr.push(temp);
         newArr.push(temp);
         
-        console.log("thiiiiiiisssss is what is being added to FB for the start day and time",newArr);
+        // console.log("thiiiiiiisssss is what is being added to FB for the start day and time",newArr);
         this.updateEntireArray(newArr);
       });
   };
@@ -229,13 +238,13 @@ export default class AddNewGRItem extends Component {
   updateEntireArray = (newArr) => {
     // 2. update adds to the document
     let db = this.state.arrPath;
-    console.log("thhhhhhhhhhhiiiiisss is what is being added to FB ", newArr);
+    // console.log("thhhhhhhhhhhiiiiisss is what is being added to FB ", newArr);
     db.update({ "goals&routines": newArr }).then((doc) => {
-      console.log("updateEntireArray Finished");
-      console.log(doc);
+      // console.log("updateEntireArray Finished");
+      // console.log(doc);
       this.getGRDataFromFB();
       if (this.props != null) {
-        console.log("refreshing FireBasev2 from AddNewGRItem");
+        // console.log("refreshing FireBasev2 from AddNewGRItem");
         this.props.refresh();
       }
     });
@@ -276,7 +285,7 @@ export default class AddNewGRItem extends Component {
 
   startTimePicker = () => {
     // const [startDate, setStartDate] = useState(new Date());
-    console.log("this is the start day and time ", this.state.itemToEdit.start_day_and_time);
+    // console.log("this is the start day and time ", this.state.itemToEdit.start_day_and_time);
     return (
       <DatePicker
         className="form-control"
@@ -378,14 +387,16 @@ this will close repeat modal.
     } = this.state;
 
     let temp = this.state.itemToEdit;
+    // console.log("This should be the temp before", temp);
     temp.repeat = true;
     temp.repeat_every = repeatInputValue_temp;
     temp.repeat_frequency = repeatDropDown_temp;
     temp.repeat_ends = repeatRadio_temp;
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences  = repeatOccurrence_temp;
-    console.log("this is what will be saved to FB", temp);
-    console.log("this is the dsy ", byDay_temp);
+    temp.repeat_week_days = byDay_temp;
+    // console.log("this is what will be saved to FB", temp);
+    // console.log("this is the day ", byDay_temp);
 
     this.setState((prevState) => ({
       itemToEdit: temp,
