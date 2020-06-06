@@ -861,26 +861,6 @@ export default class FirebaseV2 extends React.Component {
                 </Col>
               </Row>
 
-              <Row>
-                Completed:
-                <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    defaultChecked={true}
-                    /*
-                    checked = { this.check_routineCompleted(
-                      this.props.theCurrentUserID,
-                      tempID
-                    )}
-                    */
-                  ></input>
-                </span>
-              </Row>
-
               {this.props.routines[i]["photo"] ? (
                 <Row>
                   <Col xs={7} style={{ paddingRight: "0px" }}>
