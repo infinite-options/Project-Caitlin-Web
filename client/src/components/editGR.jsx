@@ -64,6 +64,17 @@ export default class editGR extends Component {
     // console.log("submitting GR edited formed to firebase");
     let newArr = this.props.ATArray;
 
+    if (this.state.itemToEdit.photo === "") {
+      if (this.props.isRoutine) {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
+      } else {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
+      }
+    }
+
+
     newArr[this.props.i] = this.state.itemToEdit;
 
     //Add the below attributes in case they don't already exists

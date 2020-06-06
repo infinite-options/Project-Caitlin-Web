@@ -86,6 +86,12 @@ export default class AddNewATItem extends Component {
       alert("Invalid Input");
       return;
     }
+    if (this.state.itemToEdit.photo === "") {
+      
+        this.state.itemToEdit.photo = 
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
+      
+    }
     // console.log("Submitting Input: " + this.state.itemToEdit.title);
     this.addNewDoc();
   };
