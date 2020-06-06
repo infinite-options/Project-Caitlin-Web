@@ -31,12 +31,11 @@ app.use( cookieParser() );
 app.use( bodyParser.json() ); // <--- Here
 app.use( bodyParser.urlencoded( { extended: true } ) ); //for body parser to parse correctly
 app.use(session({
-    key: 'user_sid',
     secret: 'somerandonstuffs',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        maxAge: 3600000
     }
 }));
 
@@ -861,12 +860,13 @@ const listener = app.listen( process.env.PORT || 80, () => {
 		debugLog( `Listening on ${address.address}:${address.port}` );
 } );
 
-var options = {
-  key: fs.readFileSync('privatekey.pem'),
-  cert: fs.readFileSync('certificate.pem'),
-	ca: [
-		fs.readFileSync('ca_bundle.crt'),
-	]
-};
+var options = {}
+if (process.env.SUDO_USER == "iodevcalendar") {
+	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
+	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
+} else {
+	options["key"] = fs.readFileSync('privkey.pem');
+	options["cert"] = fs.readFileSync('fullchain.pem');
+}
 
 https.createServer(options, app).listen(443);
