@@ -12,6 +12,90 @@ import {
   } from "react-bootstrap";
 
 export default class editGR extends Component {
+<<<<<<< Updated upstream
+=======
+  constructor(props) {
+    super(props);
+    this.state = {
+      showEditModal: false,
+      itemToEdit: this.props.ATArray[this.props.i],
+      showRepeatModal: false,
+      repeatOption: false,
+      repeatOptionDropDown: "Does not repeat",
+      repeatDropDown: "DAY",
+      repeatDropDown_temp: "DAY",
+      repeatMonthlyDropDown: "Monthly on day 13",
+      repeatInputValue: "1",
+      repeatInputValue_temp: "1",
+      repeatOccurrence: "1",
+      repeatOccurrence_temp: "1",
+      repeatRadio: "Never",
+      repeatRadio_temp: "Never",
+      repeatEndDate: "",
+      repeatEndDate_temp: "",
+      byDay: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      byDay_temp: {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+      repeatSummary: "",
+    };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // console.log("this is the previous ATarry",prevProps.ATArray );
+    // console.log("this is the ATarry",this.props.ATArray );
+    if(prevProps.ATArray !== this.props.ATArray){
+      // console.log("going in here so musttttttttttttttttttttttttttttt update");
+      this.setState({itemToEdit: this.props.ATArray[this.props.i]})
+      // this.forceUpdate();
+    }   
+  }
+
+  newInputSubmit = () => {
+    // console.log("submitting GR edited formed to firebase");
+    let newArr = this.props.ATArray;
+    
+    if (this.state.itemToEdit.photo === "") {
+      if (this.props.isRoutine) {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
+      } else {
+        this.state.itemToEdit.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
+      }
+    }
+    
+    newArr[this.props.i] = this.state.itemToEdit;
+
+    //Add the below attributes in case they don't already exists
+
+    if (!newArr[this.props.i]["audio"]) {
+      newArr[this.props.i]["audio"] = "";
+    }
+    if (!newArr[this.props.i]["datetime_completed"]) {
+      newArr[this.props.i]["datetime_completed"] =
+        "Sun, 23 Feb 2020 00:08:43 GMT";
+    }
+
+    if (!newArr[this.props.i]["datetime_started"]) {
+      newArr[this.props.i]["datetime_started"] =
+        "Sun, 23 Feb 2020 00:08:43 GMT";
+    }
+>>>>>>> Stashed changes
 
     constructor(props) {
         super(props)

@@ -22,6 +22,14 @@ export default class editIS extends Component {
 
     newInputSubmit = () => {
         let newArr  = this.props.ISArray;
+        
+        if (this.state.itemToEdit.photo === "") {
+      
+            this.state.itemToEdit.photo = 
+            "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0";
+      
+        }
+        
         newArr[this.props.i] = this.state.itemToEdit;
 
         //Add the below attributes in case they don't already exists

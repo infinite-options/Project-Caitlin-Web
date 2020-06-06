@@ -28,6 +28,14 @@ export default class editAT extends Component {
     newInputSubmit = () => {
         // console.log("submitting edited formed to firebase");
         let newArr  = this.props.ATArray;
+        
+        if (this.state.itemToEdit.photo === "") {
+      
+            this.state.itemToEdit.photo = 
+            "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
+      
+        }
+        
         newArr[this.props.i] = this.state.itemToEdit;
         
         //Add the below attributes in case they don't already exists

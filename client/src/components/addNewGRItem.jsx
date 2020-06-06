@@ -180,6 +180,7 @@ export default class AddNewGRItem extends Component {
       alert("Invalid Input");
       return;
     }
+<<<<<<< Updated upstream
     if (this.state.itemToEdit.photo === ""){
         if (this.props.isRoutine) {
             this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
@@ -188,11 +189,24 @@ export default class AddNewGRItem extends Component {
             this.state.itemToEdit.photo = "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
         }
             
+=======
+    if (this.state.itemToEdit.photo === "") {
+      if (this.props.isRoutine) {
+        this.state.itemToEdit.photo =
+          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
+      } else {
+        this.state.itemToEdit.photo =
+          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
+      }
+>>>>>>> Stashed changes
     }
     this.addNewDoc();
   };
 
   addNewDoc = () => {
+    this.getGRDataFromFB();
     this.state.routineDocsPath
       .add({
         title: this.state.itemToEdit.title,
@@ -203,8 +217,13 @@ export default class AddNewGRItem extends Component {
           alert("Fail to add new routine / goal item");
           return;
         }
+<<<<<<< Updated upstream
 
         let newArr = this.props.ATArray;
+        console.log(ref);
+        //let newArr = this.props.ATArray;
+        let newArr = this.state.grArr;
+>>>>>>> Stashed changes
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
         console.log("Added document with ID: ", ref.id);
