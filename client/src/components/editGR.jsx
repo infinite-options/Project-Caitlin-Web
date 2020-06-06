@@ -68,7 +68,11 @@ export default class editGR extends Component {
   newInputSubmit = () => {
     // console.log("submitting GR edited formed to firebase");
     let newArr = this.props.ATArray;
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     if (this.state.itemToEdit.photo === "") {
       if (this.props.isRoutine) {
         this.state.itemToEdit.photo =
@@ -78,7 +82,11 @@ export default class editGR extends Component {
           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
       }
     }
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     newArr[this.props.i] = this.state.itemToEdit;
 
     //Add the below attributes in case they don't already exists

@@ -218,8 +218,14 @@ export default class AddNewGRItem extends Component {
           return;
         }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
         let newArr = this.props.ATArray;
+        console.log(ref);
+        //let newArr = this.props.ATArray;
+        let newArr = this.state.grArr;
+>>>>>>> Stashed changes
+=======
         console.log(ref);
         //let newArr = this.props.ATArray;
         let newArr = this.state.grArr;
