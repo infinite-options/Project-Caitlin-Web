@@ -1,37 +1,10 @@
 {
-  "name": "calen2",
-  "version": "1.0.0",
-  "main": "server.js",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "concurrently": "^4.1.1",
-    "ejs": "^3.0.1",
-    "express": "^4.17.1",
-    "express-session": "^1.17.1",
-    "firebase": "^7.7.0",
-    "firebase-admin": "^8.9.2",
-    "firebase-functions": "^3.3.0",
-    "googleapis": "^39.2.0",
-    "http2": "^3.3.7",
-    "moment": "^2.24.0",
-    "react-modal-resizable-draggable": "^0.1.4",
-    "react-router-dom": "^5.1.2",
-    "styled-components": "^5.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.2"
-  },
-  "scripts": {
-    "client-install": "cd client && npm install",
-    "start": "node server.js",
-    "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "engines": {
-    "node": "8"
-  },
-  "author": "",
-  "license": "ISC",
-  "description": ""
+	"scripts": {
+		"heroku-prebuild": "cd client && npm install && npm ../server && npm install",
+		"build": "webpack --config server/webpack.config.ts",
+		"start": "ts-node app.ts"
+	},
+	"engines": {
+		"node": "10.15.1"
+	}
 }
