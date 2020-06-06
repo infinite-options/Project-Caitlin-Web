@@ -1,225 +1,249 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 // import axios from 'axios';
-import moment from 'moment';
-import {  Container, Row, Col} from 'react-bootstrap';
+import moment from "moment";
+import { Container, Row, Col } from "react-bootstrap";
 
 export default class DayGoals extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pxPerHour: "30px", //preset size for all columns
+      pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
+      zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
+      eventBoxSize: "200", //width size for event box
+    };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            pxPerHour: "30px", //preset size for all columns
-            pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
-            zIndex: 1, //thought i needed to increment zIndex for div overlaps but seems to be fine being at 1 for all divs
-            eventBoxSize: "200", //width size for event box
-        }
+  dayView = () => {
+    //this essentially creates the time row
+    let arr = [];
+    for (let i = 0; i < 24; ++i) {
+      arr.push(
+        <Row key={"dayDayViewGoals" + i}>
+          <Col
+            style={{
+              borderTop: "1px solid mistyrose",
+              textAlign: "right",
+              height: this.state.pxPerHour,
+            }}
+          >
+            {i}:00
+          </Col>
+        </Row>
+      );
     }
+    return arr;
+  };
 
-    dayView = () => { //this essentially creates the time row
-        let arr = [];
-        for (let i = 0; i < 24; ++i) {
-            arr.push(
-                <Row key={"dayDayViewGoals" + i}>
-                    <Col style={{ borderTop: "1px solid mistyrose", textAlign: "right", height: this.state.pxPerHour }}>
-                        {i}:00
-                    </Col >
-                </Row>
-            )
-        }
-        return arr
-    }
+  GoalClicked = () => {
+    this.props.dayGoalClick();
+  };
+  /**
+   * getEventItem: given an hour, this will return all events that was started during that hour
+   *
+   */
+  getEventItem = (hour) => {
+    var res = [];
+    var arr = this.props.goals;
+    var sameTimeEventCount = 0;
+    let itemWidth = this.state.eventBoxSize;
+    // var overlapEvent = 0;
+    var addmarginLeft = 0;
+    var fontSize = 10;
+    for (let i = 0; i < arr.length; i++) {
+      let start_dateObj = new Date();
+      let start_dateStr = start_dateObj.toISOString().split("T").shift();
+      let start_timeStr = arr[i].available_start_time;
+      let start_timeAndDate = moment(
+        start_dateStr + " " + start_timeStr
+      ).toDate();
 
-    GoalClicked  = ()=>{
-        this.props.dayGoalClick();
-    }
-    /**
-     * getEventItem: given an hour, this will return all events that was started during that hour
-     *
-    */
-    getEventItem = (hour) => {
-        var res = []
-        var arr = this.props.goals;
-        var sameTimeEventCount = 0;
-        let itemWidth = this.state.eventBoxSize;
-        // var overlapEvent = 0;
-        var addmarginLeft = 0;
-        var fontSize = 10;
+      let end_dateObj = new Date();
+      let end_dateStr = end_dateObj.toISOString().split("T").shift();
+      let end_timeStr = arr[i].available_end_time;
+      let end_timeAndDate = moment(end_dateStr + " " + end_timeStr).toDate();
+
+      let tempStartTime = start_timeAndDate;
+      let tempEndTime = end_timeAndDate;
+      /**
+       * TODO: add the case where arr[i].start.dateTime doesn't exists
+       */
+      if (tempStartTime.getHours() === hour) {
+        // addmarginLeft = 0;
+        // itemWidth = this.state.eventBoxSize;
+        // itemWidth = 0;
+        // console.log("matched" + i );
+        let minsToMarginTop =
+          (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
+        let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
+        let minDiff = tempEndTime.getMinutes() / 60;
+        let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+        let color = "PaleTurquoise";
+
+        sameTimeEventCount++;
+        //check if there is already an event there overlapping from another hour
         for (let i = 0; i < arr.length; i++) {
+          let start_dateObj = new Date();
+          let start_dateStr = start_dateObj.toISOString().split("T").shift();
+          let start_timeStr = arr[i].available_start_time;
+          let start_timeAndDate = moment(
+            start_dateStr + " " + start_timeStr
+          ).toDate();
 
-            let start_dateObj = new Date();
-            let start_dateStr = start_dateObj.toISOString().split('T').shift();
-            let start_timeStr = arr[i].available_start_time;
-            let start_timeAndDate = moment(start_dateStr + ' ' + start_timeStr).toDate();
+          let end_dateObj = new Date();
+          let end_dateStr = end_dateObj.toISOString().split("T").shift();
+          let end_timeStr = arr[i].available_end_time;
+          let end_timeAndDate = moment(
+            end_dateStr + " " + end_timeStr
+          ).toDate();
 
-            let end_dateObj = new Date();
-            let end_dateStr = end_dateObj.toISOString().split('T').shift();
-            let end_timeStr = arr[i].available_end_time;
-            let end_timeAndDate = moment(end_dateStr + ' ' + end_timeStr).toDate();
+          let tempStartTime = start_timeAndDate;
+          let tempEndTime = end_timeAndDate;
+          if (
+            tempStartTime.getHours() < hour &&
+            tempEndTime.getHours() > hour
+          ) {
+            //  console.log("this is statr time :"+ tempStartTime.getHours() );
+            //  console.log("this is end time :"+ tempEndTime.getHours() );
+            //  console.log("add 20");
+            addmarginLeft += 20;
+            itemWidth = itemWidth - 20;
+            // console.log(addmarginLeft);
+            // overlapEvent++;
+          }
+        }
 
-            let tempStartTime = start_timeAndDate;
-            let tempEndTime = end_timeAndDate;
-            /**
-             * TODO: add the case where arr[i].start.dateTime doesn't exists
-            */
-            if (tempStartTime.getHours() === hour) {
-                // addmarginLeft = 0;
-                // itemWidth = this.state.eventBoxSize;
-                // itemWidth = 0;
-                // console.log("matched" + i );
-                let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
-                let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
-                let minDiff = (tempEndTime.getMinutes()) / 60;
-                let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
-                let color = 'PaleTurquoise';
+        if (sameTimeEventCount > 1) {
+          // console.log("In here because same hour  ");
+          // console.log("add 20");
+          addmarginLeft += 20;
+          // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
+          // itemWidth = itemWidth/(sameHourItems-1);
+          itemWidth = itemWidth - 20;
+          // console.log("thi is the item width after subtracting 40 " + itemWidth);
+          // console.log(addmarginLeft);
+        }
+        // console.log(addmarginLeft);
+        // console.log("end of this element ");
 
-                sameTimeEventCount++;
-                //check if there is already an event there overlapping from another hour
-                for(let i = 0; i < arr.length; i++){
-                    let start_dateObj = new Date();
-                    let start_dateStr = start_dateObj.toISOString().split('T').shift();
-                    let start_timeStr = arr[i].available_start_time;
-                    let start_timeAndDate = moment(start_dateStr + ' ' + start_timeStr).toDate();
-
-                    let end_dateObj = new Date();
-                    let end_dateStr = end_dateObj.toISOString().split('T').shift();
-                    let end_timeStr = arr[i].available_end_time;
-                    let end_timeAndDate = moment(end_dateStr + ' ' + end_timeStr).toDate();
-
-                    let tempStartTime = start_timeAndDate;
-                    let tempEndTime = end_timeAndDate;
-                    if (tempStartTime.getHours() <  hour &&  tempEndTime.getHours()> hour) {
-                        //  console.log("this is statr time :"+ tempStartTime.getHours() );
-                        //  console.log("this is end time :"+ tempEndTime.getHours() );
-                        //  console.log("add 20");
-                        addmarginLeft += 20;
-                        itemWidth = itemWidth - 20;
-                        // console.log(addmarginLeft);
-                        // overlapEvent++;
-                    }
-                }
-
-
-                if(sameTimeEventCount > 1  ){
-                    // console.log("In here because same hour  ");
-                    // console.log("add 20");
-                     addmarginLeft += 20;
-                    // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
-                    // itemWidth = itemWidth/(sameHourItems-1);
-                    itemWidth = itemWidth - 20;
-                    // console.log("thi is the item width after subtracting 40 " + itemWidth);
-                    // console.log(addmarginLeft);
-                }
-                // console.log(addmarginLeft);
-                // console.log("end of this element ");
-
-                //chnage font size if not enough space
-                if((tempEndTime.getHours() - tempStartTime.getHours()) < 2){
-                    fontSize = 8;
-                }
-                // change color if more than one event in same time.
-                if(sameTimeEventCount <= 1){
-                     color = (hour % 2 === 0 ? 'PaleTurquoise' : 'skyblue');
-                }
-                else if( sameTimeEventCount === 2){
-                    color = 'skyblue';
-                }
-                else{
-                    color = 'blue';
-                }
-                let newElement =
-                    (<div key={"dayGoalItem" + i}
-                    data-toggle="tooltip" data-placement="right" title={arr[i].title + "\nStart: " + tempStartTime + "\nEnd: " + tempEndTime}
-
-                        onMouseOver={e => {
-                            e.target.style.color = "#FFFFFF";
-                            e.target.style.background = "RebeccaPurple";
-                            // e.target.style.marginLeft = "5px";
-                            e.target.style.zIndex="2";
-
-                        }}
-                        onMouseOut={e => {
-                            e.target.style.zIndex="1";
-                            // e.target.style.marginLeft = "0px";
-                            e.target.style.color = "#000000";
-                            e.target.style.background = color;
-                            e.target.style.border= "1px lightgray solid";
-                            // e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
-                        }}
-                        onClick = {this.GoalClicked}
-                        style={{
-                            zIndex: this.state.zIndex,
-                            marginTop: minsToMarginTop + "px",
-                            padding: "5px",
-                            // fontSize: "10px",
-                            border: "1px lightgray solid ",
-                            // float: "left",
-                            borderRadius: "5px",
-                            // background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
-                            // width: this.state.eventBoxSize,
-                            position: "absolute",
-                            height: height + "px",
-
-                            fontSize: fontSize + "px",
-                            background: color,
-                            width: itemWidth + "px",
-                            marginLeft: addmarginLeft + "px"
-                        }}>
-                        {arr[i].title}
-                    </div>);
-                res.push(newElement);
+        //chnage font size if not enough space
+        if (tempEndTime.getHours() - tempStartTime.getHours() < 2) {
+          fontSize = 8;
+        }
+        // change color if more than one event in same time.
+        if (sameTimeEventCount <= 1) {
+          color = hour % 2 === 0 ? "PaleTurquoise" : "skyblue";
+        } else if (sameTimeEventCount === 2) {
+          color = "skyblue";
+        } else {
+          color = "blue";
+        }
+        let newElement = (
+          <div
+            key={"dayGoalItem" + i}
+            data-toggle="tooltip"
+            data-placement="right"
+            title={
+              arr[i].title +
+              "\nStart: " +
+              tempStartTime +
+              "\nEnd: " +
+              tempEndTime
             }
-        }
-        return res;
+            onMouseOver={(e) => {
+              e.target.style.color = "#FFFFFF";
+              e.target.style.background = "RebeccaPurple";
+              // e.target.style.marginLeft = "5px";
+              e.target.style.zIndex = "2";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.zIndex = "1";
+              // e.target.style.marginLeft = "0px";
+              e.target.style.color = "#000000";
+              e.target.style.background = color;
+              e.target.style.border = "1px lightgray solid";
+              // e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
+            }}
+            onClick={this.GoalClicked}
+            style={{
+              zIndex: this.state.zIndex,
+              marginTop: minsToMarginTop + "px",
+              padding: "5px",
+              // fontSize: "10px",
+              border: "1px lightgray solid ",
+              // float: "left",
+              borderRadius: "5px",
+              // background: (hour % 2 == 0 ? 'PaleTurquoise' : 'skyblue'),
+              // width: this.state.eventBoxSize,
+              position: "absolute",
+              height: height + "px",
+
+              fontSize: fontSize + "px",
+              background: color,
+              width: itemWidth + "px",
+              marginLeft: addmarginLeft + "px",
+            }}
+          >
+            {arr[i].title}
+          </div>
+        );
+        res.push(newElement);
+      }
     }
+    return res;
+  };
 
-    /**
-     * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
-    */
-    dayViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
-        var arr = [];
-        for (let i = 0; i < 24; ++i) {
-            arr.push(
-                <Row key={"dayGoal" + i} style={{ position: "relative" }}>
-                    <Col
-                        style={{
-                            position: "relative",
-                            borderTop: "1px solid mistyrose",
-                            width: '180px',
-                            background: "aliceblue",
-                            height: this.state.pxPerHour
-                        }}>
-                        {this.getEventItem(i)}
-                    </Col >
-                </Row>
-            )
-        }
-        return arr;
+  /**
+   * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
+   */
+  dayViewItems = () => {
+    // this creates the events adjusting their div size to reflecting the time it's slotted for
+    var arr = [];
+    for (let i = 0; i < 24; ++i) {
+      arr.push(
+        <Row key={"dayGoal" + i} style={{ position: "relative" }}>
+          <Col
+            style={{
+              position: "relative",
+              borderTop: "1px solid mistyrose",
+              width: "180px",
+              background: "aliceblue",
+              height: this.state.pxPerHour,
+            }}
+          >
+            {this.getEventItem(i)}
+          </Col>
+        </Row>
+      );
     }
+    return arr;
+  };
 
-    render() {
-        return (
-
-
-            <div style={{margin:'20px',
-            padding: '20px',
-            marginTop: "0px",
-            width: "300px",
-            borderRadius: "20px" }}>
-                Today's Goals:
-                <Container style={{}}>
-                    <Row >
-                        {/* <div class="table col-md-1" > */}
-                        <Col>
-                            {/* this is for the actual event slots */}
-                            <Container style={{ margin: '0', padding: '0' }}>
-                                {this.dayViewItems()}
-                            </Container>
-                            {/* </div> */}
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        )
-    }
-
+  render() {
+    return (
+      <div
+        style={{
+          margin: "20px",
+          padding: "20px",
+          marginTop: "0px",
+          width: "300px",
+          borderRadius: "20px",
+        }}
+      >
+        Today's Goals:
+        <Container style={{}}>
+          <Row>
+            {/* <div class="table col-md-1" > */}
+            <Col>
+              {/* this is for the actual event slots */}
+              <Container style={{ margin: "0", padding: "0" }}>
+                {this.dayViewItems()}
+              </Container>
+              {/* </div> */}
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    );
+  }
 }

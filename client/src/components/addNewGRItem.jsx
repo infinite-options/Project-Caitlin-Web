@@ -138,6 +138,7 @@ export default class AddNewGRItem extends Component {
       "this is the goals and rountins from firebase",
       this.state.arrPath
     );
+
     this.state.arrPath
       .get()
       .then((doc) => {
@@ -190,6 +191,7 @@ export default class AddNewGRItem extends Component {
     this.state.routineDocsPath
       .add({
         title: this.state.itemToEdit.title,
+        completed: false,
         "actions&tasks": [],
       })
       .then((ref) => {
@@ -203,6 +205,8 @@ export default class AddNewGRItem extends Component {
         temp.id = ref.id;
         temp.available_start_time = this.state.itemToEdit.available_start_time;
         temp.available_end_time = this.state.itemToEdit.available_end_time;
+
+        console.log(temp.available_start_time, temp.available_end_time);
         console.log("Added document with ID: ", ref.id);
         // this.state.grArr.push(temp);
         newArr.push(temp);

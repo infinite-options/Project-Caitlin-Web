@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 // import firebase from "./firebase";
-import ShowNotifications from "./ShowNotifications"
+import ShowNotifications from "./ShowNotifications";
 import { Button, Modal } from "react-bootstrap";
-import {
-    Form,
-    Row,
-    Col
-  } from "react-bootstrap";
+import { Form, Row, Col } from "react-bootstrap";
 
 /**
  *
@@ -31,54 +27,54 @@ export default class AddNewISItem extends Component {
       photo: "",
       is_complete: false,
       is_available: true,
-      available_end_time: "23:59:59",
-      available_start_time: "00:00:00",
+      available_end_time: this.props.timeSlot[1],
+      available_start_time: this.props.timeSlot[0],
       datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
       is_timed: false,
       expected_completion_time: "00:10:00",
-      ta_notifications:{
-        before:{
+      ta_notifications: {
+        before: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
+          time: "00:05:00",
         },
-        during:{
+        during: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:30:00"
+          time: "00:30:00",
         },
-        after:{
+        after: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
-        }
+          time: "00:05:00",
+        },
       },
-      user_notifications:{
-        before:{
+      user_notifications: {
+        before: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
+          time: "00:05:00",
         },
-        during:{
+        during: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:30:00"
+          time: "00:30:00",
         },
-        after:{
+        after: {
           is_enabled: false,
           is_set: false,
           message: "",
-          time: "00:05:00"
-        }
-      }
-    }
+          time: "00:05:00",
+        },
+      },
+    },
   };
 
   componentDidMount() {
@@ -87,10 +83,10 @@ export default class AddNewISItem extends Component {
     // console.log(this.props.ISItem);
   }
 
-  handleInputChange = e => {
+  handleInputChange = (e) => {
     console.log(e.target.value);
     this.setState({
-      newInstructionTitle: e.target.value
+      newInstructionTitle: e.target.value,
     });
   };
 
@@ -106,12 +102,12 @@ export default class AddNewISItem extends Component {
   };
 
   //This function will below will essentially take in a array and have a key map to it
-  updateEntireArray = newArr => {
+  updateEntireArray = (newArr) => {
     // 2. update adds to the document
 
     this.props.ISItem.fbPath
       .update({ "instructions&steps": newArr })
-      .then(doc => {
+      .then((doc) => {
         console.log("updateEntireArray Finished");
         console.log(doc);
         if (this.props != null) {
@@ -125,39 +121,38 @@ export default class AddNewISItem extends Component {
       });
   };
 
-  convertTimeToHRMMSS =  (e) => {
-        
+  convertTimeToHRMMSS = (e) => {
     // console.log(e.target.value);
     let num = e.target.value;
-    let hours = num/60;
+    let hours = num / 60;
     let rhours = Math.floor(hours);
-    let minutes = (hours - rhours)* 60;
+    let minutes = (hours - rhours) * 60;
     let rminutes = Math.round(minutes);
     if (rhours.toString().length === 1) {
-        rhours = "0" + rhours;
+      rhours = "0" + rhours;
     }
     if (rminutes.toString().length === 1) {
-        rminutes = "0" + rminutes;
+      rminutes = "0" + rminutes;
     }
     // console.log(rhours+":" + rminutes +":" + "00");
-    return rhours+":" + rminutes +":" + "00";
-  }
+    return rhours + ":" + rminutes + ":" + "00";
+  };
 
   convertToMinutes = () => {
-      let myStr = this.state.itemToEdit.expected_completion_time.split(':');
-      let hours = myStr[0];
-      let hrToMin = hours* 60;
-      let minutes = (myStr[1] * 1 )+ hrToMin;
-      // let seconds = myStr[2];
-      
-      // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
-      return minutes;
-  }
+    let myStr = this.state.itemToEdit.expected_completion_time.split(":");
+    let hours = myStr[0];
+    let hrToMin = hours * 60;
+    let minutes = myStr[1] * 1 + hrToMin;
+    // let seconds = myStr[2];
+
+    // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
+    return minutes;
+  };
 
   handleNotificationChange = (temp) => {
     // console.log(temp);
     this.setState({ itemToEdit: temp });
-  }
+  };
 
   render() {
     return (
@@ -182,7 +177,7 @@ export default class AddNewISItem extends Component {
                 style={{ width: "200px" }}
                 placeholder="Enter Title"
                 value={this.state.itemToEdit.title}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.title = e.target.value;
@@ -197,7 +192,7 @@ export default class AddNewISItem extends Component {
                 style={{ width: "200px" }}
                 placeholder="Enter Photo URL "
                 value={this.state.itemToEdit.photo}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.photo = e.target.value;
@@ -212,7 +207,7 @@ export default class AddNewISItem extends Component {
                 style={{ width: "200px" }}
                 placeholder="HH:MM:SS (ex: 08:20:00) "
                 value={this.state.itemToEdit.available_start_time}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.available_start_time = e.target.value;
@@ -227,7 +222,7 @@ export default class AddNewISItem extends Component {
                 style={{ width: "200px" }}
                 placeholder="HH:MM:SS (ex: 16:20:00) "
                 value={this.state.itemToEdit.available_end_time}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.available_end_time = e.target.value;
@@ -235,37 +230,44 @@ export default class AddNewISItem extends Component {
                 }}
               />
             </div>
-            
+
             <label>This Takes Me</label>
             <Row>
-                <Col  style = {{paddingRight: "0px" }}>  
-                    <Form.Control
-                        // value={this.state.newEventNotification}
-                        // onChange={this.handleNotificationChange}
-                        type="number"
-                        placeholder="30"
-                        value = {this.convertToMinutes()}
-                        // value = {this.state.itemToEdit.expected_completion_time}
-                        style = {{ marginTop:".25rem", paddingRight:"0px"}}
-                        onChange={
-                            // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
-                            (e) => { e.stopPropagation(); let temp = this.state.itemToEdit; temp.expected_completion_time = this.convertTimeToHRMMSS(e); this.setState({ itemToEdit: temp }) }
-                        }
-                    />
-                </Col>
-                <Col xs={8} style = {{paddingLeft:"0px"}} >
-                    <p style = {{marginLeft:"10px", marginTop:"5px"}}>minutes</p>
-                </Col>
+              <Col style={{ paddingRight: "0px" }}>
+                <Form.Control
+                  // value={this.state.newEventNotification}
+                  // onChange={this.handleNotificationChange}
+                  type="number"
+                  placeholder="30"
+                  value={this.convertToMinutes()}
+                  // value = {this.state.itemToEdit.expected_completion_time}
+                  style={{ marginTop: ".25rem", paddingRight: "0px" }}
+                  onChange={
+                    // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
+                    (e) => {
+                      e.stopPropagation();
+                      let temp = this.state.itemToEdit;
+                      temp.expected_completion_time = this.convertTimeToHRMMSS(
+                        e
+                      );
+                      this.setState({ itemToEdit: temp });
+                    }
+                  }
+                />
+              </Col>
+              <Col xs={8} style={{ paddingLeft: "0px" }}>
+                <p style={{ marginLeft: "10px", marginTop: "5px" }}>minutes</p>
+              </Col>
             </Row>
 
-            <div className="input-group mb-3" style ={{marginTop:"10px"}}>
-              <label className="form-check-label" >Time?</label>
+            <div className="input-group mb-3" style={{ marginTop: "10px" }}>
+              <label className="form-check-label">Time?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Timed"
                 type="checkbox"
                 checked={this.state.itemToEdit.is_timed}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.is_timed = !temp.is_timed;
@@ -281,7 +283,7 @@ export default class AddNewISItem extends Component {
                 name="Available"
                 type="checkbox"
                 checked={this.state.itemToEdit.is_available}
-                onChange={e => {
+                onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.is_available = !temp.is_available;
@@ -290,13 +292,12 @@ export default class AddNewISItem extends Component {
               />
             </div>
 
-            {this.state.itemToEdit.is_available && 
-              <ShowNotifications 
-                itemToEditPassedIn = {this.state.itemToEdit}
-                notificationChange = {this.handleNotificationChange}
+            {this.state.itemToEdit.is_available && (
+              <ShowNotifications
+                itemToEditPassedIn={this.state.itemToEdit}
+                notificationChange={this.handleNotificationChange}
               />
-            }
-
+            )}
           </div>
         </Modal.Body>
         <Modal.Footer>
