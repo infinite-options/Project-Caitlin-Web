@@ -96,6 +96,12 @@ export default class AddNewISItem extends Component {
       return;
     }
     console.log("Submitting Input: " + this.state.itemToEdit.title);
+    if (this.state.itemToEdit.photo === "") {
+      
+        this.state.itemToEdit.photo = 
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0";
+      
+    }
 
     this.props.ISArray.push(this.state.itemToEdit);
     this.updateEntireArray(this.props.ISArray);
