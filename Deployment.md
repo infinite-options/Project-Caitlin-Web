@@ -14,8 +14,10 @@ If the server is running `npm run dev` before the `pull`, the changes will be au
 2. `sudo kill -9 {pid}`
 
 ## Start the server in Development mode(allows auto build but may fail because of memory leak)
-1. `npm run dev &`
+1. `cd server`
+2. `npm run dev &`
 
 ## Start the server in Production mode(preferable)
-1. `npm run build`
-2. `npm run start &`
+1. `cd server`
+2. `npm run build`
+3. `npm run start &`
