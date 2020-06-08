@@ -19,6 +19,7 @@ export default class AddNewISItem extends Component {
 
   state = {
     atArr: [], //goal, routine original array
+    ISArr: [], //Instructions and steps array
     newInstructionTitle: "",
     itemToEdit: {
       //new item to add to array
@@ -103,8 +104,31 @@ export default class AddNewISItem extends Component {
       
     }
 
-    this.props.ISArray.push(this.state.itemToEdit);
-    this.updateEntireArray(this.props.ISArray);
+    this.props.ISItem.fbPath
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+              var x = doc.data();
+              if (x["instructions&steps"] != undefined) {
+                x = x["instructions&steps"];
+                this.setState({
+                  ISArr: x,
+                });
+                
+                this.state.ISArr.push(this.state.itemToEdit);
+                this.updateEntireArray(this.state.ISArr);
+                
+              }
+            } else {
+              console.log("No such document!");
+            }
+        })
+        .catch(function (error) {
+            console.log("Error getting document:", error);
+            alert("Error getting document:", error);
+        });
+    //this.state.ISArr.push(this.state.itemToEdit);
+    //this.updateEntireArray(this.state.ISArr);
   };
 
   //This function will below will essentially take in a array and have a key map to it
