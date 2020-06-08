@@ -8,6 +8,7 @@ import * as logger from 'morgan';
 import { AddressInfo } from 'net';
 import * as path from 'path';
 import * as webpack from 'webpack';
+import * as http from 'http';
 import * as https from 'https';
 import * as webpack_dev_middleware from 'webpack-dev-middleware';
 import * as webpack_hot_middleware from 'webpack-hot-middleware';
@@ -854,19 +855,28 @@ const debugLog = debug( 'server:server' );
 /**
  * Get port from environment and store in Express.
  */
-const listener = app.listen( process.env.PORT || 80, () => {
-	const address = listener.address() as AddressInfo;
-	if ( process.env.NODE_ENV === 'development' )
-		debugLog( `Listening on ${address.address}:${address.port}` );
-} );
+// const listener = app.listen( process.env.PORT || 80, () => {
+// 	const address = listener.address() as AddressInfo;
+// 	if ( process.env.NODE_ENV === 'development' )
+// 		debugLog( `Listening on ${address.address}:${address.port}` );
+// } );
 
 var options = {}
 if (process.env.SUDO_USER == "iodevcalendar") {
 	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
 	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
+	http.createServer(function (req, res) {
+	    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+	    res.end();
+	}).listen(80);
 } else {
 	options["key"] = fs.readFileSync('privkey.pem');
 	options["cert"] = fs.readFileSync('fullchain.pem');
+	const listener = app.listen( process.env.PORT || 80, () => {
+		const address = listener.address() as AddressInfo;
+		if ( process.env.NODE_ENV === 'development' )
+			debugLog( `Listening on ${address.address}:${address.port}` );
+	});
 }
 
 https.createServer(options, app).listen(443);
