@@ -24,7 +24,7 @@ config();
 const app = express();
 
 if ( process.env.NODE_ENV === 'development' )
-	app.use( logger( 'dev' ) );
+app.use( logger( 'dev' ) );
 app.use( express.json() );
 app.use( express.urlencoded( { extended: false } ) );
 app.use( cookieParser() );
@@ -32,12 +32,12 @@ app.use( cookieParser() );
 app.use( bodyParser.json() ); // <--- Here
 app.use( bodyParser.urlencoded( { extended: true } ) ); //for body parser to parse correctly
 app.use(session({
-    secret: 'somerandonstuffs',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 3600000
-    }
+	secret: 'somerandonstuffs',
+	resave: false,
+	saveUninitialized: false,
+	cookie: {
+		maxAge: 3600000
+	}
 }));
 
 // Connect to firebase to check for matched passwords
@@ -61,13 +61,13 @@ firebase.auth().signInAnonymously().catch( function ( error ) {
 	// ...
 } );
 
-if ( process.env.NODE_ENV === 'development' ) {
-	const compiler = webpack( webpackConfig as any );
-	app.use( webpack_dev_middleware( compiler, {
-		publicPath: webpackConfig.output.publicPath
-	} ) );
-	app.use( webpack_hot_middleware( compiler ) );
-}
+// if ( process.env.NODE_ENV === 'development' ) {
+const compiler = webpack( webpackConfig as any );
+app.use( webpack_dev_middleware( compiler, {
+	publicPath: webpackConfig.output.publicPath
+} ) );
+app.use( webpack_hot_middleware( compiler ) );
+// }
 
 app.use( express.static( path.join( __basedir, 'public' ) ) );
 
@@ -78,7 +78,7 @@ const opn = require( 'open' );
 const readline = require( 'readline' );
 const { google } = require( 'googleapis' );
 let calenAuth = null,
-    calendar  = null;
+calendar  = null;
 const calendarID = 'iodevcalendar@gmail.com'; //Change here for some else's calendar
 // var calendarID = "pmarathay@gmail.com"
 // var calendarID = "jeremyhmanalo@gmail.com"
@@ -346,18 +346,18 @@ app.post( '/deleteEvent', function ( req, result ) {
 	setUpAuthById(id,(auth) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.delete(
-		{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
-		req.body.eventId,
-		( err, res ) => {
-			//CallBack
-			if ( err ) {
-				console.log('delete error',err);
-				return result.send( 'The post request returned an error: ' + err );
+			{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
+			req.body.eventId,
+			( err, res ) => {
+				//CallBack
+				if ( err ) {
+					console.log('delete error',err);
+					return result.send( 'The post request returned an error: ' + err );
+				}
+				console.log('delete successful');
+				result.send( 'delete' );
 			}
-			console.log('delete successful');
-			result.send( 'delete' );
-		}
-	);
+		);
 	})
 } );
 
@@ -426,7 +426,7 @@ app.put( '/updateEvent', function ( req, result ) {
 	console.log(req.body.username,req.body.id)
 	let newEvent = req.body.extra;
 	let id = req.body.id;
-  setUpAuthById( id, ( auth ) => {
+	setUpAuthById( id, ( auth ) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.update(
 			{
@@ -474,29 +474,29 @@ app.post( '/createNewEvent', function ( req, res ) {
 				res.send( 'Evented Created' );
 			}
 		)})
-} );
+	} );
 
-function formatEmail( email ) {
-	email = email.toLowerCase();
-	email = email.split( '@' );
-	email[ 0 ] = email[ 0 ].split( '.' ).join( '' );
-	email[ 0 ] = email[ 0 ].concat( '@' );
-	return email[ 0 ].concat( email[ 1 ] );   // The function returns the product of p1 and p2
-}
+	function formatEmail( email ) {
+		email = email.toLowerCase();
+		email = email.split( '@' );
+		email[ 0 ] = email[ 0 ].split( '.' ).join( '' );
+		email[ 0 ] = email[ 0 ].concat( '@' );
+		return email[ 0 ].concat( email[ 1 ] );   // The function returns the product of p1 and p2
+	}
 
-/*
-Log in ROUTE:
-Attempt to sign in as trusted advisor
-*/
-app.post( '/TALogIn', function ( req, result ) {
-	console.log( req.body.username, req.body.password );
-	let emailId = req.body.username;
-	let givenPass = req.body.password;
-	let emailId1 = emailId.toLowerCase();
-	let emailId_final = formatEmail( emailId1 );
-	let db = firebase.firestore();
-	let TAs = db.collection( 'trusted_advisor' );
-	TAs.where( 'email_id', '==', emailId_final ).get()
+	/*
+	Log in ROUTE:
+	Attempt to sign in as trusted advisor
+	*/
+	app.post( '/TALogIn', function ( req, result ) {
+		console.log( req.body.username, req.body.password );
+		let emailId = req.body.username;
+		let givenPass = req.body.password;
+		let emailId1 = emailId.toLowerCase();
+		let emailId_final = formatEmail( emailId1 );
+		let db = firebase.firestore();
+		let TAs = db.collection( 'trusted_advisor' );
+		TAs.where( 'email_id', '==', emailId_final ).get()
 		.then( ( snapshot ) => {
 			//No email matches
 			if ( snapshot.empty ) {
@@ -520,70 +520,70 @@ app.post( '/TALogIn', function ( req, result ) {
 			console.log( 'Error getting documents', err );
 			result.json( false );
 		} );
-} );
+	} );
 
-/*
-Log in social ROUTE:
-Attempt to sign in as trusted advisor from social media
-*/
-app.post( '/TASocialLogIn', function ( req, result ) {
-	console.log(req.body.username);
-	let emailId = req.body.username;
-	let emailId1 = emailId.toLowerCase();
-	let emailId_final = formatEmail( emailId1 );
-	let db = firebase.firestore();
-	let TAs = db.collection( 'trusted_advisor' );
-	TAs.where( 'email_id', '==', emailId_final ).get()
+	/*
+	Log in social ROUTE:
+	Attempt to sign in as trusted advisor from social media
+	*/
+	app.post( '/TASocialLogIn', function ( req, result ) {
+		console.log(req.body.username);
+		let emailId = req.body.username;
+		let emailId1 = emailId.toLowerCase();
+		let emailId_final = formatEmail( emailId1 );
+		let db = firebase.firestore();
+		let TAs = db.collection( 'trusted_advisor' );
+		TAs.where( 'email_id', '==', emailId_final ).get()
 		.then( ( snapshot ) => {
-				//No email matches
-				if ( snapshot.empty ) {
-					console.log( 'no user' );
-					result.json( false );
-				} else {
-					snapshot.forEach( ( doc ) => {
-						req.session.user = req.body.username;
-						result.json( req.body.username );
-						return;
-					});
-				}
-			} )
-			.catch( ( err ) => {
-				console.log( 'Error getting documents', err );
+			//No email matches
+			if ( snapshot.empty ) {
+				console.log( 'no user' );
 				result.json( false );
-			} );
-});
+			} else {
+				snapshot.forEach( ( doc ) => {
+					req.session.user = req.body.username;
+					result.json( req.body.username );
+					return;
+				});
+			}
+		} )
+		.catch( ( err ) => {
+			console.log( 'Error getting documents', err );
+			result.json( false );
+		} );
+	});
 
-/*
-Log in status ROUTE:
-Check trusted advisor login status
-*/
-app.get( '/TALogInStatus', function ( req, result ) {
-	console.log(req.session);
-	if ( req.session.user ) {
-		result.json( req.session.user );
-	} else {
-		result.json( false );
-	}
-} );
+	/*
+	Log in status ROUTE:
+	Check trusted advisor login status
+	*/
+	app.get( '/TALogInStatus', function ( req, result ) {
+		console.log(req.session);
+		if ( req.session.user ) {
+			result.json( req.session.user );
+		} else {
+			result.json( false );
+		}
+	} );
 
-/*
-Log out ROUTE:
-Trusted advisor log out
-*/
-app.get( '/TALogOut', function ( req, result ) {
-	result.clearCookie('user_sid');
-	result.json( 'success' );
-} );
+	/*
+	Log out ROUTE:
+	Trusted advisor log out
+	*/
+	app.get( '/TALogOut', function ( req, result ) {
+		result.clearCookie('user_sid');
+		result.json( 'success' );
+	} );
 
-/*
-TA Sign up ROUTE:
-Trusted advisor sign up
-*/
-app.post( '/TASignUp', function ( req, result ) {
-	console.log( req.body );
-	let db = firebase.firestore();
-	let newTARef = db.collection( 'trusted_advisor' ).doc();
-	newTARef
+	/*
+	TA Sign up ROUTE:
+	Trusted advisor sign up
+	*/
+	app.post( '/TASignUp', function ( req, result ) {
+		console.log( req.body );
+		let db = firebase.firestore();
+		let newTARef = db.collection( 'trusted_advisor' ).doc();
+		newTARef
 		.set( {
 			email_id:     formatEmail( req.body.username ),
 			password_key: req.body.password,
@@ -599,17 +599,17 @@ app.post( '/TASignUp', function ( req, result ) {
 			console.log( 'Error writing', err );
 			result.json( false );
 		} );
-} );
+	} );
 
-/*
-TA Sign up ROUTE:
-Trusted advisor sign up from Social Media
-*/
-app.post( '/TASocialSignUp', function ( req, result ) {
-	console.log( req.body );
-	let db = firebase.firestore();
-	let newTARef = db.collection( 'trusted_advisor' ).doc();
-	newTARef
+	/*
+	TA Sign up ROUTE:
+	Trusted advisor sign up from Social Media
+	*/
+	app.post( '/TASocialSignUp', function ( req, result ) {
+		console.log( req.body );
+		let db = firebase.firestore();
+		let newTARef = db.collection( 'trusted_advisor' ).doc();
+		newTARef
 		.set( {
 			email_id:     formatEmail( req.body.username ),
 			first_name:   req.body.fName,
@@ -624,57 +624,57 @@ app.post( '/TASocialSignUp', function ( req, result ) {
 			console.log( 'Error writing', err );
 			result.json( false );
 		} );
-} );
-
-app.get( '/auth-url', function ( req, result ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
-		if ( err ) return console.log( 'Error loading client secret file:', err );
-		// Authorize a client with credentials, then call the Google Calendar API.
-		let credentials = JSON.parse( content );
-		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2(
-			client_id, client_secret, redirect_uris[ 0 ] );
-		const authUrl = oAuth2Client.generateAuthUrl( {
-			access_type: 'offline',
-			prompt:      'consent',
-			scope:       SCOPEUSERS
-		} );
-		result.json( authUrl );
 	} );
-} );
 
-app.get( '/adduser', function ( req, result ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
-		if ( err ) return console.log( 'Error loading client secret file:', err );
-		// Authorize a client with credentials, then call the Google Calendar API.
-		let credentials = JSON.parse( content );
-		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] );
-		oAuth2Client.getToken( req.query.code, ( err, token ) => {
-			if ( err ) {
-				console.error( 'Error retrieving access token', err );
-				result.json( err );
-			}
-			oAuth2Client.setCredentials( { access_token: token.access_token } );
-			const oauth2 = google.oauth2( {
-				auth:    oAuth2Client,
-				version: 'v2'
+	app.get( '/auth-url', function ( req, result ) {
+		fs.readFile( 'credentials.json', ( err, content ) => {
+			if ( err ) return console.log( 'Error loading client secret file:', err );
+			// Authorize a client with credentials, then call the Google Calendar API.
+			let credentials = JSON.parse( content );
+			const { client_secret, client_id, redirect_uris } = credentials.web;
+			const oAuth2Client = new google.auth.OAuth2(
+				client_id, client_secret, redirect_uris[ 0 ] );
+				const authUrl = oAuth2Client.generateAuthUrl( {
+					access_type: 'offline',
+					prompt:      'consent',
+					scope:       SCOPEUSERS
+				} );
+				result.json( authUrl );
 			} );
-			oauth2.userinfo.get( ( err, res ) => {
-				if ( err ) {
-					result.json( err );
-				} else {
-					let emailId = res.data.email;
-					emailId = formatEmail( emailId );
+		} );
 
-					let db = firebase.firestore();
-					let users = db.collection( 'users' );
-					users.where( 'email_id', '==', emailId ).get()
-						.then( ( snapshot ) => {
-							if ( snapshot.empty ) {
-								// Add tokens to firebase
-								let newClientRef = users.doc();
-								newClientRef
+		app.get( '/adduser', function ( req, result ) {
+			fs.readFile( 'credentials.json', ( err, content ) => {
+				if ( err ) return console.log( 'Error loading client secret file:', err );
+				// Authorize a client with credentials, then call the Google Calendar API.
+				let credentials = JSON.parse( content );
+				const { client_secret, client_id, redirect_uris } = credentials.web;
+				const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] );
+				oAuth2Client.getToken( req.query.code, ( err, token ) => {
+					if ( err ) {
+						console.error( 'Error retrieving access token', err );
+						result.json( err );
+					}
+					oAuth2Client.setCredentials( { access_token: token.access_token } );
+					const oauth2 = google.oauth2( {
+						auth:    oAuth2Client,
+						version: 'v2'
+					} );
+					oauth2.userinfo.get( ( err, res ) => {
+						if ( err ) {
+							result.json( err );
+						} else {
+							let emailId = res.data.email;
+							emailId = formatEmail( emailId );
+
+							let db = firebase.firestore();
+							let users = db.collection( 'users' );
+							users.where( 'email_id', '==', emailId ).get()
+							.then( ( snapshot ) => {
+								if ( snapshot.empty ) {
+									// Add tokens to firebase
+									let newClientRef = users.doc();
+									newClientRef
 									.set( {
 										email_id:             emailId,
 										google_auth_token:    token.access_token,
@@ -682,203 +682,198 @@ app.get( '/adduser', function ( req, result ) {
 										first_name:           'New',
 										last_name:            'User'
 									} );
-								result.redirect( '/main?createUser=true&email='+emailId );
-							} else {
-//##############################################################################
-								// Fix this to give error not update
-//##############################################################################
-								snapshot.forEach((doc) => {
-								  users.doc(doc.id)
-								  .update({
-								    google_auth_token: token.access_token,
-								    google_refresh_token: token.refresh_token,
-								    first_name: "New",
-								    last_name: "User"
-								  });
-								})
-								result.redirect( '/main?createUser=true&email='+emailId );
-							}
-						} )
-						.catch( ( err ) => {
-							console.log( 'Error getting firebase documents', err );
-							result.json( err );
-						} );
-				}
+									result.redirect( '/main?createUser=true&email='+emailId );
+								} else {
+									//##############################################################################
+									// Fix this to give error not update
+									//##############################################################################
+									snapshot.forEach((doc) => {
+										users.doc(doc.id)
+										.update({
+											google_auth_token: token.access_token,
+											google_refresh_token: token.refresh_token,
+											first_name: "New",
+											last_name: "User"
+										});
+									})
+									result.redirect( '/main?createUser=true&email='+emailId );
+								}
+							} )
+							.catch( ( err ) => {
+								console.log( 'Error getting firebase documents', err );
+								result.json( err );
+							} );
+						}
+					} );
+				} );
 			} );
 		} );
-	} );
-} );
 
-// Refer to the Node.js quickstart on how to setup the environment:
-// https://developers.google.com/calendar/quickstart/node
-// Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
-// stored credentials.
+		// Refer to the Node.js quickstart on how to setup the environment:
+		// https://developers.google.com/calendar/quickstart/node
+		// Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
+		// stored credentials.
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//Below is all the google authorization code
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Below is all the google authorization code
 
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
-function authorize( credentials, callback ) {
-	const { client_secret, client_id, redirect_uris } = credentials.web;
-	const oAuth2Client = new google.auth.OAuth2(
-		client_id,
-		client_secret,
-		redirect_uris[ 0 ]
-	);
+		/**
+		* Create an OAuth2 client with the given credentials, and then execute the
+		* given callback function.
+		* @param {Object} credentials The authorization client credentials.
+		* @param {function} callback The callback to call with the authorized client.
+		*/
+		function authorize( credentials, callback ) {
+			const { client_secret, client_id, redirect_uris } = credentials.web;
+			const oAuth2Client = new google.auth.OAuth2(
+				client_id,
+				client_secret,
+				redirect_uris[ 0 ]
+			);
 
-	// Check if we have previously stored a token.
-	fs.readFile( TOKEN_PATH, ( err, token ) => {
-		if ( err ) return getAccessToken( oAuth2Client, callback );
-		oAuth2Client.setCredentials( JSON.parse( token ) );
-		callback( oAuth2Client );
-	} );
-}
-
-function authorizeById( credentials, id, callback ) {
-	const { client_secret, client_id, redirect_uris } = credentials.web;
-	let oAuth2Client = new google.auth.OAuth2(
-		client_id,
-		client_secret,
-		redirect_uris[ 0 ]
-	);
-
-	// Store to firebase
-	const db = firebase.firestore();
-	if ( id ) {
-		db.collection( 'users' ).doc( id ).get().then( ( snapshot ) => {
-			if ( snapshot.data().google_auth_token ) {
-				console.log( snapshot.data().google_auth_token );
-				oAuth2Client.setCredentials( {
-					access_token:  snapshot.data().google_auth_token,
-					refresh_token: snapshot.data().google_refresh_token
-				} );
-				console.log( {
-					access_token:  snapshot.data().google_auth_token,
-					refresh_token: snapshot.data().google_refresh_token
-				} );
+			// Check if we have previously stored a token.
+			fs.readFile( TOKEN_PATH, ( err, token ) => {
+				if ( err ) return getAccessToken( oAuth2Client, callback );
+				oAuth2Client.setCredentials( JSON.parse( token ) );
 				callback( oAuth2Client );
-			}
-		} );
-	}
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken( oAuth2Client, callback ) {
-	const authUrl = oAuth2Client.generateAuthUrl( {
-		access_type:     'offline',
-		approval_prompt: 'force',
-		scope:           SCOPES
-	} );
-	console.log( 'Authorize this app by visiting this url:', authUrl );
-	const rl = readline.createInterface( {
-		input:  process.stdin,
-		output: process.stdout
-	} );
-	rl.question( 'Enter the code from that page here: ', ( code ) => {
-		rl.close();
-		oAuth2Client.getToken( code, ( err, token ) => {
-			if ( err ) return console.error( 'Error retrieving access token', err );
-			oAuth2Client.setCredentials( token );
-			// Store the token to disk for later program executions
-			fs.writeFile( TOKEN_PATH, JSON.stringify( token ), ( err ) => {
-				if ( err ) return console.error( err );
-				console.log( 'Token stored to', TOKEN_PATH );
 			} );
-			callback( oAuth2Client );
+		}
+
+		function authorizeById( credentials, id, callback ) {
+			const { client_secret, client_id, redirect_uris } = credentials.web;
+			let oAuth2Client = new google.auth.OAuth2(
+				client_id,
+				client_secret,
+				redirect_uris[ 0 ]
+			);
+
+			// Store to firebase
+			const db = firebase.firestore();
+			if ( id ) {
+				db.collection( 'users' ).doc( id ).get().then( ( snapshot ) => {
+					if ( snapshot.data().google_auth_token ) {
+						console.log( snapshot.data().google_auth_token );
+						oAuth2Client.setCredentials( {
+							access_token:  snapshot.data().google_auth_token,
+							refresh_token: snapshot.data().google_refresh_token
+						} );
+						console.log( {
+							access_token:  snapshot.data().google_auth_token,
+							refresh_token: snapshot.data().google_refresh_token
+						} );
+						callback( oAuth2Client );
+					}
+				} );
+			}
+		}
+
+		/**
+		* Get and store new token after prompting for user authorization, and then
+		* execute the given callback with the authorized OAuth2 client.
+		* @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+		* @param {getEventsCallback} callback The callback for the authorized client.
+		*/
+		function getAccessToken( oAuth2Client, callback ) {
+			const authUrl = oAuth2Client.generateAuthUrl( {
+				access_type:     'offline',
+				approval_prompt: 'force',
+				scope:           SCOPES
+			} );
+			console.log( 'Authorize this app by visiting this url:', authUrl );
+			const rl = readline.createInterface( {
+				input:  process.stdin,
+				output: process.stdout
+			} );
+			rl.question( 'Enter the code from that page here: ', ( code ) => {
+				rl.close();
+				oAuth2Client.getToken( code, ( err, token ) => {
+					if ( err ) return console.error( 'Error retrieving access token', err );
+					oAuth2Client.setCredentials( token );
+					// Store the token to disk for later program executions
+					fs.writeFile( TOKEN_PATH, JSON.stringify( token ), ( err ) => {
+						if ( err ) return console.error( err );
+						console.log( 'Token stored to', TOKEN_PATH );
+					} );
+					callback( oAuth2Client );
+				} );
+			} );
+		}
+
+		/**
+		* Lists the next 10 events on the user's primary calendar.
+		* @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+		*/
+		function saveCredentials( auth ) {
+			//Tyler: saveCredentials has been altered to just set-up, no listing events
+			console.log( 'saveCredentials', auth );
+
+			if ( calenAuth == null ) calenAuth = auth;
+			if ( calendar == null ) calendar = google.calendar( { version: 'v3', auth } );
+		}
+
+		function updateCredentials( auth ) {
+			//Tyler: saveCredentials has been altered to just set-up, no listing events
+			console.log( 'saveCredentials', auth );
+
+			calenAuth = auth;
+			calendar = google.calendar( { version: 'v3', auth } );
+		}
+
+		function setUpAuth() {
+			// Load client secrets from a local file.
+			fs.readFile( 'credentials.json', ( err, content ) => {
+				if ( err ) return console.log( 'Error loading client secret file:', err );
+				// Authorize a client with credentials, then call the Google Calendar API.
+				authorize( JSON.parse( content ), saveCredentials ); //Tyler: saveCredentials has been altered to just set-up, no listing events
+			} );
+		}
+
+		function setUpAuthById( id, callback ) {
+			fs.readFile( 'credentials.json', ( err, content ) => {
+				if ( err ) return console.log( 'Error loading client secret file:', err );
+				// Authorize a client with credentials, then call the Google Calendar
+				authorizeById( JSON.parse( content ), id, callback ); //Tyler: saveCredentials has been altered to just set-up, no listing events
+			} );
+		}
+
+		app.get( '*', ( req, res ) => {
+			const index = path.join( __basedir, 'public', 'index.html' );
+			res.sendFile( index );
 		} );
-	} );
-}
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function saveCredentials( auth ) {
-	//Tyler: saveCredentials has been altered to just set-up, no listing events
-	console.log( 'saveCredentials', auth );
+		errorHandler( app );
 
-	if ( calenAuth == null ) calenAuth = auth;
-	if ( calendar == null ) calendar = google.calendar( { version: 'v3', auth } );
-}
+		const debugLog = debug( 'server:server' );
 
-function updateCredentials( auth ) {
-	//Tyler: saveCredentials has been altered to just set-up, no listing events
-	console.log( 'saveCredentials', auth );
+		/**
+		* Get port from environment and store in Express.
+		*/
 
-	calenAuth = auth;
-	calendar = google.calendar( { version: 'v3', auth } );
-}
+		var options = {}
+		if (process.env.SUDO_USER == "iodevcalendar") {
+			console.log("Prod Host");
+			options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
+			options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
+			http.createServer(function (req, res) {
+				res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+				res.end();
+			}).listen(80);
+		} else {
+			console.log("Local Host");
+			options["key"] = fs.readFileSync('privkey.pem');
+			options["cert"] = fs.readFileSync('fullchain.pem');
+			const listener = app.listen( process.env.PORT || 80, () => {
+				const address = listener.address() as AddressInfo;
+				if ( process.env.NODE_ENV === 'development' )
+				debugLog( `Listening on ${address.address}:${address.port}` );
+			} );
+		}
 
-function setUpAuth() {
-	// Load client secrets from a local file.
-	fs.readFile( 'credentials.json', ( err, content ) => {
-		if ( err ) return console.log( 'Error loading client secret file:', err );
-		// Authorize a client with credentials, then call the Google Calendar API.
-		authorize( JSON.parse( content ), saveCredentials ); //Tyler: saveCredentials has been altered to just set-up, no listing events
-	} );
-}
-
-function setUpAuthById( id, callback ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
-		if ( err ) return console.log( 'Error loading client secret file:', err );
-		// Authorize a client with credentials, then call the Google Calendar
-		authorizeById( JSON.parse( content ), id, callback ); //Tyler: saveCredentials has been altered to just set-up, no listing events
-	} );
-}
-
-app.get( '*', ( req, res ) => {
-	const index = path.join( __basedir, 'public', 'index.html' );
-	res.sendFile( index );
-} );
-
-errorHandler( app );
-
-const debugLog = debug( 'server:server' );
-
-/**
- * Get port from environment and store in Express.
- */
-// const listener = app.listen( process.env.PORT || 80, () => {
-// 	const address = listener.address() as AddressInfo;
-// 	if ( process.env.NODE_ENV === 'development' )
-// 		debugLog( `Listening on ${address.address}:${address.port}` );
-// } );
-
-var options = {}
-if (process.env.SUDO_USER == "iodevcalendar") {
-	console.log("Prod Host");
-	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
-	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
-	http.createServer(function (req, res) {
-	    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-	    res.end();
-	}).listen(80);
-} else {
-	console.log("Local Host");
-	options["key"] = fs.readFileSync('privkey.pem');
-	options["cert"] = fs.readFileSync('fullchain.pem');
-	const listener = app.listen( process.env.PORT || 80, () => {
-		const address = listener.address() as AddressInfo;
-		if ( process.env.NODE_ENV === 'development' )
-			debugLog( `Listening on ${address.address}:${address.port}` );
-	} );
-}
-
-https.createServer(options, app).listen(443);
+		https.createServer(options, app).listen(443);
