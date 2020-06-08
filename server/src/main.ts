@@ -863,6 +863,7 @@ const debugLog = debug( 'server:server' );
 
 var options = {}
 if (process.env.SUDO_USER == "iodevcalendar") {
+	console.log("Prod Host");
 	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
 	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
 	http.createServer(function (req, res) {
@@ -870,13 +871,14 @@ if (process.env.SUDO_USER == "iodevcalendar") {
 	    res.end();
 	}).listen(80);
 } else {
+	console.log("Local Host");
 	options["key"] = fs.readFileSync('privkey.pem');
 	options["cert"] = fs.readFileSync('fullchain.pem');
 	const listener = app.listen( process.env.PORT || 80, () => {
 		const address = listener.address() as AddressInfo;
 		if ( process.env.NODE_ENV === 'development' )
 			debugLog( `Listening on ${address.address}:${address.port}` );
-	});
+	} );
 }
 
 https.createServer(options, app).listen(443);
