@@ -479,7 +479,6 @@ app.post( '/createNewEvent', function ( req, res ) {
 	function formatEmail( email ) {
 		email = email.toLowerCase();
 		email = email.split( '@' );
-		email[ 0 ] = email[ 0 ].split( '.' ).join( '' );
 		email[ 0 ] = email[ 0 ].concat( '@' );
 		return email[ 0 ].concat( email[ 1 ] );   // The function returns the product of p1 and p2
 	}
@@ -580,7 +579,6 @@ app.post( '/createNewEvent', function ( req, res ) {
 	Trusted advisor sign up
 	*/
 	app.post( '/TASignUp', function ( req, result ) {
-		console.log( req.body );
 		let db = firebase.firestore();
 		let newTARef = db.collection( 'trusted_advisor' ).doc();
 		newTARef
