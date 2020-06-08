@@ -61,13 +61,13 @@ firebase.auth().signInAnonymously().catch( function ( error ) {
 	// ...
 } );
 
-if ( process.env.NODE_ENV === 'development' ) {
+// if ( process.env.NODE_ENV === 'development' ) {
 const compiler = webpack( webpackConfig as any );
 app.use( webpack_dev_middleware( compiler, {
 	publicPath: webpackConfig.output.publicPath
 } ) );
 app.use( webpack_hot_middleware( compiler ) );
-}
+// }
 
 app.use( express.static( path.join( __basedir, 'public' ) ) );
 
