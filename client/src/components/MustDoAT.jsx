@@ -1,8 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSlash, faList } from "@fortawesome/free-solid-svg-icons";
+import { faSlash, faBookmark } from "@fortawesome/free-solid-svg-icons";
 
-export default class ShowISList extends React.Component {
+export default class MustDoAT extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,36 +10,30 @@ export default class ShowISList extends React.Component {
     };
   }
 
+  /*
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.Array !== this.props.Array) {
-      // console.log("is is going in here at least");
+      console.log("Enter componentDidUpdate");
       let items = [...this.props.Array];
-      // console.log("this is the item");
-      // console.log("this si the for the person 2",items[this.props.Index] )
-      // console.log("this is what it is supposed to be 2",items[this.props.Index]['is_sublist_available']);
       this.setState({
-        iconShow: items[this.props.Index]["is_sublist_available"],
+        iconShow: items[this.props.Index]["is_must_do"],
       });
     }
   }
+  */
+
   componentDidMount() {
+    console.log("Enter componentDidMount");
     let items = [...this.props.Array];
     this.setState({
-      iconShow: items[this.props.Index]["is_sublist_available"],
+      iconShow: items[this.props.Index]["is_must_do"],
     });
   }
 
-  editFirBaseFalse = (e) => {
-    this.setState({ iconShow: false });
+  toggleFBmustDo = (toggle) => {
+    this.setState({ iconShow: toggle });
     let items = [...this.props.Array];
-    items[this.props.Index]["is_sublist_available"] = false;
-    this.props.Path.update({ "actions&tasks": items }).then((doc) => {});
-  };
-
-  editFirBaseTrue = (e) => {
-    this.setState({ iconShow: true });
-    let items = [...this.props.Array];
-    items[this.props.Index]["is_sublist_available"] = true;
+    items[this.props.Index]["is_must_do"] = toggle;
     this.props.Path.update({ "actions&tasks": items }).then((doc) => {});
   };
 
@@ -49,13 +43,13 @@ export default class ShowISList extends React.Component {
         {this.state.iconShow && (
           <div>
             <FontAwesomeIcon
-              icon={faList}
-              title="Show List Item"
+              icon={faBookmark}
+              title="Must Do"
               style={{ color: "#D6A34C", marginLeft: "20px" }}
               // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShow: false}); this.editFirBaseFalse()}}
               onClick={(e) => {
                 e.stopPropagation();
-                this.editFirBaseFalse();
+                this.toggleFBmustDo(!this.state.iconShow);
               }}
               size="lg"
             />
@@ -66,21 +60,21 @@ export default class ShowISList extends React.Component {
             <span className="fa-layers fa-fw" style={{ marginLeft: "20px" }}>
               <FontAwesomeIcon
                 style={{ color: "#000000" }}
-                icon={faList}
-                title="Don't Show List Item"
+                icon={faBookmark}
+                title="Optional"
                 onClick={(e) => {
                   e.stopPropagation();
-                  this.editFirBaseTrue();
+                  this.toggleFBmustDo(!this.state.iconShow);
                 }}
                 size="lg"
               />
               <FontAwesomeIcon
                 style={{ color: "#000000" }}
                 icon={faSlash}
-                title="Don't Show List Item"
+                title="Optional"
                 onClick={(e) => {
                   e.stopPropagation();
-                  this.editFirBaseTrue();
+                  this.toggleFBmustDo(!this.state.iconShow);
                 }}
                 size="lg"
               />

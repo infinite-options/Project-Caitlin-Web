@@ -21,12 +21,14 @@ import EditIS from "./editIS.jsx";
 import EditAT from "./EditAT.jsx";
 import ShowATList from "./ShowATList";
 import ShowISList from "./ShowISList";
+import MustDoAT from "./MustDoAT";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
   faUserAltSlash,
   faTrophy,
   faRunning,
+  faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
@@ -353,7 +355,14 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr}
                       Path={this.state.singleGR.fbPath}
                     />
+
+                    <MustDoAT
+                      Index={i}
+                      Array={this.state.singleATitemArr}
+                      Path={this.state.singleGR.fbPath}
+                    />
                   </Row>
+
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteAT
                       deleteIndex={i}
