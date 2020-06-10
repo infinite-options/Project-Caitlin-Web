@@ -26,19 +26,12 @@ export default class WeekRoutines extends Component {
   }
 
 getEventItem = (day, hour) => {
-  // var res = []
-  // var arr = this.props.routines;
-  // var sameTimeEventCount = 0;
-  // let itemWidth = this.state.eventBoxSize;
-  // // var overlapEvent = 0; 
-  // var addmarginLeft = 0;
-  // var fontSize = 10;
 
 
     let startObject = this.props.dateContext.clone();
     let startDay = startObject.startOf("week");
-    let curDate = startDay.clone();
-    curDate.add(day,'days');
+    let curDate2 = startDay.clone();
+    curDate2.add(day,'days');
     var res = []
     var tempStart = null;
     var tempEnd = null;
@@ -55,14 +48,9 @@ getEventItem = (day, hour) => {
       */
       let tempStartTime = new Date(tempStart);
       let tempEndTime = new Date(tempEnd);
-      let startDate = moment(tempStartTime);
-      let endDate = moment(tempEndTime)
 
-    //   let tempStartTime = new Date(tempStart);
-    //   let tempEndTime = new Date(tempEnd);
-      let curDate2 = this.props.dateContext.get("date");
-      let curMonth = this.props.dateContext.get("month");
-      let curYear = this.props.dateContext.get("year");
+      let curMonth = curDate2.get("month");
+      let curYear = curDate2.get("year");
 
       let initialStartDate =tempStartTime.getDate();
       let initialEndDate =tempEndTime.getDate();
@@ -70,104 +58,472 @@ getEventItem = (day, hour) => {
       let initialStartYear =tempStartTime.getFullYear();
       let initialEndYear =tempEndTime.getFullYear();
 
+      /** This function takes in the date and gives back the week number it is in for that year */
+      function ISO8601_week_no(dt) 
+      {
+            var tdt = new Date(dt.valueOf());
+            var dayn = (dt.getDay() + 6) % 7;
+            tdt.setDate(tdt.getDate() - dayn + 3);
+            var firstThursday = tdt.valueOf();
+            tdt.setMonth(0, 1);
+            if (tdt.getDay() !== 4) 
+              {
+              tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
+                }
+            return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+        }
+
       /**
        * Dealing with repeating Routines
-       */
-      /**
-       * Have to fix if event span multiple days. 
        */
       if(arr[i].repeat === true){
         if(arr[i].repeat_frequency === "DAY" ){
           /*** TODO fix if event goes to another month.  */
           if(arr[i].repeat_ends === "After" ){
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
-              if(tempStartTime.getDate() + j === curDate2  && ((curDate2 - initialStartDate) % arr[i].repeat_every) === 0){
-                tempStartTime.setDate(tempStartTime.getDate() + j);
-                tempEndTime.setDate(tempEndTime.getDate() + j);
-              }
-              // if()
+                if(curYear === initialStartYear
+                    && curMonth === initialStartMonth
+                    && initialStartDate +  (j  * arr[i].repeat_every) === curDate2.date()
+                    && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0
+                    ){
+                      
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
+                  }else if(curYear === initialStartYear
+                    && curMonth > initialStartMonth
+                    && (curMonth - initialStartMonth) === 1
+                    && arr[i].repeat_every > 1
+                    && (curDate2.date() <= ((arr[i].repeat_occurences -1 - Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every)) * arr[i].repeat_every )  )
+                    && ((curDate2.date() + ( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every  )) % arr[i].repeat_every === 0)
+                    // && (curDate + ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)+1) % arr[i].repeat_every) ) % arr[i].repeat_every === 0
+                    //  && ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)-1) % arr[i].repeat_every)
+                    ){
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
+                      tempStartTime.setMonth(curMonth);
+                      tempEndTime.setMonth(curMonth);
+    
+                  }else if(curYear === initialStartYear
+                    && curMonth > initialStartMonth
+                    && (curMonth - initialStartMonth) > 1
+                    && arr[i].repeat_every > 1
+                    ){
+                      let subtractBy = 0;
+                      let indexBy = 9;
+                      if(curMonth - initialStartMonth === 2){
+                        subtractBy = Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate)/ arr[i].repeat_every)+ Math.floor((new Date(curYear, curMonth, 0).getDate())/arr[i].repeat_every) + 1;
+                        indexBy = (  (Math.floor((new Date(curYear, curMonth, 0).getDate() - (( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every ) +1  ))  )     ) % arr[i].repeat_every)
+                        // indexBy = (Math.floor((new Date(curYear, curMonth, 0).getDate() - ( (Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate))) % arr[i].repeat_every )) % arr[i].repeat_every
+                      }
+                    //   console.log("this is the past month days ", ( Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every );
+                    //   console.log("what is the index by ", indexBy);
+    
+                      if((arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every > 0
+                        && curDate2.date() <= ( (arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every )
+                        && ((curDate2.date() + ( indexBy )) % arr[i].repeat_every === 0)
+                        ){
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date());
+                          tempStartTime.setMonth(curMonth);
+                          tempEndTime.setMonth(curMonth);
+    
+                      }
+    
+    
+                  }else if(curYear === initialStartYear
+                    && curMonth > initialStartMonth
+                    && (curMonth - initialStartMonth) === 1
+                    && arr[i].repeat_every === "1"
+                    && ((((arr[i].repeat_occurences  - new Date(curYear, curMonth, 0).getDate())) > 31) 
+                        || (curDate2.date() < (arr[i].repeat_occurences  - (new Date(curYear, curMonth, 0).getDate() - initialStartDate))))
+    
+                    ){
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
+                      tempStartTime.setMonth(curMonth);
+                      tempEndTime.setMonth(curMonth);
+    
+                  }else if(curYear === initialStartYear
+                    && curMonth > initialStartMonth
+                    && curMonth - initialStartMonth > 1
+                    && arr[i].repeat_every === "1"
+                    ){
+                      let subtractBy = 0;
+                      if(curMonth - initialStartMonth === 2){
+                        subtractBy = (new Date(curYear, curMonth -1, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth, 0).getDate())
+                      }else if(curMonth - initialStartMonth === 3){
+                        subtractBy = (new Date(curYear, curMonth -2, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth, 0).getDate())
+                      }else if(curMonth - initialStartMonth === 4){
+                        subtractBy = (new Date(curYear, curMonth -3, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth, 0).getDate())
+                      }else if(curMonth - initialStartMonth === 5){
+                        subtractBy = (new Date(curYear, curMonth -4, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth, 0).getDate())
+                      }else if(curMonth - initialStartMonth === 6){
+                        subtractBy = (new Date(curYear, curMonth -5, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth-1, 0).getDate()) + (new Date(curYear, curMonth, 0).getDate())
+                      }else if(curMonth - initialStartMonth === 7){
+                        subtractBy = (new Date(curYear, curMonth -6, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth , 0).getDate())
+                      }else if(curMonth - initialStartMonth === 8){
+                        subtractBy = (new Date(curYear, curMonth -7, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) 
+                          + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth , 0).getDate())
+                      }else if(curMonth - initialStartMonth === 9){
+                        subtractBy = (new Date(curYear, curMonth -8, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) 
+                          + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
+                      }else if(curMonth - initialStartMonth === 10){
+                        subtractBy = (new Date(curYear, curMonth -9, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) 
+                          + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate())+ (new Date(curYear, curMonth -1, 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
+                      }else if(curMonth - initialStartMonth === 11){
+                        subtractBy = (new Date(curYear, curMonth -10, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -9, 0).getDate()) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) 
+                          + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate())+ (new Date(curYear, curMonth -2, 0).getDate())+ (new Date(curYear, curMonth-1 , 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
+                      }
+                      if(arr[i].repeat_occurences - subtractBy > 0
+                        && curDate2.date() < (arr[i].repeat_occurences - subtractBy)
+                        ){
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date());
+                          tempStartTime.setMonth(curMonth);
+                          tempEndTime.setMonth(curMonth);
+                      }    
+    
+                  }else if(curYear > initialStartYear
+                    && arr[i].repeat_every === "1"
+                    ){
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
+                      tempStartTime.setMonth(curMonth);
+                      tempEndTime.setMonth(curMonth);
+                      tempStartTime.setFullYear(curYear);
+                      tempEndTime.setFullYear(curYear);
+                  }
+            //   if(tempStartTime.getDate() + j === curDate2.date()  && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0){
+            //     tempStartTime.setDate(tempStartTime.getDate() + j);
+            //     tempEndTime.setDate(tempEndTime.getDate() + j);
+            //   }
+            //   // if()
             }
           }
 
           
           /** TODO: account for ends on a different month. Also account for event span multiple days.  */
          else if(arr[i].repeat_ends === "On"){
-          let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
-          let initialEndOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
-           
-            if(((curDate2 <=  endsOnDate && curDate2 > initialStartDate) || curMonth < initialEndOnMonth)  && ((curDate - initialStartDate) % arr[i].repeat_every) === 0){  
-              tempStartTime.setDate(curDate2);
-              tempEndTime.setDate(curDate2);
-    
-            }
+            let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
+            let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
+            let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();
+               
+              if((curMonth < endsOnMonth && curYear === initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() > initialStartDate  && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
+                || (curDate2.date() <=  endsOnDate && curYear === initialEndOnYear && curYear === initialStartYear && curDate2.date() > initialStartDate && curMonth === endsOnMonth && curMonth === initialStartMonth   && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
+                || (curYear !== initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date()> initialStartDate && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
+                ){ 
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
+              }else if((curYear > initialStartYear && curYear < initialEndOnYear && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth< endsOnMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth === endsOnMonth && curDate2.date() <= endsOnDate && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                ){
+                  
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                  tempStartTime.setFullYear(curYear);
+                  tempEndTime.setFullYear(curYear);
+              }else if((curMonth < endsOnMonth && curYear === initialEndOnYear && curYear === initialStartYear && curMonth - initialStartMonth === 1 && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                || (curMonth < endsOnMonth&& curYear === initialEndOnYear && curYear === initialStartYear && curMonth - initialStartMonth > 1 && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                || (curDate2.date() <=  endsOnDate && curMonth === endsOnMonth && curMonth > initialStartMonth && curYear === initialEndOnYear && curYear === initialStartYear && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+                || (curYear !== initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
+              ){
+                
+                tempStartTime.setDate(curDate2.date());
+                tempEndTime.setDate(curDate2.date());
+                tempStartTime.setMonth(curMonth);
+                tempEndTime.setMonth(curMonth);
+                }
          }
-        /** doesnt work hen goign to month with reapting and doesnt work when routine spans multiple days */
          else if(arr[i].repeat_ends === "Never"){
-          // console.log(getDaysInMonth(curMonth, curYear));
           
-           if(curYear > initialStartYear
-            && curDate2 % arr[i].repeat_every === 0){
-              tempStartTime.setDate(curDate2);
-              tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate));
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-           }else if(curYear === initialStartYear
-            // && curMonth >initialStartMonth
-            && curMonth - initialStartMonth === 1
-            // && curDate2 % arr[i].repeat_every === 0
-            && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2) % arr[i].repeat_every  === 0
-            // do about of monnth - start day % reapeat every 
-            // && curDate2 % arr[i].repeat_every === 0
-            ){
-              console.log("does it go here fooor");
-              tempStartTime.setDate(curDate2);
-              tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate) );
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-           }else if(curYear === initialStartYear
-             && curMonth - initialStartMonth > 1
-            //  && 
-             && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate2)% arr[i].repeat_every === 0
-            //  && (((new Date(initialStartYear, initialStartMonth, 0).getDate())-initialStartDate)+curDate2+new Date(curYear, curMonth, 0) ) % arr[i].repeat_every  === 0
-            // && curDate2 % arr[i].repeat_every === 0
-            //  && (31+curDate2 ) % arr[i].repeat_every  === 0
-            ){
-              tempStartTime.setDate(curDate2);
-              tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate) );
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
+            if(curYear > initialStartYear
+                && curDate2.date() % arr[i].repeat_every === 0){
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate));
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                  tempStartTime.setFullYear(curYear);
+                  tempEndTime.setFullYear(curYear);
+               }else if(curYear === initialStartYear
+                // && curMonth >initialStartMonth
+                && curMonth - initialStartMonth === 1
+                // && curDate % arr[i].repeat_every === 0
+                && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0
+                // do about of monnth - start day % reapeat every 
+                // && curDate % arr[i].repeat_every === 0
+                ){
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+               }else if(curYear === initialStartYear
+                 && curMonth - initialStartMonth > 1
+                //  && 
+                 && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate2.date())% arr[i].repeat_every === 0
+                //  && (((new Date(initialStartYear, initialStartMonth, 0).getDate())-initialStartDate)+curDate+new Date(curYear, curMonth, 0) ) % arr[i].repeat_every  === 0
+                // && curDate % arr[i].repeat_every === 0
+                //  && (31+curDate ) % arr[i].repeat_every  === 0
+                ){
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+               }
+               else if(curYear === initialStartYear 
+                && curMonth === initialStartMonth
+                && curDate2.date() > initialStartDate 
+                && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0 
+                ) {  
+                  // console.log("does it go in here first");
+                  // if(((curDate - initialStartDate) % arr[i].repeat_every) === 0){
+                  //   console.log("does it go in here when %")
+                  //   tempStartTime.setDate(curDate);
+                  //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
+                  // }
+                  // } else if(curDate>=initialStartDate && curDate <= initialEndDate){
+                  //   console.log("does it go in here second")
+                  //   tempStartTime.setDate(curDate);
+                  //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
+                  // }
+                  // console.log("this is the end date ",curDate + (initialEndDate - initialStartDate), "this is the start date",curDate )        
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate));
+               }
            }
-           else if(curYear === initialStartYear 
-            && curMonth === initialStartMonth
-            && curDate2 > initialStartDate 
-            && ((curDate2 - initialStartDate) % arr[i].repeat_every) === 0 
-            ) {  
-              // console.log("does it go in here first");
-              // if(((curDate2 - initialStartDate) % arr[i].repeat_every) === 0){
-              //   console.log("does it go in here when %")
-              //   tempStartTime.setDate(curDate2);
-              //   tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate));
-              // }
-              // } else if(curDate2>=initialStartDate && curDate2 <= initialEndDate){
-              //   console.log("does it go in here second")
-              //   tempStartTime.setDate(curDate2);
-              //   tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate));
-              // }
-              // console.log("this is the end date ",curDate2 + (initialEndDate - initialStartDate), "this is the start date",curDate2 )        
-              tempStartTime.setDate(curDate2);
-              tempEndTime.setDate(curDate2 + (initialEndDate - initialStartDate));
+        }
+
+        if(arr[i].repeat_frequency === "WEEK" ){
+            if(arr[i].repeat_ends === "After" ){
+              // let previousTitle = 
+              let daysPerWeek = 0;
+              let weekAfter = 0;
+              let daysAfter  = 0;
+              let dayArray = [];
+              let numDaysAfter;
+              
+              Object.keys(arr[i].repeat_week_days).forEach(key => {
+                dayArray.push(arr[i].repeat_week_days[key]);
+                if(arr[i].repeat_week_days[key] !== ""){ 
+                  
+                  daysPerWeek ++;
+                }
+              })
+              if(daysPerWeek != 0){
+              // console.log("this si the days per week", daysPerWeek);
+              weekAfter = Math.floor(arr[i].repeat_occurences / daysPerWeek);
+              daysAfter = arr[i].repeat_occurences % daysPerWeek;
+              // console.log("this si the weeks after "+ weekAfter + "this is the days after " + daysAfter);
+              }
+              let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
+              let weekStart = ISO8601_week_no(startWeek);
+              let weekNow = new Date(curYear, curMonth,curDate2.date());
+              let curWeek = ISO8601_week_no(weekNow);
+             
+              // console.log("this si the start week ", weekStart, "this si the cur week ", curWeek);
+              // console.log("this is when the curweek - week start ===  weekAfter ", curWeek - weekStart === weekAfter);
+  
+              //consider that the start date is not on sunday. so dont count as 3 for first week.
+              if(((curWeek - weekStart) < weekAfter) && (curWeek - weekStart) >= 0 && curYear === initialStartYear){
+                 
+                
+                  if(curWeek === weekStart && curDate2.date() < initialStartDate ){
+                    console.log("shouldn't show event")
+                  }
+                  else{
+                    if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+                    || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
+                    || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
+                    || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
+                    || (dayArray[4] === 'Thursday' && new Date(curDate2).getDay()=== 4)
+                    || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
+                    || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
+                    ){
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date() );
+                      tempStartTime.setMonth(curMonth);
+                      tempEndTime.setMonth(curMonth);
+                    }
+                  }   
+               
+              }
+              if((curWeek - weekStart === weekAfter ) && daysAfter >= daysPerWeek){  
+                if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+                || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
+                || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
+                || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
+                || (dayArray[4] === 'Thursday' && new Date(curDate2).getDay()=== 4)
+                || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
+                || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
+                ){
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() );
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                }
+                             
+              } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
+                let numDaysAfter = 0;
+                // for(let i = 0; i<7; i++){
+                  // console.log("this is the numDaysAfter ",numDaysAfter);
+                  if( ((curWeek - 7)* 7) +  Math.floor(7/ daysPerWeek) * daysAfter  === curDate2.date()){
+                  // if(numDaysAfter <= daysAfter){
+                    // console.log("this is the day array ", dayArray);
+                    
+                      if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+                      || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
+                      || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
+                      || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
+                      || (dayArray[4] === 'Thursday' && new Date(curDate2).getDay()=== 4)
+                      || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
+                      || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
+                      ){
+                        tempStartTime.setDate(curDate2.date());
+                        tempEndTime.setDate(curDate2.date() );
+                        tempStartTime.setMonth(curMonth);
+                        tempEndTime.setMonth(curMonth);
+                        numDaysAfter++;
+                      }  
+                  }
+              }else if((curWeek - weekStart === weekAfter + 1 ) &&  daysAfter > daysPerWeek) {
+  
+              }
+          
+            }
+            else if(arr[i].repeat_ends === "On" ){
+              let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
+              let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
+              let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();
+              let initialDayCorrect = false;
+              let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
+              let weekStart = ISO8601_week_no(startWeek);
+              let weekNow = new Date(curYear, curMonth,curDate2.date());
+              let curWeek = ISO8601_week_no(weekNow);
+            //   console.log("this is the inistaial start year ",initialStartYear, " this is the initial start month ",  initialStartMonth, " this is the iniitial start date ", initialStartDate);
+            //   console.log("this is the curWeeek ",curWeek, " and this is the start week ", weekStart )
+            //   console.log("this is the curYear ",curYear , " and this is the curMonth ", curMonth);
+  
+              if((curYear < initialEndOnYear && curYear > initialStartYear && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
+                || (curYear === initialEndOnYear &&  curYear !== initialStartYear && curMonth < endsOnMonth && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
+                || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && arr[i].repeat_every === "1")
+                || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every === "1")
+                || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth < endsOnMonth && curMonth > initialStartMonth && arr[i].repeat_every === "1")
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth < endsOnMonth && curMonth > initialStartMonth && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && curDate2.date() <= endsOnDate && arr[i].repeat_every === "1") 
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && curDate2.date() <= endsOnDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth !== initialStartMonth && curDate2.date() <= endsOnDate && arr[i].repeat_every === "1")
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth !== initialStartMonth && curDate2.date() <= endsOnDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === initialStartMonth && curMonth !== endsOnMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every === "1")
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === initialStartMonth && curMonth !== endsOnMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                ){
+                    // console.log("this is the get Day ", new Date(curDate2).getDay());
+                      Object.keys(arr[i].repeat_week_days).forEach(key => {
+                        if(curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
+                          if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0) 
+                            || arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay() === 1
+                            || arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay() === 2
+                            || arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2).getDay() === 3
+                            || arr[i].repeat_week_days[key] === 'Thursday' && new Date(curDate2).getDay() === 4
+                            || arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay() === 5
+                            || arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay() == 6
+                            ){
+                              initialDayCorrect = true;
+                            }
+                        }
+                        
+                        if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay()=== 0)
+                        || (arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay()=== 1)
+                        || (arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
+                        || (arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
+                        || (arr[i].repeat_week_days[key] === 'Thursday' && new Date(curDate2).getDay()=== 4)
+                        || (arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay()=== 5)
+                        || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay()=== 6)
+                        ){
+                            
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date() );
+                          tempStartTime.setMonth(curMonth);
+                          tempEndTime.setMonth(curMonth);
+                          tempStartTime.setFullYear(curYear);
+                          tempEndTime.setFullYear(curYear);
+                        } 
+                        
+                    })
+  
+                    if(!initialDayCorrect && curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
+                        tempStartTime.setDate(curDate2.date() + 1);
+                        tempEndTime.setDate(curDate2.date() + 1);
+                    }
+                  }
+              
+            }
+            else if(arr[i].repeat_ends === "Never"){
+              //week starts with each monday 
+              let initialDayCorrect = false;
+              let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
+              let weekStart = ISO8601_week_no(startWeek);
+              let weekNow = new Date(curYear, curMonth,curDate2.date());
+              let curWeek = ISO8601_week_no(weekNow);
+              
+              // console.log("this will always be true ", 3%1 === 0);
+              // console.log("this is the curWeek ", curWeek, " this is the week start ", weekStart, " this is the every ", arr[i].repeat_every);
+              // console.log("this is the arithmatic if it is suppose to equal 0 ", ((curWeek - weekStart) % arr[i].repeat_every));
+              if( (curYear > initialStartYear  && arr[i].repeat_every === "1") 
+                || (((curYear - initialStartYear) === 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0))
+                || (((curYear - initialStartYear) > 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) //might need fixing
+                || (curYear === initialStartYear && curMonth > initialStartMonth && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                || (curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
+                ){
+  
+              Object.keys(arr[i].repeat_week_days).forEach(key => {
+  
+                if(curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
+                  if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0) 
+                    || arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay() === 1
+                    || arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay() === 2
+                    || arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2).getDay() === 3
+                    || arr[i].repeat_week_days[key] === 'Thursday' && new Date(curDate2).getDay() === 4
+                    || arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay() === 5
+                    || arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay() == 6
+                    ){
+                      initialDayCorrect = true;
+                    }
+                }
+                
+                if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay()=== 0)
+                || (arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay()=== 1)
+                || (arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
+                || (arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2 ).getDay()=== 3)
+                || (arr[i].repeat_week_days[key] === 'Thursday' && new Date(curDate2).getDay()=== 4)
+                || (arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay()=== 5)
+                || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay()=== 6)
+                ){
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date() );
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                  tempStartTime.setFullYear(curYear);
+                  tempEndTime.setFullYear(curYear);
+                }         
+             })
+             if(!initialDayCorrect && curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
+                tempStartTime.setDate(curDate2.date() + 1);
+                tempEndTime.setDate(curDate2.date() + 1);
+             }
+            }
            }
-         }
+  
         }
         /** REPEAT MONTH */
         if(arr[i].repeat_frequency === "MONTH" ){
-          /*** TODO fix if routine goes past 2 years.  */
           if(arr[i].repeat_ends === "After" ){
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
-              if(curDate2 >= initialStartDate      
-                && curDate2 <= initialEndDate
+              if(curDate2.date() >= initialStartDate      
+                && curDate2.date() <= initialEndDate
                 && tempStartTime.getMonth() + (j  * arr[i].repeat_every)=== curMonth 
                 && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0
                 && initialStartYear === curYear){
@@ -175,8 +531,8 @@ getEventItem = (day, hour) => {
                   tempEndTime.setMonth(curMonth);
               } 
             }
-            if(curDate2 >= initialStartDate      
-              && curDate2 <= initialEndDate
+            if(curDate2.date() >= initialStartDate      
+              && curDate2.date() <= initialEndDate
               && curYear > initialStartYear
               && curYear - initialStartYear === 1
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0
@@ -189,8 +545,8 @@ getEventItem = (day, hour) => {
                     tempEndTime.setFullYear(curYear);
                   }   
                 }    
-            }else if(curDate2 >= initialStartDate      
-              && curDate2 <= initialEndDate
+            }else if(curDate2.date() >= initialStartDate      
+              && curDate2.date() <= initialEndDate
               && curYear - initialStartYear === 2
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0
               ){
@@ -211,8 +567,8 @@ getEventItem = (day, hour) => {
             if(initialStartYear === initialEndOnYear 
               && curMonth <=  endsOnMonth 
               && curMonth > initialStartMonth  
-              && curDate2 >= initialStartDate      
-              && curDate2<= initialEndDate 
+              && curDate2.date() >= initialStartDate      
+              && curDate2.date()<= initialEndDate 
               && curYear === initialStartYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){   
                 if(endsOnMonth === curMonth ){
@@ -226,8 +582,8 @@ getEventItem = (day, hour) => {
                       tempEndTime.setMonth(curMonth);
                 }
             }else if(initialStartYear !== initialEndOnYear
-              && curDate2 >= initialStartDate      
-              && curDate2<= initialEndDate 
+              && curDate2.date() >= initialStartDate      
+              && curDate2.date()<= initialEndDate 
               && curYear > initialStartYear
               && curYear < initialEndOnYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
@@ -247,8 +603,8 @@ getEventItem = (day, hour) => {
               }
             }else if(initialStartYear !== initialEndOnYear
               && curMonth <=  endsOnMonth
-              && curDate2 >= initialStartDate      
-              && curDate2<= initialEndDate 
+              && curDate2.date() >= initialStartDate      
+              && curDate2.date()<= initialEndDate 
               && curYear === initialEndOnYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
               if(endsOnMonth === curMonth ){
@@ -267,8 +623,8 @@ getEventItem = (day, hour) => {
               }
             }else if(initialStartYear !== initialEndOnYear 
               && curMonth > initialStartMonth
-              && curDate2 >= initialStartDate      
-              && curDate2<= initialEndDate 
+              && curDate2.date() >= initialStartDate      
+              && curDate2.date()<= initialEndDate 
               && curYear === initialStartYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
               if(endsOnMonth === curMonth ){
@@ -284,7 +640,7 @@ getEventItem = (day, hour) => {
             }
          }
          else if(arr[i].repeat_ends === "Never"){
-           if(curDate2 >= initialStartDate && curDate2<= initialEndDate 
+           if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
             && curYear > initialStartYear 
             && ((curMonth - initialStartMonth ) % arr[i].repeat_every) === 0){
             tempStartTime.setMonth(curMonth);
@@ -292,7 +648,7 @@ getEventItem = (day, hour) => {
             tempStartTime.setFullYear(curYear);
             tempEndTime.setFullYear(curYear);
            }
-           else if(curDate2 >= initialStartDate && curDate2<= initialEndDate 
+           else if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
             && curMonth > initialStartMonth 
             && curYear ===  initialStartYear
             && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
@@ -306,8 +662,8 @@ getEventItem = (day, hour) => {
         if(arr[i].repeat_frequency === "YEAR" ){
           if(arr[i].repeat_ends === "After" ){
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
-              if(curDate2 >= initialStartDate      
-                && curDate2 <= initialEndDate
+              if(curDate2.date() >= initialStartDate      
+                && curDate2.date() <= initialEndDate
                 && curMonth >= tempStartTime.getMonth() 
                 && curMonth <= tempEndTime.getMonth()  
                 && tempStartTime.getFullYear() + (j  * arr[i].repeat_every)=== curYear 
@@ -323,8 +679,8 @@ getEventItem = (day, hour) => {
           let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
           let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();  
             if(((curYear <=  initialEndOnYear && curYear > initialStartYear) )  
-              && curDate2 >= initialStartDate      
-              && curDate2<= initialEndDate
+              && curDate2.date() >= initialStartDate      
+              && curDate2.date()<= initialEndDate
               && curMonth === initialStartMonth
               && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){  
                 if(initialEndOnYear === curYear ){
@@ -346,30 +702,25 @@ getEventItem = (day, hour) => {
             }
          }
          else if(arr[i].repeat_ends === "Never"){
-            if(curDate2 >= initialStartDate && curDate2<= initialEndDate && curMonth === initialStartMonth && curYear > initialStartYear && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){
-            tempStartTime.setFullYear(curYear);
-            tempEndTime.setFullYear(curYear);
+            if(curDate2.date() >= initialStartDate 
+            && curDate2.date()<= initialEndDate 
+            && curMonth === initialStartMonth 
+            && curYear > initialStartYear 
+            && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){
+                tempStartTime.setFullYear(curYear);
+                tempEndTime.setFullYear(curYear);
            }
          }
         }
-        /*** TODO then do if span week */
       }
-    //   console.log("this is the moment of curDate"+ curDate+ "this is the starte date"+ startDate+ "this is the end date"+endDate );
-    // if(arr[i].title === "Routine check day never"){
-        console.log("this is curDat2 ",curDate2);
-        console.log("this is the curDate ", curDate )
-        console.log("is this true for is same or after "+ curDate.isSameOrAfter(startDate,'day'))
-        console.log("is this true for is same or before "+ curDate.isSameOrBefore(endDate,'day'))
-    // }
+
+        let startDate = moment(tempStartTime);
+        let endDate = moment(tempEndTime)
       
-      if(curDate.isSameOrAfter(startDate,'day') && curDate.isSameOrBefore(endDate,'day')) {
-    //   if(moment(curDate2).isSameOrAfter(startDate,'day') && moment(curDate2).isSameOrBefore(endDate,'day')) {
-        // if (startDate.date() ===  curDate.date()) {
-        if (tempStartTime.getDate() === curDate2 &&  curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth() && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear()) {
-            // if (startDate.hour() === hour) {
-            if(tempStartTime.getHours() === hour){
-                // if(startDate.date() === endDate.date()) {
-                if(tempStartTime.getDate() === tempEndTime.getDate()){
+      if(moment(curDate2).isSameOrAfter(startDate,'day') && moment(curDate2).isSameOrBefore(endDate,'day')) {
+        if (startDate.date() === curDate2.date() &&  curMonth <= endDate.month() && curMonth>= startDate.month() && curYear <= endDate.year() && curYear>= startDate.year()) {
+            if (startDate.hour() === hour) {
+                if(startDate.date() === endDate.date()) {
                     // addmarginLeft = 0;
                         // itemWidth = this.state.eventBoxSize;
                         let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
@@ -457,8 +808,8 @@ getEventItem = (day, hour) => {
                                 </div>
                             );
                         res.push(newElement);
-                } else if(tempStartTime.getDate() !== tempEndTime.getDate()){
-                // else if(startDate.date() !== endDate.date()) {
+                } 
+                else if(startDate.date() !== endDate.date()) {
                     let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                         let hourDiff = 24 - tempStartTime.getHours();
                         let minDiff = 0;
@@ -511,8 +862,7 @@ getEventItem = (day, hour) => {
                 }
             }
         } else if (hour === 0) {
-            // if(endDate.date() ===  curDate.date()) {
-            if( tempEndTime.getDate() === curDate2 && curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth()  && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear()){
+            if(endDate.date() ===  curDate2.date() && curMonth <= endDate.month() && curMonth >= startDate.month() && curYear <= endDate.year() &&  curYear >= startDate.year()) {
                 let minsToMarginTop = 0
                     let hourDiff = tempEndTime.getHours();
                     let minDiff = (tempEndTime.getMinutes()) / 60;
@@ -561,13 +911,15 @@ getEventItem = (day, hour) => {
                             </div>
                         );
                         res.push(newElement);
-            } else if( tempStartTime.getDate() < curDate2 
-                && tempEndTime.getDate() > curDate2
-                && curMonth <= tempEndTime.getMonth() 
-                && curMonth >= tempStartTime.getMonth()
-                && curYear <= tempEndTime.getFullYear() 
-                && curYear>= tempStartTime.getFullYear()
-            ) {
+            } 
+            else if( startDate.date() < curDate2.date() 
+                && endDate.date() > curDate2.date()
+                && curMonth <= endDate.month() 
+                && curMonth >= startDate.month()
+                && curYear <= endDate.year() 
+                && curYear>= startDate.year()
+            )   
+               {
                 let minsToMarginTop = 0
                     let height = 24 * this.state.pxPerHourForConversion;
                     let color = 'lavender';

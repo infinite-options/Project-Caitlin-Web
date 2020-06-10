@@ -51,7 +51,6 @@ export default class DayRoutines extends Component {
     var arr = this.props.routines;
     var sameTimeEventCount = 0;
     let itemWidth = this.state.eventBoxSize;
-    // var overlapEvent = 0;
     var addmarginLeft = 0;
     var fontSize = 10;
    
@@ -96,11 +95,6 @@ export default class DayRoutines extends Component {
           
           /*** TODO fix if event goes to another month.  */
           if(arr[i].repeat_ends === "After" ){
-            console.log("this is the index ", (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every );
-            // console.log("what is this number ", (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every) % arr[i].repeat_every));
-            // console.log("current date has to be less then ",  ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)+1) % arr[i].repeat_every));
-            // console.log("this is how much was subtracted ",new Date(curYear, curMonth, 0).getDate() - initialStartDate, " this what will be less than ", (arr[i].repeat_occurences  - (new Date(curYear, curMonth, 0).getDate() - initialStartDate)));
-            // this gives the number of days in the previous month new Date(curYear, curMonth, 0).getDate()
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
               if(curYear === initialStartYear
                 && curMonth === initialStartMonth
@@ -214,36 +208,6 @@ export default class DayRoutines extends Component {
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
               }
-              // else if(curYear === initialStartYear
-              //   && curMonth - initialStartMonth === 1
-              //   // && ((curDate - initialStartDate) % arr[i].repeat_every) === 0
-              // ){
-              //   for(let k = 0; k< arr[i].repeat_occurences - (Math.floor(((new Date(curYear, curMonth, 0).getDate()) - initialStartDate) / arr[i].repeat_every)); k++){
-              //     if(((k  * arr[i].repeat_every) - ((new Date(curYear, curMonth, 0).getDate()) - initialStartDate) % arr[i].repeat_every) === curDate ){
-              //       tempStartTime.setDate(curDate);
-              //       tempEndTime.setDate(curDate);
-              //       tempStartTime.setMonth(curMonth);
-              //       tempEndTime.setMonth(curMonth);
-
-              //     }   
-              //   } 
-              // }else if(curYear === initialStartYear
-              //   && curMonth - initialStartMonth > 1
-              // ){
-              //   for(let k = 0; k< arr[i].repeat_occurences - (Math.floor(((new Date(curYear, curMonth, 0).getDate())/ arr[i].repeat_every)) - (Math.floor(((new Date(curYear, curMonth, 0).getDate()) - initialStartDate)))); k++){
-              //     if(((k  * arr[i].repeat_every) - (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every) - ((new Date(curYear, curMonth, 0).getDate() - initialStartDate) % arr[i].repeat_every) ) === curDate ){
-              //       tempStartTime.setDate(curDate);
-              //       tempEndTime.setDate(curDate);
-              //       tempStartTime.setMonth(curMonth);
-              //       tempEndTime.setMonth(curMonth);
-              //     }   
-              //   } 
-
-              // }else if(curYear > initialStartYear
-
-              //   ){
-
-              // }
             }
           }
 
@@ -307,11 +271,7 @@ export default class DayRoutines extends Component {
               tempEndTime.setMonth(curMonth);
            }else if(curYear === initialStartYear
              && curMonth - initialStartMonth > 1
-            //  && 
              && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate)% arr[i].repeat_every === 0
-            //  && (((new Date(initialStartYear, initialStartMonth, 0).getDate())-initialStartDate)+curDate+new Date(curYear, curMonth, 0) ) % arr[i].repeat_every  === 0
-            // && curDate % arr[i].repeat_every === 0
-            //  && (31+curDate ) % arr[i].repeat_every  === 0
             ){
               tempStartTime.setDate(curDate);
               tempEndTime.setDate(curDate + (initialEndDate - initialStartDate) );
@@ -322,27 +282,15 @@ export default class DayRoutines extends Component {
             && curMonth === initialStartMonth
             && curDate > initialStartDate 
             && ((curDate - initialStartDate) % arr[i].repeat_every) === 0 
-            ) {  
-              // console.log("does it go in here first");
-              // if(((curDate - initialStartDate) % arr[i].repeat_every) === 0){
-              //   console.log("does it go in here when %")
-              //   tempStartTime.setDate(curDate);
-              //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
-              // }
-              // } else if(curDate>=initialStartDate && curDate <= initialEndDate){
-              //   console.log("does it go in here second")
-              //   tempStartTime.setDate(curDate);
-              //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
-              // }
-              // console.log("this is the end date ",curDate + (initialEndDate - initialStartDate), "this is the start date",curDate )        
+            ) {        
               tempStartTime.setDate(curDate);
               tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
            }
          }
         }
+        /***   Repeat WEEK */
         if(arr[i].repeat_frequency === "WEEK" ){
           if(arr[i].repeat_ends === "After" ){
-            // let previousTitle = 
             let daysPerWeek = 0;
             let weekAfter = 0;
             let daysAfter  = 0;
@@ -758,18 +706,9 @@ export default class DayRoutines extends Component {
        * TODO: add the case where arr[i].start.dateTime doesn't exists
        */
       
-       // if(arr[i].title === "Routine check day never "){
-      //   console.log("this is the start date "+tempStartTime.getDate()+ "this is the end date "+ tempEndTime.getDate())
-      // }
-     
       if (tempStartTime.getDate() === curDate &&  curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth() && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear()) {
-
         if (tempStartTime.getHours() === hour) {
-          
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
-            if(arr[i].title === "Routine 6"){
-              console.log("this is in the first if")
-            }
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
               this.state.pxPerHourForConversion;
@@ -830,9 +769,6 @@ export default class DayRoutines extends Component {
             );
             res.push(newElement);
           } else {
-            if(arr[i].title === "Routine 6"){
-              console.log("this is in the first else")
-            }
             // console.log("matched" + i );
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
@@ -935,12 +871,7 @@ export default class DayRoutines extends Component {
           }
         }
       }
-      
-      // else if (hour === 0 && tempEndTime.getDate() === curDate && tempStartTime.getMonth() === curMonth) {
         else if (hour === 0 && tempEndTime.getDate() === curDate && curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth()  && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear()) {
-          if(arr[i].title === "Routine 6"){
-            console.log("this is in the first else if")
-          }
         let minsToMarginTop = 0;
         let hourDiff = tempEndTime.getHours();
         let minDiff = tempEndTime.getMinutes() / 60;
@@ -1046,12 +977,8 @@ export default class DayRoutines extends Component {
                 fontSize: fontSize + "px",
                 border: "1px lightgray solid ",
                 float: "left",
-                //  verticalAlign: " ",
-                // verticalAlign: 'text-top',
-                // textAlign:"left",
                 borderRadius: "5px",
                 background: color,
-                // width: this.state.eventBoxSize - (addmarginLeft/16),
                 width: itemWidth + "px",
                 position: "absolute",
                 height: height + "px",

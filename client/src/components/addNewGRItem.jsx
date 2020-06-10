@@ -940,18 +940,41 @@ this will close repeat modal.
               </Form.Check>
               <Form.Check type="radio" style={{ margin: "15px 0" }}>
                 <Form.Check.Label>
-                  <Form.Check.Input
+                {(this.state.itemToEdit.repeat_frequency === "WEEK"?
+                    <Form.Check.Input
                     type="radio"
                     name="radios"
-                    value="After"
+                    value="After" 
                     style={{ marginTop: "12px" }}
                     defaultChecked={
                       // this.state.repeatRadio_temp === "After" && true
                       this.state.itemToEdit.repeat_ends === "After" && true
                     }
-                  />
+                    disabled/>:
+                    <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="After" 
+                    style={{ marginTop: "12px" }}
+                    defaultChecked={
+                      // this.state.repeatRadio_temp === "After" && true
+                      this.state.itemToEdit.repeat_ends === "After" && true
+                    }
+                    />
+                  )}
+                  {/* <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="After" 
+                    style={{ marginTop: "12px" }}
+                    defaultChecked={
+                      // this.state.repeatRadio_temp === "After" && true
+                      this.state.itemToEdit.repeat_ends === "After" && true
+                    }
+                    />
+                  After */}
                   After
-                  <span style={{ marginLeft: "30px" }}>
+                  <span style={{ marginLeft: "20px" }}>
                     <input
                       type="number"
                       min="1"

@@ -21,17 +21,17 @@ export default class editGR extends Component {
       // repeatOptionDropDown: "Does not repeat",
       
       repeatOptionDropDown: this.props.ATArray[this.props.i].repeat === true? "Custom..." : "Does not repeat",
-      repeatDropDown: this.props.ATArray[this.props.i].repeat_frequency,
-      repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency,
+      repeatDropDown: this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+      repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency || "DAY", 
       repeatMonthlyDropDown: "Monthly on day 13",
-      repeatInputValue: this.props.ATArray[this.props.i].repeat_every,
-      repeatInputValue_temp: this.props.ATArray[this.props.i].repeat_every,
-      repeatOccurrence: this.props.ATArray[this.props.i].repeat_occurences,
-      repeatOccurrence_temp: this.props.ATArray[this.props.i].repeat_occurences,
-      repeatRadio: this.props.ATArray[this.props.i].repeat_ends,
-      repeatRadio_temp:this.props.ATArray[this.props.i].repeat_ends,
-      repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on,
-      repeatEndDate_temp: this.props.ATArray[this.props.i].repeat_ends_on,
+      repeatInputValue: this.props.ATArray[this.props.i].repeat_every || "1",
+      repeatInputValue_temp: this.props.ATArray[this.props.i].repeat_every || "1",
+      repeatOccurrence: this.props.ATArray[this.props.i].repeat_occurences || "1",
+      repeatOccurrence_temp: this.props.ATArray[this.props.i].repeat_occurences || "1",
+      repeatRadio: this.props.ATArray[this.props.i].repeat_ends || "Never",
+      repeatRadio_temp:this.props.ATArray[this.props.i].repeat_ends || "Never",
+      repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on || "" ,
+      repeatEndDate_temp: this.props.ATArray[this.props.i].repeat_ends_on || "",
       // repeatDropDown: "DAY",
       // repeatDropDown_temp: "DAY",
       // repeatMonthlyDropDown: "Monthly on day 13",
@@ -1096,7 +1096,7 @@ export default class editGR extends Component {
               </Form.Check>
               <Form.Check type="radio" style={{ margin: "15px 0" }}>
                 <Form.Check.Label>
-                  <Form.Check.Input
+                  {/* <Form.Check.Input
                     type="radio"
                     name="radios"
                     value="After"
@@ -1104,7 +1104,29 @@ export default class editGR extends Component {
                     defaultChecked={
                       this.state.itemToEdit.repeat_ends === "After" && true
                     }
-                  />
+                  /> */}
+                   {(this.state.itemToEdit.repeat_frequency === "WEEK"?
+                    <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="After" 
+                    style={{ marginTop: "12px" }}
+                    defaultChecked={
+                      // this.state.repeatRadio_temp === "After" && true
+                      this.state.itemToEdit.repeat_ends === "After" && true
+                    }
+                    disabled/>:
+                    <Form.Check.Input
+                    type="radio"
+                    name="radios"
+                    value="After" 
+                    style={{ marginTop: "12px" }}
+                    defaultChecked={
+                      // this.state.repeatRadio_temp === "After" && true
+                      this.state.itemToEdit.repeat_ends === "After" && true
+                    }
+                    />
+                  )}
                   After
                   <span style={{ marginLeft: "30px" }}>
                     <input
