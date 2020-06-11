@@ -13,6 +13,7 @@ export default class AddNewATItem extends Component {
     //const timeSlot = this.getTime(); //timeSlot[0] == start_time, timeSlot[1] === end_time
     //const start_time = timeSlot[0];
     this.state = {
+      AT_arr: [],         // Actions & Tasks array
       newActionTitle: "", //Old delete Later
       itemToEdit: {
         id: "",
@@ -97,6 +98,25 @@ export default class AddNewATItem extends Component {
 
   addNewDoc = () => {
     this.props.ATItem.fbPath
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+              var x = doc.data();
+              if (x["actions&tasks"] != undefined) {
+                x = x["actions&tasks"];
+                this.setState({
+                  AT_arr: x,
+                });
+              }
+            } else {
+              console.log("No such document!");
+            }
+        })
+        .catch(function (error) {
+            console.log("Error getting document:", error);
+            alert("Error getting document:", error);
+        });
+    this.props.ATItem.fbPath
       .collection("actions&tasks")
       .add({
         title: this.state.itemToEdit.title,
@@ -108,7 +128,8 @@ export default class AddNewATItem extends Component {
           return;
         }
         console.log("Added document with ID: ", ref.id);
-        let newArr = this.props.ATArray;
+        //let newArr = this.props.ATArray;
+        let newArr = this.state.AT_arr;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
         newArr.push(temp);
