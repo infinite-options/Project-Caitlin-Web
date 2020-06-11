@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSlash, faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as farBookmark } from "@fortawesome/free-regular-svg-icons";
 
 export default class MustDoAT extends React.Component {
   constructor(props) {
@@ -59,18 +60,8 @@ export default class MustDoAT extends React.Component {
           <div>
             <span className="fa-layers fa-fw" style={{ marginLeft: "20px" }}>
               <FontAwesomeIcon
-                style={{ color: "#000000" }}
-                icon={faBookmark}
-                title="Optional"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  this.toggleFBmustDo(!this.state.iconShow);
-                }}
-                size="lg"
-              />
-              <FontAwesomeIcon
-                style={{ color: "#000000" }}
-                icon={faSlash}
+                style={{ color: "#D6A34C" }}
+                icon={farBookmark}
                 title="Optional"
                 onClick={(e) => {
                   e.stopPropagation();
