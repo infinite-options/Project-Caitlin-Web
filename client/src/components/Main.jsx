@@ -2545,9 +2545,7 @@ this will close repeat modal.
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
-                >
-                  Dedicated to Caitlin Little
-                </div>
+                ></div>
               </Col>
               {/* <Col style={{ marginLeft: "25px" }}> */}
               <Col>{this.showDayViewOrAboutView()}</Col>

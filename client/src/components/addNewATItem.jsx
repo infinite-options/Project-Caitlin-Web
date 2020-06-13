@@ -13,7 +13,7 @@ export default class AddNewATItem extends Component {
     //const timeSlot = this.getTime(); //timeSlot[0] == start_time, timeSlot[1] === end_time
     //const start_time = timeSlot[0];
     this.state = {
-      AT_arr: [],         // Actions & Tasks array
+      AT_arr: [], // Actions & Tasks array
       newActionTitle: "", //Old delete Later
       itemToEdit: {
         id: "",
@@ -98,24 +98,24 @@ export default class AddNewATItem extends Component {
 
   addNewDoc = () => {
     this.props.ATItem.fbPath
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-              var x = doc.data();
-              if (x["actions&tasks"] != undefined) {
-                x = x["actions&tasks"];
-                this.setState({
-                  AT_arr: x,
-                });
-              }
-            } else {
-              console.log("No such document!");
-            }
-        })
-        .catch(function (error) {
-            console.log("Error getting document:", error);
-            alert("Error getting document:", error);
-        });
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          var x = doc.data();
+          if (x["actions&tasks"] != undefined) {
+            x = x["actions&tasks"];
+            this.setState({
+              AT_arr: x,
+            });
+          }
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
+      });
     this.props.ATItem.fbPath
       .collection("actions&tasks")
       .add({
@@ -301,7 +301,7 @@ export default class AddNewATItem extends Component {
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">Available to the user?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"

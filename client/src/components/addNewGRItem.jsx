@@ -1108,7 +1108,7 @@ this will close repeat modal.
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">Available to the user?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"

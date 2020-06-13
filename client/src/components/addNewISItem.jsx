@@ -98,35 +98,32 @@ export default class AddNewISItem extends Component {
     }
     console.log("Submitting Input: " + this.state.itemToEdit.title);
     if (this.state.itemToEdit.photo === "") {
-      
-        this.state.itemToEdit.photo = 
+      this.state.itemToEdit.photo =
         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0";
-      
     }
 
     this.props.ISItem.fbPath
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-              var x = doc.data();
-              if (x["instructions&steps"] != undefined) {
-                x = x["instructions&steps"];
-                this.setState({
-                  ISArr: x,
-                });
-                
-                this.state.ISArr.push(this.state.itemToEdit);
-                this.updateEntireArray(this.state.ISArr);
-                
-              }
-            } else {
-              console.log("No such document!");
-            }
-        })
-        .catch(function (error) {
-            console.log("Error getting document:", error);
-            alert("Error getting document:", error);
-        });
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          var x = doc.data();
+          if (x["instructions&steps"] != undefined) {
+            x = x["instructions&steps"];
+            this.setState({
+              ISArr: x,
+            });
+
+            this.state.ISArr.push(this.state.itemToEdit);
+            this.updateEntireArray(this.state.ISArr);
+          }
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
+      });
     //this.state.ISArr.push(this.state.itemToEdit);
     //this.updateEntireArray(this.state.ISArr);
   };
@@ -307,7 +304,9 @@ export default class AddNewISItem extends Component {
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">
+                Available to thee user?
+              </label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"

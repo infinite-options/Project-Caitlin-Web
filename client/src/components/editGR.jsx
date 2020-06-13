@@ -53,11 +53,11 @@ export default class editGR extends Component {
   componentDidUpdate(prevProps, prevState) {
     // console.log("this is the previous ATarry",prevProps.ATArray );
     // console.log("this is the ATarry",this.props.ATArray );
-    if(prevProps.ATArray !== this.props.ATArray){
+    if (prevProps.ATArray !== this.props.ATArray) {
       // console.log("going in here so musttttttttttttttttttttttttttttt update");
-      this.setState({itemToEdit: this.props.ATArray[this.props.i]})
+      this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
       // this.forceUpdate();
-    }   
+    }
   }
 
   newInputSubmit = () => {
@@ -73,7 +73,6 @@ export default class editGR extends Component {
           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
       }
     }
-
 
     newArr[this.props.i] = this.state.itemToEdit;
 
@@ -522,7 +521,6 @@ export default class editGR extends Component {
     );
     console.log(start_time);
     return (
-      
       // <div style={{ border: "2px", margin: '0', width: "315px", padding: '20px' }}>
       <Row
         style={{
@@ -690,7 +688,7 @@ export default class editGR extends Component {
         </div>
 
         <div className="input-group mb-3" style={{ marginTop: "10px" }}>
-          <label className="form-check-label">Available to Caitlin?</label>
+          <label className="form-check-label">Available to the user?</label>
           <input
             style={{ marginTop: "5px", marginLeft: "5px" }}
             name="Available"
