@@ -42,15 +42,15 @@ app.use(session({
 	}
 }));
 
-
+console.log(hostname);
 if (hostname == "manifestmyspace-dev") {
-	const key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem'
-	const cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem'
-	const credentials_url = 'credentials_dev.json'
+	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem'
+	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem'
+	var credentials_url = 'credentials_dev.json'
 } else {
-	const key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem'
-	const cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem'
-	const credentials_url = 'credentials.json'
+	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem'
+	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem'
+	var credentials_url = 'credentials.json'
 }
 
 // Connect to firebase to check for matched passwords
