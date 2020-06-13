@@ -1461,7 +1461,7 @@ export default class FirebaseV2 extends React.Component {
                       title="Not Completed Item"
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: "black" }}
+                      style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Not Completed");
