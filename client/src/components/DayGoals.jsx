@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import firebase from "./firebase";
 // import axios from 'axios';
 import moment from 'moment';
 import {  Container, Row, Col} from 'react-bootstrap';
@@ -98,8 +99,6 @@ export default class DayGoals extends Component {
                 && arr[i].repeat_every > 1
                 && (curDate <= ((arr[i].repeat_occurences -1 - Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every)) * arr[i].repeat_every )  )
                 && ((curDate + ( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every  )) % arr[i].repeat_every === 0)
-                // && (curDate + ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)+1) % arr[i].repeat_every) ) % arr[i].repeat_every === 0
-                //  && ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)-1) % arr[i].repeat_every)
                 ){
                   tempStartTime.setDate(curDate);
                   tempEndTime.setDate(curDate);
@@ -116,7 +115,6 @@ export default class DayGoals extends Component {
                   if(curMonth - initialStartMonth === 2){
                     subtractBy = Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate)/ arr[i].repeat_every)+ Math.floor((new Date(curYear, curMonth, 0).getDate())/arr[i].repeat_every) + 1;
                     indexBy = (  (Math.floor((new Date(curYear, curMonth, 0).getDate() - (( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every ) +1  ))  )     ) % arr[i].repeat_every)
-                    // indexBy = (Math.floor((new Date(curYear, curMonth, 0).getDate() - ( (Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate))) % arr[i].repeat_every )) % arr[i].repeat_every
                   }
                   console.log("this is the past month days ", ( Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every );
                   console.log("what is the index by ", indexBy);
@@ -131,8 +129,6 @@ export default class DayGoals extends Component {
                       tempEndTime.setMonth(curMonth);
 
                   }
-
-
               }else if(curYear === initialStartYear
                 && curMonth > initialStartMonth
                 && (curMonth - initialStartMonth) === 1
@@ -246,12 +242,8 @@ export default class DayGoals extends Component {
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
            }else if(curYear === initialStartYear
-            // && curMonth >initialStartMonth
             && curMonth - initialStartMonth === 1
-            // && curDate % arr[i].repeat_every === 0
             && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0
-            // do about of monnth - start day % reapeat every 
-            // && curDate % arr[i].repeat_every === 0
             ){
               tempStartTime.setDate(curDate);
               tempEndTime.setDate(curDate + (initialEndDate - initialStartDate) );
@@ -294,23 +286,15 @@ export default class DayGoals extends Component {
               }
             })
             if(daysPerWeek != 0){
-            // console.log("this si the days per week", daysPerWeek);
             weekAfter = Math.floor(arr[i].repeat_occurences / daysPerWeek);
             daysAfter = arr[i].repeat_occurences % daysPerWeek;
-            // console.log("this si the weeks after "+ weekAfter + "this is the days after " + daysAfter);
             }
             let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
             let weekStart = ISO8601_week_no(startWeek);
             let weekNow = new Date(curYear, curMonth,curDate);
             let curWeek = ISO8601_week_no(weekNow);
-           
-            // console.log("this si the start week ", weekStart, "this si the cur week ", curWeek);
-            // console.log("this is when the curweek - week start ===  weekAfter ", curWeek - weekStart === weekAfter);
-
-            //consider that the start date is not on sunday. so dont count as 3 for first week.
             if(((curWeek - weekStart) < weekAfter) && (curWeek - weekStart) >= 0 && curYear === initialStartYear){
                
-              
                 if(curWeek === weekStart && curDate < initialStartDate ){
                   console.log("shouldn't show event")
                 }
@@ -348,11 +332,7 @@ export default class DayGoals extends Component {
                            
             } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
               let numDaysAfter = 0;
-              // for(let i = 0; i<7; i++){
-                // console.log("this is the numDaysAfter ",numDaysAfter);
                 if( ((curWeek - 7)* 7) +  Math.floor(7/ daysPerWeek) * daysAfter  === curDate){
-                // if(numDaysAfter <= daysAfter){
-                  // console.log("this is the day array ", dayArray);
                   
                     if((dayArray[0] === 'Sunday' && new Date(this.props.dateContext).getDay()=== 0) 
                     || (dayArray[1] === 'Monday' && new Date(this.props.dateContext).getDay()=== 1)
@@ -446,9 +426,6 @@ export default class DayGoals extends Component {
             let weekNow = new Date(curYear, curMonth,curDate);
             let curWeek = ISO8601_week_no(weekNow);
             
-            // console.log("this will always be true ", 3%1 === 0);
-            // console.log("this is the curWeek ", curWeek, " this is the week start ", weekStart, " this is the every ", arr[i].repeat_every);
-            // console.log("this is the arithmatic if it is suppose to equal 0 ", ((curWeek - weekStart) % arr[i].repeat_every));
             if( (curYear > initialStartYear  && arr[i].repeat_every === "1") 
               || (((curYear - initialStartYear) === 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0))
               || (((curYear - initialStartYear) > 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) //might need fixing
@@ -691,6 +668,32 @@ export default class DayGoals extends Component {
         }
       }
 
+       //***   Firbase boolean varibale to help mobile side know if to display goal */
+      let checkCurDate = moment();
+      if(checkCurDate.date()  === curDate 
+        && checkCurDate.month() === curMonth
+        &&  checkCurDate.year() === curYear
+        && ((tempStartTime.getDate() === curDate &&  curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth() && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear())
+        || (tempEndTime.getDate() === curDate && curMonth <= tempEndTime.getMonth() && curMonth>= tempStartTime.getMonth()  && curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear())
+        || (tempStartTime.getDate() < curDate && tempEndTime.getDate() > curDate && curMonth <= tempEndTime.getMonth() && curMonth >= tempStartTime.getMonth()&& curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear())
+        )
+      ){
+        if(arr[i].is_displayed_today !== true){
+          arr[i].is_displayed_today =  true;
+          let newArr = this.props.originalGoalsAndRoutineArr;
+          newArr[this.props.goal_ids[i]].is_displayed_today = true;
+          firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
+        }
+      }else {
+         if(arr[i].is_displayed_today !== false){
+          arr[i].is_displayed_today =  false;
+          let newArr = this.props.originalGoalsAndRoutineArr;
+          newArr[this.props.goal_ids[i]].is_displayed_today = false;
+          firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
+
+         }
+      }
+
             /**
              * TODO: add the case where arr[i].start.dateTime doesn't exists
             */
@@ -726,7 +729,6 @@ export default class DayGoals extends Component {
                               e.target.style.background = color;
                             }}
                             key={i}
-                            // value = {i}
                             onClick={this.GoalClicked}
                             style={{
                               zIndex: this.state.zIndex,
@@ -769,19 +771,15 @@ export default class DayGoals extends Component {
                         ) {
                           addmarginLeft += 20;
                           itemWidth = itemWidth - 20;
-                          // overlapEvent++;
                         }
                       }
           
                       if (sameTimeEventCount > 1) {
                         addmarginLeft += 20;
-                        // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
-                        // itemWidth = itemWidth/(sameHourItems-1);
                         itemWidth = itemWidth - 20;
-                        // console.log("thi is the item width after subtracting 40 " + itemWidth);
                       }
           
-                      //chnage font size if not enough space
+                      //change font size if not enough space
                       if (tempEndTime.getHours() - tempStartTime.getHours() < 2) {
                         fontSize = 8;
                       }
@@ -808,18 +806,12 @@ export default class DayGoals extends Component {
                           onMouseOver={(e) => {
                             e.target.style.color = "#FFFFFF";
                             e.target.style.background = "RebeccaPurple";
-                            // e.target.style.marginLeft = "5px";
-                            // e.target.style.border= "3px solid w";
                             e.target.style.zIndex = "2";
                           }}
                           onMouseOut={(e) => {
                             e.target.style.zIndex = "1";
-          
-                            // e.target.style.marginLeft = "0px";
                             e.target.style.color = "#000000";
-                            //  e.target.style.background = ( hour % 2 ==0 ?  'PaleTurquoise' : 'skyblue');
                             e.target.style.border = "1px lightgray solid";
-          
                             e.target.style.background = color;
                           }}
                           onClick={this.GoalClicked}
@@ -874,7 +866,6 @@ export default class DayGoals extends Component {
                           e.target.style.background = color;
                         }}
                         key={i}
-                        // value = {i}
                         onClick={this.GoalClicked}
                         style={{
                           zIndex: this.state.zIndex,
@@ -933,7 +924,6 @@ export default class DayGoals extends Component {
                           e.target.style.background = color;
                         }}
                         key={i}
-                        // value = {i}
                         onClick={this.GoalClicked}
                         style={{
                           zIndex: this.state.zIndex,
@@ -994,13 +984,11 @@ export default class DayGoals extends Component {
                 Today's Goals:
                 <Container style={{}}>
                     <Row >
-                        {/* <div class="table col-md-1" > */}
                         <Col>
                             {/* this is for the actual event slots */}
                             <Container style={{ margin: '0', padding: '0' }}>
                                 {this.dayViewItems()}
                             </Container>
-                            {/* </div> */}
                         </Col>
                     </Row>
                 </Container>

@@ -7,7 +7,6 @@ import {
 export default class WeekGoals extends Component {
   constructor(props) {
       super(props);
-      // console.log(this.props.dateContext);
       this.state = {
           pxPerHour: "30px", //preset size for all columns
           pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
@@ -96,8 +95,6 @@ export default class WeekGoals extends Component {
                     && arr[i].repeat_every > 1
                     && (curDate2.date() <= ((arr[i].repeat_occurences -1 - Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every)) * arr[i].repeat_every )  )
                     && ((curDate2.date() + ( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every  )) % arr[i].repeat_every === 0)
-                    // && (curDate + ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)+1) % arr[i].repeat_every) ) % arr[i].repeat_every === 0
-                    //  && ((Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate )/arr[i].repeat_every)-1) % arr[i].repeat_every)
                     ){
                       tempStartTime.setDate(curDate2.date());
                       tempEndTime.setDate(curDate2.date());
@@ -114,10 +111,7 @@ export default class WeekGoals extends Component {
                       if(curMonth - initialStartMonth === 2){
                         subtractBy = Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate)/ arr[i].repeat_every)+ Math.floor((new Date(curYear, curMonth, 0).getDate())/arr[i].repeat_every) + 1;
                         indexBy = (  (Math.floor((new Date(curYear, curMonth, 0).getDate() - (( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every ) +1  ))  )     ) % arr[i].repeat_every)
-                        // indexBy = (Math.floor((new Date(curYear, curMonth, 0).getDate() - ( (Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate))) % arr[i].repeat_every )) % arr[i].repeat_every
                       }
-                    //   console.log("this is the past month days ", ( Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every );
-                    //   console.log("what is the index by ", indexBy);
     
                       if((arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every > 0
                         && curDate2.date() <= ( (arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every )
@@ -127,10 +121,7 @@ export default class WeekGoals extends Component {
                           tempEndTime.setDate(curDate2.date());
                           tempStartTime.setMonth(curMonth);
                           tempEndTime.setMonth(curMonth);
-    
                       }
-    
-    
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
                     && (curMonth - initialStartMonth) === 1
@@ -194,15 +185,8 @@ export default class WeekGoals extends Component {
                       tempStartTime.setFullYear(curYear);
                       tempEndTime.setFullYear(curYear);
                   }
-            //   if(tempStartTime.getDate() + j === curDate2.date()  && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0){
-            //     tempStartTime.setDate(tempStartTime.getDate() + j);
-            //     tempEndTime.setDate(tempEndTime.getDate() + j);
-            //   }
-            //   // if()
             }
-          }
-
-          
+          } 
           /** TODO: account for ends on a different month. Also account for event span multiple days.  */
          else if(arr[i].repeat_ends === "On"){
             let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
@@ -249,12 +233,8 @@ export default class WeekGoals extends Component {
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
                }else if(curYear === initialStartYear
-                // && curMonth >initialStartMonth
                 && curMonth - initialStartMonth === 1
-                // && curDate % arr[i].repeat_every === 0
                 && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0
-                // do about of monnth - start day % reapeat every 
-                // && curDate % arr[i].repeat_every === 0
                 ){
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
@@ -262,11 +242,7 @@ export default class WeekGoals extends Component {
                   tempEndTime.setMonth(curMonth);
                }else if(curYear === initialStartYear
                  && curMonth - initialStartMonth > 1
-                //  && 
                  && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate2.date())% arr[i].repeat_every === 0
-                //  && (((new Date(initialStartYear, initialStartMonth, 0).getDate())-initialStartDate)+curDate+new Date(curYear, curMonth, 0) ) % arr[i].repeat_every  === 0
-                // && curDate % arr[i].repeat_every === 0
-                //  && (31+curDate ) % arr[i].repeat_every  === 0
                 ){
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
@@ -277,19 +253,7 @@ export default class WeekGoals extends Component {
                 && curMonth === initialStartMonth
                 && curDate2.date() > initialStartDate 
                 && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0 
-                ) {  
-                  // console.log("does it go in here first");
-                  // if(((curDate - initialStartDate) % arr[i].repeat_every) === 0){
-                  //   console.log("does it go in here when %")
-                  //   tempStartTime.setDate(curDate);
-                  //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
-                  // }
-                  // } else if(curDate>=initialStartDate && curDate <= initialEndDate){
-                  //   console.log("does it go in here second")
-                  //   tempStartTime.setDate(curDate);
-                  //   tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
-                  // }
-                  // console.log("this is the end date ",curDate + (initialEndDate - initialStartDate), "this is the start date",curDate )        
+                ) {         
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate));
                }
@@ -298,7 +262,6 @@ export default class WeekGoals extends Component {
 
         if(arr[i].repeat_frequency === "WEEK" ){
             if(arr[i].repeat_ends === "After" ){
-              // let previousTitle = 
               let daysPerWeek = 0;
               let weekAfter = 0;
               let daysAfter  = 0;
@@ -313,23 +276,15 @@ export default class WeekGoals extends Component {
                 }
               })
               if(daysPerWeek != 0){
-              // console.log("this si the days per week", daysPerWeek);
               weekAfter = Math.floor(arr[i].repeat_occurences / daysPerWeek);
               daysAfter = arr[i].repeat_occurences % daysPerWeek;
-              // console.log("this si the weeks after "+ weekAfter + "this is the days after " + daysAfter);
               }
               let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
               let weekStart = ISO8601_week_no(startWeek);
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
-             
-              // console.log("this si the start week ", weekStart, "this si the cur week ", curWeek);
-              // console.log("this is when the curweek - week start ===  weekAfter ", curWeek - weekStart === weekAfter);
-  
-              //consider that the start date is not on sunday. so dont count as 3 for first week.
               if(((curWeek - weekStart) < weekAfter) && (curWeek - weekStart) >= 0 && curYear === initialStartYear){
                  
-                
                   if(curWeek === weekStart && curDate2.date() < initialStartDate ){
                     console.log("shouldn't show event")
                   }
@@ -367,11 +322,7 @@ export default class WeekGoals extends Component {
                              
               } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
                 let numDaysAfter = 0;
-                // for(let i = 0; i<7; i++){
-                  // console.log("this is the numDaysAfter ",numDaysAfter);
                   if( ((curWeek - 7)* 7) +  Math.floor(7/ daysPerWeek) * daysAfter  === curDate2.date()){
-                  // if(numDaysAfter <= daysAfter){
-                    // console.log("this is the day array ", dayArray);
                     
                       if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
                       || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
@@ -402,9 +353,6 @@ export default class WeekGoals extends Component {
               let weekStart = ISO8601_week_no(startWeek);
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
-            //   console.log("this is the inistaial start year ",initialStartYear, " this is the initial start month ",  initialStartMonth, " this is the iniitial start date ", initialStartDate);
-            //   console.log("this is the curWeeek ",curWeek, " and this is the start week ", weekStart )
-            //   console.log("this is the curYear ",curYear , " and this is the curMonth ", curMonth);
   
               if((curYear < initialEndOnYear && curYear > initialStartYear && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
                 || (curYear === initialEndOnYear &&  curYear !== initialStartYear && curMonth < endsOnMonth && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
@@ -421,7 +369,6 @@ export default class WeekGoals extends Component {
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === initialStartMonth && curMonth !== endsOnMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every === "1")
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === initialStartMonth && curMonth !== endsOnMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
                 ){
-                    // console.log("this is the get Day ", new Date(curDate2).getDay());
                       Object.keys(arr[i].repeat_week_days).forEach(key => {
                         if(curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
                           if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0) 
@@ -470,9 +417,6 @@ export default class WeekGoals extends Component {
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
               
-              // console.log("this will always be true ", 3%1 === 0);
-              // console.log("this is the curWeek ", curWeek, " this is the week start ", weekStart, " this is the every ", arr[i].repeat_every);
-              // console.log("this is the arithmatic if it is suppose to equal 0 ", ((curWeek - weekStart) % arr[i].repeat_every));
               if( (curYear > initialStartYear  && arr[i].repeat_every === "1") 
                 || (((curYear - initialStartYear) === 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0))
                 || (((curYear - initialStartYear) > 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) //might need fixing
@@ -721,8 +665,6 @@ export default class WeekGoals extends Component {
         if (startDate.date() === curDate2.date() &&  curMonth <= endDate.month() && curMonth>= startDate.month() && curYear <= endDate.year() && curYear>= startDate.year()) {
             if (startDate.hour() === hour) {
                 if(startDate.date() === endDate.date()) {
-                    // addmarginLeft = 0;
-                        // itemWidth = this.state.eventBoxSize;
                         let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                         let hourDiff = tempEndTime.getHours() - tempStartTime.getHours();
                         let minDiff = (tempEndTime.getMinutes()) / 60;
@@ -740,12 +682,8 @@ export default class WeekGoals extends Component {
                                 itemWidth = itemWidth - 20;
                             }
                         }
-
                         if (sameTimeEventCount > 1) {
-                            // console.log("add 20 in day");
                             addmarginLeft += 20;
-                            // addmarginLeft += this.state.eventBoxSize/(sameHourItems-1) ;
-                            // itemWidth = itemWidth/(sameHourItems-1);
                             itemWidth = itemWidth - 20;
                         }
                         //chnage font size if not enough space
@@ -782,8 +720,6 @@ export default class WeekGoals extends Component {
                                             e.target.style.background = color;
                                         }}
                                         key={i}
-                                        // value = {i}
-                                        // onClick={e => this.onEventClick(e, i)}
                                         style={{
                                             zIndex: this.state.zIndex,
                                             marginTop: minsToMarginTop + "px",
@@ -791,18 +727,13 @@ export default class WeekGoals extends Component {
                                             fontSize: fontSize + "px",
                                             border: "1px lightgray solid ",
                                             float: "left",
-                                            //  verticalAlign: " ",
-                                            // verticalAlign: 'text-top',
-                                            // textAlign:"left",
                                             borderRadius: "5px",
                                             background: color,
-                                            // width: this.state.eventBoxSize - (addmarginLeft/16),
                                             width: itemWidth + "px",
                                             position: "absolute",
                                             height: height + "px",
                                             marginLeft: addmarginLeft + "px"
                                         }}>
-                                        {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                         {arr[i].title}
                                     </div>
                                 </div>
@@ -832,8 +763,6 @@ export default class WeekGoals extends Component {
                                             e.target.style.background = color;
                                         }}
                                         key={i}
-                                        // value = {i}
-                                        // onClick={e => this.onEventClick(e, i)}
                                         style={{
                                             zIndex: this.state.zIndex,
                                             marginTop: minsToMarginTop + "px",
@@ -841,18 +770,13 @@ export default class WeekGoals extends Component {
                                             fontSize: fontSize + "px",
                                             border: "1px lightgray solid ",
                                             float: "left",
-                                            //  verticalAlign: " ",
-                                            // verticalAlign: 'text-top',
-                                            // textAlign:"left",
                                             borderRadius: "5px",
                                             background: color,
-                                            // width: this.state.eventBoxSize - (addmarginLeft/16),
                                             width: itemWidth + "px",
                                             position: "absolute",
                                             height: height + "px",
                                             marginLeft: addmarginLeft + "px"
                                         }}>
-                                        {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                         {arr[i].title}
                                     </div>
                                 </div>
@@ -884,8 +808,6 @@ export default class WeekGoals extends Component {
                                         e.target.style.background = color;
                                     }}
                                     key={i}
-                                    // value = {i}
-                                    // onClick={e => this.onEventClick(e, i)}
                                     style={{
                                         zIndex: this.state.zIndex,
                                         marginTop: minsToMarginTop + "px",
@@ -893,18 +815,13 @@ export default class WeekGoals extends Component {
                                         fontSize: fontSize + "px",
                                         border: "1px lightgray solid ",
                                         float: "left",
-                                        //  verticalAlign: " ",
-                                        // verticalAlign: 'text-top',
-                                        // textAlign:"left",
                                         borderRadius: "5px",
                                         background: color,
-                                        // width: this.state.eventBoxSize - (addmarginLeft/16),
                                         width: itemWidth + "px",
                                         position: "absolute",
                                         height: height + "px",
                                         marginLeft: addmarginLeft + "px"
                                     }}>
-                                    {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                     {arr[i].title}
                                 </div>
                             </div>
@@ -940,8 +857,6 @@ export default class WeekGoals extends Component {
                                         e.target.style.background = color;
                                     }}
                                     key={i}
-                                    // value = {i}
-                                    // onClick={e => this.onEventClick(e, i)}
                                     style={{
                                         zIndex: this.state.zIndex,
                                         marginTop: minsToMarginTop + "px",
@@ -949,18 +864,13 @@ export default class WeekGoals extends Component {
                                         fontSize: fontSize + "px",
                                         border: "1px lightgray solid ",
                                         float: "left",
-                                        //  verticalAlign: " ",
-                                        // verticalAlign: 'text-top',
-                                        // textAlign:"left",
                                         borderRadius: "5px",
                                         background: color,
-                                        // width: this.state.eventBoxSize - (addmarginLeft/16),
                                         width: itemWidth + "px",
                                         position: "absolute",
                                         height: height + "px",
                                         marginLeft: addmarginLeft + "px"
                                     }}>
-                                    {/* {console.log("LOOOOOK "+ arr[i].summary + "   " + this.state.eventBoxSize/(sameHourItems-1) )} */}
                                     {arr[i].title}
                                 </div>
                             </div>

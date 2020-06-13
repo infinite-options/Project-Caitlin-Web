@@ -47,6 +47,8 @@ export default class MainPage extends React.Component {
       originalGoalsAndRoutineArr: [], //Hold goals and routines so day and week view can access it
       goals: [],
       routines: [],
+      routine_ids: [],
+      goal_ids: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -149,8 +151,11 @@ export default class MainPage extends React.Component {
           // console.log("this is the data", x);
           // console.log(x["goals&routines"]);
           // x = x["goals&routines"];
+          
           let routine = [];
+          let routine_ids = [];
           let goal = [];
+          let goal_ids = [];
           if (x["goals&routines"] !== undefined) {
             x = x["goals&routines"];
             // console.log("this is the goals and routines", x);
@@ -158,9 +163,12 @@ export default class MainPage extends React.Component {
             for (let i = 0; i < x.length; ++i) {
               if (x[i]["is_persistent"]) {
                 // console.log("routine " + x[i]["title"]);
+                console.log("is the is the id ", x[i].id);
+                routine_ids.push(i);
                 routine.push(x[i]);
               } else if (!x[i]["is_persistent"]) {
                 // console.log("not routine " + x[i]["title"]);
+                goal_ids.push(i);
                 goal.push(x[i]);
               }
             }
@@ -168,6 +176,8 @@ export default class MainPage extends React.Component {
               originalGoalsAndRoutineArr: x,
               goals: goal,
               addNewGRModalShow: false,
+              routine_ids: routine_ids,
+              goal_ids: goal_ids,
               routines: routine,
             });
           } else {
@@ -175,6 +185,8 @@ export default class MainPage extends React.Component {
               originalGoalsAndRoutineArr: [],
               goals: goal,
               addNewGRModalShow: false,
+              routine_ids: routine_ids,
+              goal_ids: goal_ids,
               routines: routine,
             });
           }
@@ -2622,13 +2634,19 @@ giveAcessToTA = () => {
         />
         <DayRoutines
         dateContext={this.state.dateContext}
+        routine_ids = {this.state.routine_ids}
         routines={this.state.routines}
         dayRoutineClick={this.toggleShowRoutine}
+        theCurrentUserId={this.state.currentUserId}
+        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
         />
         <DayGoals
         dateContext={this.state.dateContext}
+        goal_ids = {this.state.goal_ids}
         goals={this.state.goals}
         dayGoalClick={this.toggleShowGoal}
+        theCurrentUserId={this.state.currentUserId}
+        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
         />
         </Row>
         </div>

@@ -13,8 +13,6 @@ export default class AddNewGRItem extends Component {
   }
   state = {
     grArr: [], //goal, routine original array,
-    // startTime: this.props.singleGR.available_start_time,
-    // endTime: this.props.singleGR.available_end_time,
     itemToEdit: {
       title: "",
       id: "",
@@ -22,6 +20,8 @@ export default class AddNewGRItem extends Component {
       photo: "",
       is_complete: false,
       is_available: true, 
+
+      is_displayed_today: false, 
       // todayDateObject: this.props.todayDateObject,
       // available_end_time: this.props.singleGR.available_end_time,
       // available_start_time: this.props.singleGR.available_start_time,
@@ -52,8 +52,6 @@ export default class AddNewGRItem extends Component {
         5: "",
         6: "",
       },
-      // reapeat_day:
-
       ta_notifications: {
         before: {
           is_enabled: false,
@@ -99,7 +97,6 @@ export default class AddNewGRItem extends Component {
     routineDocsPath: firebase
       .firestore()
       .collection("users")
-      // .doc("7R6hAVmDrNutRkG3sVRy")
       .doc(this.props.theCurrentUserId)
       .collection("goals&routines"),
     arrPath: firebase
@@ -107,7 +104,6 @@ export default class AddNewGRItem extends Component {
       .collection("users")
       .doc(this.props.theCurrentUserId),
     
-    // .doc("7R6hAVmDrNutRkG3sVRy"),
     showRepeatModal: false,
     repeatOption: false,
     repeatOptionDropDown: "Does not repeat",
@@ -153,29 +149,17 @@ export default class AddNewGRItem extends Component {
 
   getGRDataFromFB = () => {
     //Grab the goals/routine array from firebase and then store it in state varible grArr
-    // console.log(
-    //   "this is the goals and rountins from firebase",
-    //   this.state.arrPath
-    // );
     this.state.arrPath
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log("getGRDataFromFB DATA:");
-          // console.log(doc.data());
           var x = doc.data();
           if (x["goals&routines"] != undefined) {
             x = x["goals&routines"];
-            console.log("this is the goals and routines", x);
             this.setState({
               grArr: x,
             });
           }
-          // x = x["goals&routines"];
-          // console.log(x);
-          // this.setState({
-          //   grArr: x,
-          // });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document! 2");
@@ -216,7 +200,6 @@ export default class AddNewGRItem extends Component {
           alert("Fail to add new routine / goal item");
           return;
         }
-        // console.log(ref);
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
@@ -226,10 +209,7 @@ export default class AddNewGRItem extends Component {
         temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
         temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
         temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
-        // this.state.grArr.push(temp);
         newArr.push(temp);
-        
-        // console.log("thiiiiiiisssss is what is being added to FB for the start day and time",newArr);
         this.updateEntireArray(newArr);
       });
   };
@@ -238,20 +218,15 @@ export default class AddNewGRItem extends Component {
   updateEntireArray = (newArr) => {
     // 2. update adds to the document
     let db = this.state.arrPath;
-    // console.log("thhhhhhhhhhhiiiiisss is what is being added to FB ", newArr);
     db.update({ "goals&routines": newArr }).then((doc) => {
-      // console.log("updateEntireArray Finished");
-      // console.log(doc);
       this.getGRDataFromFB();
       if (this.props != null) {
-        // console.log("refreshing FireBasev2 from AddNewGRItem");
         this.props.refresh();
       }
     });
   };
 
   convertTimeToHRMMSS = (e) => {
-    // console.log(e.target.value);
     let num = e.target.value;
     let hours = num / 60;
     let rhours = Math.floor(hours);
@@ -263,7 +238,6 @@ export default class AddNewGRItem extends Component {
     if (rminutes.toString().length === 1) {
       rminutes = "0" + rminutes;
     }
-    // console.log(rhours+":" + rminutes +":" + "00");
     return rhours + ":" + rminutes + ":" + "00";
   };
 
@@ -272,20 +246,14 @@ export default class AddNewGRItem extends Component {
     let hours = myStr[0];
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
-    // let seconds = myStr[2];
-
-    // console.log("hours: " +hours + "minutes: " + minutes + "seconds: " + seconds);
     return minutes;
   };
 
   handleNotificationChange = (temp) => {
-    // console.log(temp);
     this.setState({ itemToEdit: temp });
   };
 
   startTimePicker = () => {
-    // const [startDate, setStartDate] = useState(new Date());
-    // console.log("this is the start day and time ", this.state.itemToEdit.start_day_and_time);
     return (
       <DatePicker
         className="form-control"
@@ -307,7 +275,6 @@ export default class AddNewGRItem extends Component {
   };
 
   endTimePicker = () => {
-    // const [startDate, setStartDate] = useState(new Date());
     return (
       <DatePicker
         className="form-control"
@@ -387,7 +354,6 @@ this will close repeat modal.
     } = this.state;
 
     let temp = this.state.itemToEdit;
-    // console.log("This should be the temp before", temp);
     temp.repeat = true;
     temp.repeat_every = repeatInputValue_temp;
     temp.repeat_frequency = repeatDropDown_temp;
@@ -395,9 +361,6 @@ this will close repeat modal.
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences  = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
-    // console.log("this is what will be saved to FB", temp);
-    // console.log("this is the day ", byDay_temp);
-
     this.setState((prevState) => ({
       itemToEdit: temp,
       showRepeatModal: false,
@@ -465,7 +428,6 @@ this will close repeat modal.
       for (let [key, value] of Object.entries(byDay_temp)) {
         value !== "" && selectedDays.push(value);
       }
-      console.log(selectedDays, "selectedDays week");
       if (repeatInputValue_temp === "1") {
         if (repeatRadio_temp === "Never") {
           if (selectedDays.length === 7) {
@@ -666,8 +628,6 @@ this will close repeat modal.
         itemToEdit:temp,
         repeatEndDate_temp: date,
       },
-      // console.log()
-      // console.log("handleRepeatEndDate", date, this.state.repeatEndDate)
     );
   };
 
@@ -676,9 +636,6 @@ this will close repeat modal.
     if (eventKey === "WEEK") {
       const newByDay = {
         ...this.state.byDay_temp,
-        // [this.state.newEventStart0.getDay()]: week_days[
-        //   this.state.newEventStart0.getDay()
-        // ],
       };
       let temp = this.state.itemToEdit;
       temp.repeat_frequency = eventKey;
@@ -691,7 +648,6 @@ this will close repeat modal.
     }
     let temp = this.state.itemToEdit;
     temp.repeat_frequency = eventKey;
-    console.log("this is the repeat frequency ",temp.repeat_frequency );
     this.setState({
       itemToEdit:temp,
       repeatDropDown_temp: eventKey,
@@ -841,13 +797,11 @@ this will close repeat modal.
                 type="number"
                 min="1"
                 max="10000"
-                // value={this.state.repeatInputValue_temp}
                 value = {this.state.itemToEdit.repeat_every}
                 style={inputStyle}
                 onChange={(e) => this.handleRepeatInputValue(e.target.value)}
               />
               <DropdownButton
-                // title={this.state.repeatDropDown_temp}
                 title={this.state.itemToEdit.repeat_frequency}
                 style={selectStyle}
                 variant="light"
@@ -883,7 +837,6 @@ this will close repeat modal.
             <Form.Group>
               {this.state.repeatDropDown_temp === "WEEK" && weekSelected}
             </Form.Group>
-            {/* {this.state.repeatDropDown === "MONTH" && monthSelected} */}
             <Form.Group
               style={{
                 height: "140px",
@@ -910,7 +863,6 @@ this will close repeat modal.
                     value="Never"
                     name="radios"
                     defaultChecked={
-                      // this.state.repeatRadio_temp === "Never" && true
                       this.state.itemToEdit.repeat_ends === "Never" && true
                     }
                   />
@@ -925,7 +877,6 @@ this will close repeat modal.
                     value="On"
                     style={{ marginTop: "10px" }}
                     defaultChecked={
-                      // this.state.repeatRadio_temp === "On" && true
                       this.state.itemToEdit.repeat_ends === "On" && true
                     }
                   />
@@ -933,7 +884,6 @@ this will close repeat modal.
                   <DatePicker
                     className="date-picker-btn btn btn-light"
                     selected= {this.state.itemToEdit.repeat_ends_on}
-                    // selected={this.state.repeatEndDate_temp}
                     onChange={(date) => this.handleRepeatEndDate(date)}
                   ></DatePicker>
                 </Form.Check.Label>
@@ -947,7 +897,6 @@ this will close repeat modal.
                     value="After" 
                     style={{ marginTop: "12px" }}
                     defaultChecked={
-                      // this.state.repeatRadio_temp === "After" && true
                       this.state.itemToEdit.repeat_ends === "After" && true
                     }
                     disabled/>:
@@ -957,22 +906,10 @@ this will close repeat modal.
                     value="After" 
                     style={{ marginTop: "12px" }}
                     defaultChecked={
-                      // this.state.repeatRadio_temp === "After" && true
                       this.state.itemToEdit.repeat_ends === "After" && true
                     }
                     />
                   )}
-                  {/* <Form.Check.Input
-                    type="radio"
-                    name="radios"
-                    value="After" 
-                    style={{ marginTop: "12px" }}
-                    defaultChecked={
-                      // this.state.repeatRadio_temp === "After" && true
-                      this.state.itemToEdit.repeat_ends === "After" && true
-                    }
-                    />
-                  After */}
                   After
                   <span style={{ marginLeft: "20px" }}>
                     <input
@@ -980,7 +917,6 @@ this will close repeat modal.
                       min="1"
                       max="10000"
                       value = {this.state.itemToEdit.repeat_occurences}
-                      // value={this.state.repeatOccurrence_temp}
                       onChange={(e) =>
                         this.handleRepeatOccurrence(e.target.value)
                       }
@@ -1020,9 +956,6 @@ this will close repeat modal.
         <Modal.Body>
           {this.state.showRepeatModal && this.repeatModal()}
           <Form>
-            {/* <Row>
-          <Col>
-          <div style={{ width: "300px" }}> */}
             <Form.Group>
               <Form.Label>Title</Form.Label>
               <Form.Control
@@ -1036,7 +969,6 @@ this will close repeat modal.
                 type="text"
                 placeholder="Enter Title"
               />
-              {/* <div style={{ color: "red" }}> {this.state.showNoTitleError}</div> */}
             </Form.Group>
 
             <Form.Group>
@@ -1056,7 +988,6 @@ this will close repeat modal.
 
             <Form.Group
                value = {this.state.itemToEdit.start_day_and_time}
-              // value={this.state.itemToEdit.available_start_time}
               controlId="Y"
             >
               <Form.Label>Start Time</Form.Label> <br />
@@ -1073,36 +1004,6 @@ this will close repeat modal.
               {this.endTimePicker()}
               <div style={{ color: "red" }}> {this.state.showDateError}</div>
             </Form.Group>
-
-            {/* <label>Available Start Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 16:20:00) "
-                value={this.state.itemToEdit.available_start_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_start_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
-            <label>Available End Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 16:20:00) "
-                value={this.state.itemToEdit.available_end_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_end_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div> */}
 
             <div>
               <label>Repeating Options</label>
@@ -1130,15 +1031,6 @@ this will close repeat modal.
                         console.log("repeatOption ",this.state.repeatOption);
                       }
                     )
-                    // let temp = this.state.itemToEdit;
-                    // temp.start_day_and_time= date;
-                    //  let temp = this.state.itemToEdit,
-                    // temp.repeat = false,
-                    // this.setState({
-                    //   repeatOptionDropDown: eventKey,
-                    //   repeatOption: false,
-                    //   // itemToEdit: temp
-                    // })
                   }
                 >
                   Does not repeat
@@ -1147,7 +1039,6 @@ this will close repeat modal.
                   eventKey="Custom..."
                   onSelect={(eventKey) => {
                     this.openRepeatModal();
-                    // this.setState({ repeatOptionDropDown: eventKey });
                   }}
                 >
                   Custom...
@@ -1192,7 +1083,6 @@ this will close repeat modal.
                 onChange={(e) => {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
-                  console.log(temp.is_timed);
                   temp.is_timed = !temp.is_timed;
                   this.setState({ itemToEdit: temp });
                 }}
