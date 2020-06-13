@@ -43,7 +43,7 @@ app.use(session({
 }));
 
 console.log(hostname);
-if (hostname == "manifestmyspace-dev") {
+if (hostname == "manifestmyspace") {
 	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem'
 	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem'
 	var credentials_url = 'credentials_dev.json'
