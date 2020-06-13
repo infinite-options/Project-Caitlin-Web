@@ -327,7 +327,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -336,11 +336,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -359,6 +359,7 @@ export default class FirebaseV2 extends React.Component {
                     <MustDoAT
                       Index={i}
                       Array={this.state.singleATitemArr}
+                      SingleAT={this.state.singleATitemArr[i]}
                       Path={this.state.singleGR.fbPath}
                     />
                   </Row>
@@ -391,7 +392,7 @@ export default class FirebaseV2 extends React.Component {
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
+                          alert("Item Is Availble to the user");
                         }}
                         icon={faUser}
                         size="lg"
@@ -400,11 +401,11 @@ export default class FirebaseV2 extends React.Component {
                   ) : (
                     <div>
                       <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
+                        title="Unavailable to the user"
                         style={{ color: "#000000" }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
+                          alert("Item Is NOT Availble to the user");
                         }}
                         icon={faUserAltSlash}
                         size="lg"
@@ -585,7 +586,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -594,11 +595,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -635,7 +636,7 @@ export default class FirebaseV2 extends React.Component {
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
+                          alert("Item Is Availble to the user");
                         }}
                         icon={faUser}
                         size="lg"
@@ -644,11 +645,11 @@ export default class FirebaseV2 extends React.Component {
                   ) : (
                     <div>
                       <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
+                        title="Unavailable to the user"
                         style={{ color: "#000000" }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
+                          alert("Item Is NOT Availble to the user");
                         }}
                         icon={faUserAltSlash}
                         size="lg"
@@ -890,7 +891,7 @@ export default class FirebaseV2 extends React.Component {
                             style={{ color: this.state.availabilityColorCode }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is Availble to Caitlin");
+                              alert("Item Is Availble to the user");
                             }}
                             icon={faUser}
                             size="lg"
@@ -899,11 +900,11 @@ export default class FirebaseV2 extends React.Component {
                       ) : (
                         <div>
                           <FontAwesomeIcon
-                            title="Unavailable to Caitlin"
+                            title="Unavailable to the user"
                             style={{ color: "#000000" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is NOT Availble to Caitlin");
+                              alert("Item Is NOT Availble to the user");
                             }}
                             icon={faUserAltSlash}
                             size="lg"
@@ -958,7 +959,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -967,11 +968,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -1094,7 +1095,7 @@ export default class FirebaseV2 extends React.Component {
                             style={{ color: this.state.availabilityColorCode }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is Availble to Caitlin");
+                              alert("Item Is Availble to the user");
                             }}
                             icon={faUser}
                             size="lg"
@@ -1103,11 +1104,11 @@ export default class FirebaseV2 extends React.Component {
                       ) : (
                         <div>
                           <FontAwesomeIcon
-                            title="Unavailable to Caitlin"
+                            title="Unavailable to the user"
                             style={{ color: "#000000" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is NOT Availble to Caitlin");
+                              alert("Item Is NOT Availble to the user");
                             }}
                             icon={faUserAltSlash}
                             size="lg"
@@ -1160,7 +1161,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -1169,11 +1170,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"

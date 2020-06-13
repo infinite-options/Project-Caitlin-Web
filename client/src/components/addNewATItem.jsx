@@ -13,7 +13,7 @@ export default class AddNewATItem extends Component {
     //const timeSlot = this.getTime(); //timeSlot[0] == start_time, timeSlot[1] === end_time
     //const start_time = timeSlot[0];
     this.state = {
-      AT_arr: [],         // Actions & Tasks array
+      AT_arr: [], // Actions & Tasks array
       newActionTitle: "", //Old delete Later
       itemToEdit: {
         id: "",
@@ -101,12 +101,33 @@ export default class AddNewATItem extends Component {
         .get()
         .then((doc) => {
             if (doc.exists) {
-              var x = doc.data();
+                var x = doc.data();
               if (x["actions&tasks"] != undefined) {
-                x = x["actions&tasks"];
-                this.setState({
-                  AT_arr: x,
-                });
+                  x = x["actions&tasks"];
+                  this.setState({
+                    AT_arr: x,
+                  });
+                  this.props.ATItem.fbPath
+                      .collection("actions&tasks")
+                      .add({
+                        title: this.state.itemToEdit.title,
+                        "instructions&steps": [],
+                      })
+                      .then((ref) => {
+                        if (ref.id === null) {
+                          alert("Fail to add new Action / Task item");
+                          return;
+                        }
+                        console.log("Added document with ID: ", ref.id);
+                        //let newArr = this.props.ATArray;
+                        let newArr = this.state.AT_arr;
+                        let temp = this.state.itemToEdit;
+                        temp.id = ref.id;
+                        newArr.push(temp);
+                        console.log(newArr);
+                        console.log("adding new item");
+                        this.updateEntireArray(newArr);
+                      });
               }
             } else {
               console.log("No such document!");
@@ -116,27 +137,6 @@ export default class AddNewATItem extends Component {
             console.log("Error getting document:", error);
             alert("Error getting document:", error);
         });
-    this.props.ATItem.fbPath
-      .collection("actions&tasks")
-      .add({
-        title: this.state.itemToEdit.title,
-        "instructions&steps": [],
-      })
-      .then((ref) => {
-        if (ref.id === null) {
-          alert("Fail to add new Action / Task item");
-          return;
-        }
-        console.log("Added document with ID: ", ref.id);
-        //let newArr = this.props.ATArray;
-        let newArr = this.state.AT_arr;
-        let temp = this.state.itemToEdit;
-        temp.id = ref.id;
-        newArr.push(temp);
-        console.log(newArr);
-        console.log("adding new item");
-        this.updateEntireArray(newArr);
-      });
   };
 
   //This function will below will essentially take in a array and have a key map to it
@@ -301,7 +301,7 @@ export default class AddNewATItem extends Component {
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">Available to the user?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"

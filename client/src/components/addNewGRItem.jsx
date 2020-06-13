@@ -190,31 +190,53 @@ export default class AddNewGRItem extends Component {
   };
 
   addNewDoc = () => {
-    this.getGRDataFromFB();
-    this.state.routineDocsPath
-      .add({
-        title: this.state.itemToEdit.title,
-        completed: false,
-        "actions&tasks": [],
-      })
-      .then((ref) => {
-        if (ref.id === null) {
-          alert("Fail to add new routine / goal item");
-          return;
-        }
-        console.log(ref);
-        //let newArr = this.props.ATArray;
-        let newArr = this.state.grArr;
-        let temp = this.state.itemToEdit;
-        temp.id = ref.id;
-        temp.available_start_time = this.state.itemToEdit.available_start_time;
-        temp.available_end_time = this.state.itemToEdit.available_end_time;
+    this.state.arrPath
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          console.log("getGRDataFromFB DATA:");
+          // console.log(doc.data());
+          var x = doc.data();
+          if (x["goals&routines"] != undefined) {
+            x = x["goals&routines"];
+            console.log("this is the goals and routines", x);
+            this.setState({
+              grArr: x,
+            });
+            this.state.routineDocsPath
+              .add({
+                title: this.state.itemToEdit.title,
+                completed: false,
+                "actions&tasks": [],
+              })
+              .then((ref) => {
+                if (ref.id === null) {
+                  alert("Fail to add new routine / goal item");
+                  return;
+                }
+                console.log(ref);
+                //let newArr = this.props.ATArray;
+                let newArr = this.state.grArr;
+                let temp = this.state.itemToEdit;
+                temp.id = ref.id;
+                temp.available_start_time = this.state.itemToEdit.available_start_time;
+                temp.available_end_time = this.state.itemToEdit.available_end_time;
 
-        console.log(temp.available_start_time, temp.available_end_time);
-        console.log("Added document with ID: ", ref.id);
-        // this.state.grArr.push(temp);
-        newArr.push(temp);
-        this.updateEntireArray(newArr);
+                console.log(temp.available_start_time, temp.available_end_time);
+                console.log("Added document with ID: ", ref.id);
+                // this.state.grArr.push(temp);
+                newArr.push(temp);
+                this.updateEntireArray(newArr);
+              });
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document! 2");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
       });
   };
 
@@ -1108,7 +1130,7 @@ this will close repeat modal.
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">Available to the user?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"
