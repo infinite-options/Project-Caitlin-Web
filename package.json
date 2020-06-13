@@ -6,5 +6,8 @@
 	},
 	"engines": {
 		"node": "10.15.1"
+	},
+	"dependencies": {
+		"@fortawesome/free-regular-svg-icons": "^5.13.0"
 	}
 }

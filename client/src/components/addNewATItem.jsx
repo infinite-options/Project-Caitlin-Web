@@ -13,12 +13,14 @@ export default class AddNewATItem extends Component {
     //const timeSlot = this.getTime(); //timeSlot[0] == start_time, timeSlot[1] === end_time
     //const start_time = timeSlot[0];
     this.state = {
+      AT_arr: [],         // Actions & Tasks array
       newActionTitle: "", //Old delete Later
       itemToEdit: {
         id: "",
         title: "",
         photo: "",
         audio: "",
+        is_must_do: true,
         is_complete: false,
         is_available: true,
         available_end_time: this.props.timeSlot[1],
@@ -87,16 +89,33 @@ export default class AddNewATItem extends Component {
       return;
     }
     if (this.state.itemToEdit.photo === "") {
-      
-        this.state.itemToEdit.photo = 
+      this.state.itemToEdit.photo =
         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
-      
     }
     // console.log("Submitting Input: " + this.state.itemToEdit.title);
     this.addNewDoc();
   };
 
   addNewDoc = () => {
+    this.props.ATItem.fbPath
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+              var x = doc.data();
+              if (x["actions&tasks"] != undefined) {
+                x = x["actions&tasks"];
+                this.setState({
+                  AT_arr: x,
+                });
+              }
+            } else {
+              console.log("No such document!");
+            }
+        })
+        .catch(function (error) {
+            console.log("Error getting document:", error);
+            alert("Error getting document:", error);
+        });
     this.props.ATItem.fbPath
       .collection("actions&tasks")
       .add({
@@ -109,7 +128,8 @@ export default class AddNewATItem extends Component {
           return;
         }
         console.log("Added document with ID: ", ref.id);
-        let newArr = this.props.ATArray;
+        //let newArr = this.props.ATArray;
+        let newArr = this.state.AT_arr;
         let temp = this.state.itemToEdit;
         temp.id = ref.id;
         newArr.push(temp);
