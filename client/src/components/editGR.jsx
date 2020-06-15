@@ -82,6 +82,18 @@ export default class editGR extends Component {
     temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
     temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
     
+    // newArr[this.props.i] = temp;
+
+    if (temp.photo === "") {
+      if (this.props.isRoutine) {
+        temp.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
+      } else {
+        temp.photo =
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
+      }
+    }
+
     newArr[this.props.i] = temp;
 
     //Add the below attributes in case they don't already exists
@@ -729,7 +741,7 @@ export default class editGR extends Component {
         </div>
 
         <div className="input-group mb-3" style={{ marginTop: "10px" }}>
-          <label className="form-check-label">Available to Caitlin?</label>
+          <label className="form-check-label">Available to the user?</label>
           <input
             style={{ marginTop: "5px", marginLeft: "5px" }}
             name="Available"
