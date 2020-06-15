@@ -112,6 +112,7 @@ export default class WeekEvents extends Component {
   }
 
   getEventItem = (day, hour) => {
+      
       let startObject = this.props.dateContext.clone();
       let startDay = startObject.startOf("week");
       let curDate = startDay.clone();

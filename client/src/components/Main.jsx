@@ -47,6 +47,8 @@ export default class MainPage extends React.Component {
       originalGoalsAndRoutineArr: [], //Hold goals and routines so day and week view can access it
       goals: [],
       routines: [],
+      routine_ids: [],
+      goal_ids: [],
       showRoutineGoalModal: false,
       showGoalModal: false,
       showRoutineModal: false,
@@ -141,58 +143,68 @@ export default class MainPage extends React.Component {
       const docRef = db.collection("users").doc(this.state.currentUserId);
       // console.log("this is suppose tto be the path", docRef);
       docRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            // console.log(doc.data());
-            var x = doc.data();
-            // console.log("this is the data", x);
-            // console.log(x["goals&routines"]);
-            // x = x["goals&routines"];
-            let routine = [];
-            let goal = [];
-            if (x["goals&routines"] !== undefined) {
-              x = x["goals&routines"];
-              // console.log("this is the goals and routines", x);
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          // console.log(doc.data());
+          var x = doc.data();
+          // console.log("this is the data", x);
+          // console.log(x["goals&routines"]);
+          // x = x["goals&routines"];
+          
+          let routine = [];
+          let routine_ids = [];
+          let goal = [];
+          let goal_ids = [];
+          if (x["goals&routines"] !== undefined) {
+            x = x["goals&routines"];
+            // console.log("this is the goals and routines", x);
 
-              for (let i = 0; i < x.length; ++i) {
-                if (x[i]["is_persistent"]) {
-                  // console.log("routine " + x[i]["title"]);
-                  routine.push(x[i]);
-                } else if (!x[i]["is_persistent"]) {
-                  // console.log("not routine " + x[i]["title"]);
-                  goal.push(x[i]);
-                }
+            for (let i = 0; i < x.length; ++i) {
+              if (x[i]["is_persistent"]) {
+                // console.log("routine " + x[i]["title"]);
+                console.log("is the is the id ", x[i].id);
+                routine_ids.push(i);
+                routine.push(x[i]);
+              } else if (!x[i]["is_persistent"]) {
+                // console.log("not routine " + x[i]["title"]);
+                goal_ids.push(i);
+                goal.push(x[i]);
               }
-              this.setState({
-                originalGoalsAndRoutineArr: x,
-                goals: goal,
-                addNewGRModalShow: false,
-                routines: routine,
-              });
-            } else {
-              this.setState({
-                originalGoalsAndRoutineArr: [],
-                goals: goal,
-                addNewGRModalShow: false,
-                routines: routine,
-              });
             }
-            // this.setState({
-            //   originalGoalsAndRoutineArr: x,
-            //   goals: goal,
-            //   addNewGRModalShow: false,
-            //   routines: routine,
-            // });
-            // console.log(x, "x");
+            this.setState({
+              originalGoalsAndRoutineArr: x,
+              goals: goal,
+              addNewGRModalShow: false,
+              routine_ids: routine_ids,
+              goal_ids: goal_ids,
+              routines: routine,
+            });
           } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
+            this.setState({
+              originalGoalsAndRoutineArr: [],
+              goals: goal,
+              addNewGRModalShow: false,
+              routine_ids: routine_ids,
+              goal_ids: goal_ids,
+              routines: routine,
+            });
           }
-        })
-        .catch(function (error) {
-          console.log("Error getting document:", error);
-        });
+          // this.setState({
+          //   originalGoalsAndRoutineArr: x,
+          //   goals: goal,
+          //   addNewGRModalShow: false,
+          //   routines: routine,
+          // });
+          // console.log(x, "x");
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
     }
   };
 
@@ -2622,22 +2634,30 @@ this will close repeat modal.
           </Row>
         </Container>
         <Row>
-          {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
-          <DayEvents
-            dateContext={this.state.dateContext}
-            eventClickDayView={this.handleDayEventClick}
-            handleDateClick={this.handleDateClickOnDayView}
-            dayEvents={this.state.dayEvents}
-            getEventsByInterval={this.getEventsByIntervalDayVersion}
-          />
-          <DayRoutines
-            routines={this.state.routines}
-            dayRoutineClick={this.toggleShowRoutine}
-          />
-          <DayGoals
-            goals={this.state.goals}
-            dayGoalClick={this.toggleShowGoal}
-          />
+        {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
+        <DayEvents
+        dateContext={this.state.dateContext}
+        eventClickDayView={this.handleDayEventClick}
+        handleDateClick={this.handleDateClickOnDayView}
+        dayEvents={this.state.dayEvents}
+        getEventsByInterval={this.getEventsByIntervalDayVersion}
+        />
+        <DayRoutines
+        dateContext={this.state.dateContext}
+        routine_ids = {this.state.routine_ids}
+        routines={this.state.routines}
+        dayRoutineClick={this.toggleShowRoutine}
+        theCurrentUserId={this.state.currentUserId}
+        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
+        />
+        <DayGoals
+        dateContext={this.state.dateContext}
+        goal_ids = {this.state.goal_ids}
+        goals={this.state.goals}
+        dayGoalClick={this.toggleShowGoal}
+        theCurrentUserId={this.state.currentUserId}
+        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
+        />
         </Row>
       </div>
     );
@@ -2704,10 +2724,16 @@ this will close repeat modal.
             />
           </Row>
           <Row>
-            <WeekGoals goals={this.state.goals} />
+            <WeekGoals 
+            dateContext={this.state.dateContext}
+            goals={this.state.goals} 
+            />
           </Row>
           <Row>
-            <WeekRoutines routines={this.state.routines} />
+            <WeekRoutines 
+            routines={this.state.routines}
+            dateContext={this.state.dateContext}
+             />
           </Row>
         </Container>
       </div>
