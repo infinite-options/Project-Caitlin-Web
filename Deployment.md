@@ -1,17 +1,23 @@
 1. `Login to Google Cloud`
-2. `Navigate to the instance`
-3. `SSH to the instance`
-4. `cd /home/Project-Caitlin-Web/``
-5. `git pull`
+2. `Login with iodevcalendar@gmail.com`
+3. `Select the project from the top dropdown`
+4. `Navigate to the instance`
+5. `SSH to the instance`
+6. `sudo su`
+7. `cd /home/Project-Caitlin-Web/`
+8. `git pull`
 
-If the server is running before the `pull`, the changes will be automatically deployed.
+If the server is running `npm run dev` before the `pull`, the changes will be automatically deployed.
 
-## Restart server through Bash
-6. `cd /home/Project-Caitlin-Web/server`
-7. `sudo bash ./start_server.sh`
+## Stop the server
+1. `sudo netstat -tulpn | grep :80` // Find the process id running on 80, should be the right most column
+2. `sudo kill -9 {pid}`
 
-## Manual deployment
-6. `cd /home/Project-Caitlin-Web/server`
-7. `sudo netstat -tulpn | grep :80` // Find the process running on 80
-8. `sudo kill -9 {pid}`
-9. `sudo npm run dev &`
+## Start the server in Development mode(allows auto build but may fail because of memory leak)
+1. `cd server`
+2. `npm run dev &`
+
+## Start the server in Production mode(preferable)
+1. `cd server`
+2. `npm run build`
+3. `npm run start &`

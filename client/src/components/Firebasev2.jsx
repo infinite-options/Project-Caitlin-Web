@@ -1,5 +1,6 @@
 import React from "react";
 import firebase from "./firebase";
+import { firestore } from "firebase";
 import {
   ListGroup,
   Button,
@@ -20,12 +21,14 @@ import EditIS from "./editIS.jsx";
 import EditAT from "./EditAT.jsx";
 import ShowATList from "./ShowATList";
 import ShowISList from "./ShowISList";
+import MustDoAT from "./MustDoAT";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
   faUserAltSlash,
   faTrophy,
   faRunning,
+  faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
@@ -97,6 +100,12 @@ export default class FirebaseV2 extends React.Component {
     //isRoutine is to check whether we clicked on add routine or add goal
     isRoutine: true,
     availabilityColorCode: "#D6A34C",
+
+    //For setting default time for the AT Item
+    timeSlotForAT: [],
+    timeSlotForIS: [],
+
+    routine_completed: false,
 
     //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
     // iconShowATModal: true
@@ -319,7 +328,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -328,11 +337,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -347,7 +356,15 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr}
                       Path={this.state.singleGR.fbPath}
                     />
+
+                    <MustDoAT
+                      Index={i}
+                      Array={this.state.singleATitemArr}
+                      SingleAT={this.state.singleATitemArr[i]}
+                      Path={this.state.singleGR.fbPath}
+                    />
                   </Row>
+
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteAT
                       deleteIndex={i}
@@ -376,7 +393,7 @@ export default class FirebaseV2 extends React.Component {
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
+                          alert("Item Is Availble to the user");
                         }}
                         icon={faUser}
                         size="lg"
@@ -385,11 +402,11 @@ export default class FirebaseV2 extends React.Component {
                   ) : (
                     <div>
                       <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
+                        title="Unavailable to the user"
                         style={{ color: "#000000" }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
+                          alert("Item Is NOT Availble to the user");
                         }}
                         icon={faUserAltSlash}
                         size="lg"
@@ -488,7 +505,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -497,11 +514,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -538,7 +555,7 @@ export default class FirebaseV2 extends React.Component {
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is Availble to Caitlin");
+                          alert("Item Is Availble to the user");
                         }}
                         icon={faUser}
                         size="lg"
@@ -547,11 +564,11 @@ export default class FirebaseV2 extends React.Component {
                   ) : (
                     <div>
                       <FontAwesomeIcon
-                        title="Unavailable to Caitlin"
+                        title="Unavailable to the user"
                         style={{ color: "#000000" }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          alert("Item Is NOT Availble to Caitlin");
+                          alert("Item Is NOT Availble to the user");
                         }}
                         icon={faUserAltSlash}
                         size="lg"
@@ -598,8 +615,9 @@ export default class FirebaseV2 extends React.Component {
    * which is done in getATList function
    */
   GRonClickEvent = (title, id, persist) => {
-    // console.log(id, title, persist);
+    console.log("GRonClickEvent", id, title, persist);
     this.getATList(id, title, persist);
+    this.getTimeForAT();
   };
 
   /**
@@ -617,8 +635,51 @@ export default class FirebaseV2 extends React.Component {
       .doc(this.state.singleGR.id)
       .collection("actions&tasks")
       .doc(id);
+    console.log("This is from ATonClieckEvent");
     console.log(this.state.singleGR.id);
-    console.log(id, title);
+    console.log("ATItem id & title: ", id, title);
+
+    //setting timeSlot for IS according its parent AT time
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.props.theCurrentUserID)
+      .collection("goals&routines")
+      .doc(this.state.singleGR.id)
+      .get()
+      .then((snapshot) => {
+        let userData = snapshot.data()["actions&tasks"];
+        userData.forEach((doc) => {
+          if (doc.id === id) {
+            let timeSlot = [doc.available_start_time, doc.available_end_time];
+            this.setState({ timeSlotForIS: timeSlot });
+            console.log("timeSLotForIS:", this.state.timeSlotForIS); //timeSlotForIS[0] == start_time, timeSlotForIS[1] == end_time
+          }
+        });
+      });
+
+    /*
+      getTimeForAT = () => {
+    console.log("Enter getTimeForAT()");
+    let timeSlot = [];
+    const db = firestore();
+    db.collection("users")
+      .doc(this.props.theCurrentUserID)
+      .get()
+      .then((snapshot) => {
+        let userData = snapshot.data();
+        let userGR = userData["goals&routines"];
+        userGR.forEach((doc) => {
+          console.log("This is from useGR: ", this.state.singleGR);
+          if (doc.id === this.state.singleGR.id) {
+            timeSlot = [doc.available_start_time, doc.available_end_time];
+            this.setState({ timeSlotForAT: timeSlot });
+          }
+        });
+      });
+  };
+      */
+
     let temp = {
       show: true,
       type: "Action/Task",
@@ -675,6 +736,23 @@ export default class FirebaseV2 extends React.Component {
     return -1;
   };
 
+  check_routineCompleted = (theCurrentUserID, rountineID) => {
+    let result = firebase
+      .firestore()
+      .collection("users")
+      .doc(theCurrentUserID)
+      .collection("goals&routines")
+      .doc(rountineID)
+      .get()
+      .then((docs) => {
+        return docs.data()["completed"];
+      })
+      .catch((error) => {
+        console.log("cannot access file.");
+        return false;
+      });
+  };
+
   // ListFalse = ()=>{
   //   this.setState({
   //     is_sublist_available:false
@@ -712,6 +790,7 @@ export default class FirebaseV2 extends React.Component {
                   </div>
                 </Col>
               </Row>
+
               {this.props.routines[i]["photo"] ? (
                 <Row>
                   <Col xs={7} style={{ paddingRight: "0px" }}>
@@ -732,7 +811,7 @@ export default class FirebaseV2 extends React.Component {
                             style={{ color: this.state.availabilityColorCode }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is Availble to Caitlin");
+                              alert("Item Is Availble to the user");
                             }}
                             icon={faUser}
                             size="lg"
@@ -741,11 +820,11 @@ export default class FirebaseV2 extends React.Component {
                       ) : (
                         <div>
                           <FontAwesomeIcon
-                            title="Unavailable to Caitlin"
+                            title="Unavailable to the user"
                             style={{ color: "#000000" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is NOT Availble to Caitlin");
+                              alert("Item Is NOT Availble to the user");
                             }}
                             icon={faUserAltSlash}
                             size="lg"
@@ -786,7 +865,6 @@ export default class FirebaseV2 extends React.Component {
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                         // is_sublist_available={this.is_sublist_available}
                       />
@@ -803,7 +881,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -812,11 +890,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -940,7 +1018,7 @@ export default class FirebaseV2 extends React.Component {
                             style={{ color: this.state.availabilityColorCode }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is Availble to Caitlin");
+                              alert("Item Is Availble to the user");
                             }}
                             icon={faUser}
                             size="lg"
@@ -949,11 +1027,11 @@ export default class FirebaseV2 extends React.Component {
                       ) : (
                         <div>
                           <FontAwesomeIcon
-                            title="Unavailable to Caitlin"
+                            title="Unavailable to the user"
                             style={{ color: "#000000" }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              alert("Item Is NOT Availble to Caitlin");
+                              alert("Item Is NOT Availble to the user");
                             }}
                             icon={faUserAltSlash}
                             size="lg"
@@ -986,7 +1064,6 @@ export default class FirebaseV2 extends React.Component {
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
-
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                         // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         FBPath={firebase
@@ -1008,7 +1085,7 @@ export default class FirebaseV2 extends React.Component {
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to Caitlin");
+                            alert("Item Is Availble to the user");
                           }}
                           icon={faUser}
                           size="lg"
@@ -1017,11 +1094,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to Caitlin"
+                          title="Unavailable to the user"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to Caitlin");
+                            alert("Item Is NOT Availble to the user");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
@@ -1224,7 +1301,7 @@ export default class FirebaseV2 extends React.Component {
                       title="Not Completed Item"
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: "black" }}
+                      style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Not Completed");
@@ -1250,6 +1327,7 @@ export default class FirebaseV2 extends React.Component {
     var displayGoals = this.getGoals();
     var displayCompletedGoals = this.getGoalsStatus();
     var displayCompletedRoutines = this.getRoutinesStatus();
+
     return (
       <div style={{ marginTop: "0" }}>
         {/* <div style={{ marginTop: "40px" }}> */}
@@ -1558,6 +1636,7 @@ shows entire list of goals and routines
                 ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                 ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                 refresh={this.refreshISItem}
+                timeSlot={this.state.timeSlotForIS} //timeSlot[0]== start_time, timeSlot[1] == end_time
                 hideNewISModal={
                   //function to hide the modal
                   () => {
@@ -1592,12 +1671,37 @@ shows entire list of goals and routines
   };
 
   /**
+   * Retrieve parent goal's start time and end time and use them for it's ATItem
+   */
+  getTimeForAT = () => {
+    console.log("Enter getTimeForAT()");
+    let timeSlot = [];
+    const db = firestore();
+    db.collection("users")
+      .doc(this.props.theCurrentUserID)
+      //.collection("goals&routines")
+      //.where("id", "==", this.props.ATItem.id)
+      .get()
+      .then((snapshot) => {
+        let userData = snapshot.data();
+        let userGR = userData["goals&routines"];
+        userGR.forEach((doc) => {
+          console.log("This is from useGR: ", this.state.singleGR);
+          if (doc.id === this.state.singleGR.id) {
+            timeSlot = [doc.available_start_time, doc.available_end_time];
+            this.setState({ timeSlotForAT: timeSlot });
+          }
+        });
+      });
+  };
+
+  /**
    * abstractedActionsAndTaskList -
    * returns modal with with a single Routine/ Goal as title
    * and beneath it is the list of action/ task associated with the
    * goal/ routine
    */
-  abstractedActionsAndTaskList = () => {
+  abstractedActionsAndTaskList = (props) => {
     return (
       <Modal.Dialog
         style={{
@@ -1626,9 +1730,11 @@ shows entire list of goals and routines
           >
             {this.state.addNewATModalShow ? (
               <AddNewATItem
+                timeSlot={this.state.timeSlotForAT} //timeSlot[0]== start_time, timeSlot[1] == end_time
                 refresh={this.refreshATItem} //refreshes the list of AT
                 ATArray={this.state.singleATitemArr}
                 ATItem={this.state.singleGR} //The parent item
+                //theCurrentUserID={this.props.theCurrentUserID}
                 hideNewATModal={() => {
                   this.setState({ addNewATModalShow: false });
                 }}

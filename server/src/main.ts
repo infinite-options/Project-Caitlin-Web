@@ -8,9 +8,11 @@ import * as logger from 'morgan';
 import { AddressInfo } from 'net';
 import * as path from 'path';
 import * as webpack from 'webpack';
+import * as http from 'http';
 import * as https from 'https';
 import * as webpack_dev_middleware from 'webpack-dev-middleware';
 import * as webpack_hot_middleware from 'webpack-hot-middleware';
+import * as os from 'os';
 
 import webpackConfig from '../webpack.config';
 import errorHandler from './errorHandler';
@@ -21,9 +23,10 @@ declare const __basedir;
 config();
 
 const app = express();
+const hostname = os.hostname();
 
 if ( process.env.NODE_ENV === 'development' )
-	app.use( logger( 'dev' ) );
+app.use( logger( 'dev' ) );
 app.use( express.json() );
 app.use( express.urlencoded( { extended: false } ) );
 app.use( cookieParser() );
@@ -31,13 +34,24 @@ app.use( cookieParser() );
 app.use( bodyParser.json() ); // <--- Here
 app.use( bodyParser.urlencoded( { extended: true } ) ); //for body parser to parse correctly
 app.use(session({
-    secret: 'somerandonstuffs',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 3600000
-    }
+	secret: 'somerandonstuffs',
+	resave: false,
+	saveUninitialized: false,
+	cookie: {
+		maxAge: 3600000
+	}
 }));
+
+var credentials_url = 'credentials.json'
+
+console.log(hostname);
+if (hostname == "manifestmyspace") {
+	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem'
+	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem'
+} else {
+	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem'
+	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem'
+}
 
 // Connect to firebase to check for matched passwords
 const firebase = require( 'firebase' );
@@ -77,7 +91,7 @@ const opn = require( 'open' );
 const readline = require( 'readline' );
 const { google } = require( 'googleapis' );
 let calenAuth = null,
-    calendar  = null;
+calendar  = null;
 const calendarID = 'iodevcalendar@gmail.com'; //Change here for some else's calendar
 // var calendarID = "pmarathay@gmail.com"
 // var calendarID = "jeremyhmanalo@gmail.com"
@@ -345,18 +359,18 @@ app.post( '/deleteEvent', function ( req, result ) {
 	setUpAuthById(id,(auth) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.delete(
-		{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
-		req.body.eventId,
-		( err, res ) => {
-			//CallBack
-			if ( err ) {
-				console.log('delete error',err);
-				return result.send( 'The post request returned an error: ' + err );
+			{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
+			req.body.eventId,
+			( err, res ) => {
+				//CallBack
+				if ( err ) {
+					console.log('delete error',err);
+					return result.send( 'The post request returned an error: ' + err );
+				}
+				console.log('delete successful');
+				result.send( 'delete' );
 			}
-			console.log('delete successful');
-			result.send( 'delete' );
-		}
-	);
+		);
 	})
 } );
 
@@ -425,7 +439,7 @@ app.put( '/updateEvent', function ( req, result ) {
 	console.log(req.body.username,req.body.id)
 	let newEvent = req.body.extra;
 	let id = req.body.id;
-  setUpAuthById( id, ( auth ) => {
+	setUpAuthById( id, ( auth ) => {
 		calendar = google.calendar( { version: 'v3', auth } );
 		calendar.events.update(
 			{
@@ -472,13 +486,13 @@ app.post( '/createNewEvent', function ( req, res ) {
 				console.log( 'Event created: %s', event.htmlLink );
 				res.send( 'Evented Created' );
 			}
-		)})
-} );
+		)
+	});
+});
 
 function formatEmail( email ) {
 	email = email.toLowerCase();
 	email = email.split( '@' );
-	email[ 0 ] = email[ 0 ].split( '.' ).join( '' );
 	email[ 0 ] = email[ 0 ].concat( '@' );
 	return email[ 0 ].concat( email[ 1 ] );   // The function returns the product of p1 and p2
 }
@@ -496,29 +510,29 @@ app.post( '/TALogIn', function ( req, result ) {
 	let db = firebase.firestore();
 	let TAs = db.collection( 'trusted_advisor' );
 	TAs.where( 'email_id', '==', emailId_final ).get()
-		.then( ( snapshot ) => {
-			//No email matches
-			if ( snapshot.empty ) {
-				console.log( 'no user' );
-				result.json( false );
-			} else {
-				snapshot.forEach( ( doc ) => {
-					//Matching password
-					if ( givenPass === doc.data().password_key ) {
-						req.session.user = req.body.username;
-						result.json( req.body.username );
-						return;
-					}
-				} );
-				// Run following when username/passowrd matches
-				console.log( 'not matching password' );
-				result.json( false );
-			}
-		} )
-		.catch( ( err ) => {
-			console.log( 'Error getting documents', err );
+	.then( ( snapshot ) => {
+		//No email matches
+		if ( snapshot.empty ) {
+			console.log( 'no user' );
 			result.json( false );
-		} );
+		} else {
+			snapshot.forEach( ( doc ) => {
+				//Matching password
+				if ( givenPass === doc.data().password_key ) {
+					req.session.user = req.body.username;
+					result.json( req.body.username );
+					return;
+				}
+			} );
+			// Run following when username/passowrd matches
+			console.log( 'not matching password' );
+			result.json( false );
+		}
+	} )
+	.catch( ( err ) => {
+		console.log( 'Error getting documents', err );
+		result.json( false );
+	} );
 } );
 
 /*
@@ -533,23 +547,23 @@ app.post( '/TASocialLogIn', function ( req, result ) {
 	let db = firebase.firestore();
 	let TAs = db.collection( 'trusted_advisor' );
 	TAs.where( 'email_id', '==', emailId_final ).get()
-		.then( ( snapshot ) => {
-				//No email matches
-				if ( snapshot.empty ) {
-					console.log( 'no user' );
-					result.json( false );
-				} else {
-					snapshot.forEach( ( doc ) => {
-						req.session.user = req.body.username;
-						result.json( req.body.username );
-						return;
-					});
-				}
-			} )
-			.catch( ( err ) => {
-				console.log( 'Error getting documents', err );
-				result.json( false );
-			} );
+	.then( ( snapshot ) => {
+		//No email matches
+		if ( snapshot.empty ) {
+			console.log( 'no user' );
+			result.json( false );
+		} else {
+			snapshot.forEach( ( doc ) => {
+				req.session.user = req.body.username;
+				result.json( req.body.username );
+				return;
+			});
+		}
+	} )
+	.catch( ( err ) => {
+		console.log( 'Error getting documents', err );
+		result.json( false );
+	} );
 });
 
 /*
@@ -579,25 +593,24 @@ TA Sign up ROUTE:
 Trusted advisor sign up
 */
 app.post( '/TASignUp', function ( req, result ) {
-	console.log( req.body );
 	let db = firebase.firestore();
 	let newTARef = db.collection( 'trusted_advisor' ).doc();
 	newTARef
-		.set( {
-			email_id:     formatEmail( req.body.username ),
-			password_key: req.body.password,
-			first_name:   req.body.fName,
-			last_name:    req.body.lName,
-			employer:     req.body.employer,
-			users: []
-		} )
-		.then( () => {
-			result.json( true );
-		} )
-		.catch( ( err ) => {
-			console.log( 'Error writing', err );
-			result.json( false );
-		} );
+	.set( {
+		email_id:     formatEmail( req.body.username ),
+		password_key: req.body.password,
+		first_name:   req.body.fName,
+		last_name:    req.body.lName,
+		employer:     req.body.employer,
+		users: []
+	} )
+	.then( () => {
+		result.json( true );
+	} )
+	.catch( ( err ) => {
+		console.log( 'Error writing', err );
+		result.json( false );
+	} );
 } );
 
 /*
@@ -609,41 +622,40 @@ app.post( '/TASocialSignUp', function ( req, result ) {
 	let db = firebase.firestore();
 	let newTARef = db.collection( 'trusted_advisor' ).doc();
 	newTARef
-		.set( {
-			email_id:     formatEmail( req.body.username ),
-			first_name:   req.body.fName,
-			last_name:    req.body.lName,
-			employer:     req.body.employer,
-			users: []
-		} )
-		.then( () => {
-			result.json( true );
-		} )
-		.catch( ( err ) => {
-			console.log( 'Error writing', err );
-			result.json( false );
-		} );
+	.set( {
+		email_id:     formatEmail( req.body.username ),
+		first_name:   req.body.fName,
+		last_name:    req.body.lName,
+		employer:     req.body.employer,
+		users: []
+	} )
+	.then( () => {
+		result.json( true );
+	} )
+	.catch( ( err ) => {
+		console.log( 'Error writing', err );
+		result.json( false );
+	} );
 } );
 
 app.get( '/auth-url', function ( req, result ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
+	fs.readFile( credentials_url, ( err, content ) => {
 		if ( err ) return console.log( 'Error loading client secret file:', err );
 		// Authorize a client with credentials, then call the Google Calendar API.
 		let credentials = JSON.parse( content );
 		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2(
-			client_id, client_secret, redirect_uris[ 0 ] );
-		const authUrl = oAuth2Client.generateAuthUrl( {
+		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+		const authUrl = oAuth2Client.generateAuthUrl({
 			access_type: 'offline',
 			prompt:      'consent',
 			scope:       SCOPEUSERS
-		} );
+		});
 		result.json( authUrl );
-	} );
-} );
+	});
+});
 
 app.get( '/adduser', function ( req, result ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
+	fs.readFile( credentials_url, ( err, content ) => {
 		if ( err ) return console.log( 'Error loading client secret file:', err );
 		// Authorize a client with credentials, then call the Google Calendar API.
 		let credentials = JSON.parse( content );
@@ -669,39 +681,39 @@ app.get( '/adduser', function ( req, result ) {
 					let db = firebase.firestore();
 					let users = db.collection( 'users' );
 					users.where( 'email_id', '==', emailId ).get()
-						.then( ( snapshot ) => {
-							if ( snapshot.empty ) {
-								// Add tokens to firebase
-								let newClientRef = users.doc();
-								newClientRef
-									.set( {
-										email_id:             emailId,
-										google_auth_token:    token.access_token,
-										google_refresh_token: token.refresh_token,
-										first_name:           'New',
-										last_name:            'User'
-									} );
-								result.redirect( '/main?createUser=true&email='+emailId );
-							} else {
-//##############################################################################
-								// Fix this to give error not update
-//##############################################################################
-								snapshot.forEach((doc) => {
-								  users.doc(doc.id)
-								  .update({
-								    google_auth_token: token.access_token,
-								    google_refresh_token: token.refresh_token,
-								    first_name: "New",
-								    last_name: "User"
-								  });
-								})
-								result.redirect( '/main?createUser=true&email='+emailId );
-							}
-						} )
-						.catch( ( err ) => {
-							console.log( 'Error getting firebase documents', err );
-							result.json( err );
-						} );
+					.then( ( snapshot ) => {
+						if ( snapshot.empty ) {
+							// Add tokens to firebase
+							let newClientRef = users.doc();
+							newClientRef
+							.set( {
+								email_id:             emailId,
+								google_auth_token:    token.access_token,
+								google_refresh_token: token.refresh_token,
+								first_name:           'New',
+								last_name:            'User'
+							} );
+							result.redirect( '/main?createUser=true&email='+emailId );
+						} else {
+							//##############################################################################
+							// Fix this to give error not update
+							//##############################################################################
+							snapshot.forEach((doc) => {
+								users.doc(doc.id)
+								.update({
+									google_auth_token: token.access_token,
+									google_refresh_token: token.refresh_token,
+									first_name: "New",
+									last_name: "User"
+								});
+							})
+							result.redirect( '/main?createUser=true&email='+emailId );
+						}
+					} )
+					.catch( ( err ) => {
+						console.log( 'Error getting firebase documents', err );
+						result.json( err );
+					} );
 				}
 			} );
 		} );
@@ -724,11 +736,11 @@ app.get( '/adduser', function ( req, result ) {
 //Below is all the google authorization code
 
 /**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
+* Create an OAuth2 client with the given credentials, and then execute the
+* given callback function.
+* @param {Object} credentials The authorization client credentials.
+* @param {function} callback The callback to call with the authorized client.
+*/
 function authorize( credentials, callback ) {
 	const { client_secret, client_id, redirect_uris } = credentials.web;
 	const oAuth2Client = new google.auth.OAuth2(
@@ -774,11 +786,11 @@ function authorizeById( credentials, id, callback ) {
 }
 
 /**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
+* Get and store new token after prompting for user authorization, and then
+* execute the given callback with the authorized OAuth2 client.
+* @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+* @param {getEventsCallback} callback The callback for the authorized client.
+*/
 function getAccessToken( oAuth2Client, callback ) {
 	const authUrl = oAuth2Client.generateAuthUrl( {
 		access_type:     'offline',
@@ -806,9 +818,9 @@ function getAccessToken( oAuth2Client, callback ) {
 }
 
 /**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
+* Lists the next 10 events on the user's primary calendar.
+* @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+*/
 function saveCredentials( auth ) {
 	//Tyler: saveCredentials has been altered to just set-up, no listing events
 	console.log( 'saveCredentials', auth );
@@ -827,7 +839,7 @@ function updateCredentials( auth ) {
 
 function setUpAuth() {
 	// Load client secrets from a local file.
-	fs.readFile( 'credentials.json', ( err, content ) => {
+	fs.readFile( credentials_url, ( err, content ) => {
 		if ( err ) return console.log( 'Error loading client secret file:', err );
 		// Authorize a client with credentials, then call the Google Calendar API.
 		authorize( JSON.parse( content ), saveCredentials ); //Tyler: saveCredentials has been altered to just set-up, no listing events
@@ -835,7 +847,7 @@ function setUpAuth() {
 }
 
 function setUpAuthById( id, callback ) {
-	fs.readFile( 'credentials.json', ( err, content ) => {
+	fs.readFile( credentials_url, ( err, content ) => {
 		if ( err ) return console.log( 'Error loading client secret file:', err );
 		// Authorize a client with credentials, then call the Google Calendar
 		authorizeById( JSON.parse( content ), id, callback ); //Tyler: saveCredentials has been altered to just set-up, no listing events
@@ -851,22 +863,24 @@ errorHandler( app );
 
 const debugLog = debug( 'server:server' );
 
-/**
- * Get port from environment and store in Express.
- */
-const listener = app.listen( process.env.PORT || 80, () => {
-	const address = listener.address() as AddressInfo;
-	if ( process.env.NODE_ENV === 'development' )
-		debugLog( `Listening on ${address.address}:${address.port}` );
-} );
-
 var options = {}
 if (process.env.SUDO_USER == "iodevcalendar") {
-	options["key"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/privkey.pem');
-	options["cert"] = fs.readFileSync('/etc/letsencrypt/live/manifestmy.space/fullchain.pem');
+	console.log("Prod Host");
+	options["key"] = fs.readFileSync(key_url);
+	options["cert"] = fs.readFileSync(cert_url);
+	http.createServer(function (req, res) {
+		res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+		res.end();
+	}).listen(80);
 } else {
+	console.log("Local Host");
 	options["key"] = fs.readFileSync('privkey.pem');
 	options["cert"] = fs.readFileSync('fullchain.pem');
+	const listener = app.listen( process.env.PORT || 80, () => {
+		const address = listener.address() as AddressInfo;
+		if ( process.env.NODE_ENV === 'development' )
+		debugLog( `Listening on ${address.address}:${address.port}` );
+	} );
 }
 
 https.createServer(options, app).listen(443);

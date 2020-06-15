@@ -179,10 +179,12 @@ export default class AddNewGRItem extends Component {
     if (this.state.itemToEdit.photo === "") {
       if (this.props.isRoutine) {
         this.state.itemToEdit.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
+          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Routines-1.png?alt=media&token=5534e930-7cc1-4c5d-a6f3-fb8b6053a6a2";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
       } else {
         this.state.itemToEdit.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
+          //"https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/Goals-1.png?alt=media&token=3a5fa4f2-a136-4fdd-acf7-9007c08ccdf2";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
       }
     }
     this.addNewDoc();
@@ -190,15 +192,48 @@ export default class AddNewGRItem extends Component {
   };
 
   addNewDoc = () => {
-    this.state.routineDocsPath
-      .add({
-        title: this.state.itemToEdit.title,
-        "actions&tasks": [],
-      })
-      .then((ref) => {
-        if (ref.id === null) {
-          alert("Fail to add new routine / goal item");
-          return;
+    this.state.arrPath
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          console.log("getGRDataFromFB DATA:");
+          // console.log(doc.data());
+          var x = doc.data();
+          if (x["goals&routines"] != undefined) {
+            x = x["goals&routines"];
+            console.log("this is the goals and routines", x);
+            this.setState({
+              grArr: x,
+            });
+            this.state.routineDocsPath
+              .add({
+                title: this.state.itemToEdit.title,
+                completed: false,
+                "actions&tasks": [],
+              })
+              .then((ref) => {
+                if (ref.id === null) {
+                  alert("Fail to add new routine / goal item");
+                  return;
+                }
+                console.log(ref);
+                //let newArr = this.props.ATArray;
+                let newArr = this.state.grArr;
+                let temp = this.state.itemToEdit;
+                temp.id = ref.id;
+                temp.available_start_time = this.state.itemToEdit.available_start_time;
+                temp.available_end_time = this.state.itemToEdit.available_end_time;
+
+                console.log(temp.available_start_time, temp.available_end_time);
+                console.log("Added document with ID: ", ref.id);
+                // this.state.grArr.push(temp);
+                newArr.push(temp);
+                this.updateEntireArray(newArr);
+              });
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document! 2");
         }
         let newArr = this.props.ATArray;
         let temp = this.state.itemToEdit;
@@ -211,6 +246,10 @@ export default class AddNewGRItem extends Component {
         temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
         newArr.push(temp);
         this.updateEntireArray(newArr);
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
       });
   };
 
@@ -1090,7 +1129,7 @@ this will close repeat modal.
             </div>
 
             <div className="input-group mb-3">
-              <label className="form-check-label">Available to Caitlin?</label>
+              <label className="form-check-label">Available to the user?</label>
               <input
                 style={{ marginTop: "5px", marginLeft: "5px" }}
                 name="Available"

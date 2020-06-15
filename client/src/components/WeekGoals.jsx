@@ -1,8 +1,6 @@
-import React, { Component } from 'react'
-import moment from 'moment';
-import {
-     Container, Row, Col
-} from 'react-bootstrap';
+import React, { Component } from "react";
+import moment from "moment";
+import { Container, Row, Col } from "react-bootstrap";
 
 export default class WeekGoals extends Component {
   constructor(props) {
@@ -16,11 +14,12 @@ export default class WeekGoals extends Component {
       this.hourDisplay = React.createRef();
   }
 
-  componentDidMount  () {
+  componentDidMount() {
     // Set top most time to be current hour
     // Browser scrolls to the bottom if hour >= 18
     let curHour = new Date().getHours();
-    this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
+    this.hourDisplay.current.scrollTop =
+      this.state.pxPerHourForConversion * curHour;
   }
 
   /**
@@ -884,79 +883,90 @@ export default class WeekGoals extends Component {
    
 }
 
-  timeDisplay = () => { //this essentially creates the time row
-      let arr = [];
-      for (let i = 0; i < 24; ++i) {
-          arr.push(
-              <Row key={"dayEvent" + i}>
-                  <Col style={{
-                      borderTop: "1px solid lavender",
-                      textAlign: "right",
-                      height: this.state.pxPerHour,
-                  }}>
-                      {i}:00
-                  </Col >
-              </Row>
-          )
-      }
-      return arr
-  }
 
-  weekViewItems = () => { // this creates the events adjusting their div size to reflecting the time it's slotted for
-      var res= [];
-      for (let i = 0; i < 7; ++i) {
-          var arr = []
-          for( let j = 0; j < 24; ++j) {
-            arr.push(
-              <Container key={"weekGoal" + i + j}>
-                <Row style={{ position: "relative"}}>
-                  <Col
-                      style={{
-                          position: "relative",
-                          borderTop: "1px solid lavender",
-                          background: "aliceblue",
-                          height: this.state.pxPerHour,
-                      }}
-                  >
-                      {this.getEventItem(i,j)}
-                  </Col >
-                </Row>
-              </Container>
-            );
-          }
-        res.push(
-          <Col key={"dayGoal" + i}>
-            {arr}
+  timeDisplay = () => {
+    //this essentially creates the time row
+    let arr = [];
+    for (let i = 0; i < 24; ++i) {
+      arr.push(
+        <Row key={"dayEvent" + i}>
+          <Col
+            style={{
+              borderTop: "1px solid lavender",
+              textAlign: "right",
+              height: this.state.pxPerHour,
+            }}
+          >
+            {i}:00
           </Col>
+        </Row>
+      );
+    }
+    return arr;
+  };
+
+  weekViewItems = () => {
+    // this creates the events adjusting their div size to reflecting the time it's slotted for
+    var res = [];
+    for (let i = 0; i < 7; ++i) {
+      var arr = [];
+      for (let j = 0; j < 24; ++j) {
+        arr.push(
+          <Container key={"weekGoal" + i + j}>
+            <Row style={{ position: "relative" }}>
+              <Col
+                style={{
+                  position: "relative",
+                  borderTop: "1px solid lavender",
+                  background: "aliceblue",
+                  height: this.state.pxPerHour,
+                }}
+              >
+                {this.getEventItem(i, j)}
+              </Col>
+            </Row>
+          </Container>
         );
       }
-      return res;
-  }
+      res.push(<Col key={"dayGoal" + i}>{arr}</Col>);
+    }
+    return res;
+  };
 
- render() {
+  render() {
     let weekdays = moment.weekdays().map((day) => {
       return (
-        <Col key={"goal"+day} className="fancytext">{day}</Col>
-      )
+        <Col key={"goal" + day} className="fancytext">
+          {day}
+        </Col>
+      );
     });
-     return (
-         <Container style={{ height: 'auto', width: '1000px'}}>
-          <Row>
-            <Col>Goals</Col>
-          </Row>
-           <Row>
-             <Col className="fancytext">Time</Col>
-             {weekdays}
-           </Row>
-           <Row ref={this.hourDisplay} style={{ width: 'auto', height: "180px", overflowX: "visible", overflowY: "scroll"}}>
-             <Col >
-                 <Container style={{ margin: '0', padding: '0', width: '80px' }}>
-                     {this.timeDisplay()}
-                 </Container>
-             </Col>
-             {this.weekViewItems()}
-           </Row>
-         </Container>
-     )
- }
+    return (
+      <Container style={{ height: "auto", width: "1000px" }}>
+        <Row>
+          <Col>Goals</Col>
+        </Row>
+        <Row>
+          <Col className="fancytext">Time</Col>
+          {weekdays}
+        </Row>
+        <Row
+          ref={this.hourDisplay}
+          style={{
+            width: "auto",
+            height: "180px",
+            overflowX: "visible",
+            overflowY: "scroll",
+          }}
+        >
+          <Col>
+            <Container style={{ margin: "0", padding: "0", width: "80px" }}>
+              {this.timeDisplay()}
+            </Container>
+          </Col>
+          {this.weekViewItems()}
+        </Row>
+      </Container>
+    );
+  }
 }
