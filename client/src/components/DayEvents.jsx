@@ -66,10 +66,12 @@ export default class DayEvents extends Component {
       tempEnd = arr[i].end.dateTime;
       /**
        * TODO: add the case where arr[i].start.dateTime doesn't exists
-       */
+       */ 
       let tempStartTime = new Date(tempStart);
       let tempEndTime = new Date(tempEnd);
       let curDate = this.props.dateContext.get("date");
+      // console.log("this is the events for date",tempStartTime.getDate());
+      // console.log("this is the events for hour",tempStartTime.getHours());
       if (tempStartTime.getDate() === curDate) {
         if (tempStartTime.getHours() === hour) {
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
