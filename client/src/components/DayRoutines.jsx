@@ -781,6 +781,7 @@ export default class DayRoutines extends Component {
         
               let tempStartTime = new Date(tempStart);
               let tempEndTime = new Date(tempEnd);
+              
               if (
                 tempStartTime.getHours() < hour &&
                 tempEndTime.getHours() > hour

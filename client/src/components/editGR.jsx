@@ -78,9 +78,14 @@ export default class editGR extends Component {
     if(!temp.repeat_ends_on){
       temp.repeat_ends_on = new Date();
     }
-    temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
-    temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
+    // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
+    // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
     temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
+
+    // console.log("this is the start day and time before converting to string ",this.state.itemToEdit.start_day_and_time );
+    temp.start_day_and_time = new Date(this.state.itemToEdit.start_day_and_time).toUTCString();
+    temp.end_day_and_time = new Date(this.state.itemToEdit.end_day_and_time).toUTCString();
+    // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
     
     // newArr[this.props.i] = temp;
 
