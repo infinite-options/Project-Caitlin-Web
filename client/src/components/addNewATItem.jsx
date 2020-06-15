@@ -5,6 +5,9 @@ import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore } from "firebase";
 
+import AddIconModal from "./AddIconModal";
+import UploadImage from "./UploadImage";
+
 export default class AddNewATItem extends Component {
   constructor(props) {
     super(props);
@@ -98,45 +101,45 @@ export default class AddNewATItem extends Component {
 
   addNewDoc = () => {
     this.props.ATItem.fbPath
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                var x = doc.data();
-              if (x["actions&tasks"] != undefined) {
-                  x = x["actions&tasks"];
-                  this.setState({
-                    AT_arr: x,
-                  });
-                  this.props.ATItem.fbPath
-                      .collection("actions&tasks")
-                      .add({
-                        title: this.state.itemToEdit.title,
-                        "instructions&steps": [],
-                      })
-                      .then((ref) => {
-                        if (ref.id === null) {
-                          alert("Fail to add new Action / Task item");
-                          return;
-                        }
-                        console.log("Added document with ID: ", ref.id);
-                        //let newArr = this.props.ATArray;
-                        let newArr = this.state.AT_arr;
-                        let temp = this.state.itemToEdit;
-                        temp.id = ref.id;
-                        newArr.push(temp);
-                        console.log(newArr);
-                        console.log("adding new item");
-                        this.updateEntireArray(newArr);
-                      });
-              }
-            } else {
-              console.log("No such document!");
-            }
-        })
-        .catch(function (error) {
-            console.log("Error getting document:", error);
-            alert("Error getting document:", error);
-        });
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          var x = doc.data();
+          if (x["actions&tasks"] != undefined) {
+            x = x["actions&tasks"];
+            this.setState({
+              AT_arr: x,
+            });
+            this.props.ATItem.fbPath
+              .collection("actions&tasks")
+              .add({
+                title: this.state.itemToEdit.title,
+                "instructions&steps": [],
+              })
+              .then((ref) => {
+                if (ref.id === null) {
+                  alert("Fail to add new Action / Task item");
+                  return;
+                }
+                console.log("Added document with ID: ", ref.id);
+                //let newArr = this.props.ATArray;
+                let newArr = this.state.AT_arr;
+                let temp = this.state.itemToEdit;
+                temp.id = ref.id;
+                newArr.push(temp);
+                console.log(newArr);
+                console.log("adding new item");
+                this.updateEntireArray(newArr);
+              });
+          }
+        } else {
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
+      });
   };
 
   //This function will below will essentially take in a array and have a key map to it
@@ -217,6 +220,20 @@ export default class AddNewATItem extends Component {
                 }}
               />
             </div>
+
+            <Row>
+              <AddIconModal
+                style={{
+                  color: "black",
+                  marginRight: "20px",
+                  marginLeft: "5px",
+                }}
+              />
+
+              <UploadImage />
+              <br />
+              <br />
+            </Row>
 
             <label>Photo URL</label>
             <div className="input-group mb-3">
