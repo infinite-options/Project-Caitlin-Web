@@ -42,15 +42,17 @@ app.use(session({
 	}
 }));
 
-var credentials_url = 'credentials.json'
+var credentials_url = 'credentials.json';
+var REDIRECTED_ADD_USER_URI;
 
-console.log(hostname);
 if (hostname == "manifestmyspace") {
-	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem'
-	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem'
+	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem';
+	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem';
+	REDIRECTED_ADD_USER_URI = 'https://manifestmy.space/adduser';
 } else {
-	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem'
-	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem'
+	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem';
+	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem';
+	REDIRECTED_ADD_USER_URI = 'https://manifestmy.life/adduser';
 }
 
 // Connect to firebase to check for matched passwords
@@ -644,7 +646,7 @@ app.get( '/auth-url', function ( req, result ) {
 		// Authorize a client with credentials, then call the Google Calendar API.
 		let credentials = JSON.parse( content );
 		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, REDIRECTED_ADD_USER_URI);
 		const authUrl = oAuth2Client.generateAuthUrl({
 			access_type: 'offline',
 			prompt:      'consent',
