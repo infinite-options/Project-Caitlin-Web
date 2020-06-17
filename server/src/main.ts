@@ -52,7 +52,7 @@ if (hostname == "manifestmylife") {
 	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem';
 	REDIRECTED_ADD_USER_URI = 'https://manifestmy.life/adduser';
 	firebaseConfig = {
-		apiKey: "AIzaSyBg2vblzyhpsM-eVsUH2Rb-5iKnMpSLcEA",
+		apiKey: "AIzaSyBg2vblzyhpsM-eVsUH2Rb-5iKnMpSLcEAv",
 		authDomain: "manifestmylife.firebaseapp.com",
 		databaseURL: "https://manifestmylife.firebaseio.com",
 		projectId: "manifestmylife",
