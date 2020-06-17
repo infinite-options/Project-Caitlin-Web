@@ -192,15 +192,15 @@ export default class FirebaseV2 extends React.Component {
   //modal for the action/task
   getATList = (id, title, persist) => {
     const db = firebase.firestore();
-    console.log("getATList function with id : " + id);
+    // console.log("getATList function with id : " + id);
     let docRef = db
       .collection("users")
       .doc(this.props.theCurrentUserID)
       // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
-    console.log("this si the goals and routines", id);
-    console.log("this si the correct path", docRef);
+    // console.log("this si the goals and routines", id);
+    // console.log("this si the correct path", docRef);
     docRef
       .get()
       .then((doc) => {
@@ -440,8 +440,6 @@ export default class FirebaseV2 extends React.Component {
                 </Row>
               </div>
             )}
-
-            
           </ListGroup.Item>
         </div>
       );
@@ -635,9 +633,9 @@ export default class FirebaseV2 extends React.Component {
       .doc(this.state.singleGR.id)
       .collection("actions&tasks")
       .doc(id);
-    console.log("This is from ATonClieckEvent");
-    console.log(this.state.singleGR.id);
-    console.log("ATItem id & title: ", id, title);
+    // console.log("This is from ATonClieckEvent");
+    // console.log(this.state.singleGR.id);
+    // console.log("ATItem id & title: ", id, title);
 
     //setting timeSlot for IS according its parent AT time
     firebase
@@ -773,8 +771,11 @@ export default class FirebaseV2 extends React.Component {
             <ListGroup.Item
               action
               onClick={() => {
-                console.log("this si the id from display ROutine",tempID );
-                console.log("this si the title from display ROutine",tempTitle);
+                console.log("this si the id from display ROutine", tempID);
+                console.log(
+                  "this si the title from display ROutine",
+                  tempTitle
+                );
                 this.GRonClickEvent(tempTitle, tempID, tempPersist);
               }}
               variant="light"
@@ -854,8 +855,7 @@ export default class FirebaseV2 extends React.Component {
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
 
-                      
-                        {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)}  */}
+                      {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)}  */}
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
@@ -1059,7 +1059,7 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
-                      
+
                       {/* {console.log("this si the originalGoals and Routines Arr", this.props.originalGoalsAndRoutineArr)} */}
                       <EditGR
                         marginLeftV="-170px"
@@ -1688,7 +1688,10 @@ shows entire list of goals and routines
         userGR.forEach((doc) => {
           console.log("This is from useGR: ", this.state.singleGR);
           if (doc.id === this.state.singleGR.id) {
-            timeSlot = [doc.available_start_time, doc.available_end_time];
+            timeSlot = [
+              doc.start_day_and_time.split(" ")[4],
+              doc.end_day_and_time.split(" ")[4],
+            ];
             this.setState({ timeSlotForAT: timeSlot });
           }
         });

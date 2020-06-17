@@ -163,7 +163,7 @@ export default class MainPage extends React.Component {
             for (let i = 0; i < x.length; ++i) {
               if (x[i]["is_persistent"]) {
                 // console.log("routine " + x[i]["title"]);
-                console.log("is the is the id ", x[i].id);
+                // console.log("is the is the id ", x[i].id);
                 routine_ids.push(i);
                 routine.push(x[i]);
               } else if (!x[i]["is_persistent"]) {
@@ -4200,7 +4200,6 @@ this will close repeat modal.
       *
       */
   getEventsByInterval = (start0, end0) => {
-    console.log("helllo");
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
