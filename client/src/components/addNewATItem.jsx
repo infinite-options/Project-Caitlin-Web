@@ -156,6 +156,12 @@ export default class AddNewATItem extends Component {
     });
   };
 
+  testFunction = (photo_url) => {
+    let temp = this.state.itemToEdit;
+    temp.photo = photo_url;
+    this.setState({ itemToEdit: temp });
+  };
+
   convertTimeToHRMMSS = (e) => {
     // console.log(e.target.value);
     let num = e.target.value;
@@ -221,13 +227,7 @@ export default class AddNewATItem extends Component {
             </div>
 
             <Row>
-              <AddIconModal
-                style={{
-                  color: "black",
-                  marginRight: "20px",
-                  marginLeft: "5px",
-                }}
-              />
+              <AddIconModal parentFunction={this.testFunction} />
 
               <UploadImage />
               <br />
