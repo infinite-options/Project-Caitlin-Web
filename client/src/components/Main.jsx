@@ -133,6 +133,7 @@ export default class MainPage extends React.Component {
    * which will then populate the goals, routines,originalGoalsAndRoutineArr array
    * separately. The arrays will be used for display and data manipulation later.
    *
+   *  TODO: sort by start time
    */
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
