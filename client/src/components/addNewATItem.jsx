@@ -196,7 +196,6 @@ export default class AddNewATItem extends Component {
           closeButton
           onHide={() => {
             this.props.hideNewATModal();
-            console.log("closed button clicked");
           }}
         >
           <Modal.Title>

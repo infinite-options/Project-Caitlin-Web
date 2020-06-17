@@ -662,7 +662,7 @@ app.get( '/adduser', function ( req, result ) {
 		// Authorize a client with credentials, then call the Google Calendar API.
 		let credentials = JSON.parse( content );
 		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] );
+		const oAuth2Client = new google.auth.OAuth2( client_id, client_secret, REDIRECTED_ADD_USER_URI );
 		oAuth2Client.getToken( req.query.code, ( err, token ) => {
 			if ( err ) {
 				console.error( 'Error retrieving access token', err );
@@ -748,7 +748,7 @@ function authorize( credentials, callback ) {
 	const oAuth2Client = new google.auth.OAuth2(
 		client_id,
 		client_secret,
-		redirect_uris[ 0 ]
+		REDIRECTED_ADD_USER_URI
 	);
 
 	// Check if we have previously stored a token.
@@ -764,7 +764,7 @@ function authorizeById( credentials, id, callback ) {
 	let oAuth2Client = new google.auth.OAuth2(
 		client_id,
 		client_secret,
-		redirect_uris[ 0 ]
+		REDIRECTED_ADD_USER_URI
 	);
 
 	// Store to firebase

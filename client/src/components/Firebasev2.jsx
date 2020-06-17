@@ -173,9 +173,9 @@ export default class FirebaseV2 extends React.Component {
     this.props.grabFireBaseRoutinesGoalsData();
   };
 
-  componentWillUnmount() {
-    console.log(" FirebaseV2 will unmount web");
-  }
+  // componentWillUnmount() {
+  //   console.log(" FirebaseV2 will unmount web");
+  // }
 
   formatDateTime(str) {
     const formattedStr = str.replace(/\//g, "-");
@@ -199,7 +199,8 @@ export default class FirebaseV2 extends React.Component {
       // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
-    console.log("this is the correct path", docRef);
+    console.log("this si the goals and routines", id);
+    console.log("this si the correct path", docRef);
     docRef
       .get()
       .then((doc) => {
@@ -440,89 +441,7 @@ export default class FirebaseV2 extends React.Component {
               </div>
             )}
 
-            {/* This is the V1 */}
-            {/* <Row style={{ margin: "0" }} className="d-flex flex-row-reverse">
-              {tempAvailable ? (
-                <div style={{ marginLeft: "5px" }}>
-                  <FontAwesomeIcon
-                    title="Available to Cailin"
-                    // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                    // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                    style={{ color: this.state.availabilityColorCode }}
-                    onClick={e => {
-                      e.stopPropagation();
-                      alert("Item Is Availble to Caitlin");
-                    }}
-                    icon={faUser}
-                    size="lg"
-                  />{" "}
-                </div>
-              ) : (
-                <div style={{ marginLeft: "5px" }}>
-                  <FontAwesomeIcon
-                    title="Unavailable to Caitlin"
-                    style={{ color: "#000000" }}
-                    onClick={e => {
-                      e.stopPropagation();
-                      alert("Item Is NOT Availble to Caitlin");
-                    }}
-                    icon={faUserAltSlash}
-                    size="lg"
-                  />
-                </div>
-              )}
-            </Row>
-
-            <Row style={{ margin: "0" }} className="d-flex flex-row-center">
-              <Col>
-                <div className="fancytext">{tempTitle}</div>
-              </Col>
-
-              <Col
-                sm="auto"
-                md="auto"
-                lg="auto"
-                style={{ width: "100%", height: "100%" }}
-              >
-                {tempPhoto ? (
-                  <img
-                    src={tempPhoto}
-                    alt="Routine"
-                    height={this.state.thumbnailHeight}
-                    width={this.state.thumbnailWidth}
-                    className="center"
-                  />
-                ) : (
-                  <div></div>
-                )}
-              </Col>
-            </Row>
-
-            <Row
-              style={{
-                margin: "0",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "10px",
-                marginBottom: "10px"
-              }}
-            >
-              <DeleteAT
-                deleteIndex={i}
-                type={"actions&tasks"}
-                Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
-                refresh={this.refreshATItem}
-              />
-
-              <EditAT
-                i={i} //index to edit
-                ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                FBPath={this.state.singleGR.fbPath} //holds the path to the array data
-                refresh={this.refreshATItem} //function to refresh AT data
-              />
-            </Row> */}
+            
           </ListGroup.Item>
         </div>
       );
@@ -854,7 +773,8 @@ export default class FirebaseV2 extends React.Component {
             <ListGroup.Item
               action
               onClick={() => {
-                console.log("onclick from listGroup.item");
+                console.log("this si the id from display ROutine",tempID );
+                console.log("this si the title from display ROutine",tempTitle);
                 this.GRonClickEvent(tempTitle, tempID, tempPersist);
               }}
               variant="light"
@@ -934,6 +854,8 @@ export default class FirebaseV2 extends React.Component {
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
 
+                      
+                        {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)}  */}
                       <EditGR
                         marginLeftV="-170px"
                         i={this.findIndexByID(tempID)} //index to edit
@@ -944,7 +866,7 @@ export default class FirebaseV2 extends React.Component {
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                        is_sublist_available={this.is_sublist_available}
+                        // is_sublist_available={this.is_sublist_available}
                       />
                     </Row>
                   </Col>
@@ -1003,6 +925,7 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
+                    {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)} */}
                     <EditGR
                       marginLeftV="-130px"
                       i={this.findIndexByID(tempID)} //index to edit
@@ -1136,6 +1059,7 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
+                      
                       {/* {console.log("this si the originalGoals and Routines Arr", this.props.originalGoalsAndRoutineArr)} */}
                       <EditGR
                         marginLeftV="-170px"
@@ -1205,6 +1129,7 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
+                    {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)} */}
                     <EditGR
                       marginLeftV="-130px"
                       i={this.findIndexByID(tempID)} //index to edit
@@ -1219,92 +1144,6 @@ export default class FirebaseV2 extends React.Component {
                   </Row>
                 </div>
               )}
-
-              {/* <Row style={{ margin: "0" }} className="d-flex justify-content-between">
-              <ShowATList />
-                {this.state.goals[i]["is_available"] ? (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Available to Cailin"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: this.state.availabilityColorCode }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is Availble to Caitlin");
-                      }}
-                      icon={faUser}
-                      size="lg"
-                    />{" "}
-                  </div>
-                ) : (
-                  <div style={{ marginLeft: "5px" }}>
-                    <FontAwesomeIcon
-                      title="Unavailable to Caitlin"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: "#000000" }}
-                      onClick={e => {
-                        e.stopPropagation();
-                        alert("Item Is NOT Availble to Caitlin");
-                      }}
-                      icon={faUserAltSlash}
-                      size="lg"
-                    />
-                  </div>
-                )}
-              </Row>
-              <Row style={{ margin: "0" }} className="d-flex flex-row-center">
-                <Col style={{ textAlign: "center", width: "100%" }}>
-                  <div className="fancytext">
-                    {" "}
-                    {this.state.goals[i]["title"]}
-                  </div>
-                  {/* <div className="fancytext"> Time: {Math.floor(1 + Math.random() * (45 - 1))} Minutes </div> */}
-              {/* </Col>
-                <Col
-                  sm="auto"
-                  md="auto"
-                  lg="auto"
-                  style={{ width: "100%", height: "100%" }}
-                >
-                  {this.state.goals[i]["photo"] ? (
-                    <img
-                      src={this.state.goals[i]["photo"]}
-                      alt="Goals"
-                      className="center"
-                      height={this.state.thumbnailHeight}
-                      width={this.state.thumbnailWidth}
-                    />
-                  ) : (
-                    <div></div>
-                  )}
-                </Col>
-              </Row>
-              <Row
-                className="d-flex flex-row-center"
-                style={{
-                  margin: "0",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: "10px",
-                  marginBottom: "10px"
-                }}
-              >
-                <DeleteGR
-                  deleteIndex={this.findIndexByID(tempID)}
-                  Array={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData}
-                />
-                <EditGR
-                  i={this.findIndexByID(tempID)} //index to edit
-                  ATArray={this.state.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                  FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                  refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                />
-              </Row>  */}
 
               <div style={{ fontSize: "12px" }}>
                 {this.props.goals[i]["datetime_started"] ? (
