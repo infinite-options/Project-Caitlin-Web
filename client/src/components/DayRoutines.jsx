@@ -112,10 +112,10 @@ export default class DayRoutines extends Component {
                 && (curDate <= ((arr[i].repeat_occurences -1 - Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every)) * arr[i].repeat_every )  )
                 && ((curDate + ( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every  )) % arr[i].repeat_every === 0)
                 ){
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate);
+                  tempEndTime.setDate(curDate);
 
               }else if(curYear === initialStartYear
                 && curMonth > initialStartMonth
@@ -133,13 +133,11 @@ export default class DayRoutines extends Component {
                     && curDate <= ( (arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every )
                     && ((curDate + ( indexBy )) % arr[i].repeat_every === 0)
                     ){
-                      tempStartTime.setDate(curDate);
-                      tempEndTime.setDate(curDate);
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
-
+                      tempStartTime.setDate(curDate);
+                      tempEndTime.setDate(curDate);
                   }
-
 
               }else if(curYear === initialStartYear
                 && curMonth > initialStartMonth
@@ -149,10 +147,10 @@ export default class DayRoutines extends Component {
                     || (curDate < (arr[i].repeat_occurences  - (new Date(curYear, curMonth, 0).getDate() - initialStartDate))))
 
                 ){
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate);
+                  tempEndTime.setDate(curDate);
 
               }else if(curYear === initialStartYear
                 && curMonth > initialStartMonth
@@ -188,19 +186,19 @@ export default class DayRoutines extends Component {
                   if(arr[i].repeat_occurences - subtractBy > 0
                     && curDate < (arr[i].repeat_occurences - subtractBy)
                     ){
-                      tempStartTime.setDate(curDate);
-                      tempEndTime.setDate(curDate);
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate);
+                      tempEndTime.setDate(curDate);
                   }    
 
               }else if(curYear > initialStartYear
                 && arr[i].repeat_every === "1"
                 ){
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate);
+                  tempEndTime.setDate(curDate);
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
               }
@@ -223,11 +221,10 @@ export default class DayRoutines extends Component {
               || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth< endsOnMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0))
               || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth === endsOnMonth && curDate <= endsOnDate && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0))
               ){
-                
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate);
                 tempStartTime.setMonth(curMonth);
                 tempEndTime.setMonth(curMonth);
+                tempStartTime.setDate(curDate);
+                tempEndTime.setDate(curDate);
                 tempStartTime.setFullYear(curYear);
                 tempEndTime.setFullYear(curYear);
             }else if((curMonth < endsOnMonth && curYear === initialEndOnYear && curYear === initialStartYear && curMonth - initialStartMonth === 1 && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0))
@@ -235,11 +232,10 @@ export default class DayRoutines extends Component {
               || (curDate <=  endsOnDate && curMonth === endsOnMonth && curMonth > initialStartMonth && curYear === initialEndOnYear && curYear === initialStartYear && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0))
               || (curYear !== initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0))
             ){
-              
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
+                tempStartTime.setMonth(curMonth);
+                tempEndTime.setMonth(curMonth);
+                tempStartTime.setDate(curDate);
+                tempEndTime.setDate(curDate);
               }
          }
         /** doesnt work when going to month with reapting and doesn't work when routine spans multiple days */
@@ -247,28 +243,30 @@ export default class DayRoutines extends Component {
           
            if(curYear > initialStartYear
             && curDate % arr[i].repeat_every === 0){
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
+              tempStartTime.setDate(curDate);
+              tempEndTime.setDate(curDate);
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
            }else if(curYear === initialStartYear
             && curMonth - initialStartMonth === 1
             && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate) % arr[i].repeat_every  === 0
             ){
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate + (initialEndDate - initialStartDate) );
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
+              tempStartTime.setDate(curDate);
+              tempEndTime.setDate(curDate);    
+              
            }else if(curYear === initialStartYear
              && curMonth - initialStartMonth > 1
              && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate)% arr[i].repeat_every === 0
             ){
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate + (initialEndDate - initialStartDate) );
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
+              tempStartTime.setDate(curDate);
+              tempEndTime.setDate(curDate);
+              
            }
            else if(curYear === initialStartYear 
             && curMonth === initialStartMonth
@@ -276,7 +274,7 @@ export default class DayRoutines extends Component {
             && ((curDate - initialStartDate) % arr[i].repeat_every) === 0 
             ) {        
               tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate + (initialEndDate - initialStartDate));
+              tempEndTime.setDate(curDate);
            }
          }
         }
@@ -318,10 +316,10 @@ export default class DayRoutines extends Component {
                   || (dayArray[5] === 'Friday' && new Date(this.props.dateContext).getDay()=== 5)
                   || (dayArray[6] === 'Saturday' && new Date(this.props.dateContext).getDay()=== 6)
                   ){
-                    tempStartTime.setDate(curDate);
-                    tempEndTime.setDate(curDate );
                     tempStartTime.setMonth(curMonth);
                     tempEndTime.setMonth(curMonth);
+                    tempStartTime.setDate(curDate);
+                    tempEndTime.setDate(curDate ); 
                   }
                 }   
              
@@ -335,10 +333,10 @@ export default class DayRoutines extends Component {
               || (dayArray[5] === 'Friday' && new Date(this.props.dateContext).getDay()=== 5)
               || (dayArray[6] === 'Saturday' && new Date(this.props.dateContext).getDay()=== 6)
               ){
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate );
                 tempStartTime.setMonth(curMonth);
                 tempEndTime.setMonth(curMonth);
+                tempStartTime.setDate(curDate);
+                tempEndTime.setDate(curDate );
               }
                            
             } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
@@ -353,10 +351,10 @@ export default class DayRoutines extends Component {
                     || (dayArray[5] === 'Friday' && new Date(this.props.dateContext).getDay()=== 5)
                     || (dayArray[6] === 'Saturday' && new Date(this.props.dateContext).getDay()=== 6)
                     ){
-                      tempStartTime.setDate(curDate);
-                      tempEndTime.setDate(curDate );
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate);
+                      tempEndTime.setDate(curDate );
                       numDaysAfter++;
                     }  
                 }
@@ -412,10 +410,10 @@ export default class DayRoutines extends Component {
                       || (arr[i].repeat_week_days[key] === 'Friday' && new Date(this.props.dateContext).getDay()=== 5)
                       || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(this.props.dateContext).getDay()=== 6)
                       ){
-                        tempStartTime.setDate(curDate);
-                        tempEndTime.setDate(curDate );
                         tempStartTime.setMonth(curMonth);
                         tempEndTime.setMonth(curMonth);
+                        tempStartTime.setDate(curDate);
+                        tempEndTime.setDate(curDate );
                         tempStartTime.setFullYear(curYear);
                         tempEndTime.setFullYear(curYear);
                       } 
@@ -467,10 +465,10 @@ export default class DayRoutines extends Component {
               || (arr[i].repeat_week_days[key] === 'Friday' && new Date(this.props.dateContext).getDay()=== 5)
               || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(this.props.dateContext).getDay()=== 6)
               ){
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate );
                 tempStartTime.setMonth(curMonth);
                 tempEndTime.setMonth(curMonth);
+                tempStartTime.setDate(curDate);
+                tempEndTime.setDate(curDate );
                 tempStartTime.setFullYear(curYear);
                 tempEndTime.setFullYear(curYear);
               }         
@@ -705,7 +703,6 @@ export default class DayRoutines extends Component {
           }
        }
         
-
       /**
        * TODO: add the case where arr[i].start.dateTime doesn't exists
        */

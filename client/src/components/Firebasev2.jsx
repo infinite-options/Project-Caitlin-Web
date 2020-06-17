@@ -192,15 +192,15 @@ export default class FirebaseV2 extends React.Component {
   //modal for the action/task
   getATList = (id, title, persist) => {
     const db = firebase.firestore();
-    console.log("getATList function with id : " + id);
+    // console.log("getATList function with id : " + id);
     let docRef = db
       .collection("users")
       .doc(this.props.theCurrentUserID)
       // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
-    console.log("this si the goals and routines", id);
-    console.log("this si the correct path", docRef);
+    // console.log("this si the goals and routines", id);
+    // console.log("this si the correct path", docRef);
     docRef
       .get()
       .then((doc) => {
@@ -633,9 +633,9 @@ export default class FirebaseV2 extends React.Component {
       .doc(this.state.singleGR.id)
       .collection("actions&tasks")
       .doc(id);
-    console.log("This is from ATonClieckEvent");
-    console.log(this.state.singleGR.id);
-    console.log("ATItem id & title: ", id, title);
+    // console.log("This is from ATonClieckEvent");
+    // console.log(this.state.singleGR.id);
+    // console.log("ATItem id & title: ", id, title);
 
     //setting timeSlot for IS according its parent AT time
     firebase
