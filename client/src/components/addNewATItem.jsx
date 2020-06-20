@@ -3,7 +3,7 @@ import firebase from "./firebase";
 import ShowNotifications from "./ShowNotifications";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
-import { firestore } from "firebase";
+import { firestore, storage } from "firebase";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
@@ -21,7 +21,8 @@ export default class AddNewATItem extends Component {
       itemToEdit: {
         id: "",
         title: "",
-        photo: "",
+        photo:
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917",
         audio: "",
         is_must_do: true,
         is_complete: false,
@@ -156,7 +157,7 @@ export default class AddNewATItem extends Component {
     });
   };
 
-  testFunction = (photo_url) => {
+  setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
     this.setState({ itemToEdit: temp });
@@ -227,28 +228,20 @@ export default class AddNewATItem extends Component {
             </div>
 
             <Row>
-              <AddIconModal parentFunction={this.testFunction} />
-
-              <UploadImage />
-              <br />
+              <AddIconModal parentFunction={this.setPhotoURLFunction} />
+              <UploadImage parentFunction={this.setPhotoURLFunction} />
               <br />
             </Row>
+            <br />
+            <label>Icon: </label>
 
-            <label>Photo URL</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="Enter Photo URL "
-                value={this.state.itemToEdit.photo}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.photo = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
-
+            <img
+              alt="None"
+              src={this.state.itemToEdit.photo}
+              height="70"
+              width="auto"
+            ></img>
+            <br></br>
             <label>Available Start Time</label>
             <div className="input-group mb-3">
               <input

@@ -3,6 +3,10 @@ import React, { Component } from "react";
 import ShowNotifications from "./ShowNotifications";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
+import { firestore, storage } from "firebase";
+
+import AddIconModal from "./AddIconModal";
+import UploadImage from "./UploadImage";
 
 /**
  *
@@ -25,7 +29,8 @@ export default class AddNewISItem extends Component {
       //new item to add to array
       id: "",
       title: "",
-      photo: "",
+      photo:
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0",
       is_complete: false,
       is_available: true,
       available_end_time: this.props.timeSlot[1],
@@ -78,6 +83,12 @@ export default class AddNewISItem extends Component {
     },
   };
 
+  setPhotoURLFunction = (photo_url) => {
+    let temp = this.state.itemToEdit;
+    temp.photo = photo_url;
+    this.setState({ itemToEdit: temp });
+  };
+
   componentDidMount() {
     // console.log("AddNewISItem did mount");
     // console.log(this.props.ISArray);
@@ -97,10 +108,6 @@ export default class AddNewISItem extends Component {
       return;
     }
     console.log("Submitting Input: " + this.state.itemToEdit.title);
-    if (this.state.itemToEdit.photo === "") {
-      this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0";
-    }
 
     this.props.ISItem.fbPath
       .get()
@@ -213,20 +220,21 @@ export default class AddNewISItem extends Component {
               />
             </div>
 
-            <label>Photo URL</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="Enter Photo URL "
-                value={this.state.itemToEdit.photo}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.photo = e.target.value;
-                  this.setState({ itemToEdit: temp });
-                }}
-              />
-            </div>
+            <Row>
+              <AddIconModal parentFunction={this.setPhotoURLFunction} />
+              <UploadImage parentFunction={this.setPhotoURLFunction} />
+              <br />
+            </Row>
+            <br />
+            <label>Icon: </label>
+
+            <img
+              alt="None"
+              src={this.state.itemToEdit.photo}
+              height="70"
+              width="auto"
+            ></img>
+            <br></br>
 
             <label>Available Start Time</label>
             <div className="input-group mb-3">
