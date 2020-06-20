@@ -245,52 +245,52 @@ export default class AddNewGRItem extends Component {
               grArr: x,
             });
           }
-            this.state.routineDocsPath
-              .add({
-                title: this.state.itemToEdit.title,
-                completed: false,
-                "actions&tasks": [],
-              })
-              .then((ref) => {
-                if (ref.id === null) {
-                  alert("Fail to add new routine / goal item");
-                  return;
-                }
-                console.log(ref);
-                //let newArr = this.props.ATArray;
-                let newArr = this.state.grArr;
-                let temp = this.state.itemToEdit;
-                temp.id = ref.id;
-                temp.available_start_time = this.state.itemToEdit.available_start_time;
-                temp.available_end_time = this.state.itemToEdit.available_end_time;
+          this.state.routineDocsPath
+            .add({
+              title: this.state.itemToEdit.title,
+              completed: false,
+              "actions&tasks": [],
+            })
+            .then((ref) => {
+              if (ref.id === null) {
+                alert("Fail to add new routine / goal item");
+                return;
+              }
+              console.log(ref);
+              //let newArr = this.props.ATArray;
+              let newArr = this.state.grArr;
+              let temp = this.state.itemToEdit;
+              temp.id = ref.id;
+              temp.available_start_time = this.state.itemToEdit.available_start_time;
+              temp.available_end_time = this.state.itemToEdit.available_end_time;
 
-                console.log(
-                  "this si the start day before ",
-                  this.state.itemToEdit.start_day_and_time
-                );
-                console.log(
-                  "this si the repeat end on befoe ",
-                  this.state.itemToEdit.repeat_ends_on
-                );
-                temp.start_day_and_time = new Date(
-                  this.state.itemToEdit.start_day_and_time
-                ).toUTCString();
-                temp.end_day_and_time = new Date(
-                  this.state.itemToEdit.end_day_and_time
-                ).toUTCString();
-                // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
-                // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
-                // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
-                temp.repeat_ends_on = String(
-                  this.state.itemToEdit.repeat_ends_on
-                );
+              console.log(
+                "this si the start day before ",
+                this.state.itemToEdit.start_day_and_time
+              );
+              console.log(
+                "this si the repeat end on befoe ",
+                this.state.itemToEdit.repeat_ends_on
+              );
+              temp.start_day_and_time = new Date(
+                this.state.itemToEdit.start_day_and_time
+              ).toUTCString();
+              temp.end_day_and_time = new Date(
+                this.state.itemToEdit.end_day_and_time
+              ).toUTCString();
+              // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
+              // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
+              // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
+              temp.repeat_ends_on = String(
+                this.state.itemToEdit.repeat_ends_on
+              );
 
-                // console.log(temp.available_start_time, temp.available_end_time);
-                // console.log("Added document with ID: ", ref.id);
-                // this.state.grArr.push(temp);
-                newArr.push(temp);
-                this.updateEntireArray(newArr);
-              });
+              // console.log(temp.available_start_time, temp.available_end_time);
+              // console.log("Added document with ID: ", ref.id);
+              // this.state.grArr.push(temp);
+              newArr.push(temp);
+              this.updateEntireArray(newArr);
+            });
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document! 2");

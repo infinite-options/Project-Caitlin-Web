@@ -13,8 +13,6 @@ export default class UploadImage extends Component {
       progress: 0,
       saltedImageName: "",
     };
-
-    //this.handleChange = this.handleChange = this.handleChange.bind(this);
   }
 
   onHandleShowClick = () => {
