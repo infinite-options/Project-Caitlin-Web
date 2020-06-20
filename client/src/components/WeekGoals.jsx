@@ -96,10 +96,10 @@ export default class WeekGoals extends Component {
                     && (curDate2.date() <= ((arr[i].repeat_occurences -1 - Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate)/arr[i].repeat_every)) * arr[i].repeat_every )  )
                     && ((curDate2.date() + ( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every  )) % arr[i].repeat_every === 0)
                     ){
-                      tempStartTime.setDate(curDate2.date());
-                      tempEndTime.setDate(curDate2.date());
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
     
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
@@ -117,10 +117,10 @@ export default class WeekGoals extends Component {
                         && curDate2.date() <= ( (arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every )
                         && ((curDate2.date() + ( indexBy )) % arr[i].repeat_every === 0)
                         ){
-                          tempStartTime.setDate(curDate2.date());
-                          tempEndTime.setDate(curDate2.date());
                           tempStartTime.setMonth(curMonth);
                           tempEndTime.setMonth(curMonth);
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date());
                       }
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
@@ -130,10 +130,10 @@ export default class WeekGoals extends Component {
                         || (curDate2.date() < (arr[i].repeat_occurences  - (new Date(curYear, curMonth, 0).getDate() - initialStartDate))))
     
                     ){
-                      tempStartTime.setDate(curDate2.date());
-                      tempEndTime.setDate(curDate2.date());
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
     
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
@@ -169,19 +169,19 @@ export default class WeekGoals extends Component {
                       if(arr[i].repeat_occurences - subtractBy > 0
                         && curDate2.date() < (arr[i].repeat_occurences - subtractBy)
                         ){
-                          tempStartTime.setDate(curDate2.date());
-                          tempEndTime.setDate(curDate2.date());
                           tempStartTime.setMonth(curMonth);
                           tempEndTime.setMonth(curMonth);
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date());
                       }    
     
                   }else if(curYear > initialStartYear
                     && arr[i].repeat_every === "1"
                     ){
-                      tempStartTime.setDate(curDate2.date());
-                      tempEndTime.setDate(curDate2.date());
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
                       tempStartTime.setFullYear(curYear);
                       tempEndTime.setFullYear(curYear);
                   }
@@ -203,11 +203,10 @@ export default class WeekGoals extends Component {
                 || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth< endsOnMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
                 || (curYear > initialStartYear && curYear === initialEndOnYear && curMonth === endsOnMonth && curDate2.date() <= endsOnDate && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
                 ){
-                  
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date());
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
               }else if((curMonth < endsOnMonth && curYear === initialEndOnYear && curYear === initialStartYear && curMonth - initialStartMonth === 1 && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
@@ -215,39 +214,38 @@ export default class WeekGoals extends Component {
                 || (curDate2.date() <=  endsOnDate && curMonth === endsOnMonth && curMonth > initialStartMonth && curYear === initialEndOnYear && curYear === initialStartYear && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
                 || (curYear !== initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
               ){
-                
-                tempStartTime.setDate(curDate2.date());
-                tempEndTime.setDate(curDate2.date());
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                 }
          }
          else if(arr[i].repeat_ends === "Never"){
           
             if(curYear > initialStartYear
                 && curDate2.date() % arr[i].repeat_every === 0){
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate));
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
                }else if(curYear === initialStartYear
                 && curMonth - initialStartMonth === 1
                 && (((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0
                 ){
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                }else if(curYear === initialStartYear
                  && curMonth - initialStartMonth > 1
                  && (new Date(curYear, curMonth, 0).getDate() % arr[i].repeat_every + curDate2.date())% arr[i].repeat_every === 0
                 ){
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate) );
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                }
                else if(curYear === initialStartYear 
                 && curMonth === initialStartMonth
@@ -255,7 +253,7 @@ export default class WeekGoals extends Component {
                 && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0 
                 ) {         
                   tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() + (initialEndDate - initialStartDate));
+                  tempEndTime.setDate(curDate2.date());
                }
            }
         }
@@ -297,10 +295,10 @@ export default class WeekGoals extends Component {
                     || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
                     || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
                     ){
-                      tempStartTime.setDate(curDate2.date());
-                      tempEndTime.setDate(curDate2.date() );
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
+                      tempStartTime.setDate(curDate2.date());
+                      tempEndTime.setDate(curDate2.date());
                     }
                   }   
                
@@ -314,10 +312,10 @@ export default class WeekGoals extends Component {
                 || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
                 || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
                 ){
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() );
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                 }
                              
               } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
@@ -332,10 +330,10 @@ export default class WeekGoals extends Component {
                       || (dayArray[5] === 'Friday' && new Date(curDate2).getDay()=== 5)
                       || (dayArray[6] === 'Saturday' && new Date(curDate2).getDay()=== 6)
                       ){
-                        tempStartTime.setDate(curDate2.date());
-                        tempEndTime.setDate(curDate2.date() );
                         tempStartTime.setMonth(curMonth);
                         tempEndTime.setMonth(curMonth);
+                        tempStartTime.setDate(curDate2.date());
+                        tempEndTime.setDate(curDate2.date());
                         numDaysAfter++;
                       }  
                   }
@@ -391,11 +389,10 @@ export default class WeekGoals extends Component {
                         || (arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay()=== 5)
                         || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay()=== 6)
                         ){
-                            
-                          tempStartTime.setDate(curDate2.date());
-                          tempEndTime.setDate(curDate2.date() );
                           tempStartTime.setMonth(curMonth);
                           tempEndTime.setMonth(curMonth);
+                          tempStartTime.setDate(curDate2.date());
+                          tempEndTime.setDate(curDate2.date());
                           tempStartTime.setFullYear(curYear);
                           tempEndTime.setFullYear(curYear);
                         } 
@@ -447,10 +444,10 @@ export default class WeekGoals extends Component {
                 || (arr[i].repeat_week_days[key] === 'Friday' && new Date(curDate2).getDay()=== 5)
                 || (arr[i].repeat_week_days[key] === 'Saturday' && new Date(curDate2).getDay()=== 6)
                 ){
-                  tempStartTime.setDate(curDate2.date());
-                  tempEndTime.setDate(curDate2.date() );
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate2.date());
+                  tempEndTime.setDate(curDate2.date());
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
                 }         
@@ -588,17 +585,17 @@ export default class WeekGoals extends Component {
            if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
             && curYear > initialStartYear 
             && ((curMonth - initialStartMonth ) % arr[i].repeat_every) === 0){
-            tempStartTime.setMonth(curMonth);
-            tempEndTime.setMonth(curMonth);
-            tempStartTime.setFullYear(curYear);
-            tempEndTime.setFullYear(curYear);
+              tempStartTime.setMonth(curMonth);
+              tempEndTime.setMonth(curMonth);
+              tempStartTime.setFullYear(curYear);
+              tempEndTime.setFullYear(curYear);
            }
            else if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
             && curMonth > initialStartMonth 
             && curYear ===  initialStartYear
             && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
-            tempStartTime.setMonth(curMonth);
-            tempEndTime.setMonth(curMonth);
+              tempStartTime.setMonth(curMonth);
+              tempEndTime.setMonth(curMonth);
            }
          }
         }

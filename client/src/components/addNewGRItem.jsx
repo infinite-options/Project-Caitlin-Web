@@ -244,6 +244,7 @@ export default class AddNewGRItem extends Component {
             this.setState({
               grArr: x,
             });
+          }
             this.state.routineDocsPath
               .add({
                 title: this.state.itemToEdit.title,
@@ -290,7 +291,6 @@ export default class AddNewGRItem extends Component {
                 newArr.push(temp);
                 this.updateEntireArray(newArr);
               });
-          }
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document! 2");

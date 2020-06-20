@@ -4200,7 +4200,6 @@ this will close repeat modal.
       *
       */
   getEventsByInterval = (start0, end0) => {
-    console.log("helllo");
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use

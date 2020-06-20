@@ -44,29 +44,38 @@ app.use(session({
 
 var credentials_url = 'credentials.json';
 var REDIRECTED_ADD_USER_URI;
+var firebase = require( 'firebase' );
+var firebaseConfig;
 
-if (hostname == "manifestmyspace") {
-	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem';
-	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem';
-	REDIRECTED_ADD_USER_URI = 'https://manifestmy.space/adduser';
-} else {
+if (hostname == "manifestmylife") {
 	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem';
 	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem';
 	REDIRECTED_ADD_USER_URI = 'https://manifestmy.life/adduser';
+	firebaseConfig = {
+		apiKey: "AIzaSyBg2vblzyhpsM-eVsUH2Rb-5iKnMpSLcEAv",
+		authDomain: "manifestmylife.firebaseapp.com",
+		databaseURL: "https://manifestmylife.firebaseio.com",
+		projectId: "manifestmylife",
+		storageBucket: "manifestmylife.appspot.com",
+		messagingSenderId: "717980399518",
+		appId: "1:717980399518:web:553aadeb783bd8090d088f",
+		measurementId: "G-CL3BMK155G"
+	};
+} else {
+	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem';
+	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem';
+	REDIRECTED_ADD_USER_URI = 'https://manifestmy.space/adduser';
+	firebaseConfig = {
+		apiKey:            'AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE',
+		authDomain:        'project-caitlin-c71a9.firebaseapp.com',
+		databaseURL:       'https://project-caitlin-c71a9.firebaseio.com',
+		projectId:         'project-caitlin-c71a9',
+		storageBucket:     'project-caitlin-c71a9.appspot.com',
+		messagingSenderId: '711685546849',
+		appId:             '1:711685546849:web:5c7a982748eb3bec35db20',
+		measurementId:     'G-DCQF4LY5ZH'
+	};
 }
-
-// Connect to firebase to check for matched passwords
-const firebase = require( 'firebase' );
-const firebaseConfig = {
-	apiKey:            'AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE',
-	authDomain:        'project-caitlin-c71a9.firebaseapp.com',
-	databaseURL:       'https://project-caitlin-c71a9.firebaseio.com',
-	projectId:         'project-caitlin-c71a9',
-	storageBucket:     'project-caitlin-c71a9.appspot.com',
-	messagingSenderId: '711685546849',
-	appId:             '1:711685546849:web:5c7a982748eb3bec35db20',
-	measurementId:     'G-DCQF4LY5ZH'
-};
 
 firebase.initializeApp( firebaseConfig );
 firebase.auth().signInAnonymously().catch( function ( error ) {
