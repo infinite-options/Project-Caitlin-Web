@@ -116,7 +116,7 @@ export default class editGR extends Component {
           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
       }
     }
-
+    console.log(temp)
     newArr[this.props.i] = temp;
 
     //Add the below attributes in case they don't already exists
@@ -663,6 +663,23 @@ export default class editGR extends Component {
           ></img>
         </div>
 
+        <Form.Group>
+          <Form.Label> Routine/Goal </Form.Label>
+          <Form.Control
+             as='select'
+             value={this.state.itemToEdit.is_persistent}
+             onChange={e => {
+               e.stopPropagation();
+               let temp = this.state.itemToEdit;
+               temp.is_persistent = e.target.value==='true';
+               this.setState({itemToEdit: temp})
+             }}
+          >
+            <option value={'true'}> Routine </option>
+            <option value={'false'}> Goal </option>
+          </Form.Control>
+        </Form.Group>
+        
         <Form.Group
           value={this.state.itemToEdit.start_day_and_time || ""}
           controlId="Y"
