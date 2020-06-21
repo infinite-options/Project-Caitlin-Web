@@ -34,6 +34,11 @@ export default class editAT extends Component {
     // console.log("submitting edited formed to firebase");
     let newArr = this.props.ATArray;
 
+    if (this.state.itemToEdit.photo === "") {
+      this.state.itemToEdit.photo =
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
+    }
+
     newArr[this.props.i] = this.state.itemToEdit;
 
     //Add the below attributes in case they don't already exists

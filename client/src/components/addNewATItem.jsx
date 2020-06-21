@@ -22,7 +22,7 @@ export default class AddNewATItem extends Component {
         id: "",
         title: "",
         photo:
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917",
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=a4f03983-d2ed-4382-b8bb-0b1361d1e209",
         audio: "",
         is_must_do: true,
         is_complete: false,

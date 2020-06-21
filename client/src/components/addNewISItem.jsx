@@ -30,7 +30,7 @@ export default class AddNewISItem extends Component {
       id: "",
       title: "",
       photo:
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0",
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask2.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838",
       is_complete: false,
       is_available: true,
       available_end_time: this.props.timeSlot[1],
