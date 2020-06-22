@@ -592,8 +592,6 @@ export default class editGR extends Component {
     });
   };
 
-// TODO: change goals to routines and vice versa
-
   editGRForm = () => {  
     return (
       <Row
