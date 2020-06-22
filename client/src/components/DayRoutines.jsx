@@ -91,7 +91,7 @@ export default class DayRoutines extends Component {
        * Dealing with repeating Routines
        */
 
-      if(arr[i].repeat === true){
+      if(arr[i].repeat === true || arr[i].repeat === "1"){
         if(arr[i].repeat_frequency === "DAY" ){
           
           /*** TODO fix if event goes to another month.  */
@@ -688,14 +688,14 @@ export default class DayRoutines extends Component {
         || (tempStartTime.getDate() < curDate && tempEndTime.getDate() > curDate && curMonth <= tempEndTime.getMonth() && curMonth >= tempStartTime.getMonth()&& curYear <= tempEndTime.getFullYear() && curYear>= tempStartTime.getFullYear())
         )
       ){
-        if(arr[i].is_displayed_today !== true){
+        if(arr[i].is_displayed_today !== (true || "1")){
           arr[i].is_displayed_today =  true;
           let newArr = this.props.originalGoalsAndRoutineArr;
-         newArr[this.props.routine_ids[i]].is_displayed_today = true;
+          newArr[this.props.routine_ids[i]].is_displayed_today = true;
           firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
         }
       }else{
-          if(arr[i].is_displayed_today !== false){
+          if(arr[i].is_displayed_today === (true || "1")){
            arr[i].is_displayed_today =  false;
            let newArr = this.props.originalGoalsAndRoutineArr;
            newArr[this.props.routine_ids[i]].is_displayed_today = false;
