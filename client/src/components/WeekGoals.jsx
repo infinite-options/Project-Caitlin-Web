@@ -76,7 +76,7 @@ export default class WeekGoals extends Component {
       /**
        * Dealing with repeating Routines
        */
-      if(arr[i].repeat === true){
+      if(arr[i].repeat === true || arr[i].repeat === "1"){
         if(arr[i].repeat_frequency === "DAY" ){
           /*** TODO fix if event goes to another month.  */
           if(arr[i].repeat_ends === "After" ){
