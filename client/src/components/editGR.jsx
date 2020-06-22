@@ -6,6 +6,10 @@ import DatePicker from "react-datepicker";
 import ShowNotifications from "./ShowNotifications";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
+import { firestore, storage } from "firebase";
+
+import AddIconModal from "./AddIconModal";
+import UploadImage from "./UploadImage";
 
 export default class editGR extends Component {
   constructor(props) {
@@ -22,39 +26,40 @@ export default class editGR extends Component {
       repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency || "DAY", 
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: this.props.ATArray[this.props.i].repeat_every || "1",
-      repeatInputValue_temp: this.props.ATArray[this.props.i].repeat_every || "1",
-      repeatOccurrence: this.props.ATArray[this.props.i].repeat_occurences || "1",
-      repeatOccurrence_temp: this.props.ATArray[this.props.i].repeat_occurences || "1",
+      repeatInputValue_temp:
+        this.props.ATArray[this.props.i].repeat_every || "1",
+      repeatOccurrence:
+        this.props.ATArray[this.props.i].repeat_occurences || "1",
+      repeatOccurrence_temp:
+        this.props.ATArray[this.props.i].repeat_occurences || "1",
       repeatRadio: this.props.ATArray[this.props.i].repeat_ends || "Never",
-      repeatRadio_temp:this.props.ATArray[this.props.i].repeat_ends || "Never",
-      repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on || "" ,
+      repeatRadio_temp: this.props.ATArray[this.props.i].repeat_ends || "Never",
+      repeatEndDate: this.props.ATArray[this.props.i].repeat_ends_on || "",
       repeatEndDate_temp: this.props.ATArray[this.props.i].repeat_ends_on || "",
-      byDay:this.props.ATArray[this.props.i].repeat_week_days || 
-        {
-          0: "",
-          1: "",
-          2: "",
-          3: "",
-          4: "",
-          5: "",
-          6: "",
-        } ,
-      
-      byDay_temp:this.props.ATArray[this.props.i].repeat_week_days || 
-          {
-          0: "",
-          1: "",
-          2: "",
-          3: "",
-          4: "",
-          5: "",
-          6: "",
-        }
+      byDay: this.props.ATArray[this.props.i].repeat_week_days || {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
+
+      byDay_temp: this.props.ATArray[this.props.i].repeat_week_days || {
+        0: "",
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+      },
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(prevProps.ATArray !== this.props.ATArray ){
+    if (prevProps.ATArray !== this.props.ATArray) {
       let repeatOptionDropDown2;
       let repeatOption2 ;
       if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
@@ -62,20 +67,29 @@ export default class editGR extends Component {
           repeatOption2 =true
       }else{
         repeatOptionDropDown2 = "Does not repeat";
-        repeatOption2 =false
+        repeatOption2 = false;
       }
-      this.setState({itemToEdit: this.props.ATArray[this.props.i], repeatOptionDropDown:repeatOptionDropDown2, repeatOption:repeatOption2})
-    }   
+      this.setState({
+        itemToEdit: this.props.ATArray[this.props.i],
+        repeatOptionDropDown: repeatOptionDropDown2,
+        repeatOption: repeatOption2,
+      });
+    }
   }
 
-  componentDidMount(){
-    this.setState({itemToEdit: this.props.ATArray[this.props.i]});
+  componentDidMount() {
+    this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
   }
+  setPhotoURLFunction = (photo_url) => {
+    let temp = this.state.itemToEdit;
+    temp.photo = photo_url;
+    this.setState({ itemToEdit: temp });
+  };
 
   newInputSubmit = () => {
     let newArr = this.props.ATArray;
     let temp = this.state.itemToEdit;
-    if(!temp.repeat_ends_on){
+    if (!temp.repeat_ends_on) {
       temp.repeat_ends_on = new Date();
     }
     // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
@@ -83,19 +97,23 @@ export default class editGR extends Component {
     temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
 
     // console.log("this is the start day and time before converting to string ",this.state.itemToEdit.start_day_and_time );
-    temp.start_day_and_time = new Date(this.state.itemToEdit.start_day_and_time).toUTCString();
-    temp.end_day_and_time = new Date(this.state.itemToEdit.end_day_and_time).toUTCString();
+    temp.start_day_and_time = new Date(
+      this.state.itemToEdit.start_day_and_time
+    ).toUTCString();
+    temp.end_day_and_time = new Date(
+      this.state.itemToEdit.end_day_and_time
+    ).toUTCString();
     // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
-    
+
     // newArr[this.props.i] = temp;
 
     if (temp.photo === "") {
-      if (this.props.isRoutine) {
+      if (temp.is_persistent) {
         temp.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Froutine2.svg?alt=media&token=ad257320-33ea-4d31-94b6-09653cb036e6";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Froutine2.png?alt=media&token=dec839c9-5558-49b9-a41b-76fbe3e29a81";
       } else {
         temp.photo =
-          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Fgoal.svg?alt=media&token=6c524155-112e-4d5f-973e-dcab66f22af2";
+          "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
       }
     }
 
@@ -116,7 +134,6 @@ export default class editGR extends Component {
         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
 
-
     this.props.FBPath.update({ "goals&routines": newArr }).then((doc) => {
       this.props.closeEditModal();
       // this.setState({ showEditModal: false });
@@ -126,9 +143,7 @@ export default class editGR extends Component {
         console.log("update failure");
       }
     });
-  }; 
-
-  
+  };
 
   startTimePicker = () => {
     let stored_date;
@@ -163,18 +178,18 @@ export default class editGR extends Component {
   };
 
   endTimePicker = () => {
-    if(!this.state.itemToEdit.end_day_and_time){
+    if (!this.state.itemToEdit.end_day_and_time) {
       this.state.itemToEdit.end_day_and_time = new Date();
     }
-    let stored_date ;
-    this.state.itemToEdit.end_day_and_time 
-      ? stored_date = new Date(this.state.itemToEdit.end_day_and_time)
-      : stored_date = new Date();
+    let stored_date;
+    this.state.itemToEdit.end_day_and_time
+      ? (stored_date = new Date(this.state.itemToEdit.end_day_and_time))
+      : (stored_date = new Date());
     return (
       <DatePicker
         className="form-control"
         type="text"
-        selected={stored_date }
+        selected={stored_date}
         onChange={(date) => {
           this.setState(
             (prevState) => ({
@@ -265,7 +280,6 @@ export default class editGR extends Component {
   this will close repeat modal.
   */
   saveRepeatChanges = () => {
-
     const {
       // repeatOptionDropDown,
       repeatDropDown_temp,
@@ -282,7 +296,7 @@ export default class editGR extends Component {
     temp.repeat_frequency = repeatDropDown_temp;
     temp.repeat_ends = repeatRadio_temp;
     temp.repeat_ends_on = repeatEndDate_temp;
-    temp.repeat_occurences  = repeatOccurrence_temp;
+    temp.repeat_occurences = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
 
     this.setState((prevState) => ({
@@ -548,12 +562,10 @@ export default class editGR extends Component {
   handleRepeatEndDate = (date) => {
     let temp = this.state.itemToEdit;
     temp.repeat_ends_on = date;
-    this.setState(
-      {
-        itemToEdit:temp,
-        repeatEndDate_temp: date,
-      },
-    );
+    this.setState({
+      itemToEdit: temp,
+      repeatEndDate_temp: date,
+    });
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -563,9 +575,9 @@ export default class editGR extends Component {
       };
       let temp = this.state.itemToEdit;
       temp.repeat_frequency = eventKey;
-      
+
       this.setState({
-        itemToEdit:temp,
+        itemToEdit: temp,
         repeatDropDown_temp: eventKey,
         byDay_temp: newByDay,
       });
@@ -573,7 +585,7 @@ export default class editGR extends Component {
     let temp = this.state.itemToEdit;
     temp.repeat_frequency = eventKey;
     this.setState({
-      itemToEdit:temp,
+      itemToEdit: temp,
       repeatDropDown_temp: eventKey,
     });
   };
@@ -591,7 +603,7 @@ export default class editGR extends Component {
     let temp = this.state.itemToEdit;
     temp.repeat_occurences = eventKey;
     this.setState({
-      itemToEdit:temp,
+      itemToEdit: temp,
       repeatOccurrence_temp: eventKey,
     });
   };
@@ -634,28 +646,29 @@ export default class editGR extends Component {
           />
         </div>
 
-        <label>Photo URL</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="Enter Photo URL "
-            value={this.state.itemToEdit.photo}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.photo = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
+        <Row>
+          <AddIconModal parentFunction={this.setPhotoURLFunction} />
+          <UploadImage parentFunction={this.setPhotoURLFunction} />
+          <br />
+        </Row>
+
+        <div>
+          <label>Icon: </label>
+
+          <img
+            alt="None"
+            src={this.state.itemToEdit.photo}
+            height="70"
+            width="auto"
+          ></img>
         </div>
 
         <Form.Group
-            value = {this.state.itemToEdit.start_day_and_time || ''}
-            controlId="Y"
-          >
-            <Form.Label>Start Time</Form.Label> <br />
-            
-            {this.startTimePicker()}
+          value={this.state.itemToEdit.start_day_and_time || ""}
+          controlId="Y"
+        >
+          <Form.Label>Start Time</Form.Label> <br />
+          {this.startTimePicker()}
         </Form.Group>
 
         <Form.Group
@@ -678,7 +691,6 @@ export default class editGR extends Component {
             <Dropdown.Item
               eventKey="Does not repeat"
               onSelect={(eventKey) =>
-                
                 this.setState(
                   (prevState) => ({
                     itemToEdit: {
@@ -686,10 +698,10 @@ export default class editGR extends Component {
                       repeat: false,
                     },
                     repeatOptionDropDown: eventKey,
-                    repeatOption: false
+                    repeatOption: false,
                   }),
                   () => {
-                    console.log("repeat ",this.state.itemToEdit.repeat);
+                    console.log("repeat ", this.state.itemToEdit.repeat);
                   }
                 )
               }
@@ -717,14 +729,12 @@ export default class editGR extends Component {
                 placeholder="30"
                 value={this.convertToMinutes()}
                 style={{ marginTop: ".25rem", paddingRight: "0px" }}
-                onChange={
-                  (e) => {
-                    e.stopPropagation();
-                    let temp = this.state.itemToEdit;
-                    temp.expected_completion_time = this.convertTimeToHRMMSS(e);
-                    this.setState({ itemToEdit: temp });
-                  }
-                }
+                onChange={(e) => {
+                  e.stopPropagation();
+                  let temp = this.state.itemToEdit;
+                  temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                  this.setState({ itemToEdit: temp });
+                }}
               />
             </Col>
             <Col xs={8} style={{ paddingLeft: "0px" }}>
@@ -896,12 +906,11 @@ export default class editGR extends Component {
         </div>
       </>
     );
-    if(!this.state.itemToEdit.repeat_ends){
-      this.state.itemToEdit.repeat_ends = "Never" ;
+    if (!this.state.itemToEdit.repeat_ends) {
+      this.state.itemToEdit.repeat_ends = "Never";
     }
-    
+
     return (
-      
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
           <Modal.Title>
@@ -989,7 +998,8 @@ export default class editGR extends Component {
                     value="Never"
                     name="radios"
                     defaultChecked={
-                      this.state.itemToEdit.repeat_ends === ("Never" || null) && true
+                      this.state.itemToEdit.repeat_ends === ("Never" || null) &&
+                      true
                     }
                   />
                   Never
@@ -1009,33 +1019,37 @@ export default class editGR extends Component {
                   On
                   <DatePicker
                     className="date-picker-btn btn btn-light"
-                    selected = {this.state.itemToEdit.repeat_ends_on
-                      ? new Date(this.state.itemToEdit.repeat_ends_on)
-                      : new Date()}
+                    selected={
+                      this.state.itemToEdit.repeat_ends_on
+                        ? new Date(this.state.itemToEdit.repeat_ends_on)
+                        : new Date()
+                    }
                     onChange={(date) => this.handleRepeatEndDate(date)}
                   ></DatePicker>
                 </Form.Check.Label>
               </Form.Check>
               <Form.Check type="radio" style={{ margin: "15px 0" }}>
                 <Form.Check.Label>
-                   {(this.state.itemToEdit.repeat_frequency === "WEEK"?
+                  {this.state.itemToEdit.repeat_frequency === "WEEK" ? (
                     <Form.Check.Input
-                    type="radio"
-                    name="radios"
-                    value="After" 
-                    style={{ marginTop: "12px" }}
-                    defaultChecked={
-                      this.state.itemToEdit.repeat_ends === "After" && true
-                    }
-                    disabled/>:
+                      type="radio"
+                      name="radios"
+                      value="After"
+                      style={{ marginTop: "12px" }}
+                      defaultChecked={
+                        this.state.itemToEdit.repeat_ends === "After" && true
+                      }
+                      disabled
+                    />
+                  ) : (
                     <Form.Check.Input
-                    type="radio"
-                    name="radios"
-                    value="After" 
-                    style={{ marginTop: "12px" }}
-                    defaultChecked={
-                      this.state.itemToEdit.repeat_ends === "After" && true
-                    }
+                      type="radio"
+                      name="radios"
+                      value="After"
+                      style={{ marginTop: "12px" }}
+                      defaultChecked={
+                        this.state.itemToEdit.repeat_ends === "After" && true
+                      }
                     />
                   )}
                   After
@@ -1044,7 +1058,7 @@ export default class editGR extends Component {
                       type="number"
                       min="1"
                       max="10000"
-                      value={this.state.itemToEdit.repeat_occurences || '1'}
+                      value={this.state.itemToEdit.repeat_occurences || "1"}
                       onChange={(e) =>
                         this.handleRepeatOccurrence(e.target.value)
                       }

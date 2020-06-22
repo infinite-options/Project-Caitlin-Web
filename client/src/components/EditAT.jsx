@@ -4,10 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "react-bootstrap";
 import ShowNotifications from "./ShowNotifications";
 import { Form, Row, Col } from "react-bootstrap";
+import { firestore, storage } from "firebase";
+
+import AddIconModal from "./AddIconModal";
+import UploadImage from "./UploadImage";
 
 export default class editAT extends Component {
   constructor(props) {
     super(props);
+
     // console.log('editAT constructor');
     // console.log('Edit index ' + this.props.i)
     // console.log(this.props.FBPath)
@@ -31,7 +36,7 @@ export default class editAT extends Component {
 
     if (this.state.itemToEdit.photo === "") {
       this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask3.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
     }
 
     newArr[this.props.i] = this.state.itemToEdit;
@@ -93,6 +98,11 @@ export default class editAT extends Component {
     // console.log(temp);
     this.setState({ itemToEdit: temp });
   };
+  setPhotoURLFunction = (photo_url) => {
+    let temp = this.state.itemToEdit;
+    temp.photo = photo_url;
+    this.setState({ itemToEdit: temp });
+  };
 
   editATForm = () => {
     return (
@@ -130,34 +140,37 @@ export default class editAT extends Component {
           />
         </div>
 
-        <label>Photo URL</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="Enter Photo URL "
-            value={this.state.itemToEdit.photo}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.photo = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
+        <Row>
+          <AddIconModal parentFunction={this.setPhotoURLFunction} />
+          <UploadImage parentFunction={this.setPhotoURLFunction} />
+          <br />
+        </Row>
+        <div>
+          <br />
+          <label>Icon: </label>
+          <img
+            alt="None"
+            src={this.state.itemToEdit.photo}
+            height="70"
+            width="auto"
+          ></img>
         </div>
 
-        <label>Available Start Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={this.state.itemToEdit.available_start_time}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_start_time = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
+        <div>
+          <label>Available Start Time</label>
+          <div className="input-group mb-3">
+            <input
+              style={{ width: "200px" }}
+              placeholder="HH:MM:SS (ex: 08:20:00) "
+              value={this.state.itemToEdit.available_start_time}
+              onChange={(e) => {
+                e.stopPropagation();
+                let temp = this.state.itemToEdit;
+                temp.available_start_time = e.target.value;
+                this.setState({ itemToEdit: temp });
+              }}
+            />
+          </div>{" "}
         </div>
 
         <label>Available End Time</label>

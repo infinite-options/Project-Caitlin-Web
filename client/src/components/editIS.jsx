@@ -4,6 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "react-bootstrap";
 import ShowNotifications from "./ShowNotifications";
 import { Form, Row, Col } from "react-bootstrap";
+import { firestore, storage } from "firebase";
+
+import AddIconModal from "./AddIconModal";
+import UploadImage from "./UploadImage";
 
 export default class editIS extends Component {
   constructor(props) {
@@ -20,12 +24,18 @@ export default class editIS extends Component {
     }
   }
 
+  setPhotoURLFunction = (photo_url) => {
+    let temp = this.state.itemToEdit;
+    temp.photo = photo_url;
+    this.setState({ itemToEdit: temp });
+  };
+
   newInputSubmit = () => {
     let newArr = this.props.ISArray;
 
     if (this.state.itemToEdit.photo === "") {
       this.state.itemToEdit.photo =
-        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask2.svg?alt=media&token=7c6a6de9-6e9a-45cc-9dbe-a5bb10c1a0c0";
+        "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Ftask2.png?alt=media&token=03f049ce-a35c-4222-bdf7-fd8b585b1838";
     }
 
     newArr[this.props.i] = this.state.itemToEdit;
@@ -112,34 +122,37 @@ export default class editIS extends Component {
           />
         </div>
 
-        <label>Photo URL</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="Enter Photo URL "
-            value={this.state.itemToEdit.photo}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.photo = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
-        </div>
+        <Row>
+          <AddIconModal parentFunction={this.setPhotoURLFunction} />
+          <UploadImage parentFunction={this.setPhotoURLFunction} />
+          <br />
+        </Row>
 
-        <label>Available Start Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 08:20:00) "
-            value={this.state.itemToEdit.available_start_time}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_start_time = e.target.value;
-              this.setState({ itemToEdit: temp });
-            }}
-          />
+        <div>
+          <label>Icon: </label>
+
+          <img
+            alt="None"
+            src={this.state.itemToEdit.photo}
+            height="70"
+            width="auto"
+          ></img>
+        </div>
+        <div>
+          <label>Available Start Time</label>
+          <div className="input-group mb-3">
+            <input
+              style={{ width: "200px" }}
+              placeholder="HH:MM:SS (ex: 08:20:00) "
+              value={this.state.itemToEdit.available_start_time}
+              onChange={(e) => {
+                e.stopPropagation();
+                let temp = this.state.itemToEdit;
+                temp.available_start_time = e.target.value;
+                this.setState({ itemToEdit: temp });
+              }}
+            />
+          </div>
         </div>
 
         <label>Available End Time</label>
