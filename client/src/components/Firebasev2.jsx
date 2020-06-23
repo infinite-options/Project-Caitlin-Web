@@ -23,6 +23,7 @@ import EditAT from "./EditAT.jsx";
 import ShowATList from "./ShowATList";
 import ShowISList from "./ShowISList";
 import MustDoAT from "./MustDoAT";
+import EditIcon from "./EditIcon.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -30,6 +31,7 @@ import {
   faTrophy,
   faRunning,
   faBookmark,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
@@ -56,6 +58,8 @@ export default class FirebaseV2 extends React.Component {
       .doc(this.props.theCurrentUserID),
     // .doc("7R6hAVmDrNutRkG3sVRy"),
     is_sublist_available: true,
+    showEditModal: false,
+    indexEditing: "",
     //This single GR item is passed to AddNewATItem to help processed the new item
     singleGR: {
       //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
@@ -85,7 +89,8 @@ export default class FirebaseV2 extends React.Component {
     },
     singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
     singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
-    modalWidth: "350px", //primary width size for all modals
+    // modalWidth: "350px", //primary width size for all modals
+    modalWidth: "390px",
 
     //Use to decided whether to show the respective modals
     addNewGRModalShow: false,
@@ -796,6 +801,7 @@ export default class FirebaseV2 extends React.Component {
               </Row>
 
               {this.props.routines[i]["photo"] ? (
+                <div>
                 <Row>
                   <Col xs={7} style={{ paddingRight: "0px" }}>
                     <img
@@ -838,12 +844,10 @@ export default class FirebaseV2 extends React.Component {
                       <ShowATList
                         Index={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr}
-                        // Path={this.state.firebaseRootPath}
                         Path={firebase
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-                        // ListCameBackFalse= {this.ListFalse}
                       />
                     </Row>
                     <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
@@ -857,23 +861,63 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
-
-                      {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)}  */}
-                      <EditGR
-                        marginLeftV="-170px"
+                      <EditIcon 
+                         openEditModal={() => {
+                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
+                        }}
+                        showModal = {this.state.showEditModal}
+                        indexEditing = {this.state.indexEditing}
                         i={this.findIndexByID(tempID)} //index to edit
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         FBPath={firebase
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                        // is_sublist_available={this.is_sublist_available}
+                        refresh={this.grabFireBaseRoutinesGoalsData}
                       />
+                     {/* {(!this.state.showEditModal && 
+                         <div style={{ marginLeft: "5px" }}>
+                          <FontAwesomeIcon
+                            title="Edit Item"
+                            onMouseOver={(event) => {
+                              event.target.style.color = "#48D6D2";
+                            }}
+                            onMouseOut={(event) => {
+                              event.target.style.color = "#000000";
+                            }}
+                            style={{ color: "#000000" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              this.setState({ showEditModal: true });
+                            }}
+                            icon={faEdit}
+                            size="lg"
+                          />
+                         </div>
+                      )}  */}
+                      
                     </Row>
                   </Col>
                 </Row>
+                <Row>
+                  {/* {(this.state.showEditModal &&  */}
+                      <EditGR
+                          closeEditModal={() => {
+                            this.setState({ showEditModal: false });
+                          }}
+                          showModal = {this.state.showEditModal}
+                          indexEditing = {this.state.indexEditing}
+                          i={this.findIndexByID(tempID)} //index to edit
+                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          FBPath={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      /> 
+                    {/* )} */}
+                </Row>
+              </div>
               ) : (
                 <div>
                   <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -928,18 +972,36 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
-                    {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)} */}
-                    <EditGR
-                      marginLeftV="-130px"
-                      i={this.findIndexByID(tempID)} //index to edit
-                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                      FBPath={firebase
-                        .firestore()
-                        .collection("users")
-                        .doc(this.props.theCurrentUserID)}
-                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    />
+                     <EditIcon 
+                         openEditModal={() => {
+                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
+                        }}
+                        showModal = {this.state.showEditModal}
+                        indexEditing = {this.state.indexEditing}
+                        i={this.findIndexByID(tempID)} //index to edit
+                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        FBPath={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
+                        refresh={this.grabFireBaseRoutinesGoalsData}
+                      /> 
+                  </Row>
+                  <Row>
+                  <EditGR
+                          closeEditModal={() => {
+                            this.setState({ showEditModal: false });
+                          }}
+                          showModal = {this.state.showEditModal}
+                          indexEditing = {this.state.indexEditing}
+                          i={this.findIndexByID(tempID)} //index to edit
+                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          FBPath={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    /> 
                   </Row>
                 </div>
               )}
@@ -1002,6 +1064,7 @@ export default class FirebaseV2 extends React.Component {
                 </Col>
               </Row>
               {this.props.goals[i]["photo"] ? (
+                <div>
                 <Row>
                   <Col xs={7} style={{ paddingRight: "0px" }}>
                     <img
@@ -1062,22 +1125,40 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
-
-                      {/* {console.log("this si the originalGoals and Routines Arr", this.props.originalGoalsAndRoutineArr)} */}
-                      <EditGR
-                        marginLeftV="-170px"
+                       <EditIcon 
+                         openEditModal={() => {
+                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
+                        }}
+                        showModal = {this.state.showEditModal}
+                        indexEditing = {this.state.indexEditing}
                         i={this.findIndexByID(tempID)} //index to edit
                         ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         FBPath={firebase
                           .firestore()
                           .collection("users")
                           .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                      />
+                        refresh={this.grabFireBaseRoutinesGoalsData}
+                      /> 
                     </Row>
                   </Col>
                 </Row>
+                <Row>
+                    <EditGR
+                          closeEditModal={() => {
+                            this.setState({ showEditModal: false });
+                          }}
+                          showModal = {this.state.showEditModal}
+                          indexEditing = {this.state.indexEditing}
+                          i={this.findIndexByID(tempID)} //index to edit
+                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          FBPath={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    /> 
+                </Row>
+               </div>
               ) : (
                 <div>
                   <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -1132,18 +1213,36 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
-                    {/* {console.log("this is the originalGoalsAndRoutunesArr from firebase", this.props.originalGoalsAndRoutineArr)} */}
-                    <EditGR
-                      marginLeftV="-130px"
-                      i={this.findIndexByID(tempID)} //index to edit
-                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                      // FBPath={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                      FBPath={firebase
-                        .firestore()
-                        .collection("users")
-                        .doc(this.props.theCurrentUserID)}
-                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    />
+                    <EditIcon 
+                         openEditModal={() => {
+                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
+                        }}
+                        showModal = {this.state.showEditModal}
+                        indexEditing = {this.state.indexEditing}
+                        i={this.findIndexByID(tempID)} //index to edit
+                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                        FBPath={firebase
+                          .firestore()
+                          .collection("users")
+                          .doc(this.props.theCurrentUserID)}
+                        refresh={this.grabFireBaseRoutinesGoalsData}
+                      /> 
+                  </Row>
+                  <Row>
+                   <EditGR
+                          closeEditModal={() => {
+                            this.setState({ showEditModal: false });
+                          }}
+                          showModal = {this.state.showEditModal}
+                          indexEditing = {this.state.indexEditing}
+                          i={this.findIndexByID(tempID)} //index to edit
+                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          FBPath={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    /> 
                   </Row>
                 </div>
               )}
@@ -1499,9 +1598,8 @@ shows entire list of goals and routines
         }}
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
-          <Modal.Title>
-            {" "}
-            <h5 className="normalfancytext">Routines</h5>{" "}
+          <Modal.Title> 
+            {" "} <h5 className="normalfancytext">Routines</h5>{" "}     
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

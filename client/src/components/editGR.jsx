@@ -15,21 +15,15 @@ export default class editGR extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showEditModal: false,
+      // showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
       showRepeatModal: false,
-      repeatOption:
-        this.props.ATArray[this.props.i].repeat === true ? true : false,
+      repeatOption: this.props.ATArray[this.props.i].repeat === (true || "1")?true: false,
       // repeatOptionDropDown: "Does not repeat",
 
-      repeatOptionDropDown:
-        this.props.ATArray[this.props.i].repeat === true
-          ? "Custom..."
-          : "Does not repeat",
-      repeatDropDown:
-        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
-      repeatDropDown_temp:
-        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+      repeatOptionDropDown: this.props.ATArray[this.props.i].repeat === (true || "1")? "Custom..." : "Does not repeat",
+      repeatDropDown: this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+      repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency || "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: this.props.ATArray[this.props.i].repeat_every || "1",
       repeatInputValue_temp:
@@ -67,11 +61,11 @@ export default class editGR extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.ATArray !== this.props.ATArray) {
       let repeatOptionDropDown2;
-      let repeatOption2;
-      if (this.props.ATArray[this.props.i].repeat === true) {
-        repeatOptionDropDown2 = "Custom...";
-        repeatOption2 = true;
-      } else {
+      let repeatOption2 ;
+      if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
+          repeatOptionDropDown2 = "Custom...";
+          repeatOption2 =true
+      }else{
         repeatOptionDropDown2 = "Does not repeat";
         repeatOption2 = false;
       }
@@ -122,7 +116,7 @@ export default class editGR extends Component {
           "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIconsPNG%2Fgoal.png?alt=media&token=a9a5c595-b245-47dc-a6d1-3ed5495f13b7";
       }
     }
-
+    // console.log(temp)
     newArr[this.props.i] = temp;
 
     //Add the below attributes in case they don't already exists
@@ -141,7 +135,8 @@ export default class editGR extends Component {
     }
 
     this.props.FBPath.update({ "goals&routines": newArr }).then((doc) => {
-      this.setState({ showEditModal: false });
+      this.props.closeEditModal();
+      // this.setState({ showEditModal: false });
       if (this.props != null) {
         this.props.refresh(newArr);
       } else {
@@ -617,9 +612,11 @@ export default class editGR extends Component {
     return (
       <Row
         style={{
-          marginLeft: this.props.marginLeftV,
+          marginLeft:"0px",
+          // marginLeft: this.props.marginLeftV ,
           border: "2px",
-          padding: "20px",
+          // padding: "20px",
+          padding: "15px",
           marginTop: "10px",
         }}
       >
@@ -648,7 +645,7 @@ export default class editGR extends Component {
             }}
           />
         </div>
-
+        <Form.Group>
         <Row>
           <AddIconModal parentFunction={this.setPhotoURLFunction} />
           <UploadImage parentFunction={this.setPhotoURLFunction} />
@@ -665,6 +662,23 @@ export default class editGR extends Component {
             width="auto"
           ></img>
         </div>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label> Routine/Goal </Form.Label>
+          <Form.Control
+             as='select'
+             value={this.state.itemToEdit.is_persistent}
+             onChange={e => {
+               e.stopPropagation();
+               let temp = this.state.itemToEdit;
+               temp.is_persistent = e.target.value==='true';
+               this.setState({itemToEdit: temp})
+             }}
+          >
+            <option value={'true'}> Routine </option>
+            <option value={'false'}> Goal </option>
+          </Form.Control>
+        </Form.Group>
 
         <Form.Group
           value={this.state.itemToEdit.start_day_and_time || ""}
@@ -675,13 +689,13 @@ export default class editGR extends Component {
         </Form.Group>
 
         <Form.Group
-          value={this.state.itemToEdit.end_day_and_time || ""}
-          controlId="X"
-        >
-          <Form.Label>End Time</Form.Label>
-          <br />
-          {this.endTimePicker()}
-          <div style={{ color: "red" }}> {this.state.showDateError}</div>
+              value={this.state.itemToEdit.end_day_and_time || ''}
+              controlId="X"
+            >
+              <Form.Label>End Time</Form.Label>
+              <br />
+              {this.endTimePicker()}
+              <div style={{ color: "red" }}> {this.state.showDateError}</div>
         </Form.Group>
 
         <div>
@@ -790,7 +804,8 @@ export default class editGR extends Component {
           variant="secondary"
           onClick={(e) => {
             e.stopPropagation();
-            this.setState({ showEditModal: false });
+            // this.setState({ showEditModal: false });
+            this.props.closeEditModal();
           }}
         >
           Close
@@ -805,6 +820,7 @@ export default class editGR extends Component {
           Save changes
         </Button>
       </Row>
+      // </div>
     );
   };
 
@@ -822,9 +838,9 @@ export default class editGR extends Component {
     const modalStyle = {
       position: "absolute",
       zIndex: "5",
-      left: "-20%",
-      top: "45%",
-      transform: "translate(-50%, -50%)",
+      // top: "45%",
+      top: "35%",
+      //  transform: "translate(-50%, -50%)",
       width: "300px",
     };
 
@@ -1116,8 +1132,11 @@ export default class editGR extends Component {
           e.stopPropagation();
         }}
       >
-        {this.state.showEditModal ? <div></div> : this.showIcon()}
-        {this.state.showEditModal ? this.editGRForm() : <div> </div>}
+      {/* {console.log("this is the s")} */}
+        {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
+        {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.editGRForm() : <div> </div>}
+        {/* {this.editGRForm()} */}
+        {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}
       </div>
     );

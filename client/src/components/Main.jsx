@@ -159,7 +159,12 @@ export default class MainPage extends React.Component {
           if (x["goals&routines"] !== undefined) {
             x = x["goals&routines"];
             // console.log("this is the goals and routines", x);
-
+            x.sort((a,b) => {
+              let timeA = new Date(a["start_day_and_time"]);
+              let timeB = new Date(b["start_day_and_time"]);
+              return timeA.getTime() - timeB.getTime();
+            });
+            // console.log("sorted goals and routines", x);
             for (let i = 0; i < x.length; ++i) {
               if (x[i]["is_persistent"]) {
                 // console.log("routine " + x[i]["title"]);
@@ -190,13 +195,6 @@ export default class MainPage extends React.Component {
               routines: routine,
             });
           }
-          // this.setState({
-          //   originalGoalsAndRoutineArr: x,
-          //   goals: goal,
-          //   addNewGRModalShow: false,
-          //   routines: routine,
-          // });
-          // console.log(x, "x");
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
