@@ -681,15 +681,6 @@ export default class editGR extends Component {
         </Form.Group>
 
         <Form.Group
-            value = {this.state.itemToEdit.start_day_and_time || ''}
-            controlId="Y"
-          >
-            <option value={'true'}> Routine </option>
-            <option value={'false'}> Goal </option>
-          </Form.Control>
-        </Form.Group>
-
-        <Form.Group
           value={this.state.itemToEdit.start_day_and_time || ""}
           controlId="Y"
         >
