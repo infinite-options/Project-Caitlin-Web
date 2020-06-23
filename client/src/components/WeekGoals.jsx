@@ -59,14 +59,14 @@ export default class WeekGoals extends Component {
       let initialEndYear =tempEndTime.getFullYear();
 
       /** This function takes in the date and gives back the week number it is in for that year */
-      function ISO8601_week_no(dt) 
+      function ISO8601_week_no(dt)
       {
             var tdt = new Date(dt.valueOf());
             var dayn = (dt.getDay() + 6) % 7;
             tdt.setDate(tdt.getDate() - dayn + 3);
             var firstThursday = tdt.valueOf();
             tdt.setMonth(0, 1);
-            if (tdt.getDay() !== 4) 
+            if (tdt.getDay() !== 4)
               {
               tdt.setMonth(0, 1 + ((4 - tdt.getDay()) + 7) % 7);
                 }
@@ -86,7 +86,7 @@ export default class WeekGoals extends Component {
                     && initialStartDate +  (j  * arr[i].repeat_every) === curDate2.date()
                     && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0
                     ){
-                      
+
                       tempStartTime.setDate(curDate2.date());
                       tempEndTime.setDate(curDate2.date());
                   }else if(curYear === initialStartYear
@@ -100,7 +100,7 @@ export default class WeekGoals extends Component {
                       tempEndTime.setMonth(curMonth);
                       tempStartTime.setDate(curDate2.date());
                       tempEndTime.setDate(curDate2.date());
-    
+
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
                     && (curMonth - initialStartMonth) > 1
@@ -112,7 +112,7 @@ export default class WeekGoals extends Component {
                         subtractBy = Math.floor((new Date(curYear, curMonth -1, 0).getDate() - initialStartDate)/ arr[i].repeat_every)+ Math.floor((new Date(curYear, curMonth, 0).getDate())/arr[i].repeat_every) + 1;
                         indexBy = (  (Math.floor((new Date(curYear, curMonth, 0).getDate() - (( (Math.floor((new Date(curYear, curMonth, 0).getDate() - initialStartDate))) % arr[i].repeat_every ) +1  ))  )     ) % arr[i].repeat_every)
                       }
-    
+
                       if((arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every > 0
                         && curDate2.date() <= ( (arr[i].repeat_occurences - subtractBy) * arr[i].repeat_every )
                         && ((curDate2.date() + ( indexBy )) % arr[i].repeat_every === 0)
@@ -126,15 +126,15 @@ export default class WeekGoals extends Component {
                     && curMonth > initialStartMonth
                     && (curMonth - initialStartMonth) === 1
                     && arr[i].repeat_every === "1"
-                    && ((((arr[i].repeat_occurences  - new Date(curYear, curMonth, 0).getDate())) > 31) 
+                    && ((((arr[i].repeat_occurences  - new Date(curYear, curMonth, 0).getDate())) > 31)
                         || (curDate2.date() < (arr[i].repeat_occurences  - (new Date(curYear, curMonth, 0).getDate() - initialStartDate))))
-    
+
                     ){
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
                       tempStartTime.setDate(curDate2.date());
                       tempEndTime.setDate(curDate2.date());
-    
+
                   }else if(curYear === initialStartYear
                     && curMonth > initialStartMonth
                     && curMonth - initialStartMonth > 1
@@ -154,16 +154,16 @@ export default class WeekGoals extends Component {
                       }else if(curMonth - initialStartMonth === 7){
                         subtractBy = (new Date(curYear, curMonth -6, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth , 0).getDate())
                       }else if(curMonth - initialStartMonth === 8){
-                        subtractBy = (new Date(curYear, curMonth -7, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate()) 
+                        subtractBy = (new Date(curYear, curMonth -7, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate())
                           + (new Date(curYear, curMonth -1, 0).getDate()) + (new Date(curYear, curMonth , 0).getDate())
                       }else if(curMonth - initialStartMonth === 9){
-                        subtractBy = (new Date(curYear, curMonth -8, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate()) 
+                        subtractBy = (new Date(curYear, curMonth -8, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate())
                           + (new Date(curYear, curMonth -2, 0).getDate()) + (new Date(curYear, curMonth -1, 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
                       }else if(curMonth - initialStartMonth === 10){
-                        subtractBy = (new Date(curYear, curMonth -9, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate()) 
+                        subtractBy = (new Date(curYear, curMonth -9, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) + (new Date(curYear, curMonth -4, 0).getDate())
                           + (new Date(curYear, curMonth -3, 0).getDate()) + (new Date(curYear, curMonth -2, 0).getDate())+ (new Date(curYear, curMonth -1, 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
                       }else if(curMonth - initialStartMonth === 11){
-                        subtractBy = (new Date(curYear, curMonth -10, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -9, 0).getDate()) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate()) 
+                        subtractBy = (new Date(curYear, curMonth -10, 0).getDate() - initialStartDate) + (new Date(curYear, curMonth -9, 0).getDate()) + (new Date(curYear, curMonth -8, 0).getDate()) + (new Date(curYear, curMonth -7, 0).getDate()) + (new Date(curYear, curMonth -6, 0).getDate()) + (new Date(curYear, curMonth -5, 0).getDate())
                           + (new Date(curYear, curMonth -4, 0).getDate()) + (new Date(curYear, curMonth -3, 0).getDate())+ (new Date(curYear, curMonth -2, 0).getDate())+ (new Date(curYear, curMonth-1 , 0).getDate())+ (new Date(curYear, curMonth , 0).getDate())
                       }
                       if(arr[i].repeat_occurences - subtractBy > 0
@@ -173,8 +173,8 @@ export default class WeekGoals extends Component {
                           tempEndTime.setMonth(curMonth);
                           tempStartTime.setDate(curDate2.date());
                           tempEndTime.setDate(curDate2.date());
-                      }    
-    
+                      }
+
                   }else if(curYear > initialStartYear
                     && arr[i].repeat_every === "1"
                     ){
@@ -186,17 +186,17 @@ export default class WeekGoals extends Component {
                       tempEndTime.setFullYear(curYear);
                   }
             }
-          } 
+          }
           /** TODO: account for ends on a different month. Also account for event span multiple days.  */
          else if(arr[i].repeat_ends === "On"){
             let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
             let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
             let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();
-               
+
               if((curMonth < endsOnMonth && curYear === initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() > initialStartDate  && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
                 || (curDate2.date() <=  endsOnDate && curYear === initialEndOnYear && curYear === initialStartYear && curDate2.date() > initialStartDate && curMonth === endsOnMonth && curMonth === initialStartMonth   && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
                 || (curYear !== initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date()> initialStartDate && ((curDate2.date() -initialStartDate )% arr[i].repeat_every === 0))
-                ){ 
+                ){
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date());
               }else if((curYear > initialStartYear && curYear < initialEndOnYear && ((((new Date(curYear, curMonth, 0).getDate())-initialStartDate)+curDate2.date()) % arr[i].repeat_every  === 0))
@@ -221,7 +221,7 @@ export default class WeekGoals extends Component {
                 }
          }
          else if(arr[i].repeat_ends === "Never"){
-          
+
             if(curYear > initialStartYear
                 && curDate2.date() % arr[i].repeat_every === 0){
                   tempStartTime.setMonth(curMonth);
@@ -247,11 +247,11 @@ export default class WeekGoals extends Component {
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date());
                }
-               else if(curYear === initialStartYear 
+               else if(curYear === initialStartYear
                 && curMonth === initialStartMonth
-                && curDate2.date() > initialStartDate 
-                && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0 
-                ) {         
+                && curDate2.date() > initialStartDate
+                && ((curDate2.date() - initialStartDate) % arr[i].repeat_every) === 0
+                ) {
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date());
                }
@@ -265,11 +265,11 @@ export default class WeekGoals extends Component {
               let daysAfter  = 0;
               let dayArray = [];
               let numDaysAfter;
-              
+
               Object.keys(arr[i].repeat_week_days).forEach(key => {
                 dayArray.push(arr[i].repeat_week_days[key]);
-                if(arr[i].repeat_week_days[key] !== ""){ 
-                  
+                if(arr[i].repeat_week_days[key] !== ""){
+
                   daysPerWeek ++;
                 }
               })
@@ -282,12 +282,12 @@ export default class WeekGoals extends Component {
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
               if(((curWeek - weekStart) < weekAfter) && (curWeek - weekStart) >= 0 && curYear === initialStartYear){
-                 
+
                   if(curWeek === weekStart && curDate2.date() < initialStartDate ){
                     console.log("shouldn't show event")
                   }
                   else{
-                    if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+                    if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0)
                     || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
                     || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
                     || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
@@ -300,11 +300,11 @@ export default class WeekGoals extends Component {
                       tempStartTime.setDate(curDate2.date());
                       tempEndTime.setDate(curDate2.date());
                     }
-                  }   
-               
+                  }
+
               }
-              if((curWeek - weekStart === weekAfter ) && daysAfter >= daysPerWeek){  
-                if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+              if((curWeek - weekStart === weekAfter ) && daysAfter >= daysPerWeek){
+                if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0)
                 || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
                 || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
                 || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
@@ -317,12 +317,12 @@ export default class WeekGoals extends Component {
                   tempStartTime.setDate(curDate2.date());
                   tempEndTime.setDate(curDate2.date());
                 }
-                             
+
               } else if((curWeek - weekStart === weekAfter ) && daysAfter > 0 && daysAfter< daysPerWeek ){
                 let numDaysAfter = 0;
                   if( ((curWeek - 7)* 7) +  Math.floor(7/ daysPerWeek) * daysAfter  === curDate2.date()){
-                    
-                      if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0) 
+
+                      if((dayArray[0] === 'Sunday' && new Date(curDate2).getDay()=== 0)
                       || (dayArray[1] === 'Monday' && new Date(curDate2).getDay()=== 1)
                       || (dayArray[2] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
                       || (dayArray[3] === 'Wednesday' && new Date(curDate2).getDay()=== 3)
@@ -335,12 +335,12 @@ export default class WeekGoals extends Component {
                         tempStartTime.setDate(curDate2.date());
                         tempEndTime.setDate(curDate2.date());
                         numDaysAfter++;
-                      }  
+                      }
                   }
               }else if((curWeek - weekStart === weekAfter + 1 ) &&  daysAfter > daysPerWeek) {
-  
+
               }
-          
+
             }
             else if(arr[i].repeat_ends === "On" ){
               let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
@@ -351,7 +351,7 @@ export default class WeekGoals extends Component {
               let weekStart = ISO8601_week_no(startWeek);
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
-  
+
               if((curYear < initialEndOnYear && curYear > initialStartYear && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
                 || (curYear === initialEndOnYear &&  curYear !== initialStartYear && curMonth < endsOnMonth && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) // needs work
                 || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth > initialStartMonth && arr[i].repeat_every === "1")
@@ -360,7 +360,7 @@ export default class WeekGoals extends Component {
                 || (curYear < initialEndOnYear && curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth < endsOnMonth && curMonth > initialStartMonth && arr[i].repeat_every === "1")
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth < endsOnMonth && curMonth > initialStartMonth && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
-                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && curDate2.date() <= endsOnDate && arr[i].repeat_every === "1") 
+                || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && curDate2.date() <= endsOnDate && arr[i].repeat_every === "1")
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && curDate2.date() <= endsOnDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth !== initialStartMonth && curDate2.date() <= endsOnDate && arr[i].repeat_every === "1")
                 || (curYear === initialEndOnYear &&  curYear === initialStartYear && curMonth === endsOnMonth && curMonth !== initialStartMonth && curDate2.date() <= endsOnDate && arr[i].repeat_every > 1 && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
@@ -369,7 +369,7 @@ export default class WeekGoals extends Component {
                 ){
                       Object.keys(arr[i].repeat_week_days).forEach(key => {
                         if(curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
-                          if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0) 
+                          if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0)
                             || arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay() === 1
                             || arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay() === 2
                             || arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2).getDay() === 3
@@ -380,7 +380,7 @@ export default class WeekGoals extends Component {
                               initialDayCorrect = true;
                             }
                         }
-                        
+
                         if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay()=== 0)
                         || (arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay()=== 1)
                         || (arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
@@ -395,36 +395,36 @@ export default class WeekGoals extends Component {
                           tempEndTime.setDate(curDate2.date());
                           tempStartTime.setFullYear(curYear);
                           tempEndTime.setFullYear(curYear);
-                        } 
-                        
+                        }
+
                     })
-  
+
                     if(!initialDayCorrect && curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
                         tempStartTime.setDate(curDate2.date() + 1);
                         tempEndTime.setDate(curDate2.date() + 1);
                     }
                   }
-              
+
             }
             else if(arr[i].repeat_ends === "Never"){
-              //week starts with each monday 
+              //week starts with each monday
               let initialDayCorrect = false;
               let startWeek = new Date(initialStartYear, initialStartMonth, initialStartDate);
               let weekStart = ISO8601_week_no(startWeek);
               let weekNow = new Date(curYear, curMonth,curDate2.date());
               let curWeek = ISO8601_week_no(weekNow);
-              
-              if( (curYear > initialStartYear  && arr[i].repeat_every === "1") 
+
+              if( (curYear > initialStartYear  && arr[i].repeat_every === "1")
                 || (((curYear - initialStartYear) === 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0))
                 || (((curYear - initialStartYear) > 1) && arr[i].repeat_every > 1 && ((curWeek - (53 - weekStart))% arr[i].repeat_every === 0)) //might need fixing
                 || (curYear === initialStartYear && curMonth > initialStartMonth && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
                 || (curYear === initialStartYear && curMonth === initialStartMonth && curDate2.date() >= initialStartDate && ((curWeek - weekStart) % arr[i].repeat_every) === 0)
                 ){
-  
+
               Object.keys(arr[i].repeat_week_days).forEach(key => {
-  
+
                 if(curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
-                  if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0) 
+                  if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay() === 0)
                     || arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay() === 1
                     || arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay() === 2
                     || arr[i].repeat_week_days[key] === 'Wednesday' && new Date(curDate2).getDay() === 3
@@ -435,7 +435,7 @@ export default class WeekGoals extends Component {
                       initialDayCorrect = true;
                     }
                 }
-                
+
                 if((arr[i].repeat_week_days[key] === 'Sunday' && new Date(curDate2).getDay()=== 0)
                 || (arr[i].repeat_week_days[key] === 'Monday' && new Date(curDate2).getDay()=== 1)
                 || (arr[i].repeat_week_days[key] === 'Tuesday' && new Date(curDate2).getDay()=== 2)
@@ -450,7 +450,7 @@ export default class WeekGoals extends Component {
                   tempEndTime.setDate(curDate2.date());
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
-                }         
+                }
              })
              if(!initialDayCorrect && curDate2.date() === initialStartDate && curMonth === initialStartMonth && curYear === initialStartYear){
                 tempStartTime.setDate(curDate2.date() + 1);
@@ -458,22 +458,22 @@ export default class WeekGoals extends Component {
              }
             }
            }
-  
+
         }
         /** REPEAT MONTH */
         if(arr[i].repeat_frequency === "MONTH" ){
           if(arr[i].repeat_ends === "After" ){
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
-              if(curDate2.date() >= initialStartDate      
+              if(curDate2.date() >= initialStartDate
                 && curDate2.date() <= initialEndDate
-                && tempStartTime.getMonth() + (j  * arr[i].repeat_every)=== curMonth 
+                && tempStartTime.getMonth() + (j  * arr[i].repeat_every)=== curMonth
                 && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0
                 && initialStartYear === curYear){
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
-              } 
+              }
             }
-            if(curDate2.date() >= initialStartDate      
+            if(curDate2.date() >= initialStartDate
               && curDate2.date() <= initialEndDate
               && curYear > initialStartYear
               && curYear - initialStartYear === 1
@@ -485,9 +485,9 @@ export default class WeekGoals extends Component {
                     tempEndTime.setMonth(curMonth);
                     tempStartTime.setFullYear(curYear);
                     tempEndTime.setFullYear(curYear);
-                  }   
-                }    
-            }else if(curDate2.date() >= initialStartDate      
+                  }
+                }
+            }else if(curDate2.date() >= initialStartDate
               && curDate2.date() <= initialEndDate
               && curYear - initialStartYear === 2
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0
@@ -498,34 +498,34 @@ export default class WeekGoals extends Component {
                     tempEndTime.setMonth(curMonth);
                     tempStartTime.setFullYear(curYear);
                     tempEndTime.setFullYear(curYear);
-                  }   
-                }    
+                  }
+                }
             }
           }
          else if(arr[i].repeat_ends === "On"){
           let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
           let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
           let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();
-            if(initialStartYear === initialEndOnYear 
-              && curMonth <=  endsOnMonth 
-              && curMonth > initialStartMonth  
-              && curDate2.date() >= initialStartDate      
-              && curDate2.date()<= initialEndDate 
+            if(initialStartYear === initialEndOnYear
+              && curMonth <=  endsOnMonth
+              && curMonth > initialStartMonth
+              && curDate2.date() >= initialStartDate
+              && curDate2.date()<= initialEndDate
               && curYear === initialStartYear
-              && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){   
+              && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
                 if(endsOnMonth === curMonth ){
                     if(endsOnDate >= initialStartDate ){
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
-                    }   
+                    }
                 }
                 else{
                       tempStartTime.setMonth(curMonth);
                       tempEndTime.setMonth(curMonth);
                 }
             }else if(initialStartYear !== initialEndOnYear
-              && curDate2.date() >= initialStartDate      
-              && curDate2.date()<= initialEndDate 
+              && curDate2.date() >= initialStartDate
+              && curDate2.date()<= initialEndDate
               && curYear > initialStartYear
               && curYear < initialEndOnYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
@@ -535,7 +535,7 @@ export default class WeekGoals extends Component {
                   tempEndTime.setMonth(curMonth);
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
-                }   
+                }
               }
               else{
                   tempStartTime.setMonth(curMonth);
@@ -545,8 +545,8 @@ export default class WeekGoals extends Component {
               }
             }else if(initialStartYear !== initialEndOnYear
               && curMonth <=  endsOnMonth
-              && curDate2.date() >= initialStartDate      
-              && curDate2.date()<= initialEndDate 
+              && curDate2.date() >= initialStartDate
+              && curDate2.date()<= initialEndDate
               && curYear === initialEndOnYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
               if(endsOnMonth === curMonth ){
@@ -555,7 +555,7 @@ export default class WeekGoals extends Component {
                   tempEndTime.setMonth(curMonth);
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
-                }   
+                }
               }
               else{
                   tempStartTime.setMonth(curMonth);
@@ -563,17 +563,17 @@ export default class WeekGoals extends Component {
                   tempStartTime.setFullYear(curYear);
                   tempEndTime.setFullYear(curYear);
               }
-            }else if(initialStartYear !== initialEndOnYear 
+            }else if(initialStartYear !== initialEndOnYear
               && curMonth > initialStartMonth
-              && curDate2.date() >= initialStartDate      
-              && curDate2.date()<= initialEndDate 
+              && curDate2.date() >= initialStartDate
+              && curDate2.date()<= initialEndDate
               && curYear === initialStartYear
               && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
               if(endsOnMonth === curMonth ){
                 if(endsOnDate >= initialStartDate ){
                   tempStartTime.setMonth(curMonth);
                   tempEndTime.setMonth(curMonth);
-                }   
+                }
               }
               else{
                   tempStartTime.setMonth(curMonth);
@@ -582,16 +582,16 @@ export default class WeekGoals extends Component {
             }
          }
          else if(arr[i].repeat_ends === "Never"){
-           if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
-            && curYear > initialStartYear 
+           if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate
+            && curYear > initialStartYear
             && ((curMonth - initialStartMonth ) % arr[i].repeat_every) === 0){
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
            }
-           else if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate 
-            && curMonth > initialStartMonth 
+           else if(curDate2.date() >= initialStartDate && curDate2.date()<= initialEndDate
+            && curMonth > initialStartMonth
             && curYear ===  initialStartYear
             && ((curMonth - initialStartMonth) % arr[i].repeat_every) === 0){
               tempStartTime.setMonth(curMonth);
@@ -604,13 +604,13 @@ export default class WeekGoals extends Component {
         if(arr[i].repeat_frequency === "YEAR" ){
           if(arr[i].repeat_ends === "After" ){
             for(let j = 1;j< arr[i].repeat_occurences ;j++){
-              if(curDate2.date() >= initialStartDate      
+              if(curDate2.date() >= initialStartDate
                 && curDate2.date() <= initialEndDate
-                && curMonth >= tempStartTime.getMonth() 
-                && curMonth <= tempEndTime.getMonth()  
-                && tempStartTime.getFullYear() + (j  * arr[i].repeat_every)=== curYear 
+                && curMonth >= tempStartTime.getMonth()
+                && curMonth <= tempEndTime.getMonth()
+                && tempStartTime.getFullYear() + (j  * arr[i].repeat_every)=== curYear
                 && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){
-                      
+
                     tempStartTime.setFullYear(curYear);
                     tempEndTime.setFullYear(curYear);
               }
@@ -619,12 +619,12 @@ export default class WeekGoals extends Component {
           if(arr[i].repeat_ends === "On"){
           let endsOnDate = (new Date(arr[i].repeat_ends_on)).getDate();
           let endsOnMonth = (new Date(arr[i].repeat_ends_on)).getMonth();
-          let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();  
-            if(((curYear <=  initialEndOnYear && curYear > initialStartYear) )  
-              && curDate2.date() >= initialStartDate      
+          let initialEndOnYear = (new Date(arr[i].repeat_ends_on)).getFullYear();
+            if(((curYear <=  initialEndOnYear && curYear > initialStartYear) )
+              && curDate2.date() >= initialStartDate
               && curDate2.date()<= initialEndDate
               && curMonth === initialStartMonth
-              && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){  
+              && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){
                 if(initialEndOnYear === curYear ){
                   if(endsOnMonth === initialStartMonth){
                     if(endsOnDate >= initialStartDate ){
@@ -644,10 +644,10 @@ export default class WeekGoals extends Component {
             }
          }
          else if(arr[i].repeat_ends === "Never"){
-            if(curDate2.date() >= initialStartDate 
-            && curDate2.date()<= initialEndDate 
-            && curMonth === initialStartMonth 
-            && curYear > initialStartYear 
+            if(curDate2.date() >= initialStartDate
+            && curDate2.date()<= initialEndDate
+            && curMonth === initialStartMonth
+            && curYear > initialStartYear
             && ((curYear - initialStartYear) % arr[i].repeat_every) === 0){
                 tempStartTime.setFullYear(curYear);
                 tempEndTime.setFullYear(curYear);
@@ -735,7 +735,7 @@ export default class WeekGoals extends Component {
                                     </div>
                                 </div>
                             );
-                        res.push(newElement);  
+                        res.push(newElement);
                 } else if(startDate.date() !== endDate.date()) {
                     let minsToMarginTop = (tempStartTime.getMinutes() / 60) * this.state.pxPerHourForConversion;
                         let hourDiff = 24 - tempStartTime.getHours();
@@ -824,15 +824,15 @@ export default class WeekGoals extends Component {
                             </div>
                         );
                         res.push(newElement);
-            } 
-            else if( startDate.date() < curDate2.date() 
+            }
+            else if( startDate.date() < curDate2.date()
                 && endDate.date() > curDate2.date()
-                && curMonth <= endDate.month() 
+                && curMonth <= endDate.month()
                 && curMonth >= startDate.month()
-                && curYear <= endDate.year() 
+                && curYear <= endDate.year()
                 && curYear>= startDate.year()
             )
-            
+
             {
                 let minsToMarginTop = 0
                     let height = 24 * this.state.pxPerHourForConversion;
@@ -878,7 +878,7 @@ export default class WeekGoals extends Component {
       }
   }
   return res;
-   
+
 }
 
   timeDisplay = () => { //this essentially creates the time row

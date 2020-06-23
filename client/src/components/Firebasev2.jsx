@@ -14,6 +14,7 @@ import AddNewGRItem from "./addNewGRItem.jsx";
 import AddNewATItem from "./addNewATItem.jsx";
 import AddNewISItem from "./addNewISItem.jsx";
 import DeleteISItem from "./DeleteISItem.jsx";
+import ShowHistory from "./ShowHistory.jsx";
 import DeleteAT from "./deleteAT.jsx";
 import DeleteGR from "./deleteGR.jsx";
 import EditGR from "./editGR.jsx";
@@ -88,6 +89,7 @@ export default class FirebaseV2 extends React.Component {
 
     //Use to decided whether to show the respective modals
     addNewGRModalShow: false,
+    historyViewShow: false,
     addNewATModalShow: false,
     addNewISModalShow: false,
 
@@ -759,6 +761,7 @@ export default class FirebaseV2 extends React.Component {
 
   getRoutines = () => {
     let displayRoutines = [];
+    console.log("props", this.props.routines);
     if (this.props.routines.length !== 0) {
       //Check to make sure routines exists
       for (let i = 0; i < this.props.routines.length; i++) {
@@ -1185,7 +1188,7 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.goals[i]["title"];
         // let tempID = this.state.goals[i]["id"];
         let isComplete = this.props.goals[i]["is_complete"];
-        if (!this.props.goals[i]["is_available"]) {
+        if (!this.props.goals[i]["is_available"] || !this.props.goals[i]["is_displayed_today"]) {
           continue; //skip if not available
         }
         displayGoals.push(
@@ -1194,6 +1197,10 @@ export default class FirebaseV2 extends React.Component {
               action
               variant="light"
               style={{ width: "100%", marginBottom: "3px" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.setState({ historyViewShow: true, isRoutine: false })
+              }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
@@ -1257,7 +1264,10 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.routines[i]["title"];
         // let tempID = this.state.routines[i]['id'];
         let isComplete = this.props.routines[i]["is_complete"];
-        if (!this.props.routines[i]["is_available"]) {
+        let isInProgress = this.props.routines[i]["is_in_progress"];
+
+        // let isInProgress = this.props.
+        if (!this.props.routines[i]["is_available"] || !this.props.routines[i]["is_displayed_today"]) {
           continue; //skip if not available
         }
         displayRoutines.push(
@@ -1266,6 +1276,10 @@ export default class FirebaseV2 extends React.Component {
               action
               variant="light"
               style={{ marginBottom: "3px" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.setState({ historyViewShow: true, isRoutine: true })
+              }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
@@ -1284,8 +1298,6 @@ export default class FirebaseV2 extends React.Component {
                   <div>
                     <FontAwesomeIcon
                       title="Completed Item"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1299,12 +1311,11 @@ export default class FirebaseV2 extends React.Component {
                   <div>
                     <FontAwesomeIcon
                       title="Not Completed Item"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: this.state.availabilityColorCode }}
+                      style={{ color: isInProgress ? this.state.availabilityColorCode : "black" }}
                       onClick={(e) => {
+                        console.log(this);
                         e.stopPropagation();
-                        alert("Item Is Not Completed");
+                        alert("Item Is Not Completed???");
                       }}
                       icon={faRunning}
                       size="lg"
@@ -1430,6 +1441,8 @@ shows entire list of goals and routines
               borderRadius: "15px",
               boxShadow:
                 "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+              position: "absolute",
+              zIndex: "5"
             }}
           >
             {this.state.addNewGRModalShow ? this.AddNewGRModalAbstracted() : ""}
@@ -1592,6 +1605,17 @@ shows entire list of goals and routines
       />
     );
   };
+
+  historyModel = (displayGoals) => {
+    return (
+      <ShowHistory
+      closeModal={() => {
+        this.setState({ historyViewShow: false });
+      }}
+      displayGoals={displayGoals}
+    />
+    );
+  }
 
   /*
     abstractedInstructionsAndStepsList:
@@ -1846,8 +1870,23 @@ shows entire list of goals and routines
             {/* Button to add new Goal */}
             {/* <button type="button" class="btn btn-info btn-lg" onClick={() => { this.setState({ addNewGRModalShow: true, isRoutine: false }) }}>Add Goal</button> */}
           </ListGroup>
+
+          <div
+            style={{
+              borderRadius: "15px",
+              boxShadow:
+                "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
+              position: "absolute",
+              zIndex: "5",
+              top: "20px",
+              left: "20px",
+            }}
+          >
+            {this.state.historyViewShow ? this.historyModel() : ""}
+          </div>
         </Modal.Body>
-        <Modal.Footer></Modal.Footer>
+        <Modal.Footer>
+        </Modal.Footer>
       </Modal.Dialog>
     );
   };
