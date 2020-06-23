@@ -645,7 +645,7 @@ export default class editGR extends Component {
             }}
           />
         </div>
-
+        <Form.Group>
         <Row>
           <AddIconModal parentFunction={this.setPhotoURLFunction} />
           <UploadImage parentFunction={this.setPhotoURLFunction} />
@@ -662,7 +662,7 @@ export default class editGR extends Component {
             width="auto"
           ></img>
         </div>
-
+        </Form.Group>
         <Form.Group>
           <Form.Label> Routine/Goal </Form.Label>
           <Form.Control

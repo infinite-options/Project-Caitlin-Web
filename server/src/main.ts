@@ -875,7 +875,6 @@ errorHandler( app );
 const debugLog = debug( 'server:server' );
 
 var options = {}
-process.env.PORT = 3000
 if (process.env.SUDO_USER == "iodevcalendar") {
 	console.log("Prod Host");
 	options["key"] = fs.readFileSync(key_url);
