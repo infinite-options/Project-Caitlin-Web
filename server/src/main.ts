@@ -44,7 +44,7 @@ app.use(session({
 
 var credentials_url = 'credentials.json';
 var REDIRECTED_ADD_USER_URI;
-var firebase = require( 'firebase' );
+	var firebase = require( 'firebase' );
 var firebaseConfig;
 
 if (hostname == "manifestmylife") {
@@ -199,6 +199,11 @@ app.get( '/x', ( req, res ) => {
 
 app.get( '/test', ( req, res ) => {
 	res.redirect( '/' );
+} );
+
+app.get( '/privacy', ( req, res ) => {
+	console.log(__basedir)
+	res.sendFile( path.join( __basedir, 'privacy.html' ) );
 } );
 
 app.get( '/.well-known/pki-validation/6B573F01F1E6DAF81B7FD85EECA9946B.txt', ( req, res ) => {
