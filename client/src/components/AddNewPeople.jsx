@@ -22,7 +22,6 @@ import { storage } from './firebase';
       peopleDocsPath: firebase
         .firestore()
         .collection("users")
-        // .doc("7R6hAVmDrNutRkG3sVRy")
         .doc(this.props.currentUserId)
         .collection("people")
     };
@@ -98,7 +97,7 @@ import { storage } from './firebase';
   
     render() {
       return (
-        <Modal.Dialog style={{ marginLeft: "0", width: "350px" }}>
+        <Modal.Dialog style ={{marginLeft:"50px",marginTop:"-600px", width:"350px"}}>
           <Modal.Header closeButton onHide={this.props.closeModal} >
             <Modal.Title>
               <h5 className="normalfancytext">
@@ -193,6 +192,7 @@ import { storage } from './firebase';
            
           </Modal.Footer>
         </Modal.Dialog>
+        
       );
     }
   }

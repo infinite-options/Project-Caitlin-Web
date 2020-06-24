@@ -680,6 +680,8 @@ export default class DayRoutines extends Component {
       //***   Firbase boolean varibale to help mobile side know if to display routine */
       let checkCurDate = moment();
 
+      // console.log("this si the moment ",checkCurDate );
+
       if(checkCurDate.date() === curDate 
         && checkCurDate.month() === curMonth
         &&  checkCurDate.year() === curYear
@@ -694,7 +696,10 @@ export default class DayRoutines extends Component {
           newArr[this.props.routine_ids[i]].is_displayed_today = true;
           firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
         }
-      }else{
+      }else if(checkCurDate.date() === curDate  
+      && checkCurDate.month() === curMonth
+      &&  checkCurDate.year() === curYear){
+        console.log("does it go here");
           if(arr[i].is_displayed_today === (true || "1")){
            arr[i].is_displayed_today =  false;
            let newArr = this.props.originalGoalsAndRoutineArr;

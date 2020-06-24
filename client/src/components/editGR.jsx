@@ -235,7 +235,7 @@ export default class editGR extends Component {
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
     return minutes;
-  };
+  }; 
 
   handleNotificationChange = (temp) => {
     this.setState({ itemToEdit: temp });
@@ -643,7 +643,7 @@ export default class editGR extends Component {
                 e.stopPropagation();
               }
             }}
-          />
+          /> 
         </div>
         <Form.Group>
         <Row>
