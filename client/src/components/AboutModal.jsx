@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from "./firebase";
 import AddNewPeople from "./AddNewPeople";
+import SettingPage from "./SettingPage";
 import { Form,Row,Col ,Modal,Button,Container,Dropdown,DropdownButton,} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,11 +18,10 @@ class AboutModal extends React.Component{
             .firestore()
             .collection("users")
             .doc(this.props.theCurrentUserId),
-            // .doc("7R6hAVmDrNutRkG3sVRy"),
             importantPeople1id: null,
             importantPeople2id: null,
             importantPeople3id: null,
-            aboutMeObject: {have_pic: false, message_card:"", message_day:"",pic:""},
+            aboutMeObject: {have_pic: false, message_card:"", message_day:"",pic:"", timeSettings:{morning:"", afternoon:"", evening:"", night:"", dayStart:"", dayEnd:""}},
             firstName: "",
             lastName: "",
             peopleNamesArray: {},
@@ -39,6 +39,7 @@ class AboutModal extends React.Component{
             importantPeople2DocRefChanged: null,
             importantPeople3DocRefChanged: null,
             showAddNewPeopleModal: false,
+            showTimeModal: false,
             saveButtonEnabled: true,
             enableDropDown: false
             
@@ -337,9 +338,21 @@ class AboutModal extends React.Component{
         this.setState({showAddNewPeopleModal: false});
     }
 
+    hideTimeModal = () =>{
+        this.setState({showTimeModal: false});
+    }
     updatePeopleArray = () => {
         this.grabFireBaseAllPeopleNames();
     }
+
+    updateTimeSetting = (time) =>{
+        let temp = this.state.aboutMeObject;
+        temp.timeSettings = time;
+    
+        this.setState({ aboutMeObject: temp, showTimeModal: false  });
+
+    }
+
 
     changeImpPersonOne = (Reference) => {
         //Set the new person as an important person.
@@ -574,7 +587,7 @@ class AboutModal extends React.Component{
                     
                     <Form.Group >
                         <Form.Label>Important People</Form.Label>
-                        {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray} currentUserId={this.props.theCurrentUserId}/>}
+                       
                         <Row>
                             <Col>
                                 {(this.state.importantPeople1.have_pic === false ? 
@@ -930,6 +943,21 @@ class AboutModal extends React.Component{
                 </Modal.Body>
                 <Modal.Footer>
                     <Container fluid>
+                        <Row> 
+                        {/* style={{ display: "inline-block", margin: "10px", marginBottom: "0" }} */}
+          
+                            <Button variant="outline-primary" 
+                                    style={{ display: "inline-block", marginLeft: "15px", marginBottom: "10px"}}
+                                    onClick={() => {
+                                        this.setState(
+                                          {
+                                            showTimeModal: true,
+                                          }
+                                        );
+                                    }} >
+                                    Time Settings
+                            </Button>
+                        </Row>
                         <Row>
                             <Col xs={3}>
                             {((this.state.saveButtonEnabled === false || this.state.showAddNewPeopleModal === true)  ? 
@@ -955,6 +983,17 @@ class AboutModal extends React.Component{
                     </Container>
                 </Modal.Footer>
             </Modal.Dialog>
+            {/* <Modal.Dialog>
+            </Modal.Dialog> */}
+            {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray} currentUserId={this.props.theCurrentUserId}/>}
+             {(this.state.showTimeModal && !this.state.showAddNewPeopleModal) && 
+                <SettingPage  
+                    closeTimeModal = {this.hideTimeModal} 
+                    // newTimeSetting = {this.updateTimeSetting} 
+                    currentTimeSetting= {this.state.aboutMeObject.timeSettings || {}}
+                    newTimeSetting = {this.updateTimeSetting}
+                />}
+            {/* </Modal.Dialog> */}
          </div>
         );
     }
