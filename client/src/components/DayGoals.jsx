@@ -678,13 +678,14 @@ export default class DayGoals extends Component {
           newArr[this.props.goal_ids[i]].is_displayed_today = true;
           firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
         }
-      }else if(checkCurDate.date() === curDate 
+      }
+      else if(checkCurDate.date() === curDate 
       && checkCurDate.month() === curMonth
       &&  checkCurDate.year() === curYear){
           if(arr[i].is_displayed_today === (true || "1")){
            arr[i].is_displayed_today =  false;
            let newArr = this.props.originalGoalsAndRoutineArr;
-           newArr[this.props.routine_ids[i]].is_displayed_today = false;
+           newArr[this.props.goal_ids[i]].is_displayed_today = false;
            firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
           }
        }

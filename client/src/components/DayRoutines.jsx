@@ -699,7 +699,7 @@ export default class DayRoutines extends Component {
       }else if(checkCurDate.date() === curDate  
       && checkCurDate.month() === curMonth
       &&  checkCurDate.year() === curYear){
-        console.log("does it go here");
+        // console.log("does it go here");
           if(arr[i].is_displayed_today === (true || "1")){
            arr[i].is_displayed_today =  false;
            let newArr = this.props.originalGoalsAndRoutineArr;
