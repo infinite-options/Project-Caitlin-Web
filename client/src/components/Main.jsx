@@ -177,6 +177,7 @@ export default class MainPage extends React.Component {
                 goal.push(x[i]);
               }
             }
+            console.log("this si the original goals and routines grabed from firebase ", x);
             this.setState({
               originalGoalsAndRoutineArr: x,
               goals: goal,
@@ -186,6 +187,7 @@ export default class MainPage extends React.Component {
               routines: routine,
             });
           } else {
+            console.log("this si the original goals and routines grabed from firebase  blank", x);
             this.setState({
               originalGoalsAndRoutineArr: [],
               goals: goal,
@@ -248,7 +250,9 @@ export default class MainPage extends React.Component {
     });
   };
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    // this.grabFireBaseRoutinesGoalsData();
+  }
 
   // Entry of the page
   componentDidMount() {
@@ -2512,10 +2516,9 @@ this will close repeat modal.
                 // alignItems: "center"
               }}
             >
+              {/* {this.grabFireBaseRoutinesGoalsData()} */}
               {/* the modal for routine/goal is called Firebasev2 currently */}
-              {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
-          {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
-              {/* console.log("this is the originalGoals and rountines Arr") */}
+              {console.log("this is the originalGoals and rountines Arr from main  ", this.state.originalGoalsAndRoutineArr)}
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}

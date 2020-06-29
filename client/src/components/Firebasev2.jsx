@@ -51,8 +51,11 @@ import moment from "moment";
  */
 
 export default class FirebaseV2 extends React.Component {
-  state = {
-    firebaseRootPath: firebase
+  constructor(props) {
+    super(props);
+    console.log("this is the prop original goal ", this.props.originalGoalsAndRoutineArr)
+    this.state = {
+      firebaseRootPath: firebase
       .firestore()
       .collection("users")
       .doc(this.props.theCurrentUserID),
@@ -113,10 +116,74 @@ export default class FirebaseV2 extends React.Component {
     timeSlotForIS: [],
 
     routine_completed: false,
+    };
+  }
+  // state = {
+  //   firebaseRootPath: firebase
+  //     .firestore()
+  //     .collection("users")
+  //     .doc(this.props.theCurrentUserID),
+  //   // .doc("7R6hAVmDrNutRkG3sVRy"),
+  //   is_sublist_available: true,
+  //   showEditModal: false,
+  //   indexEditing: "",
+  //   //This single GR item is passed to AddNewATItem to help processed the new item
+  //   singleGR: {
+  //     //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
+  //     show: false, // Show the modal
+  //     type: "None",
+  //     title: "GR Name",
+  //     photo: "",
+  //     available_end_time: new Date(), //TODO get these used
+  //     available_start_time: new Date(), //TODO get these used
+  //     id: null,
+  //     arr: [],
+  //     fbPath: null,
+  //   },
 
-    //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
-    // iconShowATModal: true
-  };
+  //   singleAT: {
+  //     //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
+  //     //with the task
+  //     show: false, // Show the model
+  //     type: "None", // Action or Task
+  //     title: "AT Name", //Title of action task ,
+  //     available_end_time: new Date(), //TODO get these used
+  //     available_start_time: new Date(), //TODO get these used
+  //     photo: "",
+  //     id: null, //id of Action Task
+  //     arr: [], //array of instruction/steps formatted to display as a list
+  //     fbPath: null, //Firebase direction to the arr
+  //   },
+  //   singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
+  //   singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
+  //   // modalWidth: "350px", //primary width size for all modals
+  //   modalWidth: "390px",
+
+  //   //Use to decided whether to show the respective modals
+  //   addNewGRModalShow: false,
+  //   historyViewShow: false,
+  //   addNewATModalShow: false,
+  //   addNewISModalShow: false,
+
+  //   //used to determine thumbnail picture size
+  //   thumbnailWidth: "150px",
+  //   thumbnailHeight: "100px",
+  //   thumbnailWidthV2: "200px",
+  //   thumbnailHeightV2: "50px",
+
+  //   //isRoutine is to check whether we clicked on add routine or add goal
+  //   isRoutine: true,
+  //   availabilityColorCode: "#D6A34C",
+
+  //   //For setting default time for the AT Item
+  //   timeSlotForAT: [],
+  //   timeSlotForIS: [],
+
+  //   routine_completed: false,
+
+  //   //used for the list item icon.If at GR and this icon is turned off. then wont be able to show Action and taske list.
+  //   // iconShowATModal: true
+  // };
 
   /**
    * refreshATItem:
@@ -156,16 +223,17 @@ export default class FirebaseV2 extends React.Component {
     this.setState({ singleAT: singleAt });
   };
 
-  constructor(props) {
-    // serves almost no purpose currently
-    super(props);
-    // console.log("running Firebase 2");
-    // this.state = {date: new Date()};
-  }
+  // constructor(props) {
+  //   // serves almost no purpose currently
+  //   super(props);
+  //   // console.log("running Firebase 2");
+  //   // this.state = {date: new Date()};
+  // }
 
   componentDidMount() {
+
     //Grab the
-    this.grabFireBaseRoutinesGoalsData();
+    // this.grabFireBaseRoutinesGoalsData();
     // console.log("going into compoent did mount");
   }
 
@@ -177,7 +245,78 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   grabFireBaseRoutinesGoalsData = () => {
-    this.props.grabFireBaseRoutinesGoalsData();
+    const db = firebase.firestore();
+    // console.log("FirebaseV2 component did mount");
+    // console.log("this is the current userid", this.state.currentUserId);
+    if (this.state.currentUserId !== "") {
+      //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+      const docRef = db.collection("users").doc(this.state.currentUserId);
+      // console.log("this is suppose tto be the path", docRef);
+      docRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          // console.log(doc.data());
+          var x = doc.data();
+          // console.log("this is the data", x);
+          // console.log(x["goals&routines"]);
+          // x = x["goals&routines"];
+          
+          let routine = [];
+          let routine_ids = [];
+          let goal = [];
+          let goal_ids = [];
+          if (x["goals&routines"] !== undefined) {
+            x = x["goals&routines"];
+            // console.log("this is the goals and routines", x);
+            x.sort((a,b) => {
+              let timeA = new Date(a["start_day_and_time"]);
+              let timeB = new Date(b["start_day_and_time"]);
+              return timeA.getTime() - timeB.getTime();
+            });
+            // console.log("sorted goals and routines", x);
+            for (let i = 0; i < x.length; ++i) {
+              if (x[i]["is_persistent"]) {
+                // console.log("routine " + x[i]["title"]);
+                // console.log("is the is the id ", x[i].id);
+                routine_ids.push(i);
+                routine.push(x[i]);
+              } else if (!x[i]["is_persistent"]) {
+                // console.log("not routine " + x[i]["title"]);
+                goal_ids.push(i);
+                goal.push(x[i]);
+              }
+            }
+            console.log("this si the original goals and routines grabed from firebase ", x);
+            this.setState({
+              originalGoalsAndRoutineArr: x,
+              // goals: goal,
+              // addNewGRModalShow: false,
+              // routine_ids: routine_ids,
+              // goal_ids: goal_ids,
+              // routines: routine,
+            });
+          } else {
+            console.log("this si the original goals and routines grabed from firebase  blank", x);
+            this.setState({
+              originalGoalsAndRoutineArr: [],
+              // goals: goal,
+              // addNewGRModalShow: false,
+              // routine_ids: routine_ids,
+              // goal_ids: goal_ids,
+              // routines: routine,
+            });
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
+    }
+    // this.props.grabFireBaseRoutinesGoalsData();
   };
 
   // componentWillUnmount() {
@@ -733,6 +872,7 @@ export default class FirebaseV2 extends React.Component {
    */
   findIndexByID = (id) => {
     let originalGoalsAndRoutineArr = this.props.originalGoalsAndRoutineArr;
+    // console.log("this is the originals Goals and routine from find index ", originalGoalsAndRoutineArr)
     for (let i = 0; i < originalGoalsAndRoutineArr.length; i++) {
       if (id === originalGoalsAndRoutineArr[i].id) {
         return i;
@@ -766,7 +906,7 @@ export default class FirebaseV2 extends React.Component {
 
   getRoutines = () => {
     let displayRoutines = [];
-    console.log("props", this.props.routines);
+    // console.log("props", this.props.routines);
     if (this.props.routines.length !== 0) {
       //Check to make sure routines exists
       for (let i = 0; i < this.props.routines.length; i++) {
@@ -901,6 +1041,8 @@ export default class FirebaseV2 extends React.Component {
                 </Row>
                 <Row>
                   {/* {(this.state.showEditModal &&  */}
+                     
+                    {/* {console.log("this is the ATArray fron firbasev2 ",this.props.originalGoalsAndRoutineArr[this.findIndexByID(tempID)] )} */}
                       <EditGR
                           closeEditModal={() => {
                             this.setState({ showEditModal: false });

@@ -59,7 +59,25 @@ export default class editGR extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // console.log(this.props.ATArray[this.props.i].title);
+    // if(this.props.ATArray[this.props.i].title === "Every month"){
+    //   console.log("this is the prop that holds the firbase ",this.props.ATArray[this.props.i] );
+    //   console.log("this is the state of itemtoedit ", this.state.itemToEdit);
+    //   console.log("when does it go here");
+    // }
+   
+    // console.log("is this true ", prevState.itemToEdit !== this.state.itemToEdit);
+    // console.log(prevState.itemToEdit.title);
+    // if(prevState.itemToEdit.title === "Concurrent PM 2"){
+    //   console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // }
+    // console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // if(prevState.itemToEdit != this.props.ATArray[this.props.i]){
+    //   console.log("this where suppose to go");
+    // }
+    
     if (prevProps.ATArray !== this.props.ATArray) {
+      // console.log("does it go here");
       let repeatOptionDropDown2;
       let repeatOption2 ;
       if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
@@ -77,9 +95,36 @@ export default class editGR extends Component {
     }
   }
 
+
   componentDidMount() {
+    
+    // if(prevState.itemToEdit.title === "Concurrent PM 2"){
+      
+      // console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // }
     this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
   }
+
+  updateStateWithFB() {
+    console.log("does it go in here");
+    let repeatOptionDropDown2;
+    let repeatOption2 ;
+    if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
+        repeatOptionDropDown2 = "Custom...";
+        repeatOption2 =true
+    }else{
+      repeatOptionDropDown2 = "Does not repeat";
+      repeatOption2 = false;
+    }
+    console.log("this is the item to edit ", this.props.ATArray[this.props.i]);
+    this.setState({
+      itemToEdit: this.props.ATArray[this.props.i],
+      repeatOptionDropDown: repeatOptionDropDown2,
+      repeatOption: repeatOption2,
+    });
+
+  }
+
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
@@ -613,9 +658,7 @@ export default class editGR extends Component {
       <Row
         style={{
           marginLeft:"0px",
-          // marginLeft: this.props.marginLeftV ,
           border: "2px",
-          // padding: "20px",
           padding: "15px",
           marginTop: "10px",
         }}
@@ -750,6 +793,8 @@ export default class editGR extends Component {
                   e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                  console.log("this is the temp ", temp );
+                  console.log("yhis is the prop that shouldnt have changed ",  this.props.ATArray[this.props.i])
                   this.setState({ itemToEdit: temp });
                 }}
               />
@@ -1134,7 +1179,9 @@ export default class editGR extends Component {
       >
       {/* {console.log("this is the s")} */}
         {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
-        {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.editGRForm() : <div> </div>}
+        {/* {this.updateStateWithFB} */}
+        {/* {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.updateStateWithFB(): <div> </div>} */}
+        {(this.props.showModal && (this.props.i === this.props.indexEditing))? this.editGRForm() : <div> </div>}
         {/* {this.editGRForm()} */}
         {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}

@@ -9,7 +9,7 @@ export default class AddIconModal extends Component {
     this.state = {
       show: false,
       photo_url: null,
-    };
+    }; 
   }
 
   onHandleShowClick = () => {
