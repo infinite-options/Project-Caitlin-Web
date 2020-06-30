@@ -27,8 +27,8 @@ export default class MainPage extends React.Component {
     return (
       <Form as={Container} style={{
         width: "600px",
-        margin: "auto",
-        padding: "5px 5px",
+        marginRight: "auto",
+        padding: "5px 5px 5px 5px",
         borderRadius: "15px",
         boxShadow:
         "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
@@ -373,19 +373,47 @@ export default class MainPage extends React.Component {
       return (<Redirect push to="main" />);
     } else {
       return (
-        <div style={{textAlign: "center"}}>
-        <h2>
-        Welcome to Memory Not Impossible
-        </h2>
-        <br />
-        {this.LogInForm()}
+        <div style={{textAlign: "center", fontFamily: "San Serif", fontSize: "1.0em", paddingTop: "20px"}}>
+          <a style={{paddingRight: "315px", fontSize: "1.5em"}}>
+            <img style={{width: "50px", borderRadius: 0, border: 0}} src="Manifest Icon-App-1024x1024.png"/>anifest My Life
+          </a>
+          <a style={{paddingLeft: "20px",paddingRight: "20px", color:"black"}} href="/">/HOME</a>
+          <a style={{paddingRight: "20px", color:"black"}} href="https://www.notimpossible.com">/NOT IMPOSSIBLE</a>
+          <a style={{paddingRight: "20px", color:"black"}} href="https://www.infiniteoptions.com">/INFINITE OPTIONS</a>
+          <a style={{paddingRight: "20px", color:"black"}} href="/">/SIGN IN</a>
+        <div>
+        </div>
+        <br/>
+        <div style={{display: "-webkit-inline-box"}}>
+        <img style={{width: "380px", marginLeft: "auto", marginRight: "30px", borderRadius: 0, border: 0}} src="Helping Others.png"/>
+        <div>
+        <div style={{fontSize: "1.5em"}}><p style={{display: "inline", color: "#6495ED"}}>Help One</p> - <p style={{display: "inline", color: "#8FBC8F"}}>Help Many</p></div>
+        {this.LogInForm()} V1.4</div>
+        </div>
         {this.signUpModal()}
         {this.socialSignUpModal()}
-        <div>
-        <div style={{display: "inline"}}>V1.4</div>
+        <div style={{fontFamily: "San Serif", fontSize: "1.1em", marginTop: "10px"}}>
+        <div style={{display: "-webkit-inline-box", textAlign: "left", paddingTop: "10px", borderTop: "2px solid #6495ED", width: "1000px"}}>
+        <div style={{width: "220px"}}>
+        The Trusted Advisor
+        </div>
+        <div style={{width: "770px", color: "#6495ED"}}>
+        <p>You know you are the key to helping people achieve their potential.  Login to make their dreams become their reality!</p>
+        <p>Login in with an email and password or using Google Login.  When you login we track your name, email and user id</p>
         </div>
         </div>
-
+        <div style={{display: "-webkit-inline-box", textAlign: "left", paddingTop: "10px", borderTop: "2px solid #8FBC8F", width: "1000px"}}>
+        <div style={{width: "220px"}}>
+        The User
+        </div>
+        <div style={{width: "770px", color: "#8FBC8F"}}>
+        <p>You know you accomplish more!  With the right help, structure and guidance you can make each better than the last and move toward your goals!</p>
+        <p>Your Trusted Advisor will ask you to enter your Google ID and Password to give them access to your Calendar.  With that information they will be able to help you manage your day and add structure to your life by customizing Goals and Routines.</p>
+        <p>It's your life and you are in control!  We give you options.  You choose what you do!</p>
+        </div>
+        </div>
+        </div>
+        </div>
       );
     }
   }
