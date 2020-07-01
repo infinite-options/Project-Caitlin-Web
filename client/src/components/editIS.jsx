@@ -122,22 +122,26 @@ export default class editIS extends Component {
           />
         </div>
 
-        <Row>
-          <AddIconModal parentFunction={this.setPhotoURLFunction} />
-          <UploadImage parentFunction={this.setPhotoURLFunction} />
-          <br />
-        </Row>
+        <Form.Group>
+          <Form.Label> Photo </Form.Label>
+          <Row>
+            <AddIconModal parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <br />
+          </Row>
 
-        <div>
-          <label>Icon: </label>
+          <div style = {{marginTop:"10px"}}>
+            <label>Icon: </label>
 
-          <img
-            alt="None"
-            src={this.state.itemToEdit.photo}
-            height="70"
-            width="auto"
-          ></img>
-        </div>
+            <img
+              alt="None"
+              src={this.state.itemToEdit.photo}
+              height="70"
+              width="auto"
+            ></img>
+          </div>
+        </Form.Group>
+
         <div>
           <label>Available Start Time</label>
           <div className="input-group mb-3">

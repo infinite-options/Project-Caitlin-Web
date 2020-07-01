@@ -692,24 +692,25 @@ export default class editGR extends Component {
         </div>
        
         <Form.Group>
-        <Form.Label> Photo </Form.Label>
-        <Row>
-          <AddIconModal parentFunction={this.setPhotoURLFunction} />
-          <UploadImage parentFunction={this.setPhotoURLFunction} />
-          <br />
-        </Row>
+          <Form.Label> Photo </Form.Label>
+          <Row>
+            <AddIconModal parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <br />
+          </Row>
 
-        <div style = {{marginTop:"10px"}}>
-          <label>Icon: </label>
+          <div style = {{marginTop:"10px"}}>
+            <label>Icon: </label>
 
-          <img
-            alt="None"
-            src={this.state.itemToEdit.photo}
-            height="70"
-            width="auto"
-          ></img>
-        </div>
+            <img
+              alt="None"
+              src={this.state.itemToEdit.photo}
+              height="70"
+              width="auto"
+            ></img>
+          </div>
         </Form.Group>
+
         <Form.Group>
           <Form.Label> Routine/Goal </Form.Label>
           <Form.Control
