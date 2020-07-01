@@ -1085,7 +1085,7 @@ export default class editGR extends Component {
                       type="number"
                       min="1"
                       max="10000"
-                      value={this.state.itemToEdit.repeat_occurences || "1"}
+                      value={this.state.itemToEdit.repeat_occurences}
                       onChange={(e) =>
                         this.handleRepeatOccurrence(e.target.value)
                       }
