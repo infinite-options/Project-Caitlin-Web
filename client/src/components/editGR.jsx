@@ -55,10 +55,11 @@ export default class editGR extends Component {
         5: "",
         6: "",
       },
-    };
+    }; 
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // console.log("this is in the component update ",this.props.ATArray[this.props.i] );
     // console.log(this.props.ATArray[this.props.i].title);
     // if(this.props.ATArray[this.props.i].title === "Every month"){
     //   console.log("this is the prop that holds the firbase ",this.props.ATArray[this.props.i] );
@@ -129,6 +130,7 @@ export default class editGR extends Component {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
     this.setState({ itemToEdit: temp });
+    // this.props.changePhoto(photo_url);
   };
 
   newInputSubmit = () => {
@@ -688,14 +690,16 @@ export default class editGR extends Component {
             }}
           /> 
         </div>
+       
         <Form.Group>
+        <Form.Label> Photo </Form.Label>
         <Row>
           <AddIconModal parentFunction={this.setPhotoURLFunction} />
           <UploadImage parentFunction={this.setPhotoURLFunction} />
           <br />
         </Row>
 
-        <div>
+        <div style = {{marginTop:"10px"}}>
           <label>Icon: </label>
 
           <img
@@ -790,11 +794,9 @@ export default class editGR extends Component {
                 value={this.convertToMinutes()}
                 style={{ marginTop: ".25rem", paddingRight: "0px" }}
                 onChange={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation()
                   let temp = this.state.itemToEdit;
                   temp.expected_completion_time = this.convertTimeToHRMMSS(e);
-                  console.log("this is the temp ", temp );
-                  console.log("yhis is the prop that shouldnt have changed ",  this.props.ATArray[this.props.i])
                   this.setState({ itemToEdit: temp });
                 }}
               />

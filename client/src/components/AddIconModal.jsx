@@ -5,7 +5,7 @@ import { Form, Row, Col } from "react-bootstrap";
 export default class AddIconModal extends Component {
   constructor(props) {
     super(props);
-    console.log(props.parentFunction);
+    // console.log(props.parentFunction);
     this.state = {
       show: false,
       photo_url: null,
@@ -18,7 +18,7 @@ export default class AddIconModal extends Component {
   };
 
   onPhotoClick = (e) => {
-    console.log("this is the E: ", e);
+    // console.log("this is the E: ", e);
     this.setState({ photo_url: e });
   };
 
@@ -32,7 +32,7 @@ export default class AddIconModal extends Component {
     return (
       <>
         <Button
-          variant="primary"
+          variant="outline-primary" 
           style={{ marginRight: "15px", marginLeft: "15px" }}
           onClick={this.onHandleShowClick}
         >

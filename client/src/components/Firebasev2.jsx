@@ -898,11 +898,8 @@ export default class FirebaseV2 extends React.Component {
       });
   };
 
-  // ListFalse = ()=>{
-  //   this.setState({
-  //     is_sublist_available:false
-  //   });
-  // };
+
+ 
 
   getRoutines = () => {
     let displayRoutines = [];
@@ -994,7 +991,6 @@ export default class FirebaseV2 extends React.Component {
                       <DeleteGR
                         deleteIndex={this.findIndexByID(tempID)}
                         Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
                         Path={firebase
                           .firestore()
                           .collection("users")
@@ -1015,37 +1011,17 @@ export default class FirebaseV2 extends React.Component {
                           .doc(this.props.theCurrentUserID)}
                         refresh={this.grabFireBaseRoutinesGoalsData}
                       />
-                     {/* {(!this.state.showEditModal && 
-                         <div style={{ marginLeft: "5px" }}>
-                          <FontAwesomeIcon
-                            title="Edit Item"
-                            onMouseOver={(event) => {
-                              event.target.style.color = "#48D6D2";
-                            }}
-                            onMouseOut={(event) => {
-                              event.target.style.color = "#000000";
-                            }}
-                            style={{ color: "#000000" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              this.setState({ showEditModal: true });
-                            }}
-                            icon={faEdit}
-                            size="lg"
-                          />
-                         </div>
-                      )}  */}
                       
                     </Row>
                   </Col>
                 </Row>
                 <Row>
-                  {/* {(this.state.showEditModal &&  */}
                      
                     {/* {console.log("this is the ATArray fron firbasev2 ",this.props.originalGoalsAndRoutineArr[this.findIndexByID(tempID)] )} */}
                       <EditGR
                           closeEditModal={() => {
                             this.setState({ showEditModal: false });
+                            this.props.updateFBGR();
                           }}
                           showModal = {this.state.showEditModal}
                           indexEditing = {this.state.indexEditing}
@@ -1056,6 +1032,8 @@ export default class FirebaseV2 extends React.Component {
                             .collection("users")
                             .doc(this.props.theCurrentUserID)}
                           refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                          // chnagePhoto = {this.changePhotoIcon()}
+                          
                       /> 
                     {/* )} */}
                 </Row>
@@ -1133,6 +1111,7 @@ export default class FirebaseV2 extends React.Component {
                   <EditGR
                           closeEditModal={() => {
                             this.setState({ showEditModal: false });
+                            this.props.updateFBGR();
                           }}
                           showModal = {this.state.showEditModal}
                           indexEditing = {this.state.indexEditing}
@@ -1288,6 +1267,7 @@ export default class FirebaseV2 extends React.Component {
                     <EditGR
                           closeEditModal={() => {
                             this.setState({ showEditModal: false });
+                            this.props.updateFBGR();
                           }}
                           showModal = {this.state.showEditModal}
                           indexEditing = {this.state.indexEditing}
@@ -1374,6 +1354,7 @@ export default class FirebaseV2 extends React.Component {
                    <EditGR
                           closeEditModal={() => {
                             this.setState({ showEditModal: false });
+                            this.props.updateFBGR();
                           }}
                           showModal = {this.state.showEditModal}
                           indexEditing = {this.state.indexEditing}
