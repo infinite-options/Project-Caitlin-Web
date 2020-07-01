@@ -373,18 +373,17 @@ export default class MainPage extends React.Component {
       return (<Redirect push to="main" />);
     } else {
       return (
-        <div style={{textAlign: "center", fontFamily: "San Serif", fontSize: "1.0em", paddingTop: "20px"}}>
-          <a style={{paddingRight: "315px", fontSize: "1.5em"}}>
+        <div style={{width: "1000px", marginLeft: "auto",  marginRight: "auto", textAlign: "center", fontFamily: "San Serif", fontSize: "1.0em", paddingTop: "20px"}}>
+          <a style={{fontSize: "1.5em", float:"left"}}>
             <img style={{width: "50px", borderRadius: 0, border: 0}} src="Manifest Icon-App-1024x1024.png"/>anifest My Life
           </a>
-          <a style={{paddingLeft: "20px",paddingRight: "20px", color:"black"}} href="/">/HOME</a>
-          <a style={{paddingRight: "20px", color:"black"}} href="https://www.notimpossible.com">/NOT IMPOSSIBLE</a>
-          <a style={{paddingRight: "20px", color:"black"}} href="https://www.infiniteoptions.com">/INFINITE OPTIONS</a>
-          <a style={{paddingRight: "20px", color:"black"}} href="/">/SIGN IN</a>
+          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="/">/SIGN IN</a>
+          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="https://www.infiniteoptions.com">/INFINITE OPTIONS</a>
+          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="https://www.notimpossible.com">/NOT IMPOSSIBLE</a>
+          <a style={{float:"right", padding: "12px 0px", color:"black"}} href="/">/HOME</a>
         <div>
         </div>
-        <br/>
-        <div style={{display: "-webkit-inline-box"}}>
+        <div style={{display: "-webkit-inline-box", paddingTop:"20px"}}>
         <img style={{width: "380px", marginLeft: "auto", marginRight: "30px", borderRadius: 0, border: 0}} src="Helping Others.png"/>
         <div>
         <div style={{fontSize: "1.5em"}}><p style={{display: "inline", color: "#6495ED"}}>Help One</p> - <p style={{display: "inline", color: "#8FBC8F"}}>Help Many</p></div>
