@@ -18,12 +18,20 @@ export default class editGR extends Component {
       // showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
       showRepeatModal: false,
-      repeatOption: this.props.ATArray[this.props.i].repeat === (true || "1")?true: false,
+      repeatOption:
+        this.props.ATArray[this.props.i].repeat === (true || "1")
+          ? true
+          : false,
       // repeatOptionDropDown: "Does not repeat",
 
-      repeatOptionDropDown: this.props.ATArray[this.props.i].repeat === (true || "1")? "Custom..." : "Does not repeat",
-      repeatDropDown: this.props.ATArray[this.props.i].repeat_frequency || "DAY",
-      repeatDropDown_temp: this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+      repeatOptionDropDown:
+        this.props.ATArray[this.props.i].repeat === (true || "1")
+          ? "Custom..."
+          : "Does not repeat",
+      repeatDropDown:
+        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
+      repeatDropDown_temp:
+        this.props.ATArray[this.props.i].repeat_frequency || "DAY",
       repeatMonthlyDropDown: "Monthly on day 13",
       repeatInputValue: this.props.ATArray[this.props.i].repeat_every || "1",
       repeatInputValue_temp:
@@ -61,11 +69,14 @@ export default class editGR extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.ATArray !== this.props.ATArray) {
       let repeatOptionDropDown2;
-      let repeatOption2 ;
-      if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
-          repeatOptionDropDown2 = "Custom...";
-          repeatOption2 =true
-      }else{
+      let repeatOption2;
+      if (
+        this.props.ATArray[this.props.i].repeat === true ||
+        this.props.ATArray[this.props.i].repeat === "1"
+      ) {
+        repeatOptionDropDown2 = "Custom...";
+        repeatOption2 = true;
+      } else {
         repeatOptionDropDown2 = "Does not repeat";
         repeatOption2 = false;
       }
@@ -235,7 +246,7 @@ export default class editGR extends Component {
     let hrToMin = hours * 60;
     let minutes = myStr[1] * 1 + hrToMin;
     return minutes;
-  }; 
+  };
 
   handleNotificationChange = (temp) => {
     this.setState({ itemToEdit: temp });
@@ -612,7 +623,7 @@ export default class editGR extends Component {
     return (
       <Row
         style={{
-          marginLeft:"0px",
+          marginLeft: "0px",
           // marginLeft: this.props.marginLeftV ,
           border: "2px",
           // padding: "20px",
@@ -643,40 +654,40 @@ export default class editGR extends Component {
                 e.stopPropagation();
               }
             }}
-          /> 
+          />
         </div>
         <Form.Group>
-        <Row>
-          <AddIconModal parentFunction={this.setPhotoURLFunction} />
-          <UploadImage parentFunction={this.setPhotoURLFunction} />
-          <br />
-        </Row>
+          <Row>
+            <AddIconModal parentFunction={this.setPhotoURLFunction} />
+            <UploadImage parentFunction={this.setPhotoURLFunction} />
+            <br />
+          </Row>
 
-        <div>
-          <label>Icon: </label>
+          <div>
+            <label>Icon: </label>
 
-          <img
-            alt="None"
-            src={this.state.itemToEdit.photo}
-            height="70"
-            width="auto"
-          ></img>
-        </div>
+            <img
+              alt="None"
+              src={this.state.itemToEdit.photo}
+              height="70"
+              width="auto"
+            ></img>
+          </div>
         </Form.Group>
         <Form.Group>
           <Form.Label> Routine/Goal </Form.Label>
           <Form.Control
-             as='select'
-             value={this.state.itemToEdit.is_persistent}
-             onChange={e => {
-               e.stopPropagation();
-               let temp = this.state.itemToEdit;
-               temp.is_persistent = e.target.value==='true';
-               this.setState({itemToEdit: temp})
-             }}
+            as="select"
+            value={this.state.itemToEdit.is_persistent}
+            onChange={(e) => {
+              e.stopPropagation();
+              let temp = this.state.itemToEdit;
+              temp.is_persistent = e.target.value === "true";
+              this.setState({ itemToEdit: temp });
+            }}
           >
-            <option value={'true'}> Routine </option>
-            <option value={'false'}> Goal </option>
+            <option value={"true"}> Routine </option>
+            <option value={"false"}> Goal </option>
           </Form.Control>
         </Form.Group>
 
@@ -689,13 +700,13 @@ export default class editGR extends Component {
         </Form.Group>
 
         <Form.Group
-              value={this.state.itemToEdit.end_day_and_time || ''}
-              controlId="X"
-            >
-              <Form.Label>End Time</Form.Label>
-              <br />
-              {this.endTimePicker()}
-              <div style={{ color: "red" }}> {this.state.showDateError}</div>
+          value={this.state.itemToEdit.end_day_and_time || ""}
+          controlId="X"
+        >
+          <Form.Label>End Time</Form.Label>
+          <br />
+          {this.endTimePicker()}
+          <div style={{ color: "red" }}> {this.state.showDateError}</div>
         </Form.Group>
 
         <div>
@@ -1056,7 +1067,6 @@ export default class editGR extends Component {
                       defaultChecked={
                         this.state.itemToEdit.repeat_ends === "After" && true
                       }
-                      disabled
                     />
                   ) : (
                     <Form.Check.Input
@@ -1132,9 +1142,13 @@ export default class editGR extends Component {
           e.stopPropagation();
         }}
       >
-      {/* {console.log("this is the s")} */}
+        {/* {console.log("this is the s")} */}
         {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
-        {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.editGRForm() : <div> </div>}
+        {this.props.showModal && this.props.i === this.props.indexEditing ? (
+          this.editGRForm()
+        ) : (
+          <div> </div>
+        )}
         {/* {this.editGRForm()} */}
         {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}

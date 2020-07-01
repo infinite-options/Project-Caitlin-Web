@@ -495,62 +495,222 @@ export default class DayRoutines extends Component {
             let week_days_arr = [];
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
-            /*
-            console.log("Repeat_every ", arr[i].repeat_every);
-            console.log("repeat_occurences: ", arr[i].repeat_occurences);
-            console.log("repeat_week_days: ", arr[i].repeat_week_days);
-            console.log("curDate", curDate);
-            */
+
+            const start_day_and_time = arr[i].start_day_and_time.split(" ");
+            const initDate = start_day_and_time[1];
+            const initMonth = getMonthNumber(start_day_and_time[2]);
+            const initYear = start_day_and_time[3];
+
+            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            //var startdate = "20-03-2014";
+            var new_date = moment(initFullDate, "MM/DD/YYYY");
+            //var thing = new_date.add(5, "days").format("L");
 
             for (const day in arr[i].repeat_week_days) {
               if (arr[i].repeat_week_days[day] !== "") {
-                week_days_arr.push(arr[i].repeat_week_days[day]);
+                week_days_arr.push(day);
               }
             }
 
-            console.log("occurence_dates: ", occurence_dates);
-            let start_date_string = getFormattedDate(tempStartTime);
-            const start_date = moment(start_date_string);
-            console.log("curDateString: ", start_date);
-
             if (week_days_arr.length === 0) {
               for (let i = 0; i < occurences; i++) {
-                let date = start_date
+                let moment_init_date = moment(initFullDate);
+                let date = moment_init_date
                   .add(i * repeat_every, "weeks")
                   .format("L");
                 occurence_dates.push(date);
               }
+            } else {
+              for (let j = 0; j < week_days_arr.length; j++) {
+                let nextDayOfTheWeek = getNextDayOfTheWeek(
+                  week_days_arr[j],
+                  new_date
+                );
+                for (let i = 0; i < occurences; i++) {
+                  let date = nextDayOfTheWeek
+                    .clone()
+                    .add(i * repeat_every, "weeks")
+                    .format("L");
+                  occurence_dates.push(date);
+                }
+              }
             }
 
-            //
-            //let moment_time = moment().add(7, "days").calendar();
-            //let day1 = moment("2020-05-29").add(7, "days").calendar();
-            //console.log("day 1: ", day1);
-            /*
-            for (let i = 0; i < occurences; i++) {
-              let display = moment().day("Monday");
-              let moment_time = display.add(i, "weeks").format("L");
-              occurence_dates.push(moment_time);
-            }
-            */
-            const today_date_object = new Date(curYear, curMonth, curDate);
-            const today = getFormattedDate(today_date_object);
+            console.log("occurence_dates: ", occurence_dates);
+
+            let today_date_object = new Date(curYear, curMonth, curDate);
+            let today = getFormattedDate(today_date_object);
+
             if (occurence_dates.includes(today)) {
-              console.log("includes Yes");
+              tempStartTime.setMonth(curMonth);
+              tempEndTime.setMonth(curMonth);
+              tempStartTime.setDate(curDate);
+              tempEndTime.setDate(curDate);
+              tempStartTime.setFullYear(curYear);
+              tempEndTime.setFullYear(curYear);
             }
 
-            /*
-            tempStartTime.setMonth(curMonth);
-            tempEndTime.setMonth(curMonth);
-            tempStartTime.setDate(curDate);
-            tempEndTime.setDate(curDate);
-            tempStartTime.setFullYear(curYear);
-            tempEndTime.setFullYear(curYear);
-            */
-
             ///
 
             ///
+          } else if (arr[i].repeat_ends === "On") {
+            let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
+            let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
+            let initialEndOnYear = new Date(
+              arr[i].repeat_ends_on
+            ).getFullYear();
+            let initialDayCorrect = false;
+            let startWeek = new Date(
+              initialStartYear,
+              initialStartMonth,
+              initialStartDate
+            );
+            let weekStart = ISO8601_week_no(startWeek);
+            let weekNow = new Date(curYear, curMonth, curDate);
+            let curWeek = ISO8601_week_no(weekNow);
+
+            if (
+              (curYear < initialEndOnYear &&
+                curYear > initialStartYear &&
+                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
+              (curYear === initialEndOnYear &&
+                curYear !== initialStartYear &&
+                curMonth < endsOnMonth &&
+                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
+              (curYear < initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth > initialStartMonth &&
+                arr[i].repeat_every === "1") ||
+              (curYear < initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth > initialStartMonth &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+              (curYear < initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === initialStartMonth &&
+                curDate >= initialStartDate &&
+                arr[i].repeat_every === "1") ||
+              (curYear < initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === initialStartMonth &&
+                curDate >= initialStartDate &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth < endsOnMonth &&
+                curMonth > initialStartMonth &&
+                arr[i].repeat_every === "1") ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth < endsOnMonth &&
+                curMonth > initialStartMonth &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === endsOnMonth &&
+                curMonth === initialStartMonth &&
+                curDate >= initialStartDate &&
+                curDate <= endsOnDate &&
+                arr[i].repeat_every === "1") ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === endsOnMonth &&
+                curMonth === initialStartMonth &&
+                curDate >= initialStartDate &&
+                curDate <= endsOnDate &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === endsOnMonth &&
+                curMonth !== initialStartMonth &&
+                curDate <= endsOnDate &&
+                arr[i].repeat_every === "1") ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === endsOnMonth &&
+                curMonth !== initialStartMonth &&
+                curDate <= endsOnDate &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === initialStartMonth &&
+                curMonth !== endsOnMonth &&
+                curDate >= initialStartDate &&
+                arr[i].repeat_every === "1") ||
+              (curYear === initialEndOnYear &&
+                curYear === initialStartYear &&
+                curMonth === initialStartMonth &&
+                curMonth !== endsOnMonth &&
+                curDate >= initialStartDate &&
+                arr[i].repeat_every > 1 &&
+                (curWeek - weekStart) % arr[i].repeat_every === 0)
+            ) {
+              Object.keys(arr[i].repeat_week_days).forEach((key) => {
+                if (
+                  curDate === initialStartDate &&
+                  curMonth === initialStartMonth &&
+                  curYear === initialStartYear
+                ) {
+                  if (
+                    (arr[i].repeat_week_days[key] === "Sunday" &&
+                      new Date(this.props.dateContext).getDay() === 0) ||
+                    (arr[i].repeat_week_days[key] === "Monday" &&
+                      new Date(this.props.dateContext).getDay() === 1) ||
+                    (arr[i].repeat_week_days[key] === "Tuesday" &&
+                      new Date(this.props.dateContext).getDay() === 2) ||
+                    (arr[i].repeat_week_days[key] === "Wednesday" &&
+                      new Date(this.props.dateContext).getDay() === 3) ||
+                    (arr[i].repeat_week_days[key] === "Thursday" &&
+                      new Date(this.props.dateContext).getDay() === 4) ||
+                    (arr[i].repeat_week_days[key] === "Friday" &&
+                      new Date(this.props.dateContext).getDay() === 5) ||
+                    (arr[i].repeat_week_days[key] === "Saturday" &&
+                      new Date(this.props.dateContext).getDay() == 6)
+                  ) {
+                    initialDayCorrect = true;
+                  }
+                }
+
+                if (
+                  (arr[i].repeat_week_days[key] === "Sunday" &&
+                    new Date(this.props.dateContext).getDay() === 0) ||
+                  (arr[i].repeat_week_days[key] === "Monday" &&
+                    new Date(this.props.dateContext).getDay() === 1) ||
+                  (arr[i].repeat_week_days[key] === "Tuesday" &&
+                    new Date(this.props.dateContext).getDay() === 2) ||
+                  (arr[i].repeat_week_days[key] === "Wednesday" &&
+                    new Date(this.props.dateContext).getDay() === 3) ||
+                  (arr[i].repeat_week_days[key] === "Thursday" &&
+                    new Date(this.props.dateContext).getDay() === 4) ||
+                  (arr[i].repeat_week_days[key] === "Friday" &&
+                    new Date(this.props.dateContext).getDay() === 5) ||
+                  (arr[i].repeat_week_days[key] === "Saturday" &&
+                    new Date(this.props.dateContext).getDay() === 6)
+                ) {
+                  tempStartTime.setMonth(curMonth);
+                  tempEndTime.setMonth(curMonth);
+                  tempStartTime.setDate(curDate);
+                  tempEndTime.setDate(curDate);
+                  tempStartTime.setFullYear(curYear);
+                  tempEndTime.setFullYear(curYear);
+                }
+              });
+
+              if (
+                !initialDayCorrect &&
+                curDate === initialStartDate &&
+                curMonth === initialStartMonth &&
+                curYear === initialStartYear
+              ) {
+                tempStartTime.setDate(curDate + 1);
+                tempEndTime.setDate(curDate + 1);
+              }
+            }
           } else if (arr[i].repeat_ends === "Never") {
             //week starts with each monday
             let initialDayCorrect = false;
@@ -1260,10 +1420,60 @@ export default class DayRoutines extends Component {
     );
   }
 }
+
 function getFormattedDate(date) {
   let year = date.getFullYear();
   let month = (1 + date.getMonth()).toString().padStart(2, "0");
   let day = date.getDate().toString().padStart(2, "0");
 
   return month + "/" + day + "/" + year;
+}
+
+function getNextDayOfTheWeek(day, date) {
+  const dayINeed = day; // for Thursday
+  const today = date.isoWeekday();
+  console.log("DayINeed, today", dayINeed, today);
+
+  // if we haven't yet passed the day of the week that I need:
+  if (today <= dayINeed) {
+    // then just give me this week's instance of that day
+    var nextDayOfTheWeek = date.day(dayINeed);
+    return nextDayOfTheWeek;
+  } else {
+    // otherwise, give me *next week's* instance of that same day
+    var nextDayOfTheWeek = date.add(1, "weeks").day(dayINeed);
+    console.log("from getNextday", nextDayOfTheWeek.format("L"));
+    return nextDayOfTheWeek;
+  }
+}
+function getMonthNumber(str) {
+  switch (str) {
+    case "Jan":
+      return "01";
+    case "Feb":
+      return "02";
+    case "Mar":
+      return "03";
+    case "April":
+      return "04";
+    case "May":
+      return "05";
+    case "Jun":
+      return "06";
+    case "Jul":
+      return "07";
+    case "Aug":
+      return "08";
+    case "Sep":
+      return "09";
+    case "Oct":
+      return "10";
+    case "Nov":
+      return "11";
+    case "Dec":
+      return "12";
+    default:
+      console.log("can't change the month");
+      return "";
+  }
 }
