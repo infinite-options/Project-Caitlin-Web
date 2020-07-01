@@ -1070,24 +1070,23 @@ this will close repeat modal.
                 }}
                 type="text"
                 placeholder="Enter Title"
-              />
+              /> 
             </Form.Group>
-
+            <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
               <UploadImage parentFunction={this.setPhotoURLFunction} />
-              <br />
+              <br /> 
             </Row>
-            <br />
+            <div style = {{marginTop:"10px", marginBottom:"10px"}}>
             <label>Icon: </label>
-
-            <img
-              alt="None"
-              src={this.state.itemToEdit.photo}
-              height="70"
-              width="auto"
-            ></img>
-            <br></br>
+              <img
+                alt="None"
+                src={this.state.itemToEdit.photo}
+                height="70"
+                width="auto"
+              ></img>
+            </div>
 
             <Form.Group
               value={this.state.itemToEdit.start_day_and_time}

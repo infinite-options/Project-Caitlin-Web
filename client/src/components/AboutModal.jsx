@@ -21,7 +21,7 @@ class AboutModal extends React.Component{
             importantPeople1id: null,
             importantPeople2id: null,
             importantPeople3id: null,
-            aboutMeObject: {have_pic: false, message_card:"", message_day:"",pic:"", timeSettings:{morning:"", afternoon:"", evening:"", night:"", dayStart:"", dayEnd:""}},
+            aboutMeObject: {have_pic: false, message_card:"", message_day:"",pic:"", timeSettings:{morning:"", afternoon:"", evening:"", night:"", dayStart:"", dayEnd:"", timeZone:""}},
             firstName: "",
             lastName: "",
             peopleNamesArray: {},
@@ -306,10 +306,10 @@ class AboutModal extends React.Component{
         docRef
           .get()
           .then(doc => {
-              console.log("this is the doc exists", doc.exists);
+            //   console.log("this is the doc exists", doc.exists);
             if (doc.exists) {
               var x = doc.data();
-              console.log("this is the doc data",x)
+            //   console.log("this is the doc data",x)
             //   console.log("this is x in the about modal", x);
               var firstName = x.first_name;
               var lastName = x.last_name;
@@ -983,17 +983,13 @@ class AboutModal extends React.Component{
                     </Container>
                 </Modal.Footer>
             </Modal.Dialog>
-            {/* <Modal.Dialog>
-            </Modal.Dialog> */}
             {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray} currentUserId={this.props.theCurrentUserId}/>}
              {(this.state.showTimeModal && !this.state.showAddNewPeopleModal) && 
                 <SettingPage  
                     closeTimeModal = {this.hideTimeModal} 
-                    // newTimeSetting = {this.updateTimeSetting} 
                     currentTimeSetting= {this.state.aboutMeObject.timeSettings || {}}
                     newTimeSetting = {this.updateTimeSetting}
                 />}
-            {/* </Modal.Dialog> */}
          </div>
         );
     }

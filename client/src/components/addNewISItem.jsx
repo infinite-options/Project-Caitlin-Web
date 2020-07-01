@@ -219,22 +219,21 @@ export default class AddNewISItem extends Component {
                 }}
               />
             </div>
-
+            <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
               <UploadImage parentFunction={this.setPhotoURLFunction} />
-              <br />
+              <br /> 
             </Row>
-            <br />
-            <label>Icon: </label>
-
-            <img
-              alt="None"
-              src={this.state.itemToEdit.photo}
-              height="70"
-              width="auto"
-            ></img>
-            <br></br>
+            <div style = {{marginTop:"10px", marginBottom:"10px"}}>
+              <label>Icon: </label>
+              <img
+                alt="None"
+                src={this.state.itemToEdit.photo}
+                height="70"
+                width="auto"
+              ></img>
+            </div>
 
             <label>Available Start Time</label>
             <div className="input-group mb-3">
