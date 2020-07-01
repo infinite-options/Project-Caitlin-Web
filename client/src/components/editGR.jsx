@@ -63,11 +63,30 @@ export default class editGR extends Component {
         5: "",
         6: "",
       },
-    };
+    }; 
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // console.log("this is in the component update ",this.props.ATArray[this.props.i] );
+    // console.log(this.props.ATArray[this.props.i].title);
+    // if(this.props.ATArray[this.props.i].title === "Every month"){
+    //   console.log("this is the prop that holds the firbase ",this.props.ATArray[this.props.i] );
+    //   console.log("this is the state of itemtoedit ", this.state.itemToEdit);
+    //   console.log("when does it go here");
+    // }
+   
+    // console.log("is this true ", prevState.itemToEdit !== this.state.itemToEdit);
+    // console.log(prevState.itemToEdit.title);
+    // if(prevState.itemToEdit.title === "Concurrent PM 2"){
+    //   console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // }
+    // console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // if(prevState.itemToEdit != this.props.ATArray[this.props.i]){
+    //   console.log("this where suppose to go");
+    // }
+    
     if (prevProps.ATArray !== this.props.ATArray) {
+      // console.log("does it go here");
       let repeatOptionDropDown2;
       let repeatOption2;
       if (
@@ -88,13 +107,41 @@ export default class editGR extends Component {
     }
   }
 
+
   componentDidMount() {
+    
+    // if(prevState.itemToEdit.title === "Concurrent PM 2"){
+      
+      // console.log("this is the prev Items to edit ", prevState.itemToEdit);
+    // }
     this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
   }
+
+  updateStateWithFB() {
+    console.log("does it go in here");
+    let repeatOptionDropDown2;
+    let repeatOption2 ;
+    if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
+        repeatOptionDropDown2 = "Custom...";
+        repeatOption2 =true
+    }else{
+      repeatOptionDropDown2 = "Does not repeat";
+      repeatOption2 = false;
+    }
+    console.log("this is the item to edit ", this.props.ATArray[this.props.i]);
+    this.setState({
+      itemToEdit: this.props.ATArray[this.props.i],
+      repeatOptionDropDown: repeatOptionDropDown2,
+      repeatOption: repeatOption2,
+    });
+
+  }
+
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
     this.setState({ itemToEdit: temp });
+    // this.props.changePhoto(photo_url);
   };
 
   newInputSubmit = () => {
@@ -623,10 +670,13 @@ export default class editGR extends Component {
     return (
       <Row
         style={{
+<<<<<<< HEAD
           marginLeft: "0px",
           // marginLeft: this.props.marginLeftV ,
+=======
+          marginLeft:"0px",
+>>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
           border: "2px",
-          // padding: "20px",
           padding: "15px",
           marginTop: "10px",
         }}
@@ -656,14 +706,23 @@ export default class editGR extends Component {
             }}
           />
         </div>
+       
         <Form.Group>
+<<<<<<< HEAD
+=======
+          <Form.Label> Photo </Form.Label>
+>>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
           <Row>
             <AddIconModal parentFunction={this.setPhotoURLFunction} />
             <UploadImage parentFunction={this.setPhotoURLFunction} />
             <br />
           </Row>
 
+<<<<<<< HEAD
           <div>
+=======
+          <div style = {{marginTop:"10px"}}>
+>>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
             <label>Icon: </label>
 
             <img
@@ -674,6 +733,7 @@ export default class editGR extends Component {
             ></img>
           </div>
         </Form.Group>
+
         <Form.Group>
           <Form.Label> Routine/Goal </Form.Label>
           <Form.Control
@@ -758,7 +818,7 @@ export default class editGR extends Component {
                 value={this.convertToMinutes()}
                 style={{ marginTop: ".25rem", paddingRight: "0px" }}
                 onChange={(e) => {
-                  e.stopPropagation();
+                  e.stopPropagation()
                   let temp = this.state.itemToEdit;
                   temp.expected_completion_time = this.convertTimeToHRMMSS(e);
                   this.setState({ itemToEdit: temp });
@@ -1144,11 +1204,17 @@ export default class editGR extends Component {
       >
         {/* {console.log("this is the s")} */}
         {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
+<<<<<<< HEAD
         {this.props.showModal && this.props.i === this.props.indexEditing ? (
           this.editGRForm()
         ) : (
           <div> </div>
         )}
+=======
+        {/* {this.updateStateWithFB} */}
+        {/* {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.updateStateWithFB(): <div> </div>} */}
+        {(this.props.showModal && (this.props.i === this.props.indexEditing))? this.editGRForm() : <div> </div>}
+>>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
         {/* {this.editGRForm()} */}
         {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { Form, Row, Col } from "react-bootstrap";
+import { Button, Modal, Row, Col } from "react-bootstrap";
 import { storage } from "./firebase";
 import TimeField from "react-simple-timefield"; 
+import TimezonePicker from 'react-bootstrap-timezone-picker';
+import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 
 export default class SettingPage extends Component {
   constructor(props) {
@@ -15,15 +16,21 @@ export default class SettingPage extends Component {
       night: this.props.currentTimeSetting.night || '',
       dayStart: this.props.currentTimeSetting.dayStart || '',
       dayEnd: this.props.currentTimeSetting.dayEnd || '',
+      timeZone: this.props.currentTimeSetting.timeZone || '',
     };
   }
 
   onTimeChange = (event, value) => {
     const newTime = value.replace(/-/g, ":");
     const time = newTime.substr(0, 5);
-    console.log("this is the time",time , "this si the anem",event.target.name );
+    // console.log("this is the time",time , "this si the anem",event.target.name );
     this.setState({ [event.target.name]: time });
   };
+
+  handleTimeZoneChange = (e) =>{
+    console.log(e);
+    this.setState({ timeZone : e });
+  }
 
   newTimeSubmit = () =>{
       let time = this.state;
@@ -35,7 +42,7 @@ export default class SettingPage extends Component {
   render() {
     return (
 
-        <Modal.Dialog style ={{marginLeft:"-10px",marginTop:"-550px", width:"350px"}}>
+        <Modal.Dialog style ={{marginLeft:"-10px",marginTop:"-550px", width:"380px"}}>
           <Modal.Header closeButton onHide={this.props.closeTimeModal}>
             <Modal.Title>
                 <h5 className="normalfancytext">
@@ -46,12 +53,21 @@ export default class SettingPage extends Component {
 
           <Modal.Body>
             <form>
+              <Row style = {{marginLeft:"2px", marginBottom:"10px"}}>
+                <TimezonePicker
+                  value = {this.state.timeZone}
+                  absolute      = {true}
+                  // defaultValue  = "Europe/Moscow"
+                  placeholder   = "Select timezone..."
+                  onChange      = {this.handleTimeZoneChange}
+                  style = {{width:"320px", fontSize: 16,border: "1px solid #666"}}
+                
+                />
+              </Row>
                 <Row>
               <Col style = {{paddingRight:"0px"}}>
-                <label> 
-                   
+                <label>   
                     Morning Time
-           
                 </label>
                 <br />
                 <TimeField
@@ -59,10 +75,10 @@ export default class SettingPage extends Component {
                   value={this.state.morning}
                   name="morning"
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "3px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "3px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}
@@ -77,10 +93,10 @@ export default class SettingPage extends Component {
                   name="afternoon"
                   value={this.state.afternoon}
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "3px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "3px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}
@@ -96,10 +112,10 @@ export default class SettingPage extends Component {
                   name="evening"
                   value={this.state.evening}
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "2px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "3px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}
@@ -114,10 +130,10 @@ export default class SettingPage extends Component {
                   name="night"
                   value={this.state.night}
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "2px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "2px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}
@@ -133,10 +149,10 @@ export default class SettingPage extends Component {
                   name="dayStart"
                   value={this.state.dayStart}
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "2px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "2px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}
@@ -150,10 +166,10 @@ export default class SettingPage extends Component {
                   name="dayEnd"
                   value={this.state.dayEnd}
                   style={{
-                    border: "2px solid #666",
-                    fontSize: 20,
-                    width: 100,
-                    padding: "2px 8px",
+                    border: "1px solid #666",
+                    fontSize: 18,
+                    width: 80,
+                    padding: "2px 4px",
                     color: "#333",
                     borderRadius: 3,
                   }}

@@ -83,7 +83,7 @@ export default class UploadImage extends Component {
   render() {
     return (
       <>
-        <Button variant="primary" onClick={this.onHandleShowClick}>
+        <Button variant="outline-primary"  onClick={this.onHandleShowClick}>
           Upload Image
         </Button>
 

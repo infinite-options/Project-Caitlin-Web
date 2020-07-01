@@ -127,6 +127,15 @@ export default class MainPage extends React.Component {
     };
   }
 
+  // componentDidUpdate(prevProps, prevState) {
+  //   // console.log("this is in the component update ",this.props.ATArray[this.props.i] )
+    
+  //   if (prevState.originalGoalsAndRoutineArr !== this.state.originalGoalsAndRoutineArr) {
+  //     // this.grabFireBaseRoutinesGoalsData();
+  //     // console.log("does it go here");
+      
+  //   }
+  // }
   /**
    * grabFireBaseRoutinesGoalsData:
    * this function grabs the goals&routines array from the path located in this function
@@ -248,7 +257,7 @@ export default class MainPage extends React.Component {
     });
   };
 
-  componentDidUpdate() {}
+  
 
   // Entry of the page
   componentDidMount() {
@@ -378,7 +387,6 @@ export default class MainPage extends React.Component {
             // console.log("this is the picURL", picURL);
             nameIdObject[id] = name;
             // namePicObject[picURL] = name;
-            // console.log("this si the object should happen 3 times",namePicObject);
             // console.log(x["about_me"]  );
             // db.collection("users").doc(user.id).get()
             //   .then()
@@ -2255,12 +2263,17 @@ this will close repeat modal.
     }
   };
 
+  
   showCalendarView = () => {
     if (this.state.calendarView === "Month") return this.calendarAbstracted();
     else if (this.state.calendarView === "Day") return this.dayViewAbstracted();
     else if (this.state.calendarView === "Week")
       return this.weekViewAbstracted();
   };
+
+  updateFBGR = () => {
+    this.grabFireBaseRoutinesGoalsData();
+  }
 
   render() {
     if (this.state.loaded && !this.state.loggedIn) {
@@ -2512,10 +2525,9 @@ this will close repeat modal.
                 // alignItems: "center"
               }}
             >
+              {/* {this.grabFireBaseRoutinesGoalsData()} */}
               {/* the modal for routine/goal is called Firebasev2 currently */}
-              {/* {console.log("going into firevasev2 with currentID",this.state.currentUserId  )}
-          {console.log("going is the goals and routins in main",this.state.originalGoalsAndRoutineArr )} */}
-              {/* console.log("this is the originalGoals and rountines Arr") */}
+              {/* {console.log("this is the originalGoals and rountines Arr from main  ", this.state.originalGoalsAndRoutineArr)} */}
               {this.state.currentUserId != "" && (
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
@@ -2542,6 +2554,7 @@ this will close repeat modal.
                   todayDateObject={this.state.todayDateObject}
                   calendarView={this.state.calendarView}
                   dateContext={this.state.dateContext}
+                  updateFBGR = {this.updateFBGR}
                 />
               )}
               <Col
