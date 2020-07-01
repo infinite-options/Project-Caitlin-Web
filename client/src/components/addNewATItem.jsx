@@ -101,7 +101,56 @@ export default class AddNewATItem extends Component {
   };
 
   addNewDoc = () => {
-    this.props.ATItem.fbPath
+    let at_path = this.props.ATItem.fbPath;
+    firebase.firestore().runTransaction((transaction) => {
+        return transaction.get(at_path).then((doc) => {
+            if (doc.exists) {
+              var x = doc.data();
+              if (x["actions&tasks"] != undefined) {
+                x = x["actions&tasks"];
+                this.setState({
+                  AT_arr: x,
+                });
+              }
+              let newDocRef = this.props.ATItem.fbPath.collection("actions&tasks").doc();
+              transaction.set(newDocRef,{
+                  title: this.state.itemToEdit.title,
+                  "instructions&steps": [],
+              });
+              let newArr = this.state.AT_arr;
+              let temp = this.state.itemToEdit;
+              temp.id = newDocRef.id;
+              newArr.push(temp);
+              //console.log(newArr);
+              //console.log("adding new item");
+              //this.updateEntireArray(newArr);
+              let db = this.props.ATItem.fbPath;
+              transaction.update(db, { "actions&tasks": newArr });
+              console.log("updateEntireArray Finished");
+              console.log(doc);
+              this.setState({ AT_arr: newArr });
+              var ret_param = {props: this.props, newArr: newArr};
+              return ret_param;
+        } else {
+          console.log("No such document!");
+        }
+        });
+    })
+    .then(function(ret_param) {
+        var props = ret_param.props;
+        var newArr = ret_param.newArr;
+        if (props != null) {
+            props.hideNewATModal();
+            console.log("refreshing FireBasev2 from AddNewATItem");
+            props.refresh(newArr);
+        }
+        console.log("Document added successfully!");
+    })
+    .catch(function (error) {
+      console.log("Error getting document:", error);
+      alert("Error getting document:", error);
+    });
+    /*this.props.ATItem.fbPath
       .get()
       .then((doc) => {
         if (doc.exists) {
@@ -140,7 +189,7 @@ export default class AddNewATItem extends Component {
       .catch(function (error) {
         console.log("Error getting document:", error);
         alert("Error getting document:", error);
-      });
+      });*/
   };
 
   //This function will below will essentially take in a array and have a key map to it

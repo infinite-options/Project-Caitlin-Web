@@ -207,6 +207,15 @@ export default class AddNewGRItem extends Component {
     temp.photo = photo_url;
     this.setState({ itemToEdit: temp });
   };
+  
+  generateFirestoreId(){
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let autoId = '';
+        for (let i = 0; i < 20; i++) {
+            autoId += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return autoId;
+  };
 
   addNewDoc = () => {
     // this.state.routineDocsPath
@@ -231,7 +240,112 @@ export default class AddNewGRItem extends Component {
     //   newArr.push(temp);
     //   this.updateEntireArray(newArr);
     // });
-    this.state.arrPath
+    let gr_path = this.state.arrPath;
+    firebase.firestore().runTransaction((transaction) => {
+        return transaction.get(gr_path).then((doc) => {
+        if (doc.exists) {
+          console.log("getGRDataFromFB DATA:");
+          // console.log(doc.data());
+          var x = doc.data();
+          if (x["goals&routines"] != undefined) {
+            x = x["goals&routines"];
+            console.log("this is the goals and routines", x);
+            this.setState({
+              grArr: x,
+            });
+          }
+          let newDocRef = this.state.routineDocsPath.doc();
+          /*this.state.routineDocsPath
+            .add({
+              title: this.state.itemToEdit.title,
+              completed: false,
+              "actions&tasks": [],
+            })*/
+            transaction.set(newDocRef,{
+              title: this.state.itemToEdit.title,
+              completed: false,
+              "actions&tasks": [],
+            });
+              /**if (ref.id === null) {
+                alert("Fail to add new routine / goal item");
+                return;
+              }
+              console.log(ref);*/
+              //let newArr = this.props.ATArray;
+              let newArr = this.state.grArr;
+              let temp = this.state.itemToEdit;
+              temp.id = newDocRef.id;
+              temp.available_start_time = this.state.itemToEdit.available_start_time;
+              temp.available_end_time = this.state.itemToEdit.available_end_time;
+
+              console.log(
+                "this si the start day before ",
+                this.state.itemToEdit.start_day_and_time
+              );
+              console.log(
+                "this si the repeat end on befoe ",
+                this.state.itemToEdit.repeat_ends_on
+              );
+              temp.start_day_and_time = new Date(
+                this.state.itemToEdit.start_day_and_time
+              ).toUTCString();
+              temp.end_day_and_time = new Date(
+                this.state.itemToEdit.end_day_and_time
+              ).toUTCString();
+              // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
+              // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
+              // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
+              temp.repeat_ends_on = String(
+                this.state.itemToEdit.repeat_ends_on
+              );
+
+              // console.log(temp.available_start_time, temp.available_end_time);
+              // console.log("Added document with ID: ", ref.id);
+              // this.state.grArr.push(temp);
+              newArr.push(temp);
+              //this.updateEntireArray(newArr);
+              let db = this.state.arrPath;
+              //db.update({ "goals&routines": newArr }).then((doc) => {
+              transaction.update(db, { "goals&routines": newArr });
+              this.setState({ grArr: newArr });
+              //if (this.props != null) {
+               // this.props.refresh();
+             // }
+              var props = this.props
+              return props;
+              
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document! 2");
+        }
+        // let newArr = this.props.ATArray;
+        // let temp = this.state.itemToEdit;
+        // temp.id = ref.id;
+        // temp.available_start_time = this.state.itemToEdit.available_start_time;
+        // temp.available_end_time = this.state.itemToEdit.available_end_time;
+
+        // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
+        // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
+        // temp.repeat_ends_on = String(this.state.itemToEdit.repeat_ends_on);
+        // // newArr.push(temp);
+        // this.updateEntireArray(newArr);
+      });
+      })
+      .then(function(props) {
+          if (props != null) {
+            props.refresh();
+          }
+          console.log("Document added successfully!");
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+        alert("Error getting document:", error);
+      });
+      /*this.getGRDataFromFB();
+      if (this.props != null) {
+        this.props.refresh();
+      }*/
+    /*this.state.arrPath
       .get()
       .then((doc) => {
         if (doc.exists) {
@@ -310,7 +424,7 @@ export default class AddNewGRItem extends Component {
       .catch(function (error) {
         console.log("Error getting document:", error);
         alert("Error getting document:", error);
-      });
+      });*/
   };
 
   //This function will below will essentially take in a array and have a key map to it
