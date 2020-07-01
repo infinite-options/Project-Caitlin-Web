@@ -999,7 +999,7 @@ this will close repeat modal.
                       defaultChecked={
                         this.state.itemToEdit.repeat_ends === "After" && true
                       }
-                      disabled
+                      //disabled
                     />
                   ) : (
                     <Form.Check.Input
