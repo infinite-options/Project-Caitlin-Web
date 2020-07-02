@@ -245,77 +245,78 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   grabFireBaseRoutinesGoalsData = () => {
-    const db = firebase.firestore();
-    // console.log("FirebaseV2 component did mount");
-    // console.log("this is the current userid", this.state.currentUserId);
-    if (this.state.currentUserId !== "") {
-      //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-      const docRef = db.collection("users").doc(this.state.currentUserId);
-      // console.log("this is suppose tto be the path", docRef);
-      docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data();
-          // console.log("this is the data", x);
-          // console.log(x["goals&routines"]);
-          // x = x["goals&routines"];
+    this.props.grabFireBaseRoutinesGoalsData();
+    // const db = firebase.firestore();
+    // // console.log("FirebaseV2 component did mount");
+    // // console.log("this is the current userid", this.state.currentUserId);
+    // if (this.state.currentUserId !== "") {
+    //   //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
+    //   const docRef = db.collection("users").doc(this.state.currentUserId);
+    //   // console.log("this is suppose tto be the path", docRef);
+    //   docRef
+    //   .get()
+    //   .then((doc) => {
+    //     if (doc.exists) {
+    //       // console.log(doc.data());
+    //       var x = doc.data();
+    //       // console.log("this is the data", x);
+    //       // console.log(x["goals&routines"]);
+    //       // x = x["goals&routines"];
           
-          let routine = [];
-          let routine_ids = [];
-          let goal = [];
-          let goal_ids = [];
-          if (x["goals&routines"] !== undefined) {
-            x = x["goals&routines"];
-            // console.log("this is the goals and routines", x);
-            x.sort((a,b) => {
-              let timeA = new Date(a["start_day_and_time"]);
-              let timeB = new Date(b["start_day_and_time"]);
-              return timeA.getTime() - timeB.getTime();
-            });
-            // console.log("sorted goals and routines", x);
-            for (let i = 0; i < x.length; ++i) {
-              if (x[i]["is_persistent"]) {
-                // console.log("routine " + x[i]["title"]);
-                // console.log("is the is the id ", x[i].id);
-                routine_ids.push(i);
-                routine.push(x[i]);
-              } else if (!x[i]["is_persistent"]) {
-                // console.log("not routine " + x[i]["title"]);
-                goal_ids.push(i);
-                goal.push(x[i]);
-              }
-            }
-            console.log("this si the original goals and routines grabed from firebase ", x);
-            this.setState({
-              originalGoalsAndRoutineArr: x,
-              // goals: goal,
-              // addNewGRModalShow: false,
-              // routine_ids: routine_ids,
-              // goal_ids: goal_ids,
-              // routines: routine,
-            });
-          } else {
-            console.log("this si the original goals and routines grabed from firebase  blank", x);
-            this.setState({
-              originalGoalsAndRoutineArr: [],
-              // goals: goal,
-              // addNewGRModalShow: false,
-              // routine_ids: routine_ids,
-              // goal_ids: goal_ids,
-              // routines: routine,
-            });
-          }
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
-    }
+    //       let routine = [];
+    //       let routine_ids = [];
+    //       let goal = [];
+    //       let goal_ids = [];
+    //       if (x["goals&routines"] !== undefined) {
+    //         x = x["goals&routines"];
+    //         // console.log("this is the goals and routines", x);
+    //         x.sort((a,b) => {
+    //           let timeA = new Date(a["start_day_and_time"]);
+    //           let timeB = new Date(b["start_day_and_time"]);
+    //           return timeA.getTime() - timeB.getTime();
+    //         });
+    //         // console.log("sorted goals and routines", x);
+    //         for (let i = 0; i < x.length; ++i) {
+    //           if (x[i]["is_persistent"]) {
+    //             // console.log("routine " + x[i]["title"]);
+    //             // console.log("is the is the id ", x[i].id);
+    //             routine_ids.push(i);
+    //             routine.push(x[i]);
+    //           } else if (!x[i]["is_persistent"]) {
+    //             // console.log("not routine " + x[i]["title"]);
+    //             goal_ids.push(i);
+    //             goal.push(x[i]);
+    //           }
+    //         }
+    //         console.log("this si the original goals and routines grabed from firebase ", x);
+    //         this.setState({
+    //           originalGoalsAndRoutineArr: x,
+    //           // goals: goal,
+    //           // addNewGRModalShow: false,
+    //           // routine_ids: routine_ids,
+    //           // goal_ids: goal_ids,
+    //           // routines: routine,
+    //         });
+    //       } else {
+    //         console.log("this si the original goals and routines grabed from firebase  blank", x);
+    //         this.setState({
+    //           originalGoalsAndRoutineArr: [],
+    //           // goals: goal,
+    //           // addNewGRModalShow: false,
+    //           // routine_ids: routine_ids,
+    //           // goal_ids: goal_ids,
+    //           // routines: routine,
+    //         });
+    //       }
+    //     } else {
+    //       // doc.data() will be undefined in this case
+    //       console.log("No such document!");
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error getting document:", error);
+    //   });
+    // }
     // this.props.grabFireBaseRoutinesGoalsData();
   };
 

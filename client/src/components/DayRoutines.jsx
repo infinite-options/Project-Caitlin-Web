@@ -70,27 +70,27 @@ export default class DayRoutines extends Component {
       let initialStartYear = tempStartTime.getFullYear();
       let initialEndYear = tempEndTime.getFullYear();
 
-      console.log(
-        tempStartTime,
-        "//",
-        tempEndTime,
-        "//",
-        curDate,
-        "//",
-        curMonth,
-        "//",
-        curYear
-      );
-      console.log(
-        initialStartDate,
-        "//",
-        initialEndDate,
-        "//",
-        initialStartMonth,
-        "//",
-        initialStartYear,
-        "//"
-      );
+      // console.log(
+      //   tempStartTime,
+      //   "//",
+      //   tempEndTime,
+      //   "//",
+      //   curDate,
+      //   "//",
+      //   curMonth,
+      //   "//",
+      //   curYear
+      // );
+      // console.log(
+      //   initialStartDate,
+      //   "//",
+      //   initialEndDate,
+      //   "//",
+      //   initialStartMonth,
+      //   "//",
+      //   initialStartYear,
+      //   "//"
+      // );
 
       /** This function takes in the date and gives back the week number it is in for that year */
       function ISO8601_week_no(dt) {
