@@ -252,51 +252,30 @@ export default class DayRoutines extends Component {
               tempEndTime.setDate(curDate);
             }
           } else if (arr[i].repeat_ends === "Never") {
-            /** doesnt work when going to month with reapting and doesn't work when routine spans multiple days */
-            if (
-              curYear > initialStartYear &&
-              curDate % arr[i].repeat_every === 0
-            ) {
+            const occurences = parseInt(arr[i].repeat_occurences);
+            const repeat_every = parseInt(arr[i].repeat_every);
+
+            const start_day_and_time = arr[i].start_day_and_time.split(" ");
+            const initDate = start_day_and_time[1];
+            const initMonth = getMonthNumber(start_day_and_time[2]);
+            const initYear = start_day_and_time[3];
+
+            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            let curFullDateString = new Date(curYear, curMonth, curDate);
+            let curFullDate = getFormattedDate(curFullDateString);
+
+            let initMomentDate = moment(initFullDate, "MM/DD/YYYY");
+            let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
+
+            let diffDays = curMomentDate.diff(initMomentDate, "days");
+            console.log("diffDays", diffDays);
+            if (diffDays % repeat_every === 0) {
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
               tempStartTime.setDate(curDate);
               tempEndTime.setDate(curDate);
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
-            } else if (
-              curYear === initialStartYear &&
-              curMonth - initialStartMonth === 1 &&
-              (new Date(curYear, curMonth, 0).getDate() -
-                initialStartDate +
-                curDate) %
-                arr[i].repeat_every ===
-                0
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-            } else if (
-              curYear === initialStartYear &&
-              curMonth - initialStartMonth > 1 &&
-              ((new Date(curYear, curMonth, 0).getDate() %
-                arr[i].repeat_every) +
-                curDate) %
-                arr[i].repeat_every ===
-                0
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-            } else if (
-              curYear === initialStartYear &&
-              curMonth === initialStartMonth &&
-              curDate > initialStartDate &&
-              (curDate - initialStartDate) % arr[i].repeat_every === 0
-            ) {
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
             }
           }
         }
