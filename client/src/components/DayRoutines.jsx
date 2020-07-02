@@ -112,227 +112,39 @@ export default class DayRoutines extends Component {
         if (arr[i].repeat_frequency === "DAY") {
           /*** TODO fix if event goes to another month.  */
           if (arr[i].repeat_ends === "After") {
-            for (let j = 1; j < arr[i].repeat_occurences; j++) {
-              if (
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                initialStartDate + j * arr[i].repeat_every === curDate &&
-                (curDate - initialStartDate) % arr[i].repeat_every === 0
-              ) {
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate);
-              } else if (
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                curMonth - initialStartMonth === 1 &&
-                arr[i].repeat_every > 1 &&
-                curDate <=
-                  (arr[i].repeat_occurences -
-                    1 -
-                    Math.floor(
-                      (new Date(curYear, curMonth, 0).getDate() -
-                        initialStartDate) /
-                        arr[i].repeat_every
-                    )) *
-                    arr[i].repeat_every &&
-                (curDate +
-                  (Math.floor(
-                    new Date(curYear, curMonth, 0).getDate() - initialStartDate
-                  ) %
-                    arr[i].repeat_every)) %
-                  arr[i].repeat_every ===
-                  0
-              ) {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate);
-              } else if (
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                curMonth - initialStartMonth > 1 &&
-                arr[i].repeat_every > 1
-              ) {
-                let subtractBy = 0;
-                let indexBy = 9;
-                if (curMonth - initialStartMonth === 2) {
-                  subtractBy =
-                    Math.floor(
-                      (new Date(curYear, curMonth - 1, 0).getDate() -
-                        initialStartDate) /
-                        arr[i].repeat_every
-                    ) +
-                    Math.floor(
-                      new Date(curYear, curMonth, 0).getDate() /
-                        arr[i].repeat_every
-                    ) +
-                    1;
-                  indexBy =
-                    Math.floor(
-                      new Date(curYear, curMonth, 0).getDate() -
-                        ((Math.floor(
-                          new Date(curYear, curMonth, 0).getDate() -
-                            initialStartDate
-                        ) %
-                          arr[i].repeat_every) +
-                          1)
-                    ) % arr[i].repeat_every;
-                }
+            let occurence_dates = [];
+            const occurences = parseInt(arr[i].repeat_occurences);
+            const repeat_every = parseInt(arr[i].repeat_every);
 
-                if (
-                  (arr[i].repeat_occurences - subtractBy) *
-                    arr[i].repeat_every >
-                    0 &&
-                  curDate <=
-                    (arr[i].repeat_occurences - subtractBy) *
-                      arr[i].repeat_every &&
-                  (curDate + indexBy) % arr[i].repeat_every === 0
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
-                }
-              } else if (
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                curMonth - initialStartMonth === 1 &&
-                arr[i].repeat_every === "1" &&
-                (arr[i].repeat_occurences -
-                  new Date(curYear, curMonth, 0).getDate() >
-                  31 ||
-                  curDate <
-                    arr[i].repeat_occurences -
-                      (new Date(curYear, curMonth, 0).getDate() -
-                        initialStartDate))
-              ) {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate);
-              } else if (
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                curMonth - initialStartMonth > 1 &&
-                arr[i].repeat_every === "1"
-              ) {
-                let subtractBy = 0;
-                if (curMonth - initialStartMonth === 2) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 1, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 3) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 2, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 4) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 3, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 5) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 4, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 6) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 5, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 7) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 6, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 5, 0).getDate() +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 8) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 7, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 6, 0).getDate() +
-                    new Date(curYear, curMonth - 5, 0).getDate() +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 9) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 8, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 7, 0).getDate() +
-                    new Date(curYear, curMonth - 6, 0).getDate() +
-                    new Date(curYear, curMonth - 5, 0).getDate() +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 10) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 9, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 8, 0).getDate() +
-                    new Date(curYear, curMonth - 7, 0).getDate() +
-                    new Date(curYear, curMonth - 6, 0).getDate() +
-                    new Date(curYear, curMonth - 5, 0).getDate() +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                } else if (curMonth - initialStartMonth === 11) {
-                  subtractBy =
-                    new Date(curYear, curMonth - 10, 0).getDate() -
-                    initialStartDate +
-                    new Date(curYear, curMonth - 9, 0).getDate() +
-                    new Date(curYear, curMonth - 8, 0).getDate() +
-                    new Date(curYear, curMonth - 7, 0).getDate() +
-                    new Date(curYear, curMonth - 6, 0).getDate() +
-                    new Date(curYear, curMonth - 5, 0).getDate() +
-                    new Date(curYear, curMonth - 4, 0).getDate() +
-                    new Date(curYear, curMonth - 3, 0).getDate() +
-                    new Date(curYear, curMonth - 2, 0).getDate() +
-                    new Date(curYear, curMonth - 1, 0).getDate() +
-                    new Date(curYear, curMonth, 0).getDate();
-                }
-                if (
-                  arr[i].repeat_occurences - subtractBy > 0 &&
-                  curDate < arr[i].repeat_occurences - subtractBy
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
-                }
-              } else if (
-                curYear > initialStartYear &&
-                arr[i].repeat_every === "1"
-              ) {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-                tempStartTime.setDate(curDate);
-                tempEndTime.setDate(curDate);
-                tempStartTime.setFullYear(curYear);
-                tempEndTime.setFullYear(curYear);
-              }
+            const start_day_and_time = arr[i].start_day_and_time.split(" ");
+            const initDate = start_day_and_time[1];
+            const initMonth = getMonthNumber(start_day_and_time[2]);
+            const initYear = start_day_and_time[3];
+
+            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            //var startdate = "20-03-2014";
+            let new_date = moment(initFullDate, "MM/DD/YYYY");
+            //var thing = new_date.add(5, "days").format("L");
+            for (let i = 0; i < occurences; i++) {
+              let date = new_date
+                .clone()
+                .add(i * repeat_every, "days")
+                .format("L");
+              occurence_dates.push(date);
+            }
+
+            console.log("occurence_dates: ", occurence_dates);
+
+            let today_date_object = new Date(curYear, curMonth, curDate);
+            let today = getFormattedDate(today_date_object);
+
+            if (occurence_dates.includes(today)) {
+              tempStartTime.setMonth(curMonth);
+              tempEndTime.setMonth(curMonth);
+              tempStartTime.setDate(curDate);
+              tempEndTime.setDate(curDate);
+              tempStartTime.setFullYear(curYear);
+              tempEndTime.setFullYear(curYear);
             }
           } else if (arr[i].repeat_ends === "On") {
             /** TODO: account for ends on a different month > 1 . Also account for event span multiple days.  */
