@@ -1113,7 +1113,6 @@ export default class editGR extends Component {
                       defaultChecked={
                         this.state.itemToEdit.repeat_ends === "After" && true
                       }
-                      disabled
                     />
                   ) : (
                     <Form.Check.Input
