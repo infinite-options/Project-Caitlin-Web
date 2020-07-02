@@ -406,7 +406,7 @@ export default class MainPage extends React.Component {
         The User
         </div>
         <div style={{width: "770px", color: "#8FBC8F"}}>
-        <p>You know you accomplish more!  With the right help, structure and guidance you can make each better than the last and move toward your goals!</p>
+        <p>You know you can accomplish more!  With the right help, structure and guidance you can make each better than the last and move toward your goals!</p>
         <p>Your Trusted Advisor will ask you to enter your Google ID and Password to give them access to your Calendar.  With that information they will be able to help you manage your day and add structure to your life by customizing Goals and Routines.</p>
         <p>It's your life and you are in control!  We give you options.  You choose what you do!</p>
         </div>
