@@ -300,7 +300,7 @@ export default class WeekGoals extends Component {
               }
             }
           } else if (arr[i].repeat_ends === "On") {
-          /** TODO: account for ends on a different month. Also account for event span multiple days.  */
+            /** TODO: account for ends on a different month. Also account for event span multiple days.  */
             let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
             let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
             let initialEndOnYear = new Date(
@@ -503,7 +503,7 @@ export default class WeekGoals extends Component {
               }
             }
 
-            console.log("occurence_dates: ", occurence_dates);
+            //console.log("occurence_dates: ", occurence_dates);
 
             let today_date_object = new Date(
               curYear,
@@ -1386,7 +1386,7 @@ function getFormattedDate(date) {
 function getNextDayOfTheWeek(day, date) {
   const dayINeed = day; // for Thursday
   const today = date.isoWeekday();
-  console.log("DayINeed, today", dayINeed, today);
+  //console.log("DayINeed, today", dayINeed, today);
 
   // if we haven't yet passed the day of the week that I need:
   if (today <= dayINeed) {
@@ -1396,7 +1396,7 @@ function getNextDayOfTheWeek(day, date) {
   } else {
     // otherwise, give me *next week's* instance of that same day
     var nextDayOfTheWeek = date.add(1, "weeks").day(dayINeed);
-    console.log("from getNextday", nextDayOfTheWeek.format("L"));
+    // console.log("from getNextday", nextDayOfTheWeek.format("L"));
     return nextDayOfTheWeek;
   }
 }
