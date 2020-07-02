@@ -2529,6 +2529,7 @@ this will close repeat modal.
               {/* the modal for routine/goal is called Firebasev2 currently */}
               {/* {console.log("this is the originalGoals and rountines Arr from main  ", this.state.originalGoalsAndRoutineArr)} */}
               {this.state.currentUserId != "" && (
+                
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
                   grabFireBaseRoutinesGoalsData={
