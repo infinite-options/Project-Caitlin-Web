@@ -70,28 +70,6 @@ export default class DayRoutines extends Component {
       let initialStartYear = tempStartTime.getFullYear();
       let initialEndYear = tempEndTime.getFullYear();
 
-      // console.log(
-      //   tempStartTime,
-      //   "//",
-      //   tempEndTime,
-      //   "//",
-      //   curDate,
-      //   "//",
-      //   curMonth,
-      //   "//",
-      //   curYear
-      // );
-      // console.log(
-      //   initialStartDate,
-      //   "//",
-      //   initialEndDate,
-      //   "//",
-      //   initialStartMonth,
-      //   "//",
-      //   initialStartYear,
-      //   "//"
-      // );
-
       /** This function takes in the date and gives back the week number it is in for that year */
       function ISO8601_week_no(dt) {
         var tdt = new Date(dt.valueOf());
@@ -133,8 +111,6 @@ export default class DayRoutines extends Component {
               occurence_dates.push(date);
             }
 
-            console.log("occurence_dates: ", occurence_dates);
-
             let today_date_object = new Date(curYear, curMonth, curDate);
             let today = getFormattedDate(today_date_object);
 
@@ -148,59 +124,37 @@ export default class DayRoutines extends Component {
             }
           } else if (arr[i].repeat_ends === "On") {
             /** TODO: account for ends on a different month > 1 . Also account for event span multiple days.  */
-            let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
-            let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
-            let initialEndOnYear = new Date(
-              arr[i].repeat_ends_on
-            ).getFullYear();
+            const repeat_every = parseInt(arr[i].repeat_every);
+
+            const start_day_and_time = arr[i].start_day_and_time.split(" ");
+            const startDate = start_day_and_time[1];
+            const startMonth = getMonthNumber(start_day_and_time[2]);
+            const startYear = start_day_and_time[3];
+
+            const end_day_and_time = arr[i].repeat_ends_on.split(" ");
+
+            const endDate = end_day_and_time[2];
+            const endMonth = getMonthNumber(end_day_and_time[1]);
+            const endYear = end_day_and_time[3];
+
+            let startFullDate = startMonth + "/" + startDate + "/" + startYear;
+            let endFullDate = endMonth + "/" + endDate + "/" + endYear;
+
+            let curFullDateString = new Date(curYear, curMonth, curDate);
+            let curFullDate = getFormattedDate(curFullDateString);
+
+            let endMomentDate = moment(endFullDate, "MM/DD/YYYY");
+
+            let startMomentDate = moment(startFullDate, "MM/DD/YYYY");
+            let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
+
+            let diffDays = curMomentDate.diff(startMomentDate, "days");
+            let daysFromCurToEnd = endMomentDate.diff(curMomentDate, "days");
 
             if (
-              (curMonth < endsOnMonth &&
-                curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curDate > initialStartDate &&
-                (curDate - initialStartDate) % arr[i].repeat_every === 0) ||
-              (curDate <= endsOnDate &&
-                curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curDate > initialStartDate &&
-                curMonth === endsOnMonth &&
-                curMonth === initialStartMonth &&
-                (curDate - initialStartDate) % arr[i].repeat_every === 0) ||
-              (curYear !== initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curDate > initialStartDate &&
-                (curDate - initialStartDate) % arr[i].repeat_every === 0)
-            ) {
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-            } else if (
-              (curYear > initialStartYear &&
-                curYear < initialEndOnYear &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0) ||
-              (curYear > initialStartYear &&
-                curYear === initialEndOnYear &&
-                curMonth < endsOnMonth &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0) ||
-              (curYear > initialStartYear &&
-                curYear === initialEndOnYear &&
-                curMonth === endsOnMonth &&
-                curDate <= endsOnDate &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0)
+              diffDays % repeat_every === 0 &&
+              diffDays >= 0 &&
+              daysFromCurToEnd >= 0
             ) {
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
@@ -208,48 +162,6 @@ export default class DayRoutines extends Component {
               tempEndTime.setDate(curDate);
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
-            } else if (
-              (curMonth < endsOnMonth &&
-                curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth - initialStartMonth === 1 &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0) ||
-              (curMonth < endsOnMonth &&
-                curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth - initialStartMonth > 1 &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0) ||
-              (curDate <= endsOnDate &&
-                curMonth === endsOnMonth &&
-                curMonth > initialStartMonth &&
-                curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0) ||
-              (curYear !== initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                (new Date(curYear, curMonth, 0).getDate() -
-                  initialStartDate +
-                  curDate) %
-                  arr[i].repeat_every ===
-                  0)
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
             }
           } else if (arr[i].repeat_ends === "Never") {
             const occurences = parseInt(arr[i].repeat_occurences);
@@ -268,8 +180,8 @@ export default class DayRoutines extends Component {
             let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
 
             let diffDays = curMomentDate.diff(initMomentDate, "days");
-            console.log("diffDays", diffDays);
-            if (diffDays % repeat_every === 0) {
+
+            if (diffDays % repeat_every === 0 && diffDays >= 0) {
               tempStartTime.setMonth(curMonth);
               tempEndTime.setMonth(curMonth);
               tempStartTime.setDate(curDate);
