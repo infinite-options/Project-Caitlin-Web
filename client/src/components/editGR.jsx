@@ -63,7 +63,7 @@ export default class editGR extends Component {
         5: "",
         6: "",
       },
-    }; 
+    };
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,7 +74,7 @@ export default class editGR extends Component {
     //   console.log("this is the state of itemtoedit ", this.state.itemToEdit);
     //   console.log("when does it go here");
     // }
-   
+
     // console.log("is this true ", prevState.itemToEdit !== this.state.itemToEdit);
     // console.log(prevState.itemToEdit.title);
     // if(prevState.itemToEdit.title === "Concurrent PM 2"){
@@ -84,7 +84,7 @@ export default class editGR extends Component {
     // if(prevState.itemToEdit != this.props.ATArray[this.props.i]){
     //   console.log("this where suppose to go");
     // }
-    
+
     if (prevProps.ATArray !== this.props.ATArray) {
       // console.log("does it go here");
       let repeatOptionDropDown2;
@@ -107,12 +107,10 @@ export default class editGR extends Component {
     }
   }
 
-
   componentDidMount() {
-    
     // if(prevState.itemToEdit.title === "Concurrent PM 2"){
-      
-      // console.log("this is the prev Items to edit ", prevState.itemToEdit);
+
+    // console.log("this is the prev Items to edit ", prevState.itemToEdit);
     // }
     this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
   }
@@ -120,11 +118,14 @@ export default class editGR extends Component {
   updateStateWithFB() {
     console.log("does it go in here");
     let repeatOptionDropDown2;
-    let repeatOption2 ;
-    if(this.props.ATArray[this.props.i].repeat === true || this.props.ATArray[this.props.i].repeat === "1"){
-        repeatOptionDropDown2 = "Custom...";
-        repeatOption2 =true
-    }else{
+    let repeatOption2;
+    if (
+      this.props.ATArray[this.props.i].repeat === true ||
+      this.props.ATArray[this.props.i].repeat === "1"
+    ) {
+      repeatOptionDropDown2 = "Custom...";
+      repeatOption2 = true;
+    } else {
       repeatOptionDropDown2 = "Does not repeat";
       repeatOption2 = false;
     }
@@ -134,7 +135,6 @@ export default class editGR extends Component {
       repeatOptionDropDown: repeatOptionDropDown2,
       repeatOption: repeatOption2,
     });
-
   }
 
   setPhotoURLFunction = (photo_url) => {
@@ -670,12 +670,7 @@ export default class editGR extends Component {
     return (
       <Row
         style={{
-<<<<<<< HEAD
           marginLeft: "0px",
-          // marginLeft: this.props.marginLeftV ,
-=======
-          marginLeft:"0px",
->>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
           border: "2px",
           padding: "15px",
           marginTop: "10px",
@@ -706,23 +701,16 @@ export default class editGR extends Component {
             }}
           />
         </div>
-       
+
         <Form.Group>
-<<<<<<< HEAD
-=======
           <Form.Label> Photo </Form.Label>
->>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
           <Row>
             <AddIconModal parentFunction={this.setPhotoURLFunction} />
             <UploadImage parentFunction={this.setPhotoURLFunction} />
             <br />
           </Row>
 
-<<<<<<< HEAD
-          <div>
-=======
-          <div style = {{marginTop:"10px"}}>
->>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
+          <div style={{ marginTop: "10px" }}>
             <label>Icon: </label>
 
             <img
@@ -818,7 +806,7 @@ export default class editGR extends Component {
                 value={this.convertToMinutes()}
                 style={{ marginTop: ".25rem", paddingRight: "0px" }}
                 onChange={(e) => {
-                  e.stopPropagation()
+                  e.stopPropagation();
                   let temp = this.state.itemToEdit;
                   temp.expected_completion_time = this.convertTimeToHRMMSS(e);
                   this.setState({ itemToEdit: temp });
@@ -997,7 +985,6 @@ export default class editGR extends Component {
     if (!this.state.itemToEdit.repeat_ends) {
       this.state.itemToEdit.repeat_ends = "Never";
     }
-
     return (
       <Modal.Dialog style={modalStyle}>
         <Modal.Header closeButton onHide={this.closeRepeatModal}>
@@ -1005,7 +992,6 @@ export default class editGR extends Component {
             <h5 className="normalfancytext">Repeating Options</h5>
           </Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <Form>
             <Form.Group
@@ -1127,6 +1113,7 @@ export default class editGR extends Component {
                       defaultChecked={
                         this.state.itemToEdit.repeat_ends === "After" && true
                       }
+                      disabled
                     />
                   ) : (
                     <Form.Check.Input
@@ -1145,7 +1132,7 @@ export default class editGR extends Component {
                       type="number"
                       min="1"
                       max="10000"
-                      value={this.state.itemToEdit.repeat_occurences}
+                      value={this.state.itemToEdit.repeat_occurences || ""}
                       onChange={(e) =>
                         this.handleRepeatOccurrence(e.target.value)
                       }
@@ -1159,7 +1146,6 @@ export default class editGR extends Component {
             </Form.Group>
           </Form>
         </Modal.Body>
-
         <Modal.Footer>
           <Button variant="secondary" onClick={this.closeRepeatModal}>
             Cancel
@@ -1171,7 +1157,6 @@ export default class editGR extends Component {
       </Modal.Dialog>
     );
   };
-
   showIcon = () => {
     return (
       <div style={{ marginLeft: "5px" }}>
@@ -1194,7 +1179,6 @@ export default class editGR extends Component {
       </div>
     );
   };
-
   render() {
     return (
       <div
@@ -1204,17 +1188,13 @@ export default class editGR extends Component {
       >
         {/* {console.log("this is the s")} */}
         {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
-<<<<<<< HEAD
+        {/* {this.updateStateWithFB} */}
+        {/* {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.updateStateWithFB(): <div> </div>} */}
         {this.props.showModal && this.props.i === this.props.indexEditing ? (
           this.editGRForm()
         ) : (
           <div> </div>
         )}
-=======
-        {/* {this.updateStateWithFB} */}
-        {/* {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.updateStateWithFB(): <div> </div>} */}
-        {(this.props.showModal && (this.props.i === this.props.indexEditing))? this.editGRForm() : <div> </div>}
->>>>>>> a3ec1a56e25057cb61028262f42744d3bb8ca087
         {/* {this.editGRForm()} */}
         {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}
