@@ -88,7 +88,6 @@ export default class DayRoutines extends Component {
 
       if (arr[i].repeat === true || arr[i].repeat === "1") {
         if (arr[i].repeat_frequency === "DAY") {
-          /*** TODO fix if event goes to another month.  */
           if (arr[i].repeat_ends === "After") {
             let occurence_dates = [];
             const occurences = parseInt(arr[i].repeat_occurences);
@@ -239,8 +238,6 @@ export default class DayRoutines extends Component {
               }
             }
 
-            //console.log("occurence_dates: ", occurence_dates);
-
             let today_date_object = new Date(curYear, curMonth, curDate);
             let today = getFormattedDate(today_date_object);
 
@@ -252,10 +249,6 @@ export default class DayRoutines extends Component {
               tempStartTime.setFullYear(curYear);
               tempEndTime.setFullYear(curYear);
             }
-
-            ///
-
-            ///
           } else if (arr[i].repeat_ends === "On") {
             let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
             let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
