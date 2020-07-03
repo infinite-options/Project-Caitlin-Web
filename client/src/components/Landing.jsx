@@ -387,7 +387,7 @@ export default class MainPage extends React.Component {
         <img style={{width: "380px", marginLeft: "auto", marginRight: "30px", borderRadius: 0, border: 0}} src="Helping Others.png"/>
         <div>
         <div style={{fontSize: "1.5em"}}><p style={{display: "inline", color: "#6495ED"}}>Help One</p> - <p style={{display: "inline", color: "#8FBC8F"}}>Help Many</p></div>
-        {this.LogInForm()} V1.4</div>
+        {this.LogInForm()} V1.42</div>
         </div>
         {this.signUpModal()}
         {this.socialSignUpModal()}
