@@ -136,7 +136,6 @@ export default class MainPage extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
-    // console.log("FirebaseV2 component did mount");
     // console.log("this is the current userid", this.state.currentUserId);
     if (this.state.currentUserId !== "") {
       //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
@@ -942,12 +941,10 @@ the current month's events
   };
 
   /*
-handleEventClick For Month View.
+handleEventClick For Month View.  
 when a event on the calendar is clicked, the function below
 will execute and save the clicked event varibles to this.state and
 passed that into the form where the user can edit that data
-
-TODO: set dateContext to the date clicked
 */
   handleEventClick = (i) => {
     // bind with an arrow function
@@ -1168,7 +1165,6 @@ handleDateClick on Month View.
 This will trigger when a date is clicked, it will present
 the user with a new form to create a event
 */
-  //TODO: Initialize Date, set other properties to empty
   handleDateClick = (arg) => {
     var newStart = new Date(arg);
     newStart.setHours(0, 0, 0, 0);

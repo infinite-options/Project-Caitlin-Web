@@ -194,14 +194,28 @@ export default class AddNewGRItem extends Component {
   };
 
   newInputSubmit = () => {
-    if (this.state.itemToEdit.title === "") {
-      alert("Invalid Input");
+    status = this.newInputVerify();
+    if(status !== "") {
+      alert(status);
       return;
     }
     this.addNewDoc();
     this.props.closeModal();
   };
 
+  newInputVerify = () => {
+    if (this.state.itemToEdit.title === "") {
+      return ("No Title");
+    }
+    let startTime = this.state.itemToEdit.start_day_and_time;
+    let endTime = this.state.itemToEdit.end_day_and_time;
+    let timeDiff = endTime-startTime;
+    if (timeDiff <= 0) {
+      return ("End time is before start time")
+    }
+    return "";
+  }
+  
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
