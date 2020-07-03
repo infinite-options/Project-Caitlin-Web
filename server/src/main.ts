@@ -44,7 +44,7 @@ app.use(session({
 
 var credentials_url = 'credentials.json';
 var REDIRECTED_ADD_USER_URI;
-	var firebase = require( 'firebase' );
+var firebase = require( 'firebase' );
 var firebaseConfig;
 
 if (hostname == "manifestmylife") {
@@ -75,7 +75,7 @@ if (hostname == "manifestmylife") {
 		appId:             '1:711685546849:web:5c7a982748eb3bec35db20',
 		measurementId:     'G-DCQF4LY5ZH'*/
 
-        apiKey:            "AIzaSyBjuyhZxmvzey9-hMEdIUoems6c9bEQ-nI",
+		apiKey:            "AIzaSyBjuyhZxmvzey9-hMEdIUoems6c9bEQ-nI",
 		authDomain:        "myspace-db.firebaseapp.com",
 		databaseURL:       "https://myspace-db.firebaseio.com",
 		projectId:         "myspace-db",
@@ -250,164 +250,6 @@ app.get( '/a', function ( req, result ) {
 		}
 	);
 } );
-
-app.get( '/logGRtest', ( req, res ) => {
-	var db = firebase.firestore();
-	var date = new Date();
-	// log for previous day
-	date.setDate(date.getDate()-1);
-	let date_string = (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
-	var users = []
-	db.collection("users").get()
-	.then((snapshot) =>
-	{
-		let goals_and_routines = [];
-		snapshot.forEach(doc => {
-			var data = doc.data()['goals&routines']
-			if (data != null) {
-				let usr = {"goals&routines": [], user_id: doc.id}
-				users.push(usr)
-				data.forEach(gr => {
-					usr["goals&routines"].push(
-						{
-							id: gr['id'],
-							title: gr['title'],
-							is_complete: gr['is_complete']
-						}
-					)
-				});
-			}
-		});
-		console.log(typeof users[0])
-		users.forEach( usr => {
-			db.collection("history").where("user_id", "==", usr.user_id).get()
-			.then(snapshot => {
-				let docRef;
-				if (snapshot.empty) {
-					docRef = db.collection("history").doc();
-					docRef.set({
-						user_id:             usr.user_id,
-					});
-				} else {
-					snapshot.forEach(doc => {
-						docRef = db.collection("history").doc(doc.id)
-					});
-				}
-
-				// let logRef = docRef.collection("goals&routines").doc();
-				// logRef.set(
-				// 	{
-				// 		date: date_string,
-				// 		log: usr["goals&routines"]
-				// 	}
-				// )
-			});
-		});
-		res.json("success")
-	});
-});
-
-app.get( '/getGRtest', ( req, res ) => {
-	var db = firebase.firestore();
-	let history = {}
-	db.collection("history").get()
-	.then((snapshot) =>
-	{
-		let goals_and_routines = [];
-		snapshot.forEach(doc => {
-			history[doc.id] = doc.data();
-		});
-		res.json(history);
-	});
-});
-
-app.get( '/updateGRIsDisplayedTest', ( req, res ) => {
-	var db = firebase.firestore();
-	let grs = [];
-	let CurrentDate = new Date(new Date().toUTCString());
-	CurrentDate.setHours(0,0,0,0);
-	db.collection("users").get()
-	.then((snapshot) =>
-	{
-		snapshot.forEach(doc => {
-			if (doc.data()["goals&routines"] != null) {
-				let arrs = doc.data()["goals&routines"];
-				arrs.forEach(gr => {
-					let startDate = new Date(gr["start_day_and_time"]);
-					startDate.setHours(0,0,0,0);
-					let isDisplayedTodayCalculated = false;
-					let repeatOccurences = parseInt(gr["repeat_occurences"]);
-					let repeatEvery = parseInt(gr["repeat_every"]);
-
-					if (!gr.repeat) {
-						isDisplayedTodayCalculated = CurrentDate - startDate == 0
-					} else {
-						let repeatEnds = gr["repeat_ends"];
-						let repeatEndsOn = new Date(gr["repeat_ends_on"]);
-						repeatEndsOn.setHours(0,0,0,0);
-						let repeatFrequency = gr["repeat_frequency"]
-
-						if (CurrentDate >= startDate) {
-							if (repeatEnds == "On") {
-								repeatEndsOn = gr["repeat_ends"];
-							} else if (repeatEnds == "After") {
-								if (repeatFrequency == "DAY") {
-									repeatEndsOn = new Date(startDate);
-									repeatEndsOn.setDate(startDate.getDate() + repeatOccurences);
-									} else if (repeatFrequency == "WEEK"){
-									repeatEndsOn = new Date(startDate);
-									repeatEndsOn.setDate(startDate.getDate() + repeatOccurences*7);
-								} else if (repeatFrequency == "MONTH"){
-									repeatEndsOn = new Date(startDate);
-									repeatEndsOn.setMonth(startDate.getMonth() + repeatOccurences);
-								} else if (repeatFrequency == "YEAR"){
-									repeatEndsOn = new Date(startDate);
-									repeatEndsOn.setYear(startDate.getYear() + repeatOccurences);
-								}
-							} else if (repeatEnds == "Never") {
-								repeatEndsOn = CurrentDate;
-							}
-
-							if (CurrentDate <= repeatEndsOn) {
-								if (repeatFrequency == "DAY") {
-									isDisplayedTodayCalculated = parseInt((CurrentDate - startDate)/(24*3600*1000)) % repeatEvery == 0;
-								} else if (repeatFrequency == "WEEK"){
-									isDisplayedTodayCalculated =  parseInt((CurrentDate - startDate)/(24*3600*1000)) % (repeatEvery*7) == 0;
-								} else if (repeatFrequency == "MONTH"){
-									isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
-									((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
-								} else if (repeatFrequency == "YEAR"){
-									isDisplayedTodayCalculated = (startDate.getDate() == CurrentDate.getDate()) &&
-									(CurrentDate.getMonth() == startDate.getMonth()) &&
-									(CurrentDate.getFullYear() - startDate.getFullYear()) % repeatEvery == 0;
-								}
-							}
-						}
-						// grs.push({
-						// 	title: gr.title,
-						// 	start_day_and_time: startDate,
-						// 	current: CurrentDate,
-						// 	repeat: gr["repeat"],
-						// 	repeat_ends: gr["repeat_ends"],
-						// 	repeat_ends_on: gr["repeat_ends_on"],
-						// 	repeat_ends_on_calculated: repeatEndsOn,
-						// 	repeat_every: repeatEvery,
-						// 	repeat_frequency: repeatFrequency,
-						// 	repeat_occurences	: gr["repeat_occurences"],
-						// 	is_displayed_today:	gr["is_displayed_today"],
-						// 	is_displayed_today_calculated: isDisplayedTodayCalculated
-						// });
-					}
-					gr["is_displayed_today"] = isDisplayedTodayCalculated
-				});
-				db.collection("users")
-				.doc(doc.id)
-				.update({ "goals&routines": arrs });
-			}
-		});
-		res.json(grs);
-	});
-});
 
 app.get( '/getRecurringRules', ( req, result ) => {
 	console.log( req.query.recurringEventId, 'req getRecurringRules' );
