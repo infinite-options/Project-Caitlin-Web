@@ -879,21 +879,6 @@ export default class editGR extends Component {
             notificationChange={this.handleNotificationChange}
           />
         )}
-          {/* Eventually checkbox for available in library, assume everything there for now */}
-          {/*<Form.Group>*/}
-          {/*  <Form.Check*/}
-          {/*     type="checkbox"*/}
-          {/*     checked={this.state.itemToEdit.in_library}*/}
-          {/*     label="Available to Library"*/}
-          {/*     onChange={(e) => {*/}
-          {/*       e.stopPropagation();*/}
-          {/*       let temp = this.state.itemToEdit;*/}
-          {/*       temp.in_library = !temp.in_library;*/}
-          {/*       console.log(temp);*/}
-          {/*       this.setState({itemToEdit: temp})*/}
-          {/*     }}*/}
-          {/*  />*/}
-          {/* </Form.Group>*/}
         <Form.Group>
         <Button
           variant="secondary"
