@@ -59,7 +59,6 @@ export default class FirebaseV2 extends React.Component {
       .firestore()
       .collection("users")
       .doc(this.props.theCurrentUserID),
-    // .doc("7R6hAVmDrNutRkG3sVRy"),
     is_sublist_available: true,
     showEditModal: false,
     indexEditing: "",
@@ -325,7 +324,8 @@ export default class FirebaseV2 extends React.Component {
   // }
 
   formatDateTime(str) {
-    const formattedStr = str.replace(/\//g, "-");
+    //const formattedStr = str.replace(/\//g, "-");
+    const formattedStr = str;
     const time = moment(formattedStr);
     return time.format("YYYY MMM DD HH:mm");
   }
@@ -1045,7 +1045,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.props.routines[i]["is_available"] ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1129,26 +1129,28 @@ export default class FirebaseV2 extends React.Component {
               )}
               <Row>
                 <div style={{ fontSize: "12px" }}>
-                  {this.props.routines[i]["datetime_started"] ? (
+                  {this.props.routines[i]["start_day_and_time"] ? (
                     <div style={{ marginTop: "3px" }}>
-                      {"Previous Start Time: " +
+                      {"Start Time: " +
                         this.formatDateTime(
-                          this.props.routines[i]["datetime_started"]
-                        )}{" "}
+                          this.props.routines[i]["start_day_and_time"]
+                        )
+                      }
                     </div>
                   ) : (
                     <div> </div>
                   )}
-                  {this.props.routines[i]["datetime_completed"] ? (
+                  {this.props.routines[i]["end_day_and_time"] ? (
                     <div>
-                      {"Previous Completed Time: " +
+                      {"End Time: " +
                         this.formatDateTime(
-                          this.props.routines[i]["datetime_completed"]
-                        )}{" "}
+                          this.props.routines[i]["end_day_and_time"]
+                        )}
                     </div>
                   ) : (
                     <div> </div>
                   )}
+                  {this.showRoutineRepeatStatus(i)}
                 </div>
               </Row>
             </ListGroup.Item>
@@ -1159,6 +1161,45 @@ export default class FirebaseV2 extends React.Component {
     return displayRoutines;
   };
 
+  showRoutineRepeatStatus = (i) => {
+  	 // console.log(i,this.props.routines[i])
+  	 // console.log(this.props.routines[i]["repeat"]);
+	 // console.log(this.props.routines[i]["repeat_frequency"]);
+	 // console.log(this.props.routines[i]["repeat_every"]);
+	 if(!this.props.routines[i]["repeat"]) {
+	 	return <div> One time only </div>
+	 } else {
+		 switch ( this.props.routines[ i ][ "repeat_frequency" ] ) {
+		 case "DAY":
+		 	 if(this.props.routines[i]["repeat_every"] === "1"){
+			    return <div> Repeat daily </div>
+		    } else {
+		 	   return <div> Repeat every {this.props.routines[i]["repeat_every"]} days </div>
+		    }
+		 case "WEEK":
+			 if(this.props.routines[i]["repeat_every"] === "1"){
+				 return <div> Repeat weekly </div>
+			 } else {
+				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} weeks </div>
+			 }
+		 case "MONTH":
+			 if(this.props.routines[i]["repeat_every"] === "1"){
+				 return <div> Repeat monthly </div>
+			 } else {
+				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} months </div>
+			 }
+		 case "YEAR":
+			 if(this.props.routines[i]["repeat_every"] === "1"){
+				 return <div> Repeat annually </div>
+			 } else {
+				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} years </div>
+			 }
+		 default:
+			 return <div> Show Routine Repeat Options Error</div>;
+		 }
+	 }
+  }
+  
   getGoals = () => {
     let displayGoals = [];
     if (this.props.goals.length != null) {
@@ -1372,27 +1413,28 @@ export default class FirebaseV2 extends React.Component {
               )}
 
               <div style={{ fontSize: "12px" }}>
-                {this.props.goals[i]["datetime_started"] ? (
+                {this.props.goals[i]["start_day_and_time"] ? (
                   <div style={{ marginTop: "3px" }}>
-                    {"Previous Start Time: " +
+                    {"Start Time: " +
                       this.formatDateTime(
-                        this.props.goals[i]["datetime_started"]
-                      )}{" "}
+                        this.props.goals[i]["start_day_and_time"]
+                      )}
                   </div>
                 ) : (
                   <div> </div>
                 )}
 
-                {this.props.goals[i]["datetime_completed"] ? (
+                {this.props.goals[i]["end_day_and_time"] ? (
                   <div>
-                    {"Previous Completed Time: " +
+                    {"End Time: " +
                       this.formatDateTime(
-                        this.props.goals[i]["datetime_completed"]
+                        this.props.goals[i]["end_day_and_time"]
                       )}{" "}
                   </div>
                 ) : (
                   <div> </div>
                 )}
+	              {this.showGoalRepeatStatus(i)}
               </div>
             </ListGroup.Item>
           </div>
@@ -1402,7 +1444,46 @@ export default class FirebaseV2 extends React.Component {
     //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
     return displayGoals;
   };
-
+  
+  showGoalRepeatStatus = (i) => {
+  	 // console.log(i,this.props.goals[i]);
+  	 // console.log(this.props.goals[i]["repeat"]);
+  	 // console.log(this.props.goals[i]["repeat_frequency"]);
+  	 // console.log(this.props.goals[i]["repeat_every"]);
+	 if(!this.props.goals[i]["repeat"]) {
+	   return <div> One time goal </div>
+	 } else {
+	 	switch(this.props.goals[i]["repeat_frequency"]) {
+	   case "DAY":
+		   if(this.props.routines[i]["repeat_every"] === "1"){
+			   return <div> Repeat daily </div>
+		   } else {
+			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} days </div>
+		   }
+	   case "WEEK":
+		   if(this.props.routines[i]["repeat_every"] === "1"){
+			   return <div> Repeat weekly </div>
+		   } else {
+			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} weeks </div>
+		   }
+	   case "MONTH":
+		   if(this.props.routines[i]["repeat_every"] === "1"){
+			   return <div> Repeat monthly </div>
+		   } else {
+			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} months </div>
+		   }
+	   case "YEAR":
+		   if(this.props.routines[i]["repeat_every"] === "1"){
+			   return <div> Repeat annually </div>
+		   } else {
+			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} years </div>
+		   }
+	   default:
+		   return <div> Show Goal Repeat Options Error</div>;
+	   }
+	 }
+  }
+  
   getGoalsStatus = () => {
     let displayGoals = [];
     if (this.props.goals.length != null) {
@@ -1723,9 +1804,10 @@ shows entire list of goals and routines
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
           <Modal.Title> 
-            {" "} <h5 className="normalfancytext">Routines</h5>{" "}     
+            <h5 className="normalfancytext">Routines</h5>
           </Modal.Title>
         </Modal.Header>
+        
         <Modal.Body>
           {/**
            * To allow for the Modals to pop up in front of one another

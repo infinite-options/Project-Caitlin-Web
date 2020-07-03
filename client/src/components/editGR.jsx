@@ -64,6 +64,8 @@ export default class editGR extends Component {
         6: "",
       },
     };
+    // console.log("In editGR");
+    // console.log(this.state.itemToEdit);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -108,10 +110,6 @@ export default class editGR extends Component {
   }
 
   componentDidMount() {
-    // if(prevState.itemToEdit.title === "Concurrent PM 2"){
-
-    // console.log("this is the prev Items to edit ", prevState.itemToEdit);
-    // }
     this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
   }
 
@@ -145,6 +143,11 @@ export default class editGR extends Component {
   };
 
   newInputSubmit = () => {
+    status = this.newInputVerify();
+    if(status !== "") {
+      alert(status);
+      return;
+    }
     let newArr = this.props.ATArray;
     let temp = this.state.itemToEdit;
     if (!temp.repeat_ends_on) {
@@ -202,6 +205,19 @@ export default class editGR extends Component {
       }
     });
   };
+
+  newInputVerify = () => {
+    if (this.state.itemToEdit.title === "") {
+      return ("No Title");
+    }
+    let startTime = this.state.itemToEdit.start_day_and_time;
+    let endTime = this.state.itemToEdit.end_day_and_time;
+    let timeDiff = endTime-startTime;
+    if (timeDiff <= 0) {
+      return ("End time is before start time");
+    }
+    return "";
+  }
 
   startTimePicker = () => {
     let stored_date;
@@ -858,7 +874,22 @@ export default class editGR extends Component {
             notificationChange={this.handleNotificationChange}
           />
         )}
-
+          {/* Eventually checkbox for available in library, assume everything there for now */}
+          {/*<Form.Group>*/}
+          {/*  <Form.Check*/}
+          {/*     type="checkbox"*/}
+          {/*     checked={this.state.itemToEdit.in_library}*/}
+          {/*     label="Available to Library"*/}
+          {/*     onChange={(e) => {*/}
+          {/*       e.stopPropagation();*/}
+          {/*       let temp = this.state.itemToEdit;*/}
+          {/*       temp.in_library = !temp.in_library;*/}
+          {/*       console.log(temp);*/}
+          {/*       this.setState({itemToEdit: temp})*/}
+          {/*     }}*/}
+          {/*  />*/}
+          {/* </Form.Group>*/}
+        <Form.Group>
         <Button
           variant="secondary"
           onClick={(e) => {
@@ -878,6 +909,7 @@ export default class editGR extends Component {
         >
           Save changes
         </Button>
+        </Form.Group>
       </Row>
       // </div>
     );
