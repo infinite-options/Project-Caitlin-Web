@@ -111,10 +111,6 @@ export default class editGR extends Component {
 
   componentDidMount() {
     let temp = this.props.ATArray[this.props.i];
-    // Only needed until every item has this field?
-    if(!temp.in_library) {
-      temp.in_library = false;
-    }
     this.setState({ itemToEdit: temp });
   }
 
