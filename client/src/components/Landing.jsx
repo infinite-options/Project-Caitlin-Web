@@ -398,7 +398,7 @@ export default class MainPage extends React.Component {
         </div>
         <div style={{width: "770px", color: "#6495ED"}}>
         <p>You know you are the key to helping people achieve their potential.  Login to make their dreams become their reality!</p>
-        <p>Login in with an email and password or using Google Login.  When you login we track your name, email and user id</p>
+        <p>Login in with an email and password or using Google Login.  When you login we track your name, email and user id.</p>
         </div>
         </div>
         <div style={{display: "-webkit-inline-box", textAlign: "left", paddingTop: "10px", borderTop: "2px solid #8FBC8F", width: "1000px"}}>
@@ -406,9 +406,9 @@ export default class MainPage extends React.Component {
         The User
         </div>
         <div style={{width: "770px", color: "#8FBC8F"}}>
-        <p>You know you can accomplish more!  With the right help, structure and guidance you can make each better than the last and move toward your goals!</p>
+        <p>You know you can accomplish more!  With the right help, structure and guidance you can make each day better than the last and move toward your goals!</p>
         <p>Your Trusted Advisor will ask you to enter your Google ID and Password to give them access to your Calendar.  With that information they will be able to help you manage your day and add structure to your life by customizing Goals and Routines.</p>
-        <p>It's your life and you are in control!  We give you options.  You choose what you do!</p>
+        <p>It's your life and you are in control!  We give you options.  You choose what you want to accomplish!</p>
         </div>
         </div>
         </div>
