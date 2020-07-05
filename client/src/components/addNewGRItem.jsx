@@ -195,7 +195,7 @@ export default class AddNewGRItem extends Component {
 
   newInputSubmit = () => {
     status = this.newInputVerify();
-    if(status !== "") {
+    if (status !== "") {
       alert(status);
       return;
     }
@@ -205,17 +205,17 @@ export default class AddNewGRItem extends Component {
 
   newInputVerify = () => {
     if (this.state.itemToEdit.title === "") {
-      return ("No Title");
+      return "No Title";
     }
     let startTime = this.state.itemToEdit.start_day_and_time;
     let endTime = this.state.itemToEdit.end_day_and_time;
-    let timeDiff = endTime-startTime;
+    let timeDiff = endTime - startTime;
     if (timeDiff <= 0) {
-      return ("End time is before start time")
+      return "End time is before start time";
     }
     return "";
-  }
-  
+  };
+
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
