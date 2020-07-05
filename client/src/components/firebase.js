@@ -18,14 +18,23 @@ if (window.location.href.includes("manifestmy.life")) {
 }
 else {
   firebaseConfig = {
-    apiKey: "AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE",
+    /*apiKey: "AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE",
     authDomain: "project-caitlin-c71a9.firebaseapp.com",
     databaseURL: "https://project-caitlin-c71a9.firebaseio.com",
     projectId: "project-caitlin-c71a9",
     storageBucket: "project-caitlin-c71a9.appspot.com",
     messagingSenderId: "711685546849",
     appId: "1:711685546849:web:5c7a982748eb3bec35db20",
-    measurementId: "G-DCQF4LY5ZH"
+    measurementId: "G-DCQF4LY5ZH"*/
+        
+        apiKey:            "AIzaSyBjuyhZxmvzey9-hMEdIUoems6c9bEQ-nI",
+		authDomain:        "myspace-db.firebaseapp.com",
+		databaseURL:       "https://myspace-db.firebaseio.com",
+		projectId:         "myspace-db",
+		storageBucket:     "myspace-db.appspot.com",
+		messagingSenderId: "287117315224",
+		appId:             "1:287117315224:web:c7af6690d5e269a7ab54ed",
+		measurementId:     "G-WRGR8M5LRN"
   };
 }
 
