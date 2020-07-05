@@ -4,6 +4,7 @@ import ShowNotifications from "./ShowNotifications";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
+import TimeField from "react-simple-timefield";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
@@ -188,6 +189,19 @@ export default class AddNewISItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
+  onTimeChange = (event, value) => {
+    const newTime = value.replace(/-/g, ":");
+    const time = newTime.substr(0, 5) + ":00";
+    let temp = this.state.itemToEdit;
+    if (event.target.name === "available_start_time") {
+      temp.available_start_time = time;
+      this.setState({ itemToEdit: temp });
+    } else {
+      temp.available_end_time = time;
+      this.setState({ itemToEdit: temp });
+    }
+  };
+
   render() {
     return (
       <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
@@ -223,9 +237,9 @@ export default class AddNewISItem extends Component {
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
               <UploadImage parentFunction={this.setPhotoURLFunction} />
-              <br /> 
+              <br />
             </Row>
-            <div style = {{marginTop:"10px", marginBottom:"10px"}}>
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
               <label>Icon: </label>
               <img
                 alt="None"
@@ -235,35 +249,44 @@ export default class AddNewISItem extends Component {
               ></img>
             </div>
 
-            <label>Available Start Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 08:20:00) "
+            <section>
+              Start Time
+              <TimeField
+                name="available_start_time"
                 value={this.state.itemToEdit.available_start_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_start_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
+                onChange={this.onTimeChange}
+                style={{
+                  marginLeft: "6px",
+                  border: "1px solid #666",
+                  fontSize: 20,
+                  width: 80,
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  color: "#333",
+                  borderRadius: 10,
                 }}
               />
-            </div>
-
-            <label>Available End Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 16:20:00) "
+            </section>
+            <br />
+            <section>
+              End Time
+              <TimeField
+                name="available_end_time"
                 value={this.state.itemToEdit.available_end_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_end_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
+                onChange={this.onTimeChange}
+                style={{
+                  marginLeft: "20px",
+                  border: "1px solid #666",
+                  fontSize: 20,
+                  width: 80,
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  color: "#333",
+                  borderRadius: 10,
                 }}
               />
-            </div>
+            </section>
+            <br />
 
             <label>This Takes Me</label>
             <Row>

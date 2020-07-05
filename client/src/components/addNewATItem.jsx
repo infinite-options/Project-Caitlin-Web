@@ -187,7 +187,7 @@ export default class AddNewATItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
-  onStartTimeChange = (event, value) => {
+  onTimeChange = (event, value) => {
     const newTime = value.replace(/-/g, ":");
     const time = newTime.substr(0, 5) + ":00";
     let temp = this.state.itemToEdit;
@@ -198,9 +198,6 @@ export default class AddNewATItem extends Component {
       temp.available_end_time = time;
       this.setState({ itemToEdit: temp });
     }
-
-    console.log("start time: ", this.state.itemToEdit.available_start_time);
-    console.log("end time: ", this.state.itemToEdit.available_end_time);
   };
 
   render() {
@@ -254,13 +251,14 @@ export default class AddNewATItem extends Component {
               <TimeField
                 name="available_start_time"
                 value={this.state.itemToEdit.available_start_time}
-                onChange={this.onStartTimeChange}
+                onChange={this.onTimeChange}
                 style={{
                   marginLeft: "6px",
                   border: "1px solid #666",
                   fontSize: 20,
                   width: 80,
                   paddingLeft: "10px",
+                  paddingRight: "10px",
                   color: "#333",
                   borderRadius: 10,
                 }}
@@ -272,13 +270,14 @@ export default class AddNewATItem extends Component {
               <TimeField
                 name="available_end_time"
                 value={this.state.itemToEdit.available_end_time}
-                onChange={this.onStartTimeChange}
+                onChange={this.onTimeChange}
                 style={{
                   marginLeft: "20px",
                   border: "1px solid #666",
                   fontSize: 20,
                   width: 80,
                   paddingLeft: "10px",
+                  paddingRight: "10px",
                   color: "#333",
                   borderRadius: 10,
                 }}
