@@ -245,83 +245,9 @@ export default class FirebaseV2 extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     this.props.grabFireBaseRoutinesGoalsData();
-    // const db = firebase.firestore();
-    // // console.log("FirebaseV2 component did mount");
-    // // console.log("this is the current userid", this.state.currentUserId);
-    // if (this.state.currentUserId !== "") {
-    //   //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
-    //   const docRef = db.collection("users").doc(this.state.currentUserId);
-    //   // console.log("this is suppose tto be the path", docRef);
-    //   docRef
-    //   .get()
-    //   .then((doc) => {
-    //     if (doc.exists) {
-    //       // console.log(doc.data());
-    //       var x = doc.data();
-    //       // console.log("this is the data", x);
-    //       // console.log(x["goals&routines"]);
-    //       // x = x["goals&routines"];
-          
-    //       let routine = [];
-    //       let routine_ids = [];
-    //       let goal = [];
-    //       let goal_ids = [];
-    //       if (x["goals&routines"] !== undefined) {
-    //         x = x["goals&routines"];
-    //         // console.log("this is the goals and routines", x);
-    //         x.sort((a,b) => {
-    //           let timeA = new Date(a["start_day_and_time"]);
-    //           let timeB = new Date(b["start_day_and_time"]);
-    //           return timeA.getTime() - timeB.getTime();
-    //         });
-    //         // console.log("sorted goals and routines", x);
-    //         for (let i = 0; i < x.length; ++i) {
-    //           if (x[i]["is_persistent"]) {
-    //             // console.log("routine " + x[i]["title"]);
-    //             // console.log("is the is the id ", x[i].id);
-    //             routine_ids.push(i);
-    //             routine.push(x[i]);
-    //           } else if (!x[i]["is_persistent"]) {
-    //             // console.log("not routine " + x[i]["title"]);
-    //             goal_ids.push(i);
-    //             goal.push(x[i]);
-    //           }
-    //         }
-    //         console.log("this si the original goals and routines grabed from firebase ", x);
-    //         this.setState({
-    //           originalGoalsAndRoutineArr: x,
-    //           // goals: goal,
-    //           // addNewGRModalShow: false,
-    //           // routine_ids: routine_ids,
-    //           // goal_ids: goal_ids,
-    //           // routines: routine,
-    //         });
-    //       } else {
-    //         console.log("this si the original goals and routines grabed from firebase  blank", x);
-    //         this.setState({
-    //           originalGoalsAndRoutineArr: [],
-    //           // goals: goal,
-    //           // addNewGRModalShow: false,
-    //           // routine_ids: routine_ids,
-    //           // goal_ids: goal_ids,
-    //           // routines: routine,
-    //         });
-    //       }
-    //     } else {
-    //       // doc.data() will be undefined in this case
-    //       console.log("No such document!");
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log("Error getting document:", error);
-    //   });
-    // }
-    // this.props.grabFireBaseRoutinesGoalsData();
+    
   };
 
-  // componentWillUnmount() {
-  //   console.log(" FirebaseV2 will unmount web");
-  // }
 
   formatDateTime(str) {
     //const formattedStr = str.replace(/\//g, "-");
@@ -1726,14 +1652,30 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "0",
+          marginLeft: "10px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeGoal} closeButton>
           <Modal.Title>
-            <h5 className="normalfancytext">Goals</h5>{" "}
+            <Row>
+              <Col style = {{marginRight:"140px"}}>
+                <h5 className="normalfancytext">Goals</h5>
+              </Col>
+              <Col>
+                <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewGRModalShow: true, isRoutine: false });
+                  }}
+                >
+                  Add Goal
+                </button>
+              </Col>
+            </Row>
+            {/* <h5 className="normalfancytext">Goals</h5>{" "} */}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1772,7 +1714,7 @@ shows entire list of goals and routines
             {/* Button to add new Goal */}
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -1782,7 +1724,7 @@ shows entire list of goals and routines
           >
             Add Goal
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -1797,15 +1739,31 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "0px",
+          marginLeft: "10px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
-          <Modal.Title> 
+          <Row>
+            <Col style = {{marginRight:"85px"}}>
+              <h5 className="normalfancytext">Routines</h5>
+            </Col>
+            <Col>
+              <button
+                type="button"
+                className="btn btn-info btn-md"
+                onClick={() => {
+                  this.setState({ addNewGRModalShow: true, isRoutine: false });
+                }}
+              >
+                Add Routine
+              </button>
+            </Col>
+          </Row>
+          {/* <Modal.Title> 
             <h5 className="normalfancytext">Routines</h5>
-          </Modal.Title>
+          </Modal.Title> */}
         </Modal.Header>
         
         <Modal.Body>
@@ -1842,7 +1800,7 @@ shows entire list of goals and routines
           </ListGroup>
           {/* Button To add new Routine */}
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -1852,7 +1810,7 @@ shows entire list of goals and routines
           >
             Add Routine
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -1947,9 +1905,26 @@ shows entire list of goals and routines
             this.setState({ singleAT: { show: false } });
           }}
         >
-          <Modal.Title>
-            <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
-          </Modal.Title>
+          {/* <Modal.Title> */}
+            <Row>
+              <Col xs={5}>
+                <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
+              </Col>
+              <Col style = {{paddingRight:"0px", paddingLeft:"80px"}}>
+                <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewISModalShow: true });
+                  }}
+                >
+                  Add Step
+                </button>
+              </Col>
+
+            </Row>
+            {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+          {/* </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
           <div
@@ -1983,7 +1958,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -1993,7 +1968,7 @@ shows entire list of goals and routines
           >
             Add Step
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -2048,7 +2023,23 @@ shows entire list of goals and routines
           }}
         >
           <Modal.Title>
-            <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
+            <Row>
+              <Col xs={5}>
+                <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
+              </Col>
+              <Col style = {{paddingRight:"0px"}}>
+                <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewATModalShow: true });
+                  }}
+                >
+                  Add Action/Task
+                </button>
+              </Col>
+            </Row>
+            {/* <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "} */}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -2097,7 +2088,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -2107,7 +2098,7 @@ shows entire list of goals and routines
           >
             Add Action/Task
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
