@@ -247,6 +247,8 @@ export default class FirebaseV2 extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     this.props.grabFireBaseRoutinesGoalsData();
+
+    
   };
 
   formatDateTime(str) {
@@ -1717,7 +1719,9 @@ shows entire list of goals and routines
         <Modal.Header onHide={this.props.closeGoal} closeButton>
           <Modal.Title>
             <Row>
-              <Col style={{ marginRight: "140px" }}>
+
+              <Col style = {{marginRight:"140px"}}>
+
                 <h5 className="normalfancytext">Goals</h5>
               </Col>
               <Col>
@@ -1725,10 +1729,9 @@ shows entire list of goals and routines
                   type="button"
                   className="btn btn-info btn-md"
                   onClick={() => {
-                    this.setState({
-                      addNewGRModalShow: true,
-                      isRoutine: false,
-                    });
+
+                    this.setState({ addNewGRModalShow: true, isRoutine: false });
+
                   }}
                 >
                   Add Goal
@@ -1806,19 +1809,22 @@ shows entire list of goals and routines
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
           <Row>
-            <Col style={{ marginRight: "85px" }}>
+
+            <Col style = {{marginRight:"85px"}}>
               <h5 className="normalfancytext">Routines</h5>
             </Col>
             <Col>
-              <button
+                <button
                 type="button"
                 className="btn btn-info btn-md"
                 onClick={() => {
-                  this.setState({ addNewGRModalShow: true, isRoutine: true });
+                  this.addRoutineOnClick();
                 }}
-              >
-                Add Routine
-              </button>
+                >
+                    Add Routine
+                </button>
+              
+
             </Col>
           </Row>
           {/* <Modal.Title> 
@@ -1966,15 +1972,26 @@ shows entire list of goals and routines
           }}
         >
           {/* <Modal.Title> */}
-          <div
-            className="d-flex justify-content-between"
-            style={{ width: "350px" }}
-          >
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+
             <div>
               <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
             </div>
             <div>
               <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewISModalShow: true });
+                  }}
+                >
+                  Add Step
+                </button>
+
+            </div>
+          </div>
+            {/* <Row>
+
                 type="button"
                 className="btn btn-info btn-md"
                 onClick={() => {
@@ -1986,6 +2003,7 @@ shows entire list of goals and routines
             </div>
           </div>
           {/* <Row>
+
               <Col xs={6}>
                 <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
               </Col>
@@ -2002,7 +2020,9 @@ shows entire list of goals and routines
               </Col>
 
             </Row> */}
-          {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+
+            {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+
           {/* </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
@@ -2106,25 +2126,27 @@ shows entire list of goals and routines
             this.setState({ singleGR: { show: false } });
           }}
         >
-          <div
-            className="d-flex justify-content-between"
-            style={{ width: "350px" }}
-          >
+
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+
             <div>
               <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
             </div>
             <div>
               <button
-                type="button"
-                className="btn btn-info btn-md"
-                onClick={() => {
-                  this.setState({ addNewATModalShow: true });
-                }}
-              >
-                Add Action/Task
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewATModalShow: true });
+                  }}
+                >
+                  Add Action/Task
               </button>
+
             </div>
           </div>
+          
+
         </Modal.Header>
         <Modal.Body>
           <div
