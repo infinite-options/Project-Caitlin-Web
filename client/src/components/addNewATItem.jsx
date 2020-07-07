@@ -294,23 +294,25 @@ export default class AddNewATItem extends Component {
                 width="auto"
               ></img>
             </div>
-            <section>
-              Start Time
-              <TimePicker
-                setTime={this.setTime}
-                name="start_time"
-                time={this.state.itemToEdit.available_start_time}
-              />
-            </section>
-            <br />
-            <section>
-              End Time
-              <TimePicker
-                setTime={this.setTime}
-                name="end_time"
-                time={this.state.itemToEdit.available_end_time}
-              />
-            </section>
+            <Row style={{ marginLeft: "3px" }}>
+              <section>
+                Start Time
+                <TimePicker
+                  setTime={this.setTime}
+                  name="start_time"
+                  time={this.state.itemToEdit.available_start_time}
+                />
+              </section>
+              <br />
+              <section style={{ marginLeft: "15px" }}>
+                End Time
+                <TimePicker
+                  setTime={this.setTime}
+                  name="end_time"
+                  time={this.state.itemToEdit.available_end_time}
+                />
+              </section>
+            </Row>
 
             <br />
             <label>This Takes Me</label>
