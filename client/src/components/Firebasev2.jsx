@@ -247,6 +247,7 @@ export default class FirebaseV2 extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     this.props.grabFireBaseRoutinesGoalsData();
+<<<<<<< HEAD
     // const db = firebase.firestore();
     // // console.log("FirebaseV2 component did mount");
     // // console.log("this is the current userid", this.state.currentUserId);
@@ -319,11 +320,11 @@ export default class FirebaseV2 extends React.Component {
     //   });
     // }
     // this.props.grabFireBaseRoutinesGoalsData();
+=======
+    
+>>>>>>> 032262762cba3b8a14141a8cc173f99037234a5f
   };
 
-  // componentWillUnmount() {
-  //   console.log(" FirebaseV2 will unmount web");
-  // }
 
   formatDateTime(str) {
     //const formattedStr = str.replace(/\//g, "-");
@@ -1785,14 +1786,30 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "0",
+          marginLeft: "10px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeGoal} closeButton>
           <Modal.Title>
-            <h5 className="normalfancytext">Goals</h5>{" "}
+            <Row>
+              <Col style = {{marginRight:"140px"}}>
+                <h5 className="normalfancytext">Goals</h5>
+              </Col>
+              <Col>
+                <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewGRModalShow: true, isRoutine: false });
+                  }}
+                >
+                  Add Goal
+                </button>
+              </Col>
+            </Row>
+            {/* <h5 className="normalfancytext">Goals</h5>{" "} */}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1831,7 +1848,7 @@ shows entire list of goals and routines
             {/* Button to add new Goal */}
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -1841,7 +1858,7 @@ shows entire list of goals and routines
           >
             Add Goal
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -1856,15 +1873,35 @@ shows entire list of goals and routines
           borderRadius: "15px",
           marginTop: "0",
           width: this.state.modalWidth,
-          marginLeft: "0px",
+          marginLeft: "10px",
           boxShadow:
             "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
         }}
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
+<<<<<<< HEAD
           <Modal.Title>
+=======
+          <Row>
+            <Col style = {{marginRight:"85px"}}>
+              <h5 className="normalfancytext">Routines</h5>
+            </Col>
+            <Col>
+              <button
+                type="button"
+                className="btn btn-info btn-md"
+                onClick={() => {
+                  this.setState({ addNewGRModalShow: true, isRoutine: false });
+                }}
+              >
+                Add Routine
+              </button>
+            </Col>
+          </Row>
+          {/* <Modal.Title> 
+>>>>>>> 032262762cba3b8a14141a8cc173f99037234a5f
             <h5 className="normalfancytext">Routines</h5>
-          </Modal.Title>
+          </Modal.Title> */}
         </Modal.Header>
 
         <Modal.Body>
@@ -1901,7 +1938,7 @@ shows entire list of goals and routines
           </ListGroup>
           {/* Button To add new Routine */}
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -1911,7 +1948,7 @@ shows entire list of goals and routines
           >
             Add Routine
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -2006,9 +2043,43 @@ shows entire list of goals and routines
             this.setState({ singleAT: { show: false } });
           }}
         >
-          <Modal.Title>
-            <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
-          </Modal.Title>
+          {/* <Modal.Title> */}
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+            <div>
+              <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
+            </div>
+            <div>
+              <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewISModalShow: true });
+                  }}
+                >
+                  Add Step
+                </button>
+
+            </div>
+          </div>
+            {/* <Row>
+              <Col xs={6}>
+                <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
+              </Col>
+              <Col style = {{paddingRight:"0px"}}>
+                <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewISModalShow: true });
+                  }}
+                >
+                  Add Step
+                </button>
+              </Col>
+
+            </Row> */}
+            {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+          {/* </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2042,7 +2113,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -2052,7 +2123,7 @@ shows entire list of goals and routines
           >
             Add Step
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -2111,9 +2182,24 @@ shows entire list of goals and routines
             this.setState({ singleGR: { show: false } });
           }}
         >
-          <Modal.Title>
-            <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
-          </Modal.Title>
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+            <div>
+              <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
+            </div>
+            <div>
+              <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewATModalShow: true });
+                  }}
+                >
+                  Add Action/Task
+              </button>
+
+            </div>
+          </div>
+          
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2161,7 +2247,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <button
             type="button"
             className="btn btn-info btn-md"
@@ -2171,7 +2257,7 @@ shows entire list of goals and routines
           >
             Add Action/Task
           </button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
