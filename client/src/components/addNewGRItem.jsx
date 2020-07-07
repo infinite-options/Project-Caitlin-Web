@@ -214,11 +214,7 @@ export default class AddNewGRItem extends Component {
       return "End time is before start time";
     }
     return "";
-<<<<<<< HEAD
   };
-=======
-  }
->>>>>>> 032262762cba3b8a14141a8cc173f99037234a5f
 
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
@@ -281,9 +277,8 @@ export default class AddNewGRItem extends Component {
               temp.id = ref.id;
               temp.available_start_time = this.state.itemToEdit.available_start_time;
               temp.available_end_time = this.state.itemToEdit.available_end_time;
-              temp.is_displayed_today = true,
-
-              console.log("is_displayed_today", true);
+              (temp.is_displayed_today = true),
+                console.log("is_displayed_today", true);
 
               console.log(
                 "this si the start day before ",
