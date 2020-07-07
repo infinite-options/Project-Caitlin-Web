@@ -1814,7 +1814,7 @@ shows entire list of goals and routines
                 type="button"
                 className="btn btn-info btn-md"
                 onClick={() => {
-                  this.setState({ addNewGRModalShow: true, isRoutine: false });
+                  this.setState({ addNewGRModalShow: true, isRoutine: true });
                 }}
               >
                 Add Routine
