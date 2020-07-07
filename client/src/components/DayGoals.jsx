@@ -1024,53 +1024,53 @@ export default class DayGoals extends Component {
 
       //***   Firbase boolean varibale to help mobile side know if to display goal */
       let checkCurDate = moment();
-      if (
-        checkCurDate.date() === curDate &&
-        checkCurDate.month() === curMonth &&
-        checkCurDate.year() === curYear &&
-        ((tempStartTime.getDate() === curDate &&
-          curMonth <= tempEndTime.getMonth() &&
-          curMonth >= tempStartTime.getMonth() &&
-          curYear <= tempEndTime.getFullYear() &&
-          curYear >= tempStartTime.getFullYear()) ||
-          (tempEndTime.getDate() === curDate &&
-            curMonth <= tempEndTime.getMonth() &&
-            curMonth >= tempStartTime.getMonth() &&
-            curYear <= tempEndTime.getFullYear() &&
-            curYear >= tempStartTime.getFullYear()) ||
-          (tempStartTime.getDate() < curDate &&
-            tempEndTime.getDate() > curDate &&
-            curMonth <= tempEndTime.getMonth() &&
-            curMonth >= tempStartTime.getMonth() &&
-            curYear <= tempEndTime.getFullYear() &&
-            curYear >= tempStartTime.getFullYear()))
-      ) {
-        if (arr[i].is_displayed_today !== (true || "1")) {
-          arr[i].is_displayed_today = true;
-          let newArr = this.props.originalGoalsAndRoutineArr;
-          newArr[this.props.goal_ids[i]].is_displayed_today = true;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(this.props.theCurrentUserId)
-            .update({ "goals&routines": newArr });
-        }
-      } else if (
-        checkCurDate.date() === curDate &&
-        checkCurDate.month() === curMonth &&
-        checkCurDate.year() === curYear
-      ) {
-        if (arr[i].is_displayed_today === (true || "1")) {
-          arr[i].is_displayed_today = false;
-          let newArr = this.props.originalGoalsAndRoutineArr;
-          newArr[this.props.goal_ids[i]].is_displayed_today = false;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(this.props.theCurrentUserId)
-            .update({ "goals&routines": newArr });
-        }
-      }
+      // if (
+      //   checkCurDate.date() === curDate &&
+      //   checkCurDate.month() === curMonth &&
+      //   checkCurDate.year() === curYear &&
+      //   ((tempStartTime.getDate() === curDate &&
+      //     curMonth <= tempEndTime.getMonth() &&
+      //     curMonth >= tempStartTime.getMonth() &&
+      //     curYear <= tempEndTime.getFullYear() &&
+      //     curYear >= tempStartTime.getFullYear()) ||
+      //     (tempEndTime.getDate() === curDate &&
+      //       curMonth <= tempEndTime.getMonth() &&
+      //       curMonth >= tempStartTime.getMonth() &&
+      //       curYear <= tempEndTime.getFullYear() &&
+      //       curYear >= tempStartTime.getFullYear()) ||
+      //     (tempStartTime.getDate() < curDate &&
+      //       tempEndTime.getDate() > curDate &&
+      //       curMonth <= tempEndTime.getMonth() &&
+      //       curMonth >= tempStartTime.getMonth() &&
+      //       curYear <= tempEndTime.getFullYear() &&
+      //       curYear >= tempStartTime.getFullYear()))
+      // ) {
+      //   if (arr[i].is_displayed_today !== (true || "1")) {
+      //     arr[i].is_displayed_today = true;
+      //     let newArr = this.props.originalGoalsAndRoutineArr;
+      //     newArr[this.props.goal_ids[i]].is_displayed_today = true;
+      //     firebase
+      //       .firestore()
+      //       .collection("users")
+      //       .doc(this.props.theCurrentUserId)
+      //       .update({ "goals&routines": newArr });
+      //   }
+      // } else if (
+      //   checkCurDate.date() === curDate &&
+      //   checkCurDate.month() === curMonth &&
+      //   checkCurDate.year() === curYear
+      // ) {
+      //   if (arr[i].is_displayed_today === (true || "1")) {
+      //     arr[i].is_displayed_today = false;
+      //     let newArr = this.props.originalGoalsAndRoutineArr;
+      //     newArr[this.props.goal_ids[i]].is_displayed_today = false;
+      //     firebase
+      //       .firestore()
+      //       .collection("users")
+      //       .doc(this.props.theCurrentUserId)
+      //       .update({ "goals&routines": newArr });
+      //   }
+      // }
       // else {
       //    if(arr[i].is_displayed_today === (true || "1")){
       //     arr[i].is_displayed_today =  false;
