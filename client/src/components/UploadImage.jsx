@@ -33,6 +33,8 @@ export default class UploadImage extends Component {
       return;
     }
 
+    // var storageRef = storage.ref(this.state.image.name);
+    //console.log("storageRef: ", storageRef);
     const salt = Math.floor(Math.random() * 9999999999);
     let image_name = this.state.image.name;
     image_name = image_name + salt.toString();
@@ -83,7 +85,7 @@ export default class UploadImage extends Component {
   render() {
     return (
       <>
-        <Button variant="outline-primary"  onClick={this.onHandleShowClick}>
+        <Button variant="outline-primary" onClick={this.onHandleShowClick}>
           Upload Image
         </Button>
 

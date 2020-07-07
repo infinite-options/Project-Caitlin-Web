@@ -1479,57 +1479,51 @@ export default class FirebaseV2 extends React.Component {
   };
 
   showGoalRepeatStatus = (i) => {
-    // console.log(i,this.props.goals[i]);
-    // console.log(this.props.goals[i]["repeat"]);
-    // console.log(this.props.goals[i]["repeat_frequency"]);
-    // console.log(this.props.goals[i]["repeat_every"]);
     if (!this.props.goals[i]["repeat"]) {
       return <div> One time goal </div>;
     } else {
       switch (this.props.goals[i]["repeat_frequency"]) {
         case "DAY":
-          if (this.props.routines[i]["repeat_every"] === "1") {
+          if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat daily </div>;
           } else {
             return (
               <div>
                 {" "}
-                Repeat every {this.props.routines[i]["repeat_every"]} days{" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} days{" "}
               </div>
             );
           }
         case "WEEK":
-          if (this.props.routines[i]["repeat_every"] === "1") {
+          if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat weekly </div>;
           } else {
             return (
               <div>
                 {" "}
-                Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} weeks{" "}
               </div>
             );
           }
         case "MONTH":
-          if (this.props.routines[i]["repeat_every"] === "1") {
+          if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat monthly </div>;
           } else {
             return (
               <div>
                 {" "}
-                Repeat every {
-                  this.props.routines[i]["repeat_every"]
-                } months{" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} months{" "}
               </div>
             );
           }
         case "YEAR":
-          if (this.props.routines[i]["repeat_every"] === "1") {
+          if (this.props.goals[i]["repeat_every"] === "1") {
             return <div> Repeat annually </div>;
           } else {
             return (
               <div>
                 {" "}
-                Repeat every {this.props.routines[i]["repeat_every"]} years{" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} years{" "}
               </div>
             );
           }
