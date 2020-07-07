@@ -1750,15 +1750,16 @@ shows entire list of goals and routines
               <h5 className="normalfancytext">Routines</h5>
             </Col>
             <Col>
-              <button
+                <button
                 type="button"
                 className="btn btn-info btn-md"
                 onClick={() => {
-                  this.setState({ addNewGRModalShow: true, isRoutine: false });
+                  this.addRoutineOnClick();
                 }}
-              >
-                Add Routine
-              </button>
+                >
+                    Add Routine
+                </button>
+              
             </Col>
           </Row>
           {/* <Modal.Title> 
