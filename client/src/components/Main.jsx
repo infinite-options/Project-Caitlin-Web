@@ -2523,9 +2523,7 @@ this will close repeat modal.
             >
               {/* {this.grabFireBaseRoutinesGoalsData()} */}
               {/* the modal for routine/goal is called Firebasev2 currently */}
-              {/* {console.log("this is the originalGoals and rountines Arr from main  ", this.state.originalGoalsAndRoutineArr)} */}
               {this.state.currentUserId != "" && (
-                
                 <Firebasev2
                   theCurrentUserID={this.state.currentUserId}
                   grabFireBaseRoutinesGoalsData={
@@ -2607,7 +2605,7 @@ this will close repeat modal.
             <Col>
               <div>
                 <FontAwesomeIcon
-                  style={{ marginLeft: "50%" }}
+                  style={{ marginLeft: "100px" }}
                   icon={faChevronLeft}
                   size="2x"
                   className="X"
@@ -2630,7 +2628,8 @@ this will close repeat modal.
             </Col>
             <Col>
               <FontAwesomeIcon
-                style={{ marginLeft: "50%" }}
+                // style={{ marginLeft: "50%" }}
+                style={{float: "right", marginRight:"100px"}}
                 icon={faChevronRight}
                 size="2x"
                 className="X"
@@ -2693,7 +2692,8 @@ this will close repeat modal.
               <Col>
                 <div>
                   <FontAwesomeIcon
-                    style={{ marginLeft: "50%" }}
+                    // style={{ marginLeft: "50%" }}
+                    style={{ marginLeft:"100px"}}
                     icon={faChevronLeft}
                     size="2x"
                     className="X"
@@ -2712,7 +2712,8 @@ this will close repeat modal.
               </Col>
               <Col>
                 <FontAwesomeIcon
-                  style={{ marginLeft: "50%" }}
+                  // style={{ marginLeft: "50%" }}
+                  style={{float: "right", marginRight:"100px"}}
                   icon={faChevronRight}
                   size="2x"
                   className="X"
