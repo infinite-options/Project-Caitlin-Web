@@ -1906,11 +1906,28 @@ shows entire list of goals and routines
           }}
         >
           {/* <Modal.Title> */}
-            <Row>
-              <Col xs={5}>
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+            <div>
+              <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
+            </div>
+            <div>
+              <button
+                  type="button"
+                  className="btn btn-info btn-md"
+                  onClick={() => {
+                    this.setState({ addNewISModalShow: true });
+                  }}
+                >
+                  Add Step
+                </button>
+
+            </div>
+          </div>
+            {/* <Row>
+              <Col xs={6}>
                 <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
               </Col>
-              <Col style = {{paddingRight:"0px", paddingLeft:"80px"}}>
+              <Col style = {{paddingRight:"0px"}}>
                 <button
                   type="button"
                   className="btn btn-info btn-md"
@@ -1922,7 +1939,7 @@ shows entire list of goals and routines
                 </button>
               </Col>
 
-            </Row>
+            </Row> */}
             {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
           {/* </Modal.Title> */}
         </Modal.Header>
@@ -2022,13 +2039,12 @@ shows entire list of goals and routines
             this.setState({ singleGR: { show: false } });
           }}
         >
-          <Modal.Title>
-            <Row>
-              <Col xs={5}>
-                <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
-              </Col>
-              <Col style = {{paddingRight:"0px"}}>
-                <button
+          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+            <div>
+              <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
+            </div>
+            <div>
+              <button
                   type="button"
                   className="btn btn-info btn-md"
                   onClick={() => {
@@ -2036,11 +2052,11 @@ shows entire list of goals and routines
                   }}
                 >
                   Add Action/Task
-                </button>
-              </Col>
-            </Row>
-            {/* <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "} */}
-          </Modal.Title>
+              </button>
+
+            </div>
+          </div>
+          
         </Modal.Header>
         <Modal.Body>
           <div
