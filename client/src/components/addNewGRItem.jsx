@@ -195,7 +195,7 @@ export default class AddNewGRItem extends Component {
 
   newInputSubmit = () => {
     status = this.newInputVerify();
-    if(status !== "") {
+    if (status !== "") {
       alert(status);
       return;
     }
@@ -205,17 +205,17 @@ export default class AddNewGRItem extends Component {
 
   newInputVerify = () => {
     if (this.state.itemToEdit.title === "") {
-      return ("No Title");
+      return "No Title";
     }
     let startTime = this.state.itemToEdit.start_day_and_time;
     let endTime = this.state.itemToEdit.end_day_and_time;
-    let timeDiff = endTime-startTime;
+    let timeDiff = endTime - startTime;
     if (timeDiff <= 0) {
-      return ("End time is before start time")
+      return "End time is before start time";
     }
     return "";
-  }
-  
+  };
+
   setPhotoURLFunction = (photo_url) => {
     let temp = this.state.itemToEdit;
     temp.photo = photo_url;
@@ -277,6 +277,8 @@ export default class AddNewGRItem extends Component {
               temp.id = ref.id;
               temp.available_start_time = this.state.itemToEdit.available_start_time;
               temp.available_end_time = this.state.itemToEdit.available_end_time;
+              (temp.is_displayed_today = true),
+                console.log("is_displayed_today", true);
 
               console.log(
                 "this si the start day before ",
@@ -477,6 +479,8 @@ this will close repeat modal.
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
+    temp.is_displayed_today = true;
+
     this.setState((prevState) => ({
       itemToEdit: temp,
       showRepeatModal: false,
@@ -1084,16 +1088,16 @@ this will close repeat modal.
                 }}
                 type="text"
                 placeholder="Enter Title"
-              /> 
+              />
             </Form.Group>
             <Form.Label> Photo </Form.Label>
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
               <UploadImage parentFunction={this.setPhotoURLFunction} />
-              <br /> 
+              <br />
             </Row>
-            <div style = {{marginTop:"10px", marginBottom:"10px"}}>
-            <label>Icon: </label>
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <label>Icon: </label>
               <img
                 alt="None"
                 src={this.state.itemToEdit.photo}

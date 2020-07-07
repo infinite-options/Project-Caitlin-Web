@@ -4,6 +4,7 @@ import ShowNotifications from "./ShowNotifications";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
+import TimeField from "react-simple-timefield";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
@@ -11,10 +12,7 @@ import UploadImage from "./UploadImage";
 export default class AddNewATItem extends Component {
   constructor(props) {
     super(props);
-    //console.log("AddNewATItem constructor");
-    //console.log("This is from AddNewATItem: ATItem: ", this.props.ATItem);
-    //const timeSlot = this.getTime(); //timeSlot[0] == start_time, timeSlot[1] === end_time
-    //const start_time = timeSlot[0];
+
     this.state = {
       AT_arr: [], // Actions & Tasks array
       newActionTitle: "", //Old delete Later
@@ -76,16 +74,9 @@ export default class AddNewATItem extends Component {
         },
       },
     };
-    //this.setState({ available_start_time: start_time });
   }
 
-  componentDidMount() {
-    // console.log("AddNewATItem did mount");
-    // console.log(this.props.ATItem);
-    // console.log(this.props.ATItem.fbPath);
-    // console.log(this.props.ATItem.arr);
-    // console.log(this.props.ATArray);
-  }
+  componentDidMount() {}
 
   newInputSubmit = () => {
     if (this.state.itemToEdit.title === "") {
@@ -96,7 +87,7 @@ export default class AddNewATItem extends Component {
       this.state.itemToEdit.photo =
         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
     }
-    // console.log("Submitting Input: " + this.state.itemToEdit.title);
+
     this.addNewDoc();
   };
 
@@ -196,6 +187,19 @@ export default class AddNewATItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
+  onTimeChange = (event, value) => {
+    const newTime = value.replace(/-/g, ":");
+    const time = newTime.substr(0, 5) + ":00";
+    let temp = this.state.itemToEdit;
+    if (event.target.name === "available_start_time") {
+      temp.available_start_time = time;
+      this.setState({ itemToEdit: temp });
+    } else {
+      temp.available_end_time = time;
+      this.setState({ itemToEdit: temp });
+    }
+  };
+
   render() {
     return (
       <Modal.Dialog style={{ marginLeft: "0", width: this.props.width }}>
@@ -231,9 +235,9 @@ export default class AddNewATItem extends Component {
             <Row>
               <AddIconModal parentFunction={this.setPhotoURLFunction} />
               <UploadImage parentFunction={this.setPhotoURLFunction} />
-              <br /> 
+              <br />
             </Row>
-            <div style = {{marginTop:"10px", marginBottom:"10px"}}>
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
               <label>Icon: </label>
               <img
                 alt="None"
@@ -242,37 +246,44 @@ export default class AddNewATItem extends Component {
                 width="auto"
               ></img>
             </div>
-
-            <label>Available Start Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 08:20:00) "
+            <section>
+              Start Time
+              <TimeField
+                name="available_start_time"
                 value={this.state.itemToEdit.available_start_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_start_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
+                onChange={this.onTimeChange}
+                style={{
+                  marginLeft: "6px",
+                  border: "1px solid #666",
+                  fontSize: 20,
+                  width: 80,
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  color: "#333",
+                  borderRadius: 10,
                 }}
               />
-            </div>
-
-            <label>Available End Time</label>
-            <div className="input-group mb-3">
-              <input
-                style={{ width: "200px" }}
-                placeholder="HH:MM:SS (ex: 16:20:00) "
+            </section>
+            <br />
+            <section>
+              End Time
+              <TimeField
+                name="available_end_time"
                 value={this.state.itemToEdit.available_end_time}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.available_end_time = e.target.value;
-                  this.setState({ itemToEdit: temp });
+                onChange={this.onTimeChange}
+                style={{
+                  marginLeft: "20px",
+                  border: "1px solid #666",
+                  fontSize: 20,
+                  width: 80,
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                  color: "#333",
+                  borderRadius: 10,
                 }}
               />
-            </div>
-
+            </section>
+            <br />
             <label>This Takes Me</label>
             <Row>
               <Col style={{ paddingRight: "0px" }}>

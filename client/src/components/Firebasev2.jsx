@@ -53,68 +53,71 @@ import moment from "moment";
 export default class FirebaseV2 extends React.Component {
   constructor(props) {
     super(props);
-    console.log("this is the prop original goal ", this.props.originalGoalsAndRoutineArr)
+    console.log(
+      "this is the prop original goal ",
+      this.props.originalGoalsAndRoutineArr
+    );
     this.state = {
       firebaseRootPath: firebase
-      .firestore()
-      .collection("users")
-      .doc(this.props.theCurrentUserID),
-    is_sublist_available: true,
-    showEditModal: false,
-    indexEditing: "",
-    //This single GR item is passed to AddNewATItem to help processed the new item
-    singleGR: {
-      //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
-      show: false, // Show the modal
-      type: "None",
-      title: "GR Name",
-      photo: "",
-      available_end_time: new Date(), //TODO get these used
-      available_start_time: new Date(), //TODO get these used
-      id: null,
-      arr: [],
-      fbPath: null,
-    },
+        .firestore()
+        .collection("users")
+        .doc(this.props.theCurrentUserID),
+      is_sublist_available: true,
+      showEditModal: false,
+      indexEditing: "",
+      //This single GR item is passed to AddNewATItem to help processed the new item
+      singleGR: {
+        //everytime a goal/routine is clicked, we open a modal and the modal info will be provided by this object
+        show: false, // Show the modal
+        type: "None",
+        title: "GR Name",
+        photo: "",
+        available_end_time: new Date(), //TODO get these used
+        available_start_time: new Date(), //TODO get these used
+        id: null,
+        arr: [],
+        fbPath: null,
+      },
 
-    singleAT: {
-      //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
-      //with the task
-      show: false, // Show the model
-      type: "None", // Action or Task
-      title: "AT Name", //Title of action task ,
-      available_end_time: new Date(), //TODO get these used
-      available_start_time: new Date(), //TODO get these used
-      photo: "",
-      id: null, //id of Action Task
-      arr: [], //array of instruction/steps formatted to display as a list
-      fbPath: null, //Firebase direction to the arr
-    },
-    singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
-    singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
-    // modalWidth: "350px", //primary width size for all modals
-    modalWidth: "390px",
+      singleAT: {
+        //for each action/task we click on, we open a new modal to show the steps/instructions affiliate
+        //with the task
+        show: false, // Show the model
+        type: "None", // Action or Task
+        title: "AT Name", //Title of action task ,
+        available_end_time: new Date(), //TODO get these used
+        available_start_time: new Date(), //TODO get these used
+        photo: "",
+        id: null, //id of Action Task
+        arr: [], //array of instruction/steps formatted to display as a list
+        fbPath: null, //Firebase direction to the arr
+      },
+      singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
+      singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
+      // modalWidth: "350px", //primary width size for all modals
+      modalWidth: "390px",
 
-    //Use to decided whether to show the respective modals
-    addNewGRModalShow: false,
-    historyViewShow: false,
-    addNewATModalShow: false,
-    addNewISModalShow: false,
+      //Use to decided whether to show the respective modals
+      addNewGRModalShow: false,
+      historyViewShow: false,
+      addNewATModalShow: false,
+      addNewISModalShow: false,
 
-    //used to determine thumbnail picture size
-    thumbnailWidth: "150px",
-    thumbnailHeight: "100px",
-    thumbnailWidthV2: "200px",
-    thumbnailHeightV2: "50px",
+      //used to determine thumbnail picture size
+      thumbnailWidth: "150px",
+      thumbnailHeight: "100px",
+      thumbnailWidthV2: "200px",
+      thumbnailHeightV2: "50px",
 
-    //isRoutine is to check whether we clicked on add routine or add goal
-    isRoutine: true,
-    availabilityColorCode: "#D6A34C",
+      //isRoutine is to check whether we clicked on add routine or add goal
+      isRoutine: true,
+      availabilityColorCode: "#D6A34C",
 
-    //For setting default time for the AT Item
-    timeSlotForAT: [],
-    timeSlotForIS: [],
+      //For setting default time for the AT Item
+      timeSlotForAT: [],
+      timeSlotForIS: [],
 
-    routine_completed: false,
+      routine_completed: false,
     };
   }
   // state = {
@@ -230,7 +233,6 @@ export default class FirebaseV2 extends React.Component {
   // }
 
   componentDidMount() {
-
     //Grab the
     // this.grabFireBaseRoutinesGoalsData();
     // console.log("going into compoent did mount");
@@ -245,9 +247,9 @@ export default class FirebaseV2 extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     this.props.grabFireBaseRoutinesGoalsData();
+
     
   };
-
 
   formatDateTime(str) {
     //const formattedStr = str.replace(/\//g, "-");
@@ -825,9 +827,6 @@ export default class FirebaseV2 extends React.Component {
       });
   };
 
-
- 
-
   getRoutines = () => {
     let displayRoutines = [];
     // console.log("props", this.props.routines);
@@ -866,105 +865,107 @@ export default class FirebaseV2 extends React.Component {
 
               {this.props.routines[i]["photo"] ? (
                 <div>
-                <Row>
-                  <Col xs={7} style={{ paddingRight: "0px" }}>
-                    <img
-                      src={this.props.routines[i]["photo"]}
-                      alt="Routines"
-                      className="center"
-                      height="80px"
-                      width="auto"
-                    />
-                  </Col>
-                  <Col style={{ paddingLeft: "0px" }}>
-                    <Row style={{ marginTop: "10px" }}>
-                      {this.props.routines[i]["is_available"] ? (
-                        <div style={{ marginLeft: "5px" }}>
-                          <FontAwesomeIcon
-                            title="Available to Cailin"
-                            style={{ color: this.state.availabilityColorCode }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert("Item Is Availble to the user");
-                            }}
-                            icon={faUser}
-                            size="lg"
-                          />{" "}
-                        </div>
-                      ) : (
-                        <div>
-                          <FontAwesomeIcon
-                            title="Unavailable to the user"
-                            style={{ color: "#000000" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert("Item Is NOT Availble to the user");
-                            }}
-                            icon={faUserAltSlash}
-                            size="lg"
-                          />
-                        </div>
-                      )}
-                      <ShowATList
-                        Index={this.findIndexByID(tempID)}
-                        Array={this.props.originalGoalsAndRoutineArr}
-                        Path={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
+                  <Row>
+                    <Col xs={7} style={{ paddingRight: "0px" }}>
+                      <img
+                        src={this.props.routines[i]["photo"]}
+                        alt="Routines"
+                        className="center"
+                        height="80px"
+                        width="auto"
                       />
-                    </Row>
-                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
-                      <DeleteGR
-                        deleteIndex={this.findIndexByID(tempID)}
-                        Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        Path={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      />
-                      <EditIcon 
-                         openEditModal={() => {
-                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
-                        }}
-                        showModal = {this.state.showEditModal}
-                        indexEditing = {this.state.indexEditing}
-                        i={this.findIndexByID(tempID)} //index to edit
-                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      />
-                      
-                    </Row>
-                  </Col>
-                </Row>
-                <Row>
-                     
-                    {/* {console.log("this is the ATArray fron firbasev2 ",this.props.originalGoalsAndRoutineArr[this.findIndexByID(tempID)] )} */}
-                      <EditGR
-                          closeEditModal={() => {
-                            this.setState({ showEditModal: false });
-                            this.props.updateFBGR();
+                    </Col>
+                    <Col style={{ paddingLeft: "0px" }}>
+                      <Row style={{ marginTop: "10px" }}>
+                        {this.props.routines[i]["is_available"] ? (
+                          <div style={{ marginLeft: "5px" }}>
+                            <FontAwesomeIcon
+                              title="Available to Cailin"
+                              style={{
+                                color: this.state.availabilityColorCode,
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                alert("Item Is Availble to the user");
+                              }}
+                              icon={faUser}
+                              size="lg"
+                            />{" "}
+                          </div>
+                        ) : (
+                          <div>
+                            <FontAwesomeIcon
+                              title="Unavailable to the user"
+                              style={{ color: "#000000" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                alert("Item Is NOT Availble to the user");
+                              }}
+                              icon={faUserAltSlash}
+                              size="lg"
+                            />
+                          </div>
+                        )}
+                        <ShowATList
+                          Index={this.findIndexByID(tempID)}
+                          Array={this.props.originalGoalsAndRoutineArr}
+                          Path={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                        />
+                      </Row>
+                      <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                        <DeleteGR
+                          deleteIndex={this.findIndexByID(tempID)}
+                          Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          Path={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData}
+                        />
+                        <EditIcon
+                          openEditModal={() => {
+                            this.setState({
+                              showEditModal: true,
+                              indexEditing: this.findIndexByID(tempID),
+                            });
                           }}
-                          showModal = {this.state.showEditModal}
-                          indexEditing = {this.state.indexEditing}
+                          showModal={this.state.showEditModal}
+                          indexEditing={this.state.indexEditing}
                           i={this.findIndexByID(tempID)} //index to edit
                           ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                           FBPath={firebase
                             .firestore()
                             .collection("users")
                             .doc(this.props.theCurrentUserID)}
-                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                          // chnagePhoto = {this.changePhotoIcon()}
-                          
-                      /> 
+                          refresh={this.grabFireBaseRoutinesGoalsData}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Row>
+                    {/* {console.log("this is the ATArray fron firbasev2 ",this.props.originalGoalsAndRoutineArr[this.findIndexByID(tempID)] )} */}
+                    <EditGR
+                      closeEditModal={() => {
+                        this.setState({ showEditModal: false });
+                        this.props.updateFBGR();
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                      // chnagePhoto = {this.changePhotoIcon()}
+                    />
                     {/* )} */}
-                </Row>
-              </div>
+                  </Row>
+                </div>
               ) : (
                 <div>
                   <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -1019,37 +1020,40 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
-                     <EditIcon 
-                         openEditModal={() => {
-                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
-                        }}
-                        showModal = {this.state.showEditModal}
-                        indexEditing = {this.state.indexEditing}
-                        i={this.findIndexByID(tempID)} //index to edit
-                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      /> 
+                    <EditIcon
+                      openEditModal={() => {
+                        this.setState({
+                          showEditModal: true,
+                          indexEditing: this.findIndexByID(tempID),
+                        });
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData}
+                    />
                   </Row>
                   <Row>
-                  <EditGR
-                          closeEditModal={() => {
-                            this.setState({ showEditModal: false });
-                            this.props.updateFBGR();
-                          }}
-                          showModal = {this.state.showEditModal}
-                          indexEditing = {this.state.indexEditing}
-                          i={this.findIndexByID(tempID)} //index to edit
-                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                          FBPath={firebase
-                            .firestore()
-                            .collection("users")
-                            .doc(this.props.theCurrentUserID)}
-                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    /> 
+                    <EditGR
+                      closeEditModal={() => {
+                        this.setState({ showEditModal: false });
+                        this.props.updateFBGR();
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    />
                   </Row>
                 </div>
               )}
@@ -1060,8 +1064,7 @@ export default class FirebaseV2 extends React.Component {
                       {"Start Time: " +
                         this.formatDateTime(
                           this.props.routines[i]["start_day_and_time"]
-                        )
-                      }
+                        )}
                     </div>
                   ) : (
                     <div> </div>
@@ -1088,44 +1091,66 @@ export default class FirebaseV2 extends React.Component {
   };
 
   showRoutineRepeatStatus = (i) => {
-  	 // console.log(i,this.props.routines[i])
-  	 // console.log(this.props.routines[i]["repeat"]);
-	 // console.log(this.props.routines[i]["repeat_frequency"]);
-	 // console.log(this.props.routines[i]["repeat_every"]);
-	 if(!this.props.routines[i]["repeat"]) {
-	 	return <div> One time only </div>
-	 } else {
-		 switch ( this.props.routines[ i ][ "repeat_frequency" ] ) {
-		 case "DAY":
-		 	 if(this.props.routines[i]["repeat_every"] === "1"){
-			    return <div> Repeat daily </div>
-		    } else {
-		 	   return <div> Repeat every {this.props.routines[i]["repeat_every"]} days </div>
-		    }
-		 case "WEEK":
-			 if(this.props.routines[i]["repeat_every"] === "1"){
-				 return <div> Repeat weekly </div>
-			 } else {
-				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} weeks </div>
-			 }
-		 case "MONTH":
-			 if(this.props.routines[i]["repeat_every"] === "1"){
-				 return <div> Repeat monthly </div>
-			 } else {
-				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} months </div>
-			 }
-		 case "YEAR":
-			 if(this.props.routines[i]["repeat_every"] === "1"){
-				 return <div> Repeat annually </div>
-			 } else {
-				 return <div> Repeat every {this.props.routines[i]["repeat_every"]} years </div>
-			 }
-		 default:
-			 return <div> Show Routine Repeat Options Error</div>;
-		 }
-	 }
-  }
-  
+    // console.log(i,this.props.routines[i])
+    // console.log(this.props.routines[i]["repeat"]);
+    // console.log(this.props.routines[i]["repeat_frequency"]);
+    // console.log(this.props.routines[i]["repeat_every"]);
+    if (!this.props.routines[i]["repeat"]) {
+      return <div> One time only </div>;
+    } else {
+      switch (this.props.routines[i]["repeat_frequency"]) {
+        case "DAY":
+          if (this.props.routines[i]["repeat_every"] === "1") {
+            return <div> Repeat daily </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.routines[i]["repeat_every"]} days{" "}
+              </div>
+            );
+          }
+        case "WEEK":
+          if (this.props.routines[i]["repeat_every"] === "1") {
+            return <div> Repeat weekly </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
+              </div>
+            );
+          }
+        case "MONTH":
+          if (this.props.routines[i]["repeat_every"] === "1") {
+            return <div> Repeat monthly </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {
+                  this.props.routines[i]["repeat_every"]
+                } months{" "}
+              </div>
+            );
+          }
+        case "YEAR":
+          if (this.props.routines[i]["repeat_every"] === "1") {
+            return <div> Repeat annually </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.routines[i]["repeat_every"]} years{" "}
+              </div>
+            );
+          }
+        default:
+          return <div> Show Routine Repeat Options Error</div>;
+      }
+    }
+  };
+
   getGoals = () => {
     let displayGoals = [];
     if (this.props.goals.length != null) {
@@ -1154,101 +1179,106 @@ export default class FirebaseV2 extends React.Component {
               </Row>
               {this.props.goals[i]["photo"] ? (
                 <div>
-                <Row>
-                  <Col xs={7} style={{ paddingRight: "0px" }}>
-                    <img
-                      src={this.props.goals[i]["photo"]}
-                      alt="Instructions/Steps"
-                      className="center"
-                      height="80px"
-                      width="auto"
-                    />
-                  </Col>
-                  <Col style={{ paddingLeft: "0px" }}>
-                    <Row style={{ marginTop: "10px" }}>
-                      {this.props.goals[i]["is_available"] ? (
-                        <div style={{ marginLeft: "5px" }}>
-                          <FontAwesomeIcon
-                            title="Available to Cailin"
-                            style={{ color: this.state.availabilityColorCode }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert("Item Is Availble to the user");
-                            }}
-                            icon={faUser}
-                            size="lg"
-                          />{" "}
-                        </div>
-                      ) : (
-                        <div>
-                          <FontAwesomeIcon
-                            title="Unavailable to the user"
-                            style={{ color: "#000000" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert("Item Is NOT Availble to the user");
-                            }}
-                            icon={faUserAltSlash}
-                            size="lg"
-                          />
-                        </div>
-                      )}
-                      <ShowATList
-                        Index={this.findIndexByID(tempID)}
-                        Array={this.props.originalGoalsAndRoutineArr}
-                        // Path={this.state.firebaseRootPath}
-                        Path={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
+                  <Row>
+                    <Col xs={7} style={{ paddingRight: "0px" }}>
+                      <img
+                        src={this.props.goals[i]["photo"]}
+                        alt="Instructions/Steps"
+                        className="center"
+                        height="80px"
+                        width="auto"
                       />
-                    </Row>
-                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
-                      <DeleteGR
-                        deleteIndex={this.findIndexByID(tempID)}
-                        Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
-                        Path={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      />
-                       <EditIcon 
-                         openEditModal={() => {
-                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
-                        }}
-                        showModal = {this.state.showEditModal}
-                        indexEditing = {this.state.indexEditing}
-                        i={this.findIndexByID(tempID)} //index to edit
-                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      /> 
-                    </Row>
-                  </Col>
-                </Row>
-                <Row>
-                    <EditGR
-                          closeEditModal={() => {
-                            this.setState({ showEditModal: false });
-                            this.props.updateFBGR();
+                    </Col>
+                    <Col style={{ paddingLeft: "0px" }}>
+                      <Row style={{ marginTop: "10px" }}>
+                        {this.props.goals[i]["is_available"] ? (
+                          <div style={{ marginLeft: "5px" }}>
+                            <FontAwesomeIcon
+                              title="Available to Cailin"
+                              style={{
+                                color: this.state.availabilityColorCode,
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                alert("Item Is Availble to the user");
+                              }}
+                              icon={faUser}
+                              size="lg"
+                            />{" "}
+                          </div>
+                        ) : (
+                          <div>
+                            <FontAwesomeIcon
+                              title="Unavailable to the user"
+                              style={{ color: "#000000" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                alert("Item Is NOT Availble to the user");
+                              }}
+                              icon={faUserAltSlash}
+                              size="lg"
+                            />
+                          </div>
+                        )}
+                        <ShowATList
+                          Index={this.findIndexByID(tempID)}
+                          Array={this.props.originalGoalsAndRoutineArr}
+                          // Path={this.state.firebaseRootPath}
+                          Path={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                        />
+                      </Row>
+                      <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                        <DeleteGR
+                          deleteIndex={this.findIndexByID(tempID)}
+                          Array={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                          // Path={this.state.firebaseRootPath} //holds complete data for action task: fbPath, title, etc
+                          Path={firebase
+                            .firestore()
+                            .collection("users")
+                            .doc(this.props.theCurrentUserID)}
+                          refresh={this.grabFireBaseRoutinesGoalsData}
+                        />
+                        <EditIcon
+                          openEditModal={() => {
+                            this.setState({
+                              showEditModal: true,
+                              indexEditing: this.findIndexByID(tempID),
+                            });
                           }}
-                          showModal = {this.state.showEditModal}
-                          indexEditing = {this.state.indexEditing}
+                          showModal={this.state.showEditModal}
+                          indexEditing={this.state.indexEditing}
                           i={this.findIndexByID(tempID)} //index to edit
                           ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
                           FBPath={firebase
                             .firestore()
                             .collection("users")
                             .doc(this.props.theCurrentUserID)}
-                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    /> 
-                </Row>
-               </div>
+                          refresh={this.grabFireBaseRoutinesGoalsData}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <EditGR
+                      closeEditModal={() => {
+                        this.setState({ showEditModal: false });
+                        this.props.updateFBGR();
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    />
+                  </Row>
+                </div>
               ) : (
                 <div>
                   <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -1303,37 +1333,40 @@ export default class FirebaseV2 extends React.Component {
                         .doc(this.props.theCurrentUserID)}
                       refresh={this.grabFireBaseRoutinesGoalsData}
                     />
-                    <EditIcon 
-                         openEditModal={() => {
-                          this.setState({ showEditModal: true, indexEditing: this.findIndexByID(tempID)  });
-                        }}
-                        showModal = {this.state.showEditModal}
-                        indexEditing = {this.state.indexEditing}
-                        i={this.findIndexByID(tempID)} //index to edit
-                        ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                        FBPath={firebase
-                          .firestore()
-                          .collection("users")
-                          .doc(this.props.theCurrentUserID)}
-                        refresh={this.grabFireBaseRoutinesGoalsData}
-                      /> 
+                    <EditIcon
+                      openEditModal={() => {
+                        this.setState({
+                          showEditModal: true,
+                          indexEditing: this.findIndexByID(tempID),
+                        });
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData}
+                    />
                   </Row>
                   <Row>
-                   <EditGR
-                          closeEditModal={() => {
-                            this.setState({ showEditModal: false });
-                            this.props.updateFBGR();
-                          }}
-                          showModal = {this.state.showEditModal}
-                          indexEditing = {this.state.indexEditing}
-                          i={this.findIndexByID(tempID)} //index to edit
-                          ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
-                          FBPath={firebase
-                            .firestore()
-                            .collection("users")
-                            .doc(this.props.theCurrentUserID)}
-                          refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
-                    /> 
+                    <EditGR
+                      closeEditModal={() => {
+                        this.setState({ showEditModal: false });
+                        this.props.updateFBGR();
+                      }}
+                      showModal={this.state.showEditModal}
+                      indexEditing={this.state.indexEditing}
+                      i={this.findIndexByID(tempID)} //index to edit
+                      ATArray={this.props.originalGoalsAndRoutineArr} //Holds the raw data for all the is in the single action
+                      FBPath={firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(this.props.theCurrentUserID)}
+                      refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
+                    />
                   </Row>
                 </div>
               )}
@@ -1360,7 +1393,7 @@ export default class FirebaseV2 extends React.Component {
                 ) : (
                   <div> </div>
                 )}
-	              {this.showGoalRepeatStatus(i)}
+                {this.showGoalRepeatStatus(i)}
               </div>
             </ListGroup.Item>
           </div>
@@ -1370,46 +1403,62 @@ export default class FirebaseV2 extends React.Component {
     //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
     return displayGoals;
   };
-  
+
   showGoalRepeatStatus = (i) => {
-  	 // console.log(i,this.props.goals[i]);
-  	 // console.log(this.props.goals[i]["repeat"]);
-  	 // console.log(this.props.goals[i]["repeat_frequency"]);
-  	 // console.log(this.props.goals[i]["repeat_every"]);
-	 if(!this.props.goals[i]["repeat"]) {
-	   return <div> One time goal </div>
-	 } else {
-	 	switch(this.props.goals[i]["repeat_frequency"]) {
-	   case "DAY":
-		   if(this.props.routines[i]["repeat_every"] === "1"){
-			   return <div> Repeat daily </div>
-		   } else {
-			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} days </div>
-		   }
-	   case "WEEK":
-		   if(this.props.routines[i]["repeat_every"] === "1"){
-			   return <div> Repeat weekly </div>
-		   } else {
-			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} weeks </div>
-		   }
-	   case "MONTH":
-		   if(this.props.routines[i]["repeat_every"] === "1"){
-			   return <div> Repeat monthly </div>
-		   } else {
-			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} months </div>
-		   }
-	   case "YEAR":
-		   if(this.props.routines[i]["repeat_every"] === "1"){
-			   return <div> Repeat annually </div>
-		   } else {
-			   return <div> Repeat every {this.props.routines[i]["repeat_every"]} years </div>
-		   }
-	   default:
-		   return <div> Show Goal Repeat Options Error</div>;
-	   }
-	 }
-  }
-  
+    if (!this.props.goals[i]["repeat"]) {
+      return <div> One time goal </div>;
+    } else {
+      switch (this.props.goals[i]["repeat_frequency"]) {
+        case "DAY":
+          if (this.props.goals[i]["repeat_every"] === "1") {
+            return <div> Repeat daily </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} days{" "}
+              </div>
+            );
+          }
+        case "WEEK":
+          if (this.props.goals[i]["repeat_every"] === "1") {
+            return <div> Repeat weekly </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} weeks{" "}
+              </div>
+            );
+          }
+        case "MONTH":
+          if (this.props.goals[i]["repeat_every"] === "1") {
+            return <div> Repeat monthly </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} months{" "}
+              </div>
+            );
+          }
+        case "YEAR":
+          if (this.props.goals[i]["repeat_every"] === "1") {
+            return <div> Repeat annually </div>;
+          } else {
+            return (
+              <div>
+                {" "}
+                Repeat every {this.props.goals[i]["repeat_every"]} years{" "}
+              </div>
+            );
+          }
+        default:
+          return <div> Show Goal Repeat Options Error</div>;
+      }
+    }
+  };
+
   getGoalsStatus = () => {
     let displayGoals = [];
     if (this.props.goals.length != null) {
@@ -1418,7 +1467,10 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.goals[i]["title"];
         // let tempID = this.state.goals[i]["id"];
         let isComplete = this.props.goals[i]["is_complete"];
-        if (!this.props.goals[i]["is_available"] || !this.props.goals[i]["is_displayed_today"]) {
+        if (
+          !this.props.goals[i]["is_available"] ||
+          !this.props.goals[i]["is_displayed_today"]
+        ) {
           continue; //skip if not available
         }
         displayGoals.push(
@@ -1429,7 +1481,7 @@ export default class FirebaseV2 extends React.Component {
               style={{ width: "100%", marginBottom: "3px" }}
               onClick={(e) => {
                 e.stopPropagation();
-                this.setState({ historyViewShow: true, isRoutine: false })
+                this.setState({ historyViewShow: true, isRoutine: false });
               }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
@@ -1497,7 +1549,10 @@ export default class FirebaseV2 extends React.Component {
         let isInProgress = this.props.routines[i]["is_in_progress"];
 
         // let isInProgress = this.props.
-        if (!this.props.routines[i]["is_available"] || !this.props.routines[i]["is_displayed_today"]) {
+        if (
+          !this.props.routines[i]["is_available"] ||
+          !this.props.routines[i]["is_displayed_today"]
+        ) {
           continue; //skip if not available
         }
         displayRoutines.push(
@@ -1508,7 +1563,7 @@ export default class FirebaseV2 extends React.Component {
               style={{ marginBottom: "3px" }}
               onClick={(e) => {
                 e.stopPropagation();
-                this.setState({ historyViewShow: true, isRoutine: true })
+                this.setState({ historyViewShow: true, isRoutine: true });
               }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
@@ -1541,7 +1596,11 @@ export default class FirebaseV2 extends React.Component {
                   <div>
                     <FontAwesomeIcon
                       title="Not Completed Item"
-                      style={{ color: isInProgress ? this.state.availabilityColorCode : "black" }}
+                      style={{
+                        color: isInProgress
+                          ? this.state.availabilityColorCode
+                          : "black",
+                      }}
                       onClick={(e) => {
                         console.log(this);
                         e.stopPropagation();
@@ -1660,7 +1719,9 @@ shows entire list of goals and routines
         <Modal.Header onHide={this.props.closeGoal} closeButton>
           <Modal.Title>
             <Row>
+
               <Col style = {{marginRight:"140px"}}>
+
                 <h5 className="normalfancytext">Goals</h5>
               </Col>
               <Col>
@@ -1668,7 +1729,9 @@ shows entire list of goals and routines
                   type="button"
                   className="btn btn-info btn-md"
                   onClick={() => {
+
                     this.setState({ addNewGRModalShow: true, isRoutine: false });
+
                   }}
                 >
                   Add Goal
@@ -1688,7 +1751,7 @@ shows entire list of goals and routines
               boxShadow:
                 "0 16px 28px 0 rgba(0, 0, 0, 0.2), 0 16px 20px 0 rgba(0, 0, 0, 0.19)",
               position: "absolute",
-              zIndex: "5"
+              zIndex: "5",
             }}
           >
             {this.state.addNewGRModalShow ? this.AddNewGRModalAbstracted() : ""}
@@ -1746,6 +1809,7 @@ shows entire list of goals and routines
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
           <Row>
+
             <Col style = {{marginRight:"85px"}}>
               <h5 className="normalfancytext">Routines</h5>
             </Col>
@@ -1760,13 +1824,14 @@ shows entire list of goals and routines
                     Add Routine
                 </button>
               
+
             </Col>
           </Row>
           {/* <Modal.Title> 
             <h5 className="normalfancytext">Routines</h5>
           </Modal.Title> */}
         </Modal.Header>
-        
+
         <Modal.Body>
           {/**
            * To allow for the Modals to pop up in front of one another
@@ -1872,13 +1937,13 @@ shows entire list of goals and routines
   historyModel = (displayGoals) => {
     return (
       <ShowHistory
-      closeModal={() => {
-        this.setState({ historyViewShow: false });
-      }}
-      displayGoals={displayGoals}
-    />
+        closeModal={() => {
+          this.setState({ historyViewShow: false });
+        }}
+        displayGoals={displayGoals}
+      />
     );
-  }
+  };
 
   /*
     abstractedInstructionsAndStepsList:
@@ -1908,6 +1973,7 @@ shows entire list of goals and routines
         >
           {/* <Modal.Title> */}
           <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+
             <div>
               <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
             </div>
@@ -1925,6 +1991,19 @@ shows entire list of goals and routines
             </div>
           </div>
             {/* <Row>
+
+                type="button"
+                className="btn btn-info btn-md"
+                onClick={() => {
+                  this.setState({ addNewISModalShow: true });
+                }}
+              >
+                Add Step
+              </button>
+            </div>
+          </div>
+          {/* <Row>
+
               <Col xs={6}>
                 <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
               </Col>
@@ -1941,7 +2020,9 @@ shows entire list of goals and routines
               </Col>
 
             </Row> */}
+
             {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+
           {/* </Modal.Title> */}
         </Modal.Header>
         <Modal.Body>
@@ -2009,9 +2090,14 @@ shows entire list of goals and routines
         userGR.forEach((doc) => {
           console.log("This is from useGR: ", this.state.singleGR);
           if (doc.id === this.state.singleGR.id) {
+            let start_day_and_time = new Date(
+              doc.start_day_and_time
+            ).toString();
+            let end_day_and_time = new Date(doc.end_day_and_time).toString();
+
             timeSlot = [
-              doc.start_day_and_time.split(" ")[4],
-              doc.end_day_and_time.split(" ")[4],
+              start_day_and_time.split(" ")[4],
+              end_day_and_time.split(" ")[4],
             ];
             this.setState({ timeSlotForAT: timeSlot });
           }
@@ -2040,7 +2126,9 @@ shows entire list of goals and routines
             this.setState({ singleGR: { show: false } });
           }}
         >
+
           <div className="d-flex justify-content-between" style = {{width:"350px"}}>
+
             <div>
               <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
             </div>
@@ -2058,6 +2146,7 @@ shows entire list of goals and routines
             </div>
           </div>
           
+
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2197,8 +2286,7 @@ shows entire list of goals and routines
             {this.state.historyViewShow ? this.historyModel() : ""}
           </div>
         </Modal.Body>
-        <Modal.Footer>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal.Dialog>
     );
   };

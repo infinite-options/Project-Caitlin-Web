@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import ShowNotifications from "./ShowNotifications";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
+import TimeField from "react-simple-timefield";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
@@ -96,6 +97,18 @@ export default class editIS extends Component {
     this.setState({ itemToEdit: temp });
   };
 
+  onTimeChange = (event, value) => {
+    const newTime = value.replace(/-/g, ":");
+    const time = newTime.substr(0, 5) + ":00";
+    let temp = this.state.itemToEdit;
+    if (event.target.name === "available_start_time") {
+      temp.available_start_time = time;
+      this.setState({ itemToEdit: temp });
+    } else {
+      temp.available_end_time = time;
+      this.setState({ itemToEdit: temp });
+    }
+  };
   editISForm = () => {
     return (
       // <div style={{margin: '0', width: "315px", padding:'20px'}}>
@@ -130,7 +143,7 @@ export default class editIS extends Component {
             <br />
           </Row>
 
-          <div style = {{marginTop:"10px"}}>
+          <div style={{ marginTop: "10px" }}>
             <label>Icon: </label>
 
             <img
@@ -142,65 +155,74 @@ export default class editIS extends Component {
           </div>
         </Form.Group>
 
-        <div>
-          <label>Available Start Time</label>
-          <div className="input-group mb-3">
-            <input
-              style={{ width: "200px" }}
-              placeholder="HH:MM:SS (ex: 08:20:00) "
-              value={this.state.itemToEdit.available_start_time}
-              onChange={(e) => {
-                e.stopPropagation();
-                let temp = this.state.itemToEdit;
-                temp.available_start_time = e.target.value;
-                this.setState({ itemToEdit: temp });
-              }}
-            />
-          </div>
-        </div>
-
-        <label>Available End Time</label>
-        <div className="input-group mb-3">
-          <input
-            style={{ width: "200px" }}
-            placeholder="HH:MM:SS (ex: 16:20:00) "
-            value={this.state.itemToEdit.available_end_time}
-            onChange={(e) => {
-              e.stopPropagation();
-              let temp = this.state.itemToEdit;
-              temp.available_end_time = e.target.value;
-              this.setState({ itemToEdit: temp });
+        <section>
+          Start Time
+          <TimeField
+            name="available_start_time"
+            value={this.state.itemToEdit.available_start_time}
+            onChange={this.onTimeChange}
+            style={{
+              marginLeft: "5px",
+              border: "1px solid #666",
+              fontSize: 20,
+              width: 80,
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              color: "#333",
+              borderRadius: 10,
             }}
           />
-        </div>
-
-        <label>This Takes Me</label>
-        <Row>
-          <Col style={{ paddingRight: "0px" }}>
-            <Form.Control
-              // value={this.state.newEventNotification}
-              // onChange={this.handleNotificationChange}
-              type="number"
-              placeholder="30"
-              value={this.convertToMinutes()}
-              // value = {this.state.itemToEdit.expected_completion_time}
-              style={{ marginTop: ".25rem", paddingRight: "0px" }}
-              onChange={
-                // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
-                (e) => {
-                  e.stopPropagation();
-                  let temp = this.state.itemToEdit;
-                  temp.expected_completion_time = this.convertTimeToHRMMSS(e);
-                  this.setState({ itemToEdit: temp });
+        </section>
+        <br />
+        <br />
+        <section>
+          End Time
+          <TimeField
+            name="available_end_time"
+            value={this.state.itemToEdit.available_end_time}
+            onChange={this.onTimeChange}
+            style={{
+              marginLeft: "11px",
+              border: "1px solid #666",
+              fontSize: 20,
+              width: 80,
+              paddingLeft: "10px",
+              paddingRight: "10px",
+              color: "#333",
+              borderRadius: 10,
+            }}
+          />
+        </section>
+        <div>
+          <br />
+          This Takes Me
+          <br />
+          <Row>
+            <Col style={{ paddingRight: "0px" }}>
+              <Form.Control
+                // value={this.state.newEventNotification}
+                // onChange={this.handleNotificationChange}
+                type="number"
+                placeholder="30"
+                value={this.convertToMinutes()}
+                // value = {this.state.itemToEdit.expected_completion_time}
+                style={{ marginTop: ".25rem", paddingRight: "0px" }}
+                onChange={
+                  // (e) => {e.stopPropagation(); this.convertTimeToHRMMSS(e)}
+                  (e) => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.expected_completion_time = this.convertTimeToHRMMSS(e);
+                    this.setState({ itemToEdit: temp });
+                  }
                 }
-              }
-            />
-          </Col>
-          <Col xs={8} style={{ paddingLeft: "0px" }}>
-            <p style={{ marginLeft: "10px", marginTop: "5px" }}>minutes</p>
-          </Col>
-        </Row>
-
+              />
+            </Col>
+            <Col xs={8} style={{ paddingLeft: "0px" }}>
+              <p style={{ marginLeft: "10px", marginTop: "5px" }}>minutes</p>
+            </Col>
+          </Row>
+        </div>
         <div className="input-group mb-3" style={{ marginTop: "10px" }}>
           <label className="form-check-label">Time?</label>
           <input
