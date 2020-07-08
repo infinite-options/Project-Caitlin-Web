@@ -141,7 +141,7 @@ export default class AddNewISItem extends Component {
       invalid = true;
       alert("Steps/Instructions should not start later than the action/task");
     } else if (endTimeObject > initEndTimeObject) {
-      alert("teps/Instructions should not end later than the action/task");
+      alert("Steps/Instructions should not end later than the action/task");
       invalid = true;
     } else {
       invalid = false;
