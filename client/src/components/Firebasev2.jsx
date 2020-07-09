@@ -688,6 +688,9 @@ export default class FirebaseV2 extends React.Component {
     console.log("Inside IS Click " + title);
   };
 
+  /**
+   * Retrieve parent goal's start time and end time and use them for it's ATItem
+   */
   setTimeSlot = async (id) => {
     let timeSlot = [];
     const db = firestore();
@@ -713,8 +716,6 @@ export default class FirebaseV2 extends React.Component {
       }
     });
     this.setState({ timeSlotForAT: timeSlot });
-
-    return timeSlot;
   };
   /**
    * In this function we are passed in the id title and persist property of the incoming routine/goal
@@ -2079,37 +2080,6 @@ shows entire list of goals and routines
         </Modal.Footer> */}
       </Modal.Dialog>
     );
-  };
-
-  /**
-   * Retrieve parent goal's start time and end time and use them for it's ATItem
-   */
-  getTimeForAT = () => {
-    console.log("Enter getTimeForAT()");
-    let timeSlot = [];
-    const db = firestore();
-    db.collection("users")
-      .doc(this.props.theCurrentUserID)
-      .get()
-      .then((snapshot) => {
-        let userData = snapshot.data();
-        let userGR = userData["goals&routines"];
-        userGR.forEach((doc) => {
-          console.log("This is from useGR: ", this.state.singleGR);
-          if (doc.id === this.state.singleGR.id) {
-            let start_day_and_time = new Date(
-              doc.start_day_and_time
-            ).toString();
-            let end_day_and_time = new Date(doc.end_day_and_time).toString();
-
-            timeSlot = [
-              start_day_and_time.split(" ")[4],
-              end_day_and_time.split(" ")[4],
-            ];
-            this.setState({ timeSlotForAT: timeSlot });
-          }
-        });
-      });
   };
 
   /**
