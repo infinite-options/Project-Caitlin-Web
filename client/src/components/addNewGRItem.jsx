@@ -200,7 +200,9 @@ export default class AddNewGRItem extends Component {
       return;
     }
     this.addNewDoc();
+    console.log("In between ");
     this.props.closeModal();
+    console.log("Leaving newInputSubmit()");
   };
 
   newInputVerify = () => {
@@ -259,6 +261,7 @@ export default class AddNewGRItem extends Component {
               grArr: x,
             });
           }
+
           this.state.routineDocsPath
             .add({
               title: this.state.itemToEdit.title,
@@ -274,18 +277,20 @@ export default class AddNewGRItem extends Component {
               //let newArr = this.props.ATArray;
               let newArr = this.state.grArr;
               let temp = this.state.itemToEdit;
+
               temp.id = ref.id;
               temp.available_start_time = this.state.itemToEdit.available_start_time;
               temp.available_end_time = this.state.itemToEdit.available_end_time;
-              (temp.is_displayed_today = true),
-                console.log("is_displayed_today", true);
+
+              temp.is_displayed_today = true;
+              console.log("is_displayed_today", true);
 
               console.log(
-                "this si the start day before ",
+                "this is the start day before ",
                 this.state.itemToEdit.start_day_and_time
               );
               console.log(
-                "this si the repeat end on befoe ",
+                "this is the repeat end on before ",
                 this.state.itemToEdit.repeat_ends_on
               );
               temp.start_day_and_time = new Date(
@@ -294,6 +299,7 @@ export default class AddNewGRItem extends Component {
               temp.end_day_and_time = new Date(
                 this.state.itemToEdit.end_day_and_time
               ).toUTCString();
+
               // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
               // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
               // temp.end_day_and_time= String(this.state.itemToEdit.end_day_and_time);
@@ -305,6 +311,7 @@ export default class AddNewGRItem extends Component {
               // console.log("Added document with ID: ", ref.id);
               // this.state.grArr.push(temp);
               newArr.push(temp);
+
               this.updateEntireArray(newArr);
             });
         } else {

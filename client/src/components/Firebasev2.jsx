@@ -251,9 +251,14 @@ export default class FirebaseV2 extends React.Component {
 
   formatDateTime(str) {
     //const formattedStr = str.replace(/\//g, "-");
+    let newTime = new Date(str).toLocaleTimeString();
+    newTime = newTime.substring(0, 5) + " " + newTime.slice(-2);
+    return newTime;
+    /*
     const formattedStr = str;
     const time = moment(formattedStr);
     return time.format("YYYY MMM DD HH:mm");
+    */
   }
 
   // onInputChange = (e) => {
@@ -263,7 +268,7 @@ export default class FirebaseV2 extends React.Component {
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
-  getATList = (id, title, persist) => {
+  getATList = async (id, title, persist) => {
     const db = firebase.firestore();
     // console.log("getATList function with id : " + id);
     let docRef = db
@@ -354,6 +359,7 @@ export default class FirebaseV2 extends React.Component {
       // console.log(tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+
       res.push(
         <div key={"AT" + i}>
           <ListGroup.Item
@@ -449,6 +455,7 @@ export default class FirebaseV2 extends React.Component {
                     <EditAT
                       marginLeftV="-170px"
                       i={i} //index to edit
+                      timeSlot={this.state.timeSlotForAT}
                       ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                       refresh={this.refreshATItem} //function to refresh AT data
@@ -608,6 +615,7 @@ export default class FirebaseV2 extends React.Component {
 
                     <EditIS
                       marginLeftV="-170px"
+                      timeSlot={this.state.timeSlotForAT}
                       i={i} //index to edit
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
@@ -680,15 +688,43 @@ export default class FirebaseV2 extends React.Component {
     console.log("Inside IS Click " + title);
   };
 
+  setTimeSlot = async (id) => {
+    let timeSlot = [];
+    const db = firestore();
+    const userData = await db
+      .collection("users")
+      .doc(this.props.theCurrentUserID)
+      .get();
+
+    let userGR = userData.data()["goals&routines"];
+
+    userGR.forEach((doc) => {
+      console.log("This is from useGR: ", this.state.singleGR);
+      if (doc.id === id) {
+        //console.log("Time String From firebase: ", doc.start_day_and_time);
+        let start_day_and_time = new Date(doc.start_day_and_time).toString();
+        let end_day_and_time = new Date(doc.end_day_and_time).toString();
+        //console.log("Time String after firebase: ", start_day_and_time);
+
+        timeSlot = [
+          start_day_and_time.split(" ")[4],
+          end_day_and_time.split(" ")[4],
+        ];
+      }
+    });
+    this.setState({ timeSlotForAT: timeSlot });
+
+    return timeSlot;
+  };
   /**
    * In this function we are passed in the id title and persist property of the incoming routine/goal
    * and we need to make return a viewable list of all the actions/tasks for this routine/goal
    * which is done in getATList function
    */
-  GRonClickEvent = (title, id, persist) => {
-    console.log("GRonClickEvent", id, title, persist);
+  GRonClickEvent = async (title, id, persist) => {
+    await this.setTimeSlot(id);
     this.getATList(id, title, persist);
-    this.getTimeForAT();
+    console.log("GRonClickEvent", id, title, persist);
   };
 
   /**
@@ -728,28 +764,6 @@ export default class FirebaseV2 extends React.Component {
           }
         });
       });
-
-    /*
-      getTimeForAT = () => {
-    console.log("Enter getTimeForAT()");
-    let timeSlot = [];
-    const db = firestore();
-    db.collection("users")
-      .doc(this.props.theCurrentUserID)
-      .get()
-      .then((snapshot) => {
-        let userData = snapshot.data();
-        let userGR = userData["goals&routines"];
-        userGR.forEach((doc) => {
-          console.log("This is from useGR: ", this.state.singleGR);
-          if (doc.id === this.state.singleGR.id) {
-            timeSlot = [doc.available_start_time, doc.available_end_time];
-            this.setState({ timeSlotForAT: timeSlot });
-          }
-        });
-      });
-  };
-      */
 
     let temp = {
       show: true,
