@@ -745,7 +745,7 @@ export default class DayRoutines extends Component {
 
       // console.log("this si the moment ",checkCurDate );
 
-      /*if (
+      if (
         checkCurDate.date() === curDate &&
         checkCurDate.month() === curMonth &&
         checkCurDate.year() === curYear &&
@@ -792,7 +792,7 @@ export default class DayRoutines extends Component {
             .doc(this.props.theCurrentUserId)
             .update({ "goals&routines": newArr });
         }
-      }*/
+      }
 
       /**
        * TODO: add the case where arr[i].start.dateTime doesn't exists
