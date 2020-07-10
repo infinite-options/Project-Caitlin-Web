@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Form, Row, Col } from "react-bootstrap";
 
@@ -9,7 +9,7 @@ export default class AddIconModal extends Component {
     this.state = {
       show: false,
       photo_url: null,
-    }; 
+    };
   }
 
   onHandleShowClick = () => {
@@ -32,7 +32,7 @@ export default class AddIconModal extends Component {
     return (
       <>
         <Button
-          variant="outline-primary" 
+          variant="outline-primary"
           style={{ marginRight: "15px", marginLeft: "15px" }}
           onClick={this.onHandleShowClick}
         >

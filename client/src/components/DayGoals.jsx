@@ -772,11 +772,11 @@ export default class DayGoals extends Component {
           arr[i].is_displayed_today = true;
           let newArr = this.props.originalGoalsAndRoutineArr;
           newArr[this.props.goal_ids[i]].is_displayed_today = true;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(this.props.theCurrentUserId)
-            .update({ "goals&routines": newArr });
+          // firebase
+          //   .firestore()
+          //   .collection("users")
+          //   .doc(this.props.theCurrentUserId)
+          //   .update({ "goals&routines": newArr });
         }
       } else if (
         checkCurDate.date() === curDate &&

@@ -6,6 +6,8 @@ import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
 import TimeField from "react-simple-timefield";
 
+import TimePicker from "./TimePicker";
+
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
 
@@ -81,15 +83,63 @@ export default class AddNewATItem extends Component {
 
   newInputSubmit = () => {
     if (this.state.itemToEdit.title === "") {
-      alert("Invalid Input");
+      alert("Missing title");
       return;
     }
     if (this.state.itemToEdit.photo === "") {
       this.state.itemToEdit.photo =
         "https://firebasestorage.googleapis.com/v0/b/project-caitlin-c71a9.appspot.com/o/DefaultIcons%2Ftask3.svg?alt=media&token=ce27281f-d2c7-4211-8cc5-cf1c5bcf1917";
     }
-
+    if (!this.validateTime()) {
+      return;
+    }
     this.addNewDoc();
+  };
+
+  validateTime = () => {
+    let invalid = false;
+
+    let initStartHour = this.props.timeSlot[0].substring(0, 2);
+    let initStartMinute = this.props.timeSlot[0].substring(3, 5);
+
+    let initEndHour = this.props.timeSlot[1].substring(0, 2);
+    let initEndMinute = this.props.timeSlot[1].substring(3, 5);
+
+    let startHour = this.state.itemToEdit.available_start_time.substring(0, 2);
+    let startMinute = this.state.itemToEdit.available_start_time.substring(
+      3,
+      5
+    );
+    let endHour = this.state.itemToEdit.available_end_time.substring(0, 2);
+    let endMinute = this.state.itemToEdit.available_end_time.substring(3, 5);
+
+    let initStartTimeObject = new Date();
+    initStartTimeObject.setHours(initStartHour, initStartMinute, 0);
+    let initEndTimeObject = new Date();
+    initEndTimeObject.setHours(initEndHour, initEndMinute, 0);
+
+    let startTimeObject = new Date();
+    startTimeObject.setHours(startHour, startMinute, 0);
+
+    let endTimeObject = new Date(startTimeObject);
+    endTimeObject.setHours(endHour, endMinute, 0);
+
+    if (startTimeObject > endTimeObject) {
+      alert("End time should not occur before start time.");
+      invalid = true;
+    } else if (startTimeObject < initStartTimeObject) {
+      invalid = true;
+      alert("Action should not start eariler than the goal/routine");
+    } else if (startTimeObject > initEndTimeObject) {
+      invalid = true;
+      alert("Action should not start later than the goal/routine");
+    } else if (endTimeObject > initEndTimeObject) {
+      alert("Action should not end later than the goal/routine");
+      invalid = true;
+    } else {
+      invalid = false;
+    }
+    return invalid ? false : true;
   };
 
   addNewDoc = () => {
@@ -188,11 +238,9 @@ export default class AddNewATItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
-  onTimeChange = (event, value) => {
-    const newTime = value.replace(/-/g, ":");
-    const time = newTime.substr(0, 5) + ":00";
+  setTime = (name, time) => {
     let temp = this.state.itemToEdit;
-    if (event.target.name === "available_start_time") {
+    if (name === "start_time") {
       temp.available_start_time = time;
       this.setState({ itemToEdit: temp });
     } else {
@@ -247,43 +295,26 @@ export default class AddNewATItem extends Component {
                 width="auto"
               ></img>
             </div>
-            <section>
-              Start Time
-              <TimeField
-                name="available_start_time"
-                value={this.state.itemToEdit.available_start_time}
-                onChange={this.onTimeChange}
-                style={{
-                  marginLeft: "6px",
-                  border: "1px solid #666",
-                  fontSize: 20,
-                  width: 80,
-                  paddingLeft: "10px",
-                  paddingRight: "10px",
-                  color: "#333",
-                  borderRadius: 10,
-                }}
-              />
-            </section>
-            <br />
-            <section>
-              End Time
-              <TimeField
-                name="available_end_time"
-                value={this.state.itemToEdit.available_end_time}
-                onChange={this.onTimeChange}
-                style={{
-                  marginLeft: "20px",
-                  border: "1px solid #666",
-                  fontSize: 20,
-                  width: 80,
-                  paddingLeft: "10px",
-                  paddingRight: "10px",
-                  color: "#333",
-                  borderRadius: 10,
-                }}
-              />
-            </section>
+            <Row style={{ marginLeft: "3px" }}>
+              <section>
+                Start Time
+                <TimePicker
+                  setTime={this.setTime}
+                  name="start_time"
+                  time={this.state.itemToEdit.available_start_time}
+                />
+              </section>
+              <br />
+              <section style={{ marginLeft: "15px" }}>
+                End Time
+                <TimePicker
+                  setTime={this.setTime}
+                  name="end_time"
+                  time={this.state.itemToEdit.available_end_time}
+                />
+              </section>
+            </Row>
+
             <br />
             <label>This Takes Me</label>
             <Row>

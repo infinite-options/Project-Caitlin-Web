@@ -44,6 +44,7 @@ export default class DayRoutines extends Component {
    * getEventItem: given an hour, this will return all events that was started during that hour
    *
    */
+
   getEventItem = (hour) => {
     var res = [];
     var tempStart = null;
@@ -744,7 +745,7 @@ export default class DayRoutines extends Component {
       let checkCurDate = moment();
 
       // console.log("this si the moment ",checkCurDate );
-
+      /*
       if (
         checkCurDate.date() === curDate &&
         checkCurDate.month() === curMonth &&
@@ -793,6 +794,7 @@ export default class DayRoutines extends Component {
           //   .update({ "goals&routines": newArr });
         }
       }
+      */
 
       /**
        * TODO: add the case where arr[i].start.dateTime doesn't exists

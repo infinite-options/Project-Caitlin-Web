@@ -249,15 +249,18 @@ export default class FirebaseV2 extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     this.props.grabFireBaseRoutinesGoalsData();
-
-    
   };
 
   formatDateTime(str) {
     //const formattedStr = str.replace(/\//g, "-");
+    let newTime = new Date(str).toLocaleTimeString();
+    newTime = newTime.substring(0, 5) + " " + newTime.slice(-2);
+    return newTime;
+    /*
     const formattedStr = str;
     const time = moment(formattedStr);
     return time.format("YYYY MMM DD HH:mm");
+    */
   }
 
   // onInputChange = (e) => {
@@ -267,7 +270,7 @@ export default class FirebaseV2 extends React.Component {
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
-  getATList = (id, title, persist) => {
+  getATList = async (id, title, persist) => {
     const db = firebase.firestore();
      console.log("getATList function with id : " + id);
     let docRef = db
@@ -358,6 +361,7 @@ export default class FirebaseV2 extends React.Component {
       // console.log(tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+
       res.push(
         <div key={"AT" + i}>
           <ListGroup.Item
@@ -453,6 +457,7 @@ export default class FirebaseV2 extends React.Component {
                     <EditAT
                       marginLeftV="-170px"
                       i={i} //index to edit
+                      timeSlot={this.state.timeSlotForAT}
                       ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                       refresh={this.refreshATItem} //function to refresh AT data
@@ -612,6 +617,7 @@ export default class FirebaseV2 extends React.Component {
 
                     <EditIS
                       marginLeftV="-170px"
+                      timeSlot={this.state.timeSlotForAT}
                       i={i} //index to edit
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
@@ -685,14 +691,43 @@ export default class FirebaseV2 extends React.Component {
   };
 
   /**
+   * Retrieve parent goal's start time and end time and use them for it's ATItem
+   */
+  setTimeSlot = async (id) => {
+    let timeSlot = [];
+    const db = firestore();
+    const userData = await db
+      .collection("users")
+      .doc(this.props.theCurrentUserID)
+      .get();
+
+    let userGR = userData.data()["goals&routines"];
+
+    userGR.forEach((doc) => {
+      console.log("This is from useGR: ", this.state.singleGR);
+      if (doc.id === id) {
+        //console.log("Time String From firebase: ", doc.start_day_and_time);
+        let start_day_and_time = new Date(doc.start_day_and_time).toString();
+        let end_day_and_time = new Date(doc.end_day_and_time).toString();
+        //console.log("Time String after firebase: ", start_day_and_time);
+
+        timeSlot = [
+          start_day_and_time.split(" ")[4],
+          end_day_and_time.split(" ")[4],
+        ];
+      }
+    });
+    this.setState({ timeSlotForAT: timeSlot });
+  };
+  /**
    * In this function we are passed in the id title and persist property of the incoming routine/goal
    * and we need to make return a viewable list of all the actions/tasks for this routine/goal
    * which is done in getATList function
    */
-  GRonClickEvent = (title, id, persist) => {
-    console.log("GRonClickEvent", id, title, persist);
+  GRonClickEvent = async (title, id, persist) => {
+    await this.setTimeSlot(id);
     this.getATList(id, title, persist);
-    this.getTimeForAT();
+    console.log("GRonClickEvent", id, title, persist);
   };
 
   /**
@@ -732,28 +767,6 @@ export default class FirebaseV2 extends React.Component {
           }
         });
       });
-
-    /*
-      getTimeForAT = () => {
-    console.log("Enter getTimeForAT()");
-    let timeSlot = [];
-    const db = firestore();
-    db.collection("users")
-      .doc(this.props.theCurrentUserID)
-      .get()
-      .then((snapshot) => {
-        let userData = snapshot.data();
-        let userGR = userData["goals&routines"];
-        userGR.forEach((doc) => {
-          console.log("This is from useGR: ", this.state.singleGR);
-          if (doc.id === this.state.singleGR.id) {
-            timeSlot = [doc.available_start_time, doc.available_end_time];
-            this.setState({ timeSlotForAT: timeSlot });
-          }
-        });
-      });
-  };
-      */
 
     let temp = {
       show: true,
@@ -1780,9 +1793,7 @@ shows entire list of goals and routines
         <Modal.Header onHide={this.props.closeGoal} closeButton>
           <Modal.Title>
             <Row>
-
-              <Col style = {{marginRight:"140px"}}>
-
+              <Col style={{ marginRight: "140px" }}>
                 <h5 className="normalfancytext">Goals</h5>
               </Col>
               <Col>
@@ -1790,9 +1801,10 @@ shows entire list of goals and routines
                   type="button"
                   className="btn btn-info btn-md"
                   onClick={() => {
-
-                    this.setState({ addNewGRModalShow: true, isRoutine: false });
-
+                    this.setState({
+                      addNewGRModalShow: true,
+                      isRoutine: false,
+                    });
                   }}
                 >
                   Add Goal
@@ -1870,22 +1882,19 @@ shows entire list of goals and routines
       >
         <Modal.Header onHide={this.props.closeRoutine} closeButton>
           <Row>
-
-            <Col style = {{marginRight:"85px"}}>
+            <Col style={{ marginRight: "85px" }}>
               <h5 className="normalfancytext">Routines</h5>
             </Col>
             <Col>
-                <button
+              <button
                 type="button"
                 className="btn btn-info btn-md"
                 onClick={() => {
                   this.addRoutineOnClick();
                 }}
-                >
-                    Add Routine
-                </button>
-              
-
+              >
+                Add Routine
+              </button>
             </Col>
           </Row>
           {/* <Modal.Title> 
@@ -2033,25 +2042,26 @@ shows entire list of goals and routines
           }}
         >
           {/* <Modal.Title> */}
-          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
-
+          <div
+            className="d-flex justify-content-between"
+            style={{ width: "350px" }}
+          >
             <div>
               <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
             </div>
             <div>
               <button
-                  type="button"
-                  className="btn btn-info btn-md"
-                  onClick={() => {
-                    this.setState({ addNewISModalShow: true });
-                  }}
-                >
-                  Add Step
-                </button>
-
+                type="button"
+                className="btn btn-info btn-md"
+                onClick={() => {
+                  this.setState({ addNewISModalShow: true });
+                }}
+              >
+                Add Step
+              </button>
             </div>
           </div>
-            {/* <Row>
+          {/* <Row>
 
                 type="button"
                 className="btn btn-info btn-md"
@@ -2082,7 +2092,7 @@ shows entire list of goals and routines
 
             </Row> */}
 
-            {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
+          {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
 
           {/* </Modal.Title> */}
         </Modal.Header>
@@ -2134,39 +2144,6 @@ shows entire list of goals and routines
   };
 
   /**
-   * Retrieve parent goal's start time and end time and use them for it's ATItem
-   */
-  getTimeForAT = () => {
-    console.log("Enter getTimeForAT()");
-    let timeSlot = [];
-    const db = firestore();
-    db.collection("users")
-      .doc(this.props.theCurrentUserID)
-      //.collection("goals&routines")
-      //.where("id", "==", this.props.ATItem.id)
-      .get()
-      .then((snapshot) => {
-        let userData = snapshot.data();
-        let userGR = userData["goals&routines"];
-        userGR.forEach((doc) => {
-          console.log("This is from useGR: ", this.state.singleGR);
-          if (doc.id === this.state.singleGR.id) {
-            let start_day_and_time = new Date(
-              doc.start_day_and_time
-            ).toString();
-            let end_day_and_time = new Date(doc.end_day_and_time).toString();
-
-            timeSlot = [
-              start_day_and_time.split(" ")[4],
-              end_day_and_time.split(" ")[4],
-            ];
-            this.setState({ timeSlotForAT: timeSlot });
-          }
-        });
-      });
-  };
-
-  /**
    * abstractedActionsAndTaskList -
    * returns modal with with a single Routine/ Goal as title
    * and beneath it is the list of action/ task associated with the
@@ -2187,27 +2164,25 @@ shows entire list of goals and routines
             this.setState({ singleGR: { show: false } });
           }}
         >
-
-          <div className="d-flex justify-content-between" style = {{width:"350px"}}>
-
+          <div
+            className="d-flex justify-content-between"
+            style={{ width: "350px" }}
+          >
             <div>
               <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
             </div>
             <div>
               <button
-                  type="button"
-                  className="btn btn-info btn-md"
-                  onClick={() => {
-                    this.setState({ addNewATModalShow: true });
-                  }}
-                >
-                  Add Action/Task
+                type="button"
+                className="btn btn-info btn-md"
+                onClick={() => {
+                  this.setState({ addNewATModalShow: true });
+                }}
+              >
+                Add Action/Task
               </button>
-
             </div>
           </div>
-          
-
         </Modal.Header>
         <Modal.Body>
           <div
