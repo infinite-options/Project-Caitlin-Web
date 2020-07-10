@@ -1129,7 +1129,7 @@ export default class FirebaseV2 extends React.Component {
     //       var x = doc.data()["actions&tasks"];
     //       // console.log(x);
     //       if (x == null) {
-            
+
     //         this.setState({
     //           AT_expected_completion_time: "0",
     //         });
@@ -1152,7 +1152,7 @@ export default class FirebaseV2 extends React.Component {
   };
 
   thisTakesMeGivenVsSelected = (i)=>{
-   
+
     return <div> This take me {this.convertToMinutes(this.props.routines[i]["expected_completion_time"])} min (calc) </div>
 
   }
@@ -1547,6 +1547,7 @@ export default class FirebaseV2 extends React.Component {
         ) {
           continue; //skip if not available
         }
+        let isInProgress = this.props.goals[i]["is_in_progress"];
         displayGoals.push(
           <div key={"goalStatus" + i}>
             <ListGroup.Item
@@ -1592,7 +1593,11 @@ export default class FirebaseV2 extends React.Component {
                       title="Not Completed Item"
                       // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
                       // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                      style={{ color: "black" }}
+                      style={{
+                        color: isInProgress
+                          ? this.state.availabilityColorCode
+                          : "black",
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         alert("Item Is Not Completed");
@@ -1897,7 +1902,7 @@ shows entire list of goals and routines
               </button>
             </Col>
           </Row>
-          {/* <Modal.Title> 
+          {/* <Modal.Title>
             <h5 className="normalfancytext">Routines</h5>
           </Modal.Title> */}
         </Modal.Header>
