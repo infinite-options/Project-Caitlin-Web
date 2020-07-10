@@ -281,9 +281,7 @@ export default class AddNewGRItem extends Component {
               temp.id = ref.id;
               temp.available_start_time = this.state.itemToEdit.available_start_time;
               temp.available_end_time = this.state.itemToEdit.available_end_time;
-
               temp.is_displayed_today = true;
-              console.log("is_displayed_today", true);
 
               console.log(
                 "this is the start day before ",

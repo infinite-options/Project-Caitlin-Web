@@ -771,11 +771,11 @@ export default class DayRoutines extends Component {
           arr[i].is_displayed_today = true;
           let newArr = this.props.originalGoalsAndRoutineArr;
           newArr[this.props.routine_ids[i]].is_displayed_today = true;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(this.props.theCurrentUserId)
-            .update({ "goals&routines": newArr });
+          // firebase
+          //   .firestore()
+          //   .collection("users")
+          //   .doc(this.props.theCurrentUserId)
+          //   .update({ "goals&routines": newArr });
         }
       } else if (
         checkCurDate.date() === curDate &&
@@ -787,11 +787,11 @@ export default class DayRoutines extends Component {
           arr[i].is_displayed_today = false;
           let newArr = this.props.originalGoalsAndRoutineArr;
           newArr[this.props.routine_ids[i]].is_displayed_today = false;
-          firebase
-            .firestore()
-            .collection("users")
-            .doc(this.props.theCurrentUserId)
-            .update({ "goals&routines": newArr });
+          // firebase
+          //   .firestore()
+          //   .collection("users")
+          //   .doc(this.props.theCurrentUserId)
+          //   .update({ "goals&routines": newArr });
         }
       }
       */
