@@ -2556,7 +2556,8 @@ this will close repeat modal.
                 sm="auto"
                 md="auto"
                 lg="auto"
-                style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+                // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
+                style={onlyCal ? { marginLeft: "22%" } : { marginLeft: "35px" }}
               >
                 {this.showCalendarView()}
                 <div>V1.3</div>
@@ -2813,7 +2814,7 @@ this will close repeat modal.
           display: "block",
           textAlign: "center",
           fontSize: "20px",
-          paddingRight: "170px",
+          paddingRight: "140px",
           // display: "flex",
           // justifyContent: "center",
           // alignItems: "center"
@@ -3914,7 +3915,7 @@ this will close repeat modal.
                 </Row>
                 <Row style={{ marginTop: "15px" }}>
                   <Col style={{ paddingRight: "0px" }}>
-                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
+                    <Form.Text style={{ fontSize: "65%" }}> User</Form.Text>
                   </Col>
                   <Col xs={8}>
                     <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
@@ -3972,7 +3973,7 @@ this will close repeat modal.
                 </Row>
                 <Row style={{ marginTop: "15px" }}>
                   <Col style={{ paddingRight: "0px" }}>
-                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
+                    <Form.Text style={{ fontSize: "65%" }}> User</Form.Text>
                   </Col>
                   <Col xs={8}>
                     <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
@@ -4031,7 +4032,7 @@ this will close repeat modal.
                 </Row>
                 <Row style={{ marginTop: "15px" }}>
                   <Col style={{ paddingRight: "0px" }}>
-                    <Form.Text style={{ fontSize: "65%" }}> Caitlin</Form.Text>
+                    <Form.Text style={{ fontSize: "65%" }}> User</Form.Text>
                   </Col>
                   <Col xs={8}>
                     <Form.Check type="checkbox" style={{ paddingLeft: "0px" }}>
