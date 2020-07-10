@@ -40,7 +40,8 @@ export default class AddNewISItem extends Component {
       datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
       audio: "",
       is_timed: false,
-      expected_completion_time: "00:10:00",
+      expected_completion_time: "00:05:00",
+      is_in_progress:false,
       ta_notifications: {
         before: {
           is_enabled: false,

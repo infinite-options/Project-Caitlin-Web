@@ -30,8 +30,9 @@ export default class AddNewATItem extends Component {
         datetime_completed: "Sun, 23 Feb 2020 00:08:43 GMT",
         datetime_started: "Sun, 23 Feb 2020 00:08:43 GMT",
         is_timed: false,
-        expected_completion_time: "00:11:00",
+        expected_completion_time: "00:10:00",
         is_sublist_available: true,
+        is_in_progress:false,
         ta_notifications: {
           before: {
             is_enabled: false,

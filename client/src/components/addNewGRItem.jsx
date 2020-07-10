@@ -39,6 +39,7 @@ export default class AddNewGRItem extends Component {
       is_available: true,
 
       is_displayed_today: false,
+      is_in_progress:false,
       // todayDateObject: this.props.todayDateObject,
       // available_end_time: this.props.singleGR.available_end_time,
       // available_start_time: this.props.singleGR.available_start_time,
