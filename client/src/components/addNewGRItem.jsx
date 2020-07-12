@@ -7,6 +7,7 @@ import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
 
+import DateAndTimePickers from "./DatePicker";
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
 
@@ -39,7 +40,7 @@ export default class AddNewGRItem extends Component {
       is_available: true,
 
       is_displayed_today: false,
-      is_in_progress:false,
+      is_in_progress: false,
       // todayDateObject: this.props.todayDateObject,
       // available_end_time: this.props.singleGR.available_end_time,
       // available_start_time: this.props.singleGR.available_start_time,
@@ -1111,6 +1112,13 @@ this will close repeat modal.
                 width="auto"
               ></img>
             </div>
+
+            <Form.Label>
+              Start Time
+              <DateAndTimePickers
+                start_day_and_time={this.state.itemToEdit.start_day_and_time}
+              />
+            </Form.Label>
 
             <Form.Group
               value={this.state.itemToEdit.start_day_and_time}
