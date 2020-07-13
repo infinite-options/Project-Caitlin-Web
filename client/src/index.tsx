@@ -9,6 +9,7 @@ import './index.css';
 export default function Index() {
 	return <div>
 		<header className="App-header">
+		<link rel="icon" href="favicon" type="image/x-icon" />
 			<Router>
 				<Switch>
 					<Route path="/main">
