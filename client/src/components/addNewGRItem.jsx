@@ -226,6 +226,18 @@ export default class AddNewGRItem extends Component {
     this.setState({ itemToEdit: temp });
   };
 
+  set_day_and_time = (id, dateString) => {
+    console.log("Enter set_day_and_time", dateString, id);
+    let temp = this.state.itemToEdit;
+    if (id === "start_day_and_time") {
+      temp.start_day_and_time = dateString;
+      this.setState({ itemToEdit: temp });
+    } else if (id === "end_day_and_time") {
+      temp.end_day_and_time = dateString;
+      this.setState({ itemToEdit: temp });
+    }
+  };
+
   addNewDoc = () => {
     // this.state.routineDocsPath
     // .add({
@@ -1116,7 +1128,18 @@ this will close repeat modal.
             <Form.Label>
               Start Time
               <DateAndTimePickers
-                start_day_and_time={this.state.itemToEdit.start_day_and_time}
+                day_and_time={this.state.itemToEdit.start_day_and_time}
+                id="start_day_and_time"
+                set_day_and_time={this.set_day_and_time}
+              />
+            </Form.Label>
+
+            <Form.Label>
+              End Time
+              <DateAndTimePickers
+                day_and_time={this.state.itemToEdit.end_day_and_time}
+                id="end_day_and_time"
+                set_day_and_time={this.set_day_and_time}
               />
             </Form.Label>
 
