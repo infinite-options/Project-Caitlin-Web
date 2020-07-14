@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import firebase from "./firebase";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
 import ShowNotifications from "./ShowNotifications";
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
@@ -1141,25 +1141,8 @@ this will close repeat modal.
                 id="end_day_and_time"
                 set_day_and_time={this.set_day_and_time}
               />
-            </Form.Label>
-
-            <Form.Group
-              value={this.state.itemToEdit.start_day_and_time}
-              controlId="Y"
-            >
-              <Form.Label>Start Time</Form.Label> <br />
-              {this.startTimePicker()}
-            </Form.Group>
-
-            <Form.Group
-              value={this.state.itemToEdit.end_day_and_time}
-              controlId="X"
-            >
-              <Form.Label>End Time</Form.Label>
               <br />
-              {this.endTimePicker()}
-              <div style={{ color: "red" }}> {this.state.showDateError}</div>
-            </Form.Group>
+            </Form.Label>
 
             <div>
               <label>Repeating Options</label>
