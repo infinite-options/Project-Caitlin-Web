@@ -272,14 +272,14 @@ export default class FirebaseV2 extends React.Component {
   //modal for the action/task
   getATList = async (id, title, persist) => {
     const db = firebase.firestore();
-     console.log("getATList function with id : " + id);
+    console.log("getATList function with id : " + id);
     let docRef = db
       .collection("users")
       .doc(this.props.theCurrentUserID)
       // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
-     console.log("this is the goals and routines id ", id);
+    console.log("this is the goals and routines id ", id);
     // console.log("this si the correct path", docRef);
     docRef
       .get()
@@ -843,7 +843,6 @@ export default class FirebaseV2 extends React.Component {
   };
 
   getRoutines = () => {
-    
     let displayRoutines = [];
     // console.log("props", this.props.routines);
     if (this.props.routines.length !== 0) {
@@ -1097,12 +1096,8 @@ export default class FirebaseV2 extends React.Component {
                   )}
                   {this.showRoutineRepeatStatus(i)}
                 </div>
-                
               </Row>
-              <Row>
-               
-                {/* {this.thisTakesMeGivenVsSelected(i)} */}
-              </Row>
+              <Row>{/* {this.thisTakesMeGivenVsSelected(i)} */}</Row>
             </ListGroup.Item>
           </div>
         );
@@ -1111,13 +1106,55 @@ export default class FirebaseV2 extends React.Component {
     return displayRoutines;
   };
 
+  getATexpectedTime(title, id, persist) {
+    // const db = firebase.firestore();
+    // // console.log("getATList function with id : " + id);
+    // let docRef = db
+    //   .collection("users")
+    //   .doc(this.props.theCurrentUserID)
+    //   // .doc("7R6hAVmDrNutRkG3sVRy")
+    //   .collection("goals&routines")
+    //   .doc(id);
+    // // console.log("this si the goals and routines", id);
+    // // console.log("this si the correct path", docRef);
+    // docRef
+    //   .get()
+    //   .then((doc) => {
+    //     if (doc.exists) {
+    //       // console.log(doc.data());
+    //       var x = doc.data()["actions&tasks"];
+    //       // console.log(x);
+    //       if (x == null) {
+    //         this.setState({
+    //           AT_expected_completion_time: "0",
+    //         });
+    //         return;
+    //       }
+    //       this.setState({
+    //         AT_expected_completion_time: x,
+    //       });
+    //     } else {
+    //       // doc.data() will be undefined in this case
+    //       console.log("No such document!");
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error getting document:", error);
+    //   });
+  }
 
- 
-
-  // thisTakesMeGivenVsSelected = (i)=>{
-  //   return <div> This take me {this.convertToMinutes(this.props.routines[i]["expected_completion_time"])} min (calc) </div>
-  // }
-  
+  thisTakesMeGivenVsSelected = (i) => {
+    return (
+      <div>
+        {" "}
+        This take me{" "}
+        {this.convertToMinutes(
+          this.props.routines[i]["expected_completion_time"]
+        )}{" "}
+        min (calc){" "}
+      </div>
+    );
+  };
   convertToMinutes = (time) => {
     let myStr = time.split(":");
     let hours = myStr[0];
