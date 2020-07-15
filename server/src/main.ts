@@ -46,6 +46,7 @@ var credentials_url = 'credentials.json';
 var REDIRECTED_ADD_USER_URI;
 var firebase = require( 'firebase' );
 var firebaseConfig;
+var FAVICON_URL;
 
 if (hostname == "manifestmylife") {
 	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem';
@@ -61,20 +62,12 @@ if (hostname == "manifestmylife") {
 		appId: "1:717980399518:web:553aadeb783bd8090d088f",
 		measurementId: "G-CL3BMK155G"
 	};
+	FAVICON_URL = "Icon-MyLife-60x60@3x.png"
 } else {
 	var key_url = '/etc/letsencrypt/live/manifestmy.space/privkey.pem';
 	var cert_url = '/etc/letsencrypt/live/manifestmy.space/fullchain.pem';
 	REDIRECTED_ADD_USER_URI = 'https://manifestmy.space/adduser';
 	firebaseConfig = {
-		/*apiKey:            'AIzaSyDBgPVcjoV8LbR4hDA7tm3UoP0abMw8guE',
-		authDomain:        'project-caitlin-c71a9.firebaseapp.com',
-		databaseURL:       'https://project-caitlin-c71a9.firebaseio.com',
-		projectId:         'project-caitlin-c71a9',
-		storageBucket:     'project-caitlin-c71a9.appspot.com',
-		messagingSenderId: '711685546849',
-		appId:             '1:711685546849:web:5c7a982748eb3bec35db20',
-		measurementId:     'G-DCQF4LY5ZH'*/
-
 		apiKey:            "AIzaSyBjuyhZxmvzey9-hMEdIUoems6c9bEQ-nI",
 		authDomain:        "myspace-db.firebaseapp.com",
 		databaseURL:       "https://myspace-db.firebaseio.com",
@@ -84,6 +77,7 @@ if (hostname == "manifestmylife") {
 		appId:             "1:287117315224:web:c7af6690d5e269a7ab54ed",
 		measurementId:     "G-WRGR8M5LRN"
 	};
+	FAVICON_URL = "Icon-MySpace-60x60@3x.png"
 }
 
 firebase.initializeApp( firebaseConfig );
@@ -208,7 +202,11 @@ app.get( '/x', ( req, res ) => {
 
 app.get( '/test', ( req, res ) => {
 	res.redirect( '/' );
-} );
+});
+
+app.get('/favicon', (req, res) => {
+	res.sendFile( path.join( __basedir, 'public', FAVICON_URL) );
+});
 
 app.get( '/privacy', ( req, res ) => {
 	console.log(__basedir)
@@ -221,6 +219,111 @@ app.get( '/.well-known/pki-validation/6B573F01F1E6DAF81B7FD85EECA9946B.txt', ( r
 	res.sendFile( index );
 } );
 
+app.get( '/isdisplayedugh', ( req, res ) => {
+	let CurrentDate = new Date(new Date().toLocaleString('en-US', {
+    timeZone: "America/Los_Angeles"
+  }));
+  CurrentDate.setHours(0,0,0,0);
+	let db = firebase.firestore();
+	let grs = [];
+	db.collection("users").get()
+	.then((snapshot) =>
+	{
+		snapshot.forEach(doc => {
+			if (doc.data()["goals&routines"] != null) {
+				let arrs = doc.data()["goals&routines"];
+				arrs.forEach((gr) => {
+					let startDate = new Date(new Date(gr["start_day_and_time"]).toLocaleString('en-US', {
+						timeZone: "America/Los_Angeles"
+					}));
+					startDate.setHours(0,0,0,0);
+					let isDisplayedTodayCalculated: boolean = false;
+					let repeatOccurences = parseInt(gr["repeat_occurences"]);
+					let repeatEvery = parseInt(gr["repeat_every"]);
+					let repeatEnds = gr["repeat_ends"];
+					let repeatEndsOn: Date = new Date(new Date(gr["repeat_ends_on"]).toLocaleString('en-US', {
+						timeZone: "America/Los_Angeles"
+					}));
+					repeatEndsOn.setHours(0,0,0,0);
+					let repeatFrequency: string = gr["repeat_frequency"];
+					let repeatWeekDays: number[] = [];
+					if (gr["repeat_week_days"] != null) {
+						Object.keys(gr["repeat_week_days"])
+						.forEach( (k: string) => {
+							if (gr["repeat_week_days"][k] != "") {
+								repeatWeekDays.push(parseInt(k));
+							}
+						});
+					}
+
+					if (!gr.repeat) {
+						isDisplayedTodayCalculated = CurrentDate.getTime() - startDate.getTime() == 0
+					} else {
+						if (CurrentDate >= startDate) {
+							if (repeatEnds == "On") {
+							} else if (repeatEnds == "After") {
+								if (repeatFrequency == "DAY") {
+									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
+										timeZone: "America/Los_Angeles"
+									}));
+									repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
+								} else if (repeatFrequency == "WEEK"){
+									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
+										timeZone: "America/Los_Angeles"
+									}));
+									repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
+								} else if (repeatFrequency == "MONTH"){
+									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
+										timeZone: "America/Los_Angeles"
+									}));
+									repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
+								} else if (repeatFrequency == "YEAR"){
+									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
+										timeZone: "America/Los_Angeles"
+									}));
+									repeatEndsOn.setFullYear(startDate.getFullYear() + (repeatOccurences-1)*repeatEvery);
+								}
+							} else if (repeatEnds == "Never") {
+								repeatEndsOn = CurrentDate;
+							}
+
+							if (CurrentDate <= repeatEndsOn) {
+								if (repeatFrequency == "DAY") {
+									isDisplayedTodayCalculated = Math.floor((CurrentDate.getTime() - startDate.getTime())/(24*3600*1000)) % repeatEvery == 0;
+								} else if (repeatFrequency == "WEEK"){
+									isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
+								} else if (repeatFrequency == "MONTH"){
+									isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
+									((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
+								} else if (repeatFrequency == "YEAR"){
+									isDisplayedTodayCalculated = (startDate.getDate() == CurrentDate.getDate()) &&
+									(CurrentDate.getMonth() == startDate.getMonth()) &&
+									(CurrentDate.getFullYear() - startDate.getFullYear()) % repeatEvery == 0;
+								}
+							}
+						}
+					}
+					grs.push({
+						userId: doc.id,
+						title: gr.title,
+						repeat: gr.repeat,
+						startDate: startDate,
+						repeatOccurences: repeatOccurences,
+						repeatEndsOn: repeatEndsOn,
+						currentDate: CurrentDate,
+						isDisplayedToday: gr["is_displayed_today"],
+						isDisplayedTodayCalculated: isDisplayedTodayCalculated
+					})
+					// gr["is_displayed_today"] = isDisplayedTodayCalculated
+				});
+				// db.collection("users")
+				// .doc(doc.id)
+				// .update({ "goals&routines": arrs });
+			}
+		});
+		res.json(grs);
+	});
+});
 
 //Landing Page
 /*
