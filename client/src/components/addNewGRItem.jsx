@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import firebase from "./firebase";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
 import ShowNotifications from "./ShowNotifications";
-//import DatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";

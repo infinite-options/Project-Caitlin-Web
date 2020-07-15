@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
-//import DatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 import ShowNotifications from "./ShowNotifications";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
@@ -287,12 +287,22 @@ export default class editGR extends Component {
     if (this.state.itemToEdit.title === "") {
       return "No Title";
     }
+
+    const startDateObject = new Date(this.state.itemToEdit.start_day_and_time);
+    const endDateObject = new Date(this.state.itemToEdit.end_day_and_time);
+    /*
     let startTime = this.state.itemToEdit.start_day_and_time;
     let endTime = this.state.itemToEdit.end_day_and_time;
     let timeDiff = endTime - startTime;
-    if (timeDiff <= 0) {
+    */
+    console.log("EnterInputVerify: start time", startDateObject);
+    console.log("EnterInputVerify: end time", endDateObject);
+    const timeDiff = startDateObject.getTime() - endDateObject.getTime();
+    //console.log("Time diff: ", timeDiff);
+    if (timeDiff >= 0) {
       return "End time is before start time";
     }
+
     return "";
   };
 
