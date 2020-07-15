@@ -418,41 +418,110 @@ export default class MainPage extends React.Component {
             />
             anifest My Life
           </a>
-          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="/">/SIGN IN</a>
-          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="https://www.infiniteoptions.com">/INFINITE OPTIONS</a>
-          <a style={{float:"right", padding: "12px 10px", color:"black"}} href="https://www.notimpossible.com">/NOT IMPOSSIBLE</a>
-          <a style={{float:"right", padding: "12px 0px", color:"black"}} href="/">/HOME</a>
-        <div>
-        </div>
-        <div style={{display: "-webkit-inline-box", paddingTop:"20px"}}>
-        <img style={{width: "380px", marginLeft: "auto", marginRight: "30px", borderRadius: 0, border: 0}} src="Helping Others.png"/>
-        <div>
-        <div style={{fontSize: "1.5em"}}><p style={{display: "inline", color: "#6495ED"}}>Help One</p> - <p style={{display: "inline", color: "#8FBC8F"}}>Help Many</p></div>
-        {this.LogInForm()} V1.46</div>
-        </div>
-        {this.signUpModal()}
-        {this.socialSignUpModal()}
-        <div style={{fontFamily: "San Serif", fontSize: "1.1em", marginTop: "10px"}}>
-        <div style={{display: "-webkit-inline-box", textAlign: "left", paddingTop: "10px", borderTop: "2px solid #6495ED", width: "1000px"}}>
-        <div style={{width: "220px"}}>
-        The Trusted Advisor
-        </div>
-        <div style={{width: "770px", color: "#6495ED"}}>
-        <p>You know you are the key to helping people achieve their potential.  Login to make their dreams become their reality!</p>
-        <p>Login in with an email and password or using Google Login.  When you login we track your name, email and user id.</p>
-        </div>
-        </div>
-        <div style={{display: "-webkit-inline-box", textAlign: "left", paddingTop: "10px", borderTop: "2px solid #8FBC8F", width: "1000px"}}>
-        <div style={{width: "220px"}}>
-        The User
-        </div>
-        <div style={{width: "770px", color: "#8FBC8F"}}>
-        <p>You know you can accomplish more!  With the right help, structure and guidance you can make each day better than the last and move toward your goals!</p>
-        <p>Your Trusted Advisor will ask you to enter your Google ID and Password to give them access to your Calendar.  With that information they will be able to help you manage your day and add structure to your life by customizing Goals and Routines.</p>
-        <p>It's your life and you are in control!  We give you options.  You choose what you want to accomplish!</p>
-        </div>
-        </div>
-        </div>
+          <a
+            style={{ float: "right", padding: "12px 10px", color: "black" }}
+            href="/"
+          >
+            /SIGN IN
+          </a>
+          <a
+            style={{ float: "right", padding: "12px 10px", color: "black" }}
+            href="https://www.infiniteoptions.com"
+          >
+            /INFINITE OPTIONS
+          </a>
+          <a
+            style={{ float: "right", padding: "12px 10px", color: "black" }}
+            href="https://www.notimpossible.com"
+          >
+            /NOT IMPOSSIBLE
+          </a>
+          <a
+            style={{ float: "right", padding: "12px 0px", color: "black" }}
+            href="/"
+          >
+            /HOME
+          </a>
+          <div></div>
+          <div style={{ display: "-webkit-inline-box", paddingTop: "20px" }}>
+            <img
+              style={{
+                width: "380px",
+                marginLeft: "auto",
+                marginRight: "30px",
+                borderRadius: 0,
+                border: 0,
+              }}
+              src="Helping Others.png"
+            />
+            <div>
+              <div style={{ fontSize: "1.5em" }}>
+                <p style={{ display: "inline", color: "#6495ED" }}>Help One</p>{" "}
+                -{" "}
+                <p style={{ display: "inline", color: "#8FBC8F" }}>Help Many</p>
+              </div>
+              {this.LogInForm()} V1.47p
+            </div>
+          </div>
+          {this.signUpModal()}
+          {this.socialSignUpModal()}
+          <div
+            style={{
+              fontFamily: "San Serif",
+              fontSize: "1.1em",
+              marginTop: "10px",
+            }}
+          >
+            <div
+              style={{
+                display: "-webkit-inline-box",
+                textAlign: "left",
+                paddingTop: "10px",
+                borderTop: "2px solid #6495ED",
+                width: "1000px",
+              }}
+            >
+              <div style={{ width: "220px" }}>The Trusted Advisor</div>
+              <div style={{ width: "770px", color: "#6495ED" }}>
+                <p>
+                  You know you are the key to helping people achieve their
+                  potential. Login to make their dreams become their reality!
+                </p>
+                <p>
+                  Login in with an email and password or using Google Login.
+                  When you login we track your name, email and user id.
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "-webkit-inline-box",
+                textAlign: "left",
+                paddingTop: "10px",
+                borderTop: "2px solid #8FBC8F",
+                width: "1000px",
+              }}
+            >
+              <div style={{ width: "220px" }}>The User</div>
+              <div style={{ width: "770px", color: "#8FBC8F" }}>
+                <p>
+                  You know you can accomplish more! With the right help,
+                  structure and guidance you can make each day better than the
+                  last and move toward your goals!
+                </p>
+                <p>
+                  Your Trusted Advisor will ask you to enter your Google ID and
+                  Password to give them access to your Calendar. With that
+                  information they will be able to help you manage your day and
+                  add structure to your life by customizing Goals and Routines.
+                </p>
+                <p>
+                  It's your life and you are in control! We give you options.
+                  You choose what you want to accomplish!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
