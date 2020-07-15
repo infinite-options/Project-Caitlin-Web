@@ -20,6 +20,7 @@ export default class MainPage extends React.Component {
       newLName: "",
       newEmployer: "",
       newClients: [],
+      versionNumber: this.getVersionNumber(),
     };
   }
 
@@ -97,6 +98,16 @@ export default class MainPage extends React.Component {
         </Form.Group>
       </Form>
     );
+  };
+
+  getVersionNumber = () => {
+    axios
+      .get("/buildNumber", {
+      }).then((response) => {
+        this.setState({
+           versionNumber: response.data
+        })
+      });
   };
 
   responseGoogle = (response) => {
@@ -460,7 +471,7 @@ export default class MainPage extends React.Component {
                 -{" "}
                 <p style={{ display: "inline", color: "#8FBC8F" }}>Help Many</p>
               </div>
-              {this.LogInForm()} V1.47p
+              {this.LogInForm()} V1.47.{this.state.versionNumber}
             </div>
           </div>
           {this.signUpModal()}

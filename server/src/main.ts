@@ -204,12 +204,16 @@ app.get( '/test', ( req, res ) => {
 	res.redirect( '/' );
 });
 
+app.get( '/buildNumber', ( req, res ) => {
+	res.sendFile(path.join( __basedir, 'public', "build_number.txt"));
+});
+
 app.get('/favicon', (req, res) => {
 	res.sendFile( path.join( __basedir, 'public', FAVICON_URL) );
 });
 
 app.get( '/privacy', ( req, res ) => {
-	console.log(__basedir)
+	console.log(__basedir);
 	res.sendFile( path.join( __basedir, 'privacy.html' ) );
 } );
 
