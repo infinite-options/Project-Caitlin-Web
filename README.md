@@ -3,8 +3,12 @@
 ## Install
 
 0. `cd client`
-0. `npm install`
-0. `cd ../server`
-0. `npm install`
-0. `npm run dev`
-0. go to localhost
+1. `npm install`
+2. `cd ../server`
+3. `npm install`
+4. `npm run dev`
+5. go to localhost
+
+## Enable version number auto-increment
+
+0. `cp pre-commit-hook .\.git\hooks\pre-commit`
