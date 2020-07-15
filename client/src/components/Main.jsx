@@ -129,11 +129,11 @@ export default class MainPage extends React.Component {
 
   // componentDidUpdate(prevProps, prevState) {
   //   // console.log("this is in the component update ",this.props.ATArray[this.props.i] )
-    
+
   //   if (prevState.originalGoalsAndRoutineArr !== this.state.originalGoalsAndRoutineArr) {
   //     // this.grabFireBaseRoutinesGoalsData();
   //     // console.log("does it go here");
-      
+
   //   }
   // }
   /**
@@ -145,72 +145,72 @@ export default class MainPage extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
-    // console.log("this is the current userid", this.state.currentUserId);
+    //console.log("this is the current userid", this.state.currentUserId);
     if (this.state.currentUserId !== "") {
       //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
       const docRef = db.collection("users").doc(this.state.currentUserId);
       // console.log("this is suppose tto be the path", docRef);
       docRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data();
-          // console.log("this is the data", x);
-          // console.log(x["goals&routines"]);
-          // x = x["goals&routines"];
-          
-          let routine = [];
-          let routine_ids = [];
-          let goal = [];
-          let goal_ids = [];
-          if (x["goals&routines"] !== undefined) {
-            x = x["goals&routines"];
-            // console.log("this is the goals and routines", x);
-            x.sort((a,b) => {
-              let timeA = new Date(a["start_day_and_time"]);
-              let timeB = new Date(b["start_day_and_time"]);
-              return timeA.getTime() - timeB.getTime();
-            });
-            // console.log("sorted goals and routines", x);
-            for (let i = 0; i < x.length; ++i) {
-              if (x[i]["is_persistent"]) {
-                // console.log("routine " + x[i]["title"]);
-                // console.log("is the is the id ", x[i].id);
-                routine_ids.push(i);
-                routine.push(x[i]);
-              } else if (!x[i]["is_persistent"]) {
-                // console.log("not routine " + x[i]["title"]);
-                goal_ids.push(i);
-                goal.push(x[i]);
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            // console.log(doc.data());
+            var x = doc.data();
+            // console.log("this is the data", x);
+            // console.log(x["goals&routines"]);
+            // x = x["goals&routines"];
+
+            let routine = [];
+            let routine_ids = [];
+            let goal = [];
+            let goal_ids = [];
+            if (x["goals&routines"] !== undefined) {
+              x = x["goals&routines"];
+              // console.log("this is the goals and routines", x);
+              x.sort((a, b) => {
+                let timeA = new Date(a["start_day_and_time"]);
+                let timeB = new Date(b["start_day_and_time"]);
+                return timeA.getTime() - timeB.getTime();
+              });
+              // console.log("sorted goals and routines", x);
+              for (let i = 0; i < x.length; ++i) {
+                if (x[i]["is_persistent"]) {
+                  // console.log("routine " + x[i]["title"]);
+                  // console.log("is the is the id ", x[i].id);
+                  routine_ids.push(i);
+                  routine.push(x[i]);
+                } else if (!x[i]["is_persistent"]) {
+                  // console.log("not routine " + x[i]["title"]);
+                  goal_ids.push(i);
+                  goal.push(x[i]);
+                }
               }
+              this.setState({
+                originalGoalsAndRoutineArr: x,
+                goals: goal,
+                addNewGRModalShow: false,
+                routine_ids: routine_ids,
+                goal_ids: goal_ids,
+                routines: routine,
+              });
+            } else {
+              this.setState({
+                originalGoalsAndRoutineArr: [],
+                goals: goal,
+                addNewGRModalShow: false,
+                routine_ids: routine_ids,
+                goal_ids: goal_ids,
+                routines: routine,
+              });
             }
-            this.setState({
-              originalGoalsAndRoutineArr: x,
-              goals: goal,
-              addNewGRModalShow: false,
-              routine_ids: routine_ids,
-              goal_ids: goal_ids,
-              routines: routine,
-            });
           } else {
-            this.setState({
-              originalGoalsAndRoutineArr: [],
-              goals: goal,
-              addNewGRModalShow: false,
-              routine_ids: routine_ids,
-              goal_ids: goal_ids,
-              routines: routine,
-            });
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
           }
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+        })
+        .catch(function (error) {
+          console.log("Error getting document:", error);
+        });
     }
   };
 
@@ -255,8 +255,6 @@ export default class MainPage extends React.Component {
       repeatOccurrence_temp: eventKey,
     });
   };
-
-  
 
   // Entry of the page
   componentDidMount() {
@@ -2259,7 +2257,6 @@ this will close repeat modal.
     }
   };
 
-  
   showCalendarView = () => {
     if (this.state.calendarView === "Month") return this.calendarAbstracted();
     else if (this.state.calendarView === "Day") return this.dayViewAbstracted();
@@ -2269,7 +2266,7 @@ this will close repeat modal.
 
   updateFBGR = () => {
     this.grabFireBaseRoutinesGoalsData();
-  }
+  };
 
   render() {
     if (this.state.loaded && !this.state.loggedIn) {
@@ -2549,7 +2546,7 @@ this will close repeat modal.
                   todayDateObject={this.state.todayDateObject}
                   calendarView={this.state.calendarView}
                   dateContext={this.state.dateContext}
-                  updateFBGR = {this.updateFBGR}
+                  updateFBGR={this.updateFBGR}
                 />
               )}
               <Col
@@ -2630,7 +2627,7 @@ this will close repeat modal.
             <Col>
               <FontAwesomeIcon
                 // style={{ marginLeft: "50%" }}
-                style={{float: "right", marginRight:"100px"}}
+                style={{ float: "right", marginRight: "100px" }}
                 icon={faChevronRight}
                 size="2x"
                 className="X"
@@ -2642,30 +2639,30 @@ this will close repeat modal.
           </Row>
         </Container>
         <Row>
-        {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
-        <DayEvents
-        dateContext={this.state.dateContext}
-        eventClickDayView={this.handleDayEventClick}
-        handleDateClick={this.handleDateClickOnDayView}
-        dayEvents={this.state.dayEvents}
-        getEventsByInterval={this.getEventsByIntervalDayVersion}
-        />
-        <DayRoutines
-        dateContext={this.state.dateContext}
-        routine_ids = {this.state.routine_ids}
-        routines={this.state.routines}
-        dayRoutineClick={this.toggleShowRoutine}
-        theCurrentUserId={this.state.currentUserId}
-        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
-        />
-        <DayGoals
-        dateContext={this.state.dateContext}
-        goal_ids = {this.state.goal_ids}
-        goals={this.state.goals}
-        dayGoalClick={this.toggleShowGoal}
-        theCurrentUserId={this.state.currentUserId}
-        originalGoalsAndRoutineArr = {this.state.originalGoalsAndRoutineArr}
-        />
+          {/* {console.log("these are the events that are going to be passed in", this.state.dayEvents)} */}
+          <DayEvents
+            dateContext={this.state.dateContext}
+            eventClickDayView={this.handleDayEventClick}
+            handleDateClick={this.handleDateClickOnDayView}
+            dayEvents={this.state.dayEvents}
+            getEventsByInterval={this.getEventsByIntervalDayVersion}
+          />
+          <DayRoutines
+            dateContext={this.state.dateContext}
+            routine_ids={this.state.routine_ids}
+            routines={this.state.routines}
+            dayRoutineClick={this.toggleShowRoutine}
+            theCurrentUserId={this.state.currentUserId}
+            originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+          />
+          <DayGoals
+            dateContext={this.state.dateContext}
+            goal_ids={this.state.goal_ids}
+            goals={this.state.goals}
+            dayGoalClick={this.toggleShowGoal}
+            theCurrentUserId={this.state.currentUserId}
+            originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
+          />
         </Row>
       </div>
     );
@@ -2694,7 +2691,7 @@ this will close repeat modal.
                 <div>
                   <FontAwesomeIcon
                     // style={{ marginLeft: "50%" }}
-                    style={{ marginLeft:"100px"}}
+                    style={{ marginLeft: "100px" }}
                     icon={faChevronLeft}
                     size="2x"
                     className="X"
@@ -2714,7 +2711,7 @@ this will close repeat modal.
               <Col>
                 <FontAwesomeIcon
                   // style={{ marginLeft: "50%" }}
-                  style={{float: "right", marginRight:"100px"}}
+                  style={{ float: "right", marginRight: "100px" }}
                   icon={faChevronRight}
                   size="2x"
                   className="X"
@@ -2734,16 +2731,16 @@ this will close repeat modal.
             />
           </Row>
           <Row>
-            <WeekGoals 
-            dateContext={this.state.dateContext}
-            goals={this.state.goals} 
+            <WeekGoals
+              dateContext={this.state.dateContext}
+              goals={this.state.goals}
             />
           </Row>
           <Row>
-            <WeekRoutines 
-            routines={this.state.routines}
-            dateContext={this.state.dateContext}
-             />
+            <WeekRoutines
+              routines={this.state.routines}
+              dateContext={this.state.dateContext}
+            />
           </Row>
         </Container>
       </div>
@@ -2894,6 +2891,7 @@ this will close repeat modal.
           style={{ display: "inline-block", margin: "10px", marginBottom: "0" }}
           variant="outline-primary"
           onClick={() => {
+            this.grabFireBaseRoutinesGoalsData();
             this.setState({
               showRoutineGoalModal: !this.state.showRoutineGoalModal,
               showGoalModal: false,
