@@ -295,7 +295,7 @@ export default class AddNewGRItem extends Component {
               temp.id = ref.id;
               temp.available_start_time = this.state.itemToEdit.available_start_time;
               temp.available_end_time = this.state.itemToEdit.available_end_time;
-              temp.is_displayed_today = true;
+              temp.is_displayed_today = this.calculateIsDisplayed(temp);
 
               console.log(
                 "this is the start day before ",
@@ -475,6 +475,77 @@ this will close repeat modal.
     }
   };
 
+  calculateIsDisplayed = (gr) => {
+     console.log(gr);
+     let CurrentDate = new Date(new Date().toLocaleString('en-US', {
+       timeZone: "America/Los_Angeles"
+     }));
+     CurrentDate.setHours(0,0,0,0);
+
+     let startDate = new Date(new Date(gr["start_day_and_time"]).toLocaleString('en-US', {
+       timeZone: "America/Los_Angeles"
+     }));
+     startDate.setHours(0,0,0,0);
+     let isDisplayedTodayCalculated = false;
+     let repeatOccurences = parseInt(gr["repeat_occurences"]);
+     let repeatEvery = parseInt(gr["repeat_every"]);
+     let repeatEnds = gr["repeat_ends"];
+     let repeatEndsOn = new Date(new Date(gr["repeat_ends_on"]).toLocaleString('en-US', {
+       timeZone: "America/Los_Angeles"
+     }));
+     repeatEndsOn.setHours(0,0,0,0);
+     let repeatFrequency = gr["repeat_frequency"];
+     let repeatWeekDays = [];
+     if (gr["repeat_week_days"] != null) {
+       Object.keys(gr["repeat_week_days"])
+       .forEach( k => {
+         if (gr["repeat_week_days"][k] != "") {
+           repeatWeekDays.push(parseInt(k));
+         }
+       });
+     }
+     if (!gr.repeat) {
+       isDisplayedTodayCalculated = CurrentDate.getTime() - startDate.getTime() == 0
+     } else {
+       if (CurrentDate >= startDate) {
+         if (repeatEnds == "On") {
+         } else if (repeatEnds == "After") {
+           if (repeatFrequency == "DAY") {
+             repeatEndsOn = new Date(startDate);
+             repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
+           } else if (repeatFrequency == "WEEK"){
+             repeatEndsOn = new Date(startDate);
+             repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
+           } else if (repeatFrequency == "MONTH"){
+             repeatEndsOn = new Date(startDate);
+             repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
+           } else if (repeatFrequency == "YEAR"){
+             repeatEndsOn = new Date(startDate);
+             repeatEndsOn.setFullYear(startDate.getFullYear() + (repeatOccurences-1)*repeatEvery);
+           }
+         } else if (repeatEnds == "Never") {
+           repeatEndsOn = CurrentDate;
+         }
+
+         if (CurrentDate <= repeatEndsOn) {
+           if (repeatFrequency == "DAY") {
+             isDisplayedTodayCalculated = Math.floor((CurrentDate.getTime() - startDate.getTime())/(24*3600*1000)) % repeatEvery == 0;
+           } else if (repeatFrequency == "WEEK"){
+             isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
+           } else if (repeatFrequency == "MONTH"){
+             isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
+             ((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
+           } else if (repeatFrequency == "YEAR"){
+             isDisplayedTodayCalculated = (startDate.getDate() == CurrentDate.getDate()) &&
+             (CurrentDate.getMonth() == startDate.getMonth()) &&
+             (CurrentDate.getFullYear() - startDate.getFullYear()) % repeatEvery == 0;
+           }
+         }
+       }
+     }
+     return isDisplayedTodayCalculated;
+   };
+
   /*
 saveRepeatChanges:
 this will close repeat modal.
@@ -498,7 +569,7 @@ this will close repeat modal.
     temp.repeat_ends_on = repeatEndDate_temp;
     temp.repeat_occurences = repeatOccurrence_temp;
     temp.repeat_week_days = byDay_temp;
-    temp.is_displayed_today = true;
+    temp.is_displayed_today = this.calculateIsDisplayed(temp);
 
     this.setState((prevState) => ({
       itemToEdit: temp,
