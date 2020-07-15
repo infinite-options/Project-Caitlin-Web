@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import ShowNotifications from "./ShowNotifications";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
 import { firestore, storage } from "firebase";
+
+import DateAndTimePickers from "./DatePicker";
 
 import AddIconModal from "./AddIconModal";
 import UploadImage from "./UploadImage";
@@ -145,7 +147,7 @@ export default class editGR extends Component {
 
   newInputSubmit = () => {
     status = this.newInputVerify();
-    if(status !== "") {
+    if (status !== "") {
       alert(status);
       return;
     }
@@ -209,16 +211,18 @@ export default class editGR extends Component {
 
   newInputVerify = () => {
     if (this.state.itemToEdit.title === "") {
-      return ("No Title");
+      return "No Title";
     }
     let startTime = this.state.itemToEdit.start_day_and_time;
     let endTime = this.state.itemToEdit.end_day_and_time;
-    let timeDiff = endTime-startTime;
+    let timeDiff = endTime - startTime;
     if (timeDiff <= 0) {
-      return ("End time is before start time");
+      return "End time is before start time";
     }
     return "";
-  }
+  };
+
+  /*
 
   startTimePicker = () => {
     let stored_date;
@@ -289,6 +293,8 @@ export default class editGR extends Component {
     );
   };
 
+  */
+
   convertTimeToHRMMSS = (e) => {
     let num = e.target.value;
     let hours = num / 60;
@@ -312,6 +318,17 @@ export default class editGR extends Component {
     return minutes;
   };
 
+  set_day_and_time = (id, dateString) => {
+    console.log("Enter set_day_and_time", dateString, id);
+    let temp = this.state.itemToEdit;
+    if (id === "start_day_and_time") {
+      temp.start_day_and_time = dateString;
+      this.setState({ itemToEdit: temp });
+    } else if (id === "end_day_and_time") {
+      temp.end_day_and_time = dateString;
+      this.setState({ itemToEdit: temp });
+    }
+  };
   handleNotificationChange = (temp) => {
     this.setState({ itemToEdit: temp });
   };
@@ -718,7 +735,6 @@ export default class editGR extends Component {
             }}
           />
         </div>
-
         <Form.Group>
           <Form.Label> Photo </Form.Label>
           <Row>
@@ -738,7 +754,6 @@ export default class editGR extends Component {
             ></img>
           </div>
         </Form.Group>
-
         <Form.Group>
           <Form.Label> Routine/Goal </Form.Label>
           <Form.Control
@@ -756,23 +771,24 @@ export default class editGR extends Component {
           </Form.Control>
         </Form.Group>
 
-        <Form.Group
-          value={this.state.itemToEdit.start_day_and_time || ""}
-          controlId="Y"
-        >
-          <Form.Label>Start Time</Form.Label> <br />
-          {this.startTimePicker()}
-        </Form.Group>
+        <Form.Label>
+          Start Time
+          <DateAndTimePickers
+            day_and_time={this.state.itemToEdit.start_day_and_time}
+            id="start_day_and_time"
+            set_day_and_time={this.set_day_and_time}
+          />
+        </Form.Label>
 
-        <Form.Group
-          value={this.state.itemToEdit.end_day_and_time || ""}
-          controlId="X"
-        >
-          <Form.Label>End Time</Form.Label>
+        <Form.Label>
+          End Time
+          <DateAndTimePickers
+            day_and_time={this.state.itemToEdit.end_day_and_time}
+            id="end_day_and_time"
+            set_day_and_time={this.set_day_and_time}
+          />
           <br />
-          {this.endTimePicker()}
-          <div style={{ color: "red" }}> {this.state.showDateError}</div>
-        </Form.Group>
+        </Form.Label>
 
         <div>
           <label>Repeating Options</label>
@@ -876,28 +892,28 @@ export default class editGR extends Component {
           />
         )}
         <Form.Group>
-        <Button
-          variant="secondary"
-          onClick={(e) => {
-            e.stopPropagation();
-            // this.setState({ showEditModal: false });
-            this.props.closeEditModal();
-          }}
-        >
-          Close
-        </Button>
-        <Button
-          variant="info"
-          onClick={(e) => {
-            e.stopPropagation();
-            this.newInputSubmit();
-          }}
-        >
-          Save changes
-        </Button>
+          <Button
+            variant="secondary"
+            onClick={(e) => {
+              e.stopPropagation();
+              // this.setState({ showEditModal: false });
+              this.props.closeEditModal();
+            }}
+          >
+            Close
+          </Button>
+          <Button
+            variant="info"
+            onClick={(e) => {
+              e.stopPropagation();
+              this.newInputSubmit();
+            }}
+          >
+            Save changes
+          </Button>
         </Form.Group>
       </Row>
-      // </div>
+      //{" "}
     );
   };
 
