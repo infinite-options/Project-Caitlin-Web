@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, DropdownButton, Modal } from "react-bootstrap";
-//import DatePicker from "react-datepicker";
+import DatePicker from "react-datepicker";
 import ShowNotifications from "./ShowNotifications";
 import moment from "moment";
 import { Form, Row, Col } from "react-bootstrap";
