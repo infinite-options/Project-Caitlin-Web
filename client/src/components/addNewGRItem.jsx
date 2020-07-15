@@ -14,6 +14,7 @@ import UploadImage from "./UploadImage";
 export default class AddNewGRItem extends Component {
   constructor(props) {
     super(props);
+    /////
 
     if (this.state.itemToEdit.photo === "") {
       if (this.props.isRoutine) {
