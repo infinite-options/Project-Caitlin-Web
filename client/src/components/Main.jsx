@@ -145,46 +145,35 @@ export default class MainPage extends React.Component {
    */
   grabFireBaseRoutinesGoalsData = () => {
     const db = firebase.firestore();
-    // console.log("this is the current userid", this.state.currentUserId);
     if (this.state.currentUserId !== "") {
-      //  const docRef = db.collection("users").doc("7R6hAVmDrNutRkG3sVRy");
       const docRef = db.collection("users").doc(this.state.currentUserId);
-      // console.log("this is suppose tto be the path", docRef);
       docRef
       .get()
       .then((doc) => {
         if (doc.exists) {
-          // console.log(doc.data());
-          var x = doc.data();
-          // console.log("this is the data", x);
-          // console.log(x["goals&routines"]);
-          // x = x["goals&routines"];
           
+          var x = doc.data();    
           let routine = [];
           let routine_ids = [];
           let goal = [];
           let goal_ids = [];
           if (x["goals&routines"] !== undefined) {
             x = x["goals&routines"];
-            // console.log("this is the goals and routines", x);
             x.sort((a,b) => {
               let timeA = new Date(a["start_day_and_time"]);
               let timeB = new Date(b["start_day_and_time"]);
               return timeA.getTime() - timeB.getTime();
             });
-            // console.log("sorted goals and routines", x);
             for (let i = 0; i < x.length; ++i) {
               if (x[i]["is_persistent"]) {
-                // console.log("routine " + x[i]["title"]);
-                // console.log("is the is the id ", x[i].id);
                 routine_ids.push(i);
                 routine.push(x[i]);
               } else if (!x[i]["is_persistent"]) {
-                // console.log("not routine " + x[i]["title"]);
                 goal_ids.push(i);
                 goal.push(x[i]);
               }
             }
+
             this.setState({
               originalGoalsAndRoutineArr: x,
               goals: goal,
@@ -210,8 +199,24 @@ export default class MainPage extends React.Component {
       })
       .catch(function (error) {
         console.log("Error getting document:", error);
-      });
+      }); 
+     
     }
+ 
+    const docRef2 = firebase.firestore().collection("users").doc(this.state.currentUserId).collection("goals&routines");
+    docRef2.get()
+    .then((doc2) => {
+      if (doc2.exists) {
+        console.log("it went here and this is the doc ", doc2.data());
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+   
+    } ).catch(function (error) {
+      console.log("Error getting document:", error);
+    }); 
+  
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -2249,6 +2254,9 @@ this will close repeat modal.
       return this.eventFormAbstracted();
     } else if (this.state.showAboutModal) {
       return (
+        //  style={(onlyCal || (this.state.currentUserId === "")) ? { marginLeft: "22%" } : { marginLeft: "35px" }}
+        this.state.currentUserId === "" ? <div></div>
+        :  
         <AboutModal
           CameBackFalse={this.hideAboutForm}
           updateProfilePic={this.updatePic}
@@ -2557,7 +2565,7 @@ this will close repeat modal.
                 md="auto"
                 lg="auto"
                 // style={onlyCal ? { marginLeft: "20%" } : { marginLeft: "35px" }}
-                style={onlyCal ? { marginLeft: "22%" } : { marginLeft: "35px" }}
+                style={(onlyCal || (this.state.currentUserId === "")) ? { marginLeft: "22%" } : { marginLeft: "35px" }}
               >
                 {this.showCalendarView()}
                 <div>V1.3</div>
