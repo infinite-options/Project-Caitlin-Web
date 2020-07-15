@@ -1,0 +1,5 @@
+#!/bin/sh
+# To enable this hook, rename this file to "pre-commit".
+
+echo "increase the version number"
+node increaseVersionNumber.js
