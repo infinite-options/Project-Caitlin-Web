@@ -329,6 +329,13 @@ export default class FirebaseV2 extends React.Component {
             singleGR: singleGR,
             singleATitemArr: x,
           });
+          /*
+          x.sort((a, b) => {
+            let timeA = moment(a["available_start_time"], "HH:mm:ss");
+            let timeB = moment(b["available_start_time"], "HH:mm:ss");
+            return timeA.diff(timeB);
+          });
+          */
 
           let resArr = this.createListofAT(x);
           //assemble singleGR template here:
@@ -358,6 +365,11 @@ export default class FirebaseV2 extends React.Component {
   //Creates a array of all actions/task for get getATList function
   //getATList stands for get all action/task
   createListofAT = (A) => {
+    A.sort((a, b) => {
+      let timeA = moment(a["available_start_time"], "HH:mm:ss");
+      let timeB = moment(b["available_start_time"], "HH:mm:ss");
+      return timeA.diff(timeB);
+    });
     let res = [];
     for (let i = 0; i < A.length; i++) {
       // console.log(A[i]["title"]);
@@ -558,7 +570,13 @@ export default class FirebaseV2 extends React.Component {
    * takes the list of steps/instructions and returns
    * it in the form of a ListGroup for presentation
    */
+
   createListofIS = (A) => {
+    A.sort((a, b) => {
+      let timeA = moment(a["available_start_time"], "HH:mm:ss");
+      let timeB = moment(b["available_start_time"], "HH:mm:ss");
+      return timeA.diff(timeB);
+    });
     let res = [];
     for (let i = 0; i < A.length; i++) {
       // console.log(A[i]["title"]);
