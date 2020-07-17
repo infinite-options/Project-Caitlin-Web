@@ -38,7 +38,7 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false,
 	cookie: {
-		maxAge: 3600000
+		maxAge: 86400000
 	}
 }));
 
@@ -48,7 +48,7 @@ var firebase = require( 'firebase' );
 var firebaseConfig;
 var FAVICON_URL;
 
-if (hostname == "manifestmylife") {
+if (true || hostname == "manifestmylife") {
 	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem';
 	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem';
 	REDIRECTED_ADD_USER_URI = 'https://manifestmy.life/adduser';
@@ -225,9 +225,9 @@ app.get( '/.well-known/pki-validation/6B573F01F1E6DAF81B7FD85EECA9946B.txt', ( r
 
 app.get( '/isdisplayedugh', ( req, res ) => {
 	let CurrentDate = new Date(new Date().toLocaleString('en-US', {
-    timeZone: "America/Los_Angeles"
-  }));
-  CurrentDate.setHours(0,0,0,0);
+		timeZone: "America/Los_Angeles"
+	}));
+	CurrentDate.setHours(0,0,0,0);
 	let db = firebase.firestore();
 	let grs = [];
 	db.collection("users").get()
@@ -267,24 +267,16 @@ app.get( '/isdisplayedugh', ( req, res ) => {
 							if (repeatEnds == "On") {
 							} else if (repeatEnds == "After") {
 								if (repeatFrequency == "DAY") {
-									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
-										timeZone: "America/Los_Angeles"
-									}));
+									repeatEndsOn = new Date(startDate);
 									repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
 								} else if (repeatFrequency == "WEEK"){
-									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
-										timeZone: "America/Los_Angeles"
-									}));
+									repeatEndsOn = new Date(startDate);
 									repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
 								} else if (repeatFrequency == "MONTH"){
-									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
-										timeZone: "America/Los_Angeles"
-									}));
+									repeatEndsOn = new Date(startDate);
 									repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
 								} else if (repeatFrequency == "YEAR"){
-									repeatEndsOn = new Date(new Date(startDate).toLocaleString('en-US', {
-										timeZone: "America/Los_Angeles"
-									}));
+									repeatEndsOn = new Date(startDate);
 									repeatEndsOn.setFullYear(startDate.getFullYear() + (repeatOccurences-1)*repeatEvery);
 								}
 							} else if (repeatEnds == "Never") {
@@ -328,6 +320,56 @@ app.get( '/isdisplayedugh', ( req, res ) => {
 		res.json(grs);
 	});
 });
+
+app.get( '/ishistoryugh', ( req, res ) => {
+	var date = new Date(new Date().toLocaleString('en-US', {
+		timeZone: "America/Los_Angeles"
+	}));
+	// log for previous day
+	date.setDate(date.getDate()-1);
+	let date_string = date.getFullYear() + "_" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '_' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()));
+	let users = [];
+	let db = firebase.firestore();
+	db.collection("users").get()
+	.then((snapshot) =>
+	{
+		snapshot.forEach(doc => {
+			var data = doc.data()['goals&routines']
+			if (data != null) {
+				let usr =
+				{"email_id": doc.data().email_id, "goals&routines": [], user_id: doc.id}
+				data.forEach(gr => {
+					usr["goals&routines"].push(
+						{
+							id: gr['id'],
+							title: gr['title'],
+							is_complete: gr['is_complete']
+						}
+					)
+				});
+				users.push(usr)
+			}
+		});
+		users.forEach( usr => {
+			let docRef = db.collection("history").doc(usr.user_id);
+			let logRef = docRef.collection("goals&routines").doc(date_string);
+			docRef.set(
+				{
+					email_id: usr.email_id
+				}
+			)
+			logRef.set(
+				{
+					date: date_string,
+					log: usr["goals&routines"]
+				}
+			)
+		});
+		res.json("Success");
+	});
+});
+
+
 
 //Landing Page
 /*
