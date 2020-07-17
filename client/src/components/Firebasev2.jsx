@@ -402,7 +402,16 @@ export default class FirebaseV2 extends React.Component {
               className="d-flex flex-row-center"
             >
               <Col>
-                <div className="fancytext">{tempTitle}</div>
+                <h6
+                  style={{
+                    textAlign: "center",
+                    color: "black",
+                    //fontFamily: "Arial, Helvetica, sans-serif",
+                  }}
+                >
+                  {" "}
+                  {tempTitle}
+                </h6>
               </Col>
             </Row>
 
@@ -607,7 +616,16 @@ export default class FirebaseV2 extends React.Component {
               className="d-flex flex-row-center"
             >
               <Col>
-                <div className="fancytext">{tempTitle}</div>
+                <h6
+                  style={{
+                    textAlign: "center",
+                    color: "black",
+                    //fontFamily: "Arial, Helvetica, sans-serif",
+                  }}
+                >
+                  {" "}
+                  {tempTitle}
+                </h6>
               </Col>
             </Row>
             {tempPhoto ? (
@@ -929,9 +947,16 @@ export default class FirebaseV2 extends React.Component {
                 className="d-flex flex-row-center"
               >
                 <Col>
-                  <div className="fancytext">
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      color: "black",
+                      //fontFamily: "Arial, Helvetica, sans-serif",
+                    }}
+                  >
+                    {" "}
                     {this.props.routines[i]["title"]}
-                  </div>
+                  </h6>
                 </Col>
               </Row>
 
@@ -1304,7 +1329,15 @@ export default class FirebaseV2 extends React.Component {
                 className="d-flex flex-row-center"
               >
                 <Col>
-                  <div className="fancytext">{tempTitle}</div>
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      color: "black",
+                      //fontFamily: "Arial, Helvetica, sans-serif",
+                    }}
+                  >
+                    {tempTitle}
+                  </h6>
                 </Col>
               </Row>
               {this.props.goals[i]["photo"] ? (
@@ -1617,7 +1650,15 @@ export default class FirebaseV2 extends React.Component {
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
-                  <div className="fancytext"> {tempTitle}</div>
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      color: "black",
+                      //fontFamily: "Arial, Helvetica, sans-serif",
+                    }}
+                  >
+                    {tempTitle}
+                  </h6>
                 </Col>
               </Row>
               <Row
@@ -1703,7 +1744,15 @@ export default class FirebaseV2 extends React.Component {
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
-                  <div className="fancytext"> {tempTitle}</div>
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      color: "black",
+                      //fontFamily: "Arial, Helvetica, sans-serif",
+                    }}
+                  >
+                    {tempTitle}
+                  </h6>
                 </Col>
               </Row>
               <Row
@@ -2229,9 +2278,7 @@ shows entire list of goals and routines
             className="d-flex justify-content-between"
             style={{ width: "350px" }}
           >
-            <div>
-              <h5 className="normalfancytext">{this.state.singleGR.title}</h5>{" "}
-            </div>
+            <div>{this.state.singleGR.title}</div>
             <div>
               <button
                 type="button"
