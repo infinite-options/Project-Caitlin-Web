@@ -251,7 +251,7 @@ export default class FirebaseV2 extends React.Component {
     this.props.grabFireBaseRoutinesGoalsData();
   };
 
-  formatDateTime(str) {
+  formatDateTimeForGR(str) {
     //const formattedStr = str.replace(/\//g, "-");
     let newTime = new Date(str).toLocaleTimeString();
     newTime = newTime.substring(0, 5) + " " + newTime.slice(-2);
@@ -261,6 +261,15 @@ export default class FirebaseV2 extends React.Component {
     const time = moment(formattedStr);
     return time.format("YYYY MMM DD HH:mm");
     */
+  }
+
+  formatDateTimeForATIS(str) {
+    let time = moment(str, "HHmmss").format("hh:mm A").toString();
+    if (time[0] === "0") {
+      time = time.substring(1);
+    }
+
+    return time;
   }
 
   // onInputChange = (e) => {
@@ -361,6 +370,10 @@ export default class FirebaseV2 extends React.Component {
       // console.log(tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+      const tempStartTime = A[i]["available_start_time"];
+      const tempEndTime = A[i]["available_end_time"];
+      //console.log("From list of AT: ", tempStartTime);
+      //console.log("From list of AT: ", tempEndTime);
 
       res.push(
         <div key={"AT" + i}>
@@ -382,89 +395,101 @@ export default class FirebaseV2 extends React.Component {
             </Row>
 
             {tempPhoto ? (
-              <Row>
-                <Col
-                  xs={7}
-                  // sm="auto"
-                  // md="auto"
-                  // lg="auto"
-                  style={{ paddingRight: "0px" }}
-                >
-                  <img
-                    src={tempPhoto}
-                    alt="Action/Task"
-                    // height={this.state.thumbnailHeight}
-                    // width={this.state.thumbnailWidth}
-                    className="center"
-                    height="80px"
-                    width="auto"
-                  />
-                </Col>
-                <Col style={{ paddingLeft: "0px" }}>
-                  <Row style={{ marginTop: "10px" }}>
-                    {tempAvailable ? (
-                      <div style={{ marginLeft: "5px" }}>
-                        <FontAwesomeIcon
-                          title="Available to Cailin"
-                          style={{ color: this.state.availabilityColorCode }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert("Item Is Availble to the user");
-                          }}
-                          icon={faUser}
-                          size="lg"
-                        />{" "}
-                      </div>
-                    ) : (
-                      <div>
-                        <FontAwesomeIcon
-                          title="Unavailable to the user"
-                          style={{ color: "#000000" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert("Item Is NOT Availble to the user");
-                          }}
-                          icon={faUserAltSlash}
-                          size="lg"
-                        />
-                      </div>
-                    )}
-                    {/* Index={this.findIndexByID(tempID)}
+              <div>
+                <Row>
+                  <Col
+                    xs={7}
+                    // sm="auto"
+                    // md="auto"
+                    // lg="auto"
+                    style={{ paddingRight: "0px" }}
+                  >
+                    <img
+                      src={tempPhoto}
+                      alt="Action/Task"
+                      // height={this.state.thumbnailHeight}
+                      // width={this.state.thumbnailWidth}
+                      className="center"
+                      height="80px"
+                      width="auto"
+                    />
+                  </Col>
+                  <Col style={{ paddingLeft: "0px" }}>
+                    <Row style={{ marginTop: "10px" }}>
+                      {tempAvailable ? (
+                        <div style={{ marginLeft: "5px" }}>
+                          <FontAwesomeIcon
+                            title="Available to Cailin"
+                            style={{ color: this.state.availabilityColorCode }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is Availble to the user");
+                            }}
+                            icon={faUser}
+                            size="lg"
+                          />{" "}
+                        </div>
+                      ) : (
+                        <div>
+                          <FontAwesomeIcon
+                            title="Unavailable to the user"
+                            style={{ color: "#000000" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is NOT Availble to the user");
+                            }}
+                            icon={faUserAltSlash}
+                            size="lg"
+                          />
+                        </div>
+                      )}
+                      {/* Index={this.findIndexByID(tempID)}
                     Array={this.state.originalGoalsAndRoutineArr}
                     Path={this.state.firebaseRootPath} */}
-                    <ShowISList
-                      Index={i}
-                      Array={this.state.singleATitemArr}
-                      Path={this.state.singleGR.fbPath}
-                    />
+                      <ShowISList
+                        Index={i}
+                        Array={this.state.singleATitemArr}
+                        Path={this.state.singleGR.fbPath}
+                      />
 
-                    <MustDoAT
-                      Index={i}
-                      Array={this.state.singleATitemArr}
-                      SingleAT={this.state.singleATitemArr[i]}
-                      Path={this.state.singleGR.fbPath}
-                    />
-                  </Row>
+                      <MustDoAT
+                        Index={i}
+                        Array={this.state.singleATitemArr}
+                        SingleAT={this.state.singleATitemArr[i]}
+                        Path={this.state.singleGR.fbPath}
+                      />
+                    </Row>
 
-                  <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
-                    <DeleteAT
-                      deleteIndex={i}
-                      type={"actions&tasks"}
-                      Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                      Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
-                      refresh={this.refreshATItem}
-                    />
-                    <EditAT
-                      marginLeftV="-170px"
-                      i={i} //index to edit
-                      timeSlot={this.state.timeSlotForAT}
-                      ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
-                      FBPath={this.state.singleGR.fbPath} //holds the path to the array data
-                      refresh={this.refreshATItem} //function to refresh AT data
-                    />
-                  </Row>
-                </Col>
-              </Row>
+                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                      <DeleteAT
+                        deleteIndex={i}
+                        type={"actions&tasks"}
+                        Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                        Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.refreshATItem}
+                      />
+                      <EditAT
+                        marginLeftV="-170px"
+                        i={i} //index to edit
+                        timeSlot={this.state.timeSlotForAT}
+                        ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
+                        FBPath={this.state.singleGR.fbPath} //holds the path to the array data
+                        refresh={this.refreshATItem} //function to refresh AT data
+                      />
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  {" "}
+                  Start Time:{"   "}
+                  {this.formatDateTimeForATIS(tempStartTime)}
+                </Row>
+                <Row>
+                  {" "}
+                  End Time: {"    "}
+                  {this.formatDateTimeForATIS(tempEndTime)}
+                </Row>
+              </div>
             ) : (
               <div>
                 <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -547,6 +572,8 @@ export default class FirebaseV2 extends React.Component {
       // console.log("IS index " + i + " photo url :" + tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
+      const tempStartTime = A[i]["available_start_time"];
+      const tempEndTime = A[i]["available_end_time"];
       res.push(
         <div key={"IS" + i} style={{ width: "100%" }}>
           <ListGroup.Item
@@ -566,66 +593,78 @@ export default class FirebaseV2 extends React.Component {
               </Col>
             </Row>
             {tempPhoto ? (
-              <Row>
-                <Col xs={7} style={{ paddingRight: "0px" }}>
-                  <img
-                    src={tempPhoto}
-                    alt="Action/Task"
-                    className="center"
-                    height="80px"
-                    width="auto"
-                  />
-                </Col>
-                <Col style={{ paddingLeft: "0px" }}>
-                  <Row style={{ marginTop: "10px" }}>
-                    {tempAvailable ? (
-                      <div style={{ marginLeft: "5px" }}>
-                        <FontAwesomeIcon
-                          title="Available to Cailin"
-                          style={{ color: this.state.availabilityColorCode }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert("Item Is Availble to the user");
-                          }}
-                          icon={faUser}
-                          size="lg"
-                        />{" "}
-                      </div>
-                    ) : (
-                      <div>
-                        <FontAwesomeIcon
-                          title="Unavailable to the user"
-                          style={{ color: "#000000" }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert("Item Is NOT Availble to the user");
-                          }}
-                          icon={faUserAltSlash}
-                          size="lg"
-                        />
-                      </div>
-                    )}
-                    {/* <ShowATList /> */}
-                  </Row>
-                  <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
-                    <DeleteISItem
-                      deleteIndex={i}
-                      ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
-                      ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
-                      refresh={this.refreshISItem}
+              <div>
+                <Row>
+                  <Col xs={7} style={{ paddingRight: "0px" }}>
+                    <img
+                      src={tempPhoto}
+                      alt="Action/Task"
+                      className="center"
+                      height="80px"
+                      width="auto"
                     />
+                  </Col>
+                  <Col style={{ paddingLeft: "0px" }}>
+                    <Row style={{ marginTop: "10px" }}>
+                      {tempAvailable ? (
+                        <div style={{ marginLeft: "5px" }}>
+                          <FontAwesomeIcon
+                            title="Available to Cailin"
+                            style={{ color: this.state.availabilityColorCode }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is Availble to the user");
+                            }}
+                            icon={faUser}
+                            size="lg"
+                          />{" "}
+                        </div>
+                      ) : (
+                        <div>
+                          <FontAwesomeIcon
+                            title="Unavailable to the user"
+                            style={{ color: "#000000" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              alert("Item Is NOT Availble to the user");
+                            }}
+                            icon={faUserAltSlash}
+                            size="lg"
+                          />
+                        </div>
+                      )}
+                      {/* <ShowATList /> */}
+                    </Row>
+                    <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
+                      <DeleteISItem
+                        deleteIndex={i}
+                        ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                        ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
+                        refresh={this.refreshISItem}
+                      />
 
-                    <EditIS
-                      marginLeftV="-170px"
-                      timeSlot={this.state.timeSlotForAT}
-                      i={i} //index to edit
-                      ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
-                      FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
-                      refresh={this.refreshISItem} //function to refresh IS data
-                    />
-                  </Row>
-                </Col>
-              </Row>
+                      <EditIS
+                        marginLeftV="-170px"
+                        timeSlot={this.state.timeSlotForAT}
+                        i={i} //index to edit
+                        ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
+                        FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
+                        refresh={this.refreshISItem} //function to refresh IS data
+                      />
+                    </Row>
+                  </Col>
+                </Row>
+                <Row>
+                  {" "}
+                  Start Time:{"   "}
+                  {this.formatDateTimeForATIS(tempStartTime)}
+                </Row>
+                <Row>
+                  {" "}
+                  End Time: {"    "}
+                  {this.formatDateTimeForATIS(tempEndTime)}
+                </Row>
+              </div>
             ) : (
               <div>
                 <Row style={{ marginLeft: "100px" }} className="d-flex ">
@@ -1077,7 +1116,7 @@ export default class FirebaseV2 extends React.Component {
                   {this.props.routines[i]["start_day_and_time"] ? (
                     <div style={{ marginTop: "3px" }}>
                       {"Start Time: " +
-                        this.formatDateTime(
+                        this.formatDateTimeForGR(
                           this.props.routines[i]["start_day_and_time"]
                         )}
                     </div>
@@ -1087,7 +1126,7 @@ export default class FirebaseV2 extends React.Component {
                   {this.props.routines[i]["end_day_and_time"] ? (
                     <div>
                       {"End Time: " +
-                        this.formatDateTime(
+                        this.formatDateTimeForGR(
                           this.props.routines[i]["end_day_and_time"]
                         )}
                     </div>
@@ -1448,7 +1487,7 @@ export default class FirebaseV2 extends React.Component {
                 {this.props.goals[i]["start_day_and_time"] ? (
                   <div style={{ marginTop: "3px" }}>
                     {"Start Time: " +
-                      this.formatDateTime(
+                      this.formatDateTimeForGR(
                         this.props.goals[i]["start_day_and_time"]
                       )}
                   </div>
@@ -1459,7 +1498,7 @@ export default class FirebaseV2 extends React.Component {
                 {this.props.goals[i]["end_day_and_time"] ? (
                   <div>
                     {"End Time: " +
-                      this.formatDateTime(
+                      this.formatDateTimeForGR(
                         this.props.goals[i]["end_day_and_time"]
                       )}{" "}
                   </div>
