@@ -210,24 +210,24 @@ export default class MainPage extends React.Component {
         });
     }
 
-    const docRef2 = firebase
-      .firestore()
-      .collection("users")
-      .doc(this.state.currentUserId)
-      .collection("goals&routines");
-    docRef2
-      .get()
-      .then((doc2) => {
-        if (doc2.exists) {
-          console.log("it went here and this is the doc ", doc2.data());
-        } else {
-          // doc.data() will be undefined in this case
-          console.log("No such document!");
-        }
-      })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-      });
+    // const docRef2 = firebase
+    //   .firestore()
+    //   .collection("users")
+    //   .doc(this.state.currentUserId)
+    //   .collection("goals&routines");
+    // docRef2
+    //   .get()
+    //   .then((doc2) => {
+    //     if (doc2.exists) {
+    //       console.log("it went here and this is the doc ", doc2.data());
+    //     } else {
+    //       // doc.data() will be undefined in this case
+    //       console.log("No such document!");
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error getting document:", error);
+    //   });
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -963,7 +963,7 @@ the current month's events
   };
 
   /*
-handleEventClick For Month View.  
+handleEventClick For Month View.
 when a event on the calendar is clicked, the function below
 will execute and save the clicked event varibles to this.state and
 passed that into the form where the user can edit that data
