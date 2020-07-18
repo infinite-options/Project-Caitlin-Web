@@ -48,7 +48,7 @@ var firebase = require( 'firebase' );
 var firebaseConfig;
 var FAVICON_URL;
 
-if (true || hostname == "manifestmylife") {
+if ( hostname == "manifestmylife") {
 	var key_url = '/etc/letsencrypt/live/manifestmy.life/privkey.pem';
 	var cert_url = '/etc/letsencrypt/live/manifestmy.life/fullchain.pem';
 	REDIRECTED_ADD_USER_URI = 'https://manifestmy.life/adduser';
