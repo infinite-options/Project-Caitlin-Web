@@ -23,21 +23,21 @@ export default class showHistory extends Component {
   };
 
   render() {
-    console.log(this.props.displayGoals);
+    console.log(this.props.historyItems);
     return (
       <Modal.Dialog style={{ margin: "0",
       width: "340px" }}>
         <Modal.Header closeButton onHide={this.props.closeModal}>
           <Modal.Title>
             <h5 className="normalfancytext">
-                History
+                {this.props.displayTitle}
             </h5>{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
         <ListGroup>
           <div style={{ height: "650px", overflow: "scroll" }}>
-            {this.props.displayGoals}
+            {this.props.historyItems}
           </div>
           {/* Button to add new Goal */}
         </ListGroup>
