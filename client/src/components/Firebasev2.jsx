@@ -1652,6 +1652,7 @@ export default class FirebaseV2 extends React.Component {
       db.collection("users")
       .doc(this.props.theCurrentUserID)
       .update({ "goals&routines": arrs });
+      this.setState({});
       alert("Item is reset")
     });
   }
