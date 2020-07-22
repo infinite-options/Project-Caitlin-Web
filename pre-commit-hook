@@ -3,3 +3,4 @@
 
 echo "increase the version number"
 node increaseVersionNumber.js
+git add client/public/build_number.txt

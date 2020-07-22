@@ -100,6 +100,7 @@ export default class FirebaseV2 extends React.Component {
       addNewGRModalShow: false,
       historyViewShow: false,
       historyViewShowObject: null,
+      historyItems: [],
       addNewATModalShow: false,
       addNewISModalShow: false,
 
@@ -1608,6 +1609,7 @@ export default class FirebaseV2 extends React.Component {
               style={{ width: "100%", marginBottom: "3px" }}
               onClick={(e) => {
                 e.stopPropagation();
+                this.getHistoryData(this.props.goals[i]);
                 this.setState({ historyViewShow: true, historyViewShowObject: this.props.goals[i], isRoutine: false });
               }}
             >
@@ -1698,6 +1700,7 @@ export default class FirebaseV2 extends React.Component {
       db.collection("users")
       .doc(this.props.theCurrentUserID)
       .update({ "goals&routines": arrs });
+      this.setState({});
       alert("Item is reset")
     });
   }
@@ -1727,6 +1730,7 @@ export default class FirebaseV2 extends React.Component {
               style={{ marginBottom: "3px" }}
               onClick={(e) => {
                 e.stopPropagation();
+                this.getHistoryData(this.props.routines[i]);
                 this.setState({ historyViewShow: true, historyViewShowObject: this.props.routines[i], isRoutine: true });
               }}
             >
@@ -2073,6 +2077,19 @@ shows entire list of goals and routines
   };
 
   historyModel = (object) => {
+      return (
+        <ShowHistory
+        closeModal={() => {
+          this.setState({ historyItems: [], historyViewShow: false });
+        }}
+        historyItems={this.state.historyItems}
+        displayTitle={object.title}
+        />
+      );
+  };
+
+  getHistoryData = (object) => {
+    let historyItems = [];
     const db = firebase.firestore();
     db.collection("history")
     .doc(this.props.theCurrentUserID)
@@ -2083,22 +2100,78 @@ shows entire list of goals and routines
         snapshot.forEach(log => {
           log.data().log.forEach(gr => {
             if (gr.id == object.id) {
+              gr.date = log.data().date;
               logs.push(gr);
             }
           })
-        })
-      }
-    );
-
-    return (
-      <ShowHistory
-      closeModal={() => {
-        this.setState({ historyViewShow: false });
-      }}
-      displayGoals={this.props.theCurrentUserID+object.id}
-      />
-    );
-  };
+        });
+        for (let i = 0; i < logs.length; i++) {
+          let tempTitle =  logs[i]["date"] + "   -   " + logs[i]["title"];
+          let isComplete = logs[i]["is_complete"];
+          let isInProgress = logs[i]["is_in_progress"];
+          historyItems.push(
+            <div key={"goalStatus" + i}>
+              <ListGroup.Item
+                action
+                variant="light"
+                style={{ width: "100%", marginBottom: "3px" }}
+              >
+                <Row style={{ margin: "0" }} className="d-flex flex-row-center">
+                  <Col style={{ textAlign: "center", width: "100%" }}>
+                    <div className="fancytext">{tempTitle}</div>
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    margin: "0",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {isComplete ? (
+                    <div>
+                      <FontAwesomeIcon
+                        title="Completed Item"
+                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                        style={{ color: this.state.availabilityColorCode }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert("Item Is Completed");
+                        }}
+                        icon={faTrophy}
+                        size="lg"
+                      />{" "}
+                    </div>
+                  ) : (
+                    <div>
+                      <FontAwesomeIcon
+                        title="Not Completed Item"
+                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
+                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
+                        style={{
+                          color: isInProgress
+                            ? this.state.availabilityColorCode
+                            : "black",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert("Item Is Not Completed");
+                        }}
+                        icon={faRunning}
+                        size="lg"
+                      />
+                    </div>
+                  )}
+                </Row>
+              </ListGroup.Item>
+            </div>
+          );
+        }
+        this.setState({ historyItems: historyItems });
+      });
+  }
 
   /*
     abstractedInstructionsAndStepsList:
