@@ -34,6 +34,7 @@ export default class editIS extends Component {
   };
 
   newInputSubmit = () => {
+    
     let newArr = this.props.ISArray;
 
     if (this.state.itemToEdit.title === "") {
@@ -65,6 +66,8 @@ export default class editIS extends Component {
       newArr[this.props.i]["audio"] = "";
     }
     this.props.FBPath.update({ "instructions&steps": newArr }).then((doc) => {
+      console.log("this is the path ", this.props.FBPath.path.split('/')[3]);
+      this.props.updateWentThroughATListObjIS(this.props.FBPath.path.split('/')[3]);
       if (this.props != null) {
         // console.log("refreshing FireBasev2 from updating ISItem");
         this.setState({ showEditModal: false });

@@ -82,6 +82,7 @@ export default class AddNewATItem extends Component {
   componentDidMount() {}
 
   newInputSubmit = () => {
+   
     if (this.state.itemToEdit.title === "") {
       alert("Missing title");
       return;
@@ -143,6 +144,7 @@ export default class AddNewATItem extends Component {
   };
 
   addNewDoc = () => {
+    
     this.props.ATItem.fbPath
       .get()
       .then((doc) => {
@@ -189,6 +191,8 @@ export default class AddNewATItem extends Component {
   updateEntireArray = (newArr) => {
     // 2. update adds to the document
     this.props.ATItem.fbPath.update({ "actions&tasks": newArr }).then((doc) => {
+      console.log(this.props.ATItem.fbPath.path.split('/')[3]);
+      this.props.updateNewWentThroughATListObj(this.props.ATItem.fbPath.path.split('/')[3]);
       console.log("updateEntireArray Finished");
       console.log(doc);
       if (this.props != null) {

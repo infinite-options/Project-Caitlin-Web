@@ -20,7 +20,6 @@ import UploadImage from "./UploadImage";
 export default class AddNewISItem extends Component {
   constructor(props) {
     super(props);
-    console.log("AddNewISItem constructor");
   }
 
   state = {
@@ -160,7 +159,7 @@ export default class AddNewISItem extends Component {
       return;
     }
 
-    console.log("Submitting Input: " + this.state.itemToEdit.title);
+    // console.log("Submitting Input: " + this.state.itemToEdit.title);
 
     this.props.ISItem.fbPath
       .get()
@@ -195,14 +194,16 @@ export default class AddNewISItem extends Component {
     this.props.ISItem.fbPath
       .update({ "instructions&steps": newArr })
       .then((doc) => {
-        console.log("updateEntireArray Finished");
-        console.log(doc);
+        // console.log(this.props.ISItem.fbPath.path.split('/')[3]);
+        this.props.updateNewWentThroughATListObjIS(this.props.ISItem.fbPath.path.split('/')[3]);
+        // console.log("updateEntireArray Finished");
+        // console.log(doc);
         if (this.props != null) {
           this.props.hideNewISModal();
-          console.log("refreshing FireBasev2 from ISItem");
+          // console.log("refreshing FireBasev2 from ISItem");
           this.props.refresh(newArr);
         } else {
-          console.log("removing newly added item due to failure");
+          // console.log("removing newly added item due to failure");
           this.props.ISArray.pop();
         }
       });
