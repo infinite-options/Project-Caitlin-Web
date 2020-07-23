@@ -1625,6 +1625,13 @@ calls the backend API to delete a item with a particular eventID
       });
   };
 
+
+  LocalDateToISOString = (date, timeZone) => {
+    let a = date.getTime()
+    let b = new Date(date.toLocaleString("en-US", {timeZone: this.state.currentUserTimeZone})).getTime();
+    return new Date(a - (b - a));
+  }
+
   /*
 createEvent:
 Basically creates a new event based on details given
@@ -1667,6 +1674,11 @@ Basically creates a new event based on details given
       minutesNotification = this.state.newEventNotification;
     }
 
+    let startDateTime = this.LocalDateToISOString(this.state.newEventStart0, this.state.currentUserTimeZone).toISOString();
+    let endDateTime = this.LocalDateToISOString(this.state.newEventEnd0, this.state.currentUserTimeZone).toISOString();
+
+    console.log(startDateTime);
+    console.log(endDateTime);
     console.log("Events are created in timezone: " +this.state.currentUserTimeZone);
 
     let event = {
@@ -1684,11 +1696,11 @@ Basically creates a new event based on details given
         ],
       },
       start: {
-        dateTime: this.state.newEventStart0.toISOString(),
+        dateTime: startDateTime,
         timeZone: this.state.currentUserTimeZone,
       },
       end: {
-        dateTime: this.state.newEventEnd0.toISOString(),
+        dateTime: endDateTime,
         timeZone: this.state.currentUserTimeZone,
       },
       recurrence: this.state.repeatOption && this.defineRecurrence(),
@@ -1699,8 +1711,8 @@ Basically creates a new event based on details given
         newEvent: event,
         reminderTime: minutesNotification,
         title: newTitle,
-        start: this.state.newEventStart0.toISOString(),
-        end: this.state.newEventEnd0.toISOString(),
+        start: startDateTime,
+        end: endDateTime,
         username: this.state.currentUserName,
         id: this.state.currentUserId,
       })
@@ -4137,6 +4149,7 @@ this will close repeat modal.
         type="text"
         selected={this.state.newEventStart0}
         onChange={(date) => {
+          console.log("miaomiao");
           this.setState(
             {
               newEventStart0: date,
