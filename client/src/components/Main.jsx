@@ -1667,7 +1667,7 @@ Basically creates a new event based on details given
       minutesNotification = this.state.newEventNotification;
     }
 
-    console.log();
+    console.log("Events are created in timezone: " +this.state.currentUserTimeZone);
 
     let event = {
       summary: this.state.newEventName,
@@ -2399,6 +2399,7 @@ this will close repeat modal.
                             <Dropdown.Item
                               key={keyName}
                               onClick={(e) => {
+                                console.log(this.state.userTimeZone, keyName, this.state.userTimeZone[keyName]);
                                 this.changeUser(
                                   keyName,
                                   keyIndex,
