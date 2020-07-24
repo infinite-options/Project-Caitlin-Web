@@ -1061,11 +1061,11 @@ export default class FirebaseV2 extends React.Component {
                 <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
                   {this.showRoutineRepeatStatus(i)}
                 </Col>
-               
+
 
                 <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
                   {this.thisTakesMeGivenVsSelected(i,tempID )}
-                </Col> 
+                </Col>
               </Row>
 
             </ListGroup.Item>
@@ -1078,7 +1078,7 @@ export default class FirebaseV2 extends React.Component {
 
 
 
-  
+
 
   getATexpectedTime(id) {
     let ActionTaskArrayPath = firebase
@@ -1098,7 +1098,7 @@ export default class FirebaseV2 extends React.Component {
           let ATtimeCombines = 0;
           var x = doc.data()["actions&tasks"];
           if (x.length === 0) {
-            
+
             ATExpTimeObj[id] =  "0";
             ATGrabFromFB[id] = true;
             this.setState({
@@ -1107,7 +1107,7 @@ export default class FirebaseV2 extends React.Component {
             });
             return;
           }
-          
+
           for(let k = 0 ; k<x.length; k++){
             ActionTaskArrayPath.collection("actions&tasks").doc( x[k]["id"])
             .get()
@@ -1129,14 +1129,14 @@ export default class FirebaseV2 extends React.Component {
               if(k === x.length-1){
                 ATExpTimeObj[id] = ATtimeCombines
                 ATGrabFromFB[id] = true;
-            
+
                 this.setState({
                   AT_expected_completion_time: ATExpTimeObj,
                   WentThroughATList: ATGrabFromFB,
                 });
-              } 
-            })       
-          }  
+              }
+            })
+          }
 
         } else {
           // doc.data() will be undefined in this case
@@ -1151,13 +1151,13 @@ export default class FirebaseV2 extends React.Component {
   thisTakesMeGivenVsSelected = (i, id) => {
     if(this.state.AT_expected_completion_time[id] === "0"){
       return(
-        <div style = {{fontSize: "12px"}}> 
+        <div style = {{fontSize: "12px"}}>
           {" "}
           Takes {" "}
           {this.convertToMinutes(
             this.props.routines[i]["expected_completion_time"]
           )}{" "}
-          min {" "} 
+          min {" "}
         </div>
       );
     }else{
@@ -1168,11 +1168,11 @@ export default class FirebaseV2 extends React.Component {
           {this.convertToMinutes(
             this.props.routines[i]["expected_completion_time"]
           )}{" "}
-          min vs {" "} {this.state.AT_expected_completion_time[id]} 
+          min vs {" "} {this.state.AT_expected_completion_time[id]}
           {" "} (calc)
          </div>
       )
-      
+
     }
   };
 
@@ -1205,7 +1205,7 @@ export default class FirebaseV2 extends React.Component {
             return <div style = {{fontSize: "12px"}}> Repeat weekly </div>;
           } else {
             return (
-              <div style = {{fontSize: "12px"}}> 
+              <div style = {{fontSize: "12px"}}>
                 {" "}
                 Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
               </div>
@@ -1489,11 +1489,11 @@ export default class FirebaseV2 extends React.Component {
                 <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
                   {this.showGoalRepeatStatus(i)}
                 </Col>
-               
+
 
                 <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
                   {this.thisTakesMeGivenVsSelectedGoals(i,tempID )}
-                </Col> 
+                </Col>
               </Row>
             </ListGroup.Item>
           </div>
@@ -1506,13 +1506,13 @@ export default class FirebaseV2 extends React.Component {
   thisTakesMeGivenVsSelectedGoals = (i, id) => {
     if(this.state.AT_expected_completion_time[id] === "0"){
       return(
-        <div style = {{fontSize: "12px"}}> 
+        <div style = {{fontSize: "12px"}}>
           {" "}
           Takes {" "}
           {this.convertToMinutes(
             this.props.goals[i]["expected_completion_time"]
           )}{" "}
-          min {" "} 
+          min {" "}
         </div>
       );
     }else{
@@ -1523,11 +1523,11 @@ export default class FirebaseV2 extends React.Component {
           {this.convertToMinutes(
             this.props.goals[i]["expected_completion_time"]
           )}{" "}
-          min vs {" "} {this.state.AT_expected_completion_time[id]} 
+          min vs {" "} {this.state.AT_expected_completion_time[id]}
           {" "} (calc)
          </div>
       )
-      
+
     }
   };
 
@@ -1706,15 +1706,40 @@ export default class FirebaseV2 extends React.Component {
       .collection("goals&routines").get()
       .then((snapshot) => {
         if (!snapshot.empty) {
-          snapshot.forEach((at_doc) => {
-            let at = at_doc.data();
-            at.completed = false
-            at.is_in_progress = false
+          snapshot.forEach((gr_doc) => {
+            let gr = gr_doc.data();
+            gr["actions&tasks"].forEach((at) => {
+              at.is_complete = false
+              at.is_in_progress = false
+              db.collection("users")
+              .doc(doc.id)
+              .collection("goals&routines")
+              .doc(gr_doc.id)
+              .collection("actions&tasks").get()
+              .then(is_snapshot => {
+                if(!is_snapshot.empty) {
+                  is_snapshot.forEach((is_doc) => {
+                    let is = is_doc.data();
+                    is["instructions&steps"].forEach((x) => {
+                      x.is_complete = false
+                      x.is_in_progress = false
+                    });
+                    db.collection("users")
+                    .doc(doc.id)
+                    .collection("goals&routines")
+                    .doc(gr_doc.id)
+                    .collection("actions&tasks")
+                    .doc(is_doc.id)
+                    .update(is);
+                  });
+                }
+              });
+            });
             db.collection("users")
             .doc(doc.id)
             .collection("goals&routines")
-            .doc(at_doc.id)
-            .update(at);
+            .doc(gr_doc.id)
+            .update(gr);
           });
         }
       });
@@ -2236,7 +2261,7 @@ shows entire list of goals and routines
               </button>
             </div>
           </div>
-          
+
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2271,7 +2296,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-       
+
       </Modal.Dialog>
     );
   };
