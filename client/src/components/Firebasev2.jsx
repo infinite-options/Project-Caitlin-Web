@@ -225,7 +225,6 @@ export default class FirebaseV2 extends React.Component {
     this.setState({ singleAT: singleAt });
   };
 
-
   componentDidMount() {
     //Grab the
     // this.grabFireBaseRoutinesGoalsData();
@@ -435,7 +434,9 @@ export default class FirebaseV2 extends React.Component {
                       ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                       refresh={this.refreshATItem} //function to refresh AT data
-                      updateWentThroughATListObj={this.handleWentThroughATListObj}
+                      updateWentThroughATListObj={
+                        this.handleWentThroughATListObj
+                      }
                     />
                   </Row>
                 </Col>
@@ -504,7 +505,6 @@ export default class FirebaseV2 extends React.Component {
     }
     return res;
   };
-
 
   handleWentThroughATListObj = (id) => {
     let WentThroughOjt = this.state.WentThroughATList;
@@ -595,7 +595,9 @@ export default class FirebaseV2 extends React.Component {
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                       refresh={this.refreshISItem} //function to refresh IS data
-                      updateWentThroughATListObjIS={this.handleWentThroughATListObj}
+                      updateWentThroughATListObjIS={
+                        this.handleWentThroughATListObj
+                      }
                     />
                   </Row>
                 </Col>
@@ -649,7 +651,9 @@ export default class FirebaseV2 extends React.Component {
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                     refresh={this.refreshISItem} //function to refresh IS data
-                    updateWentThroughATListObjIS={this.handleWentThroughATListObj}
+                    updateWentThroughATListObjIS={
+                      this.handleWentThroughATListObj
+                    }
                   />
                 </Row>
               </div>
@@ -1032,42 +1036,63 @@ export default class FirebaseV2 extends React.Component {
                 </div>
               )}
               <Row>
-                  {this.props.routines[i]["start_day_and_time"] ? (
-                    <Col style={{ marginTop: "3px",fontSize: "12px" , paddingRight:"0px",  paddingLeft:"0px", marginLeft:"10px"}}>
-                      {"Start Time: " +
-                        this.formatDateTime(
-                          this.props.routines[i]["start_day_and_time"]
-                        )}
-                    </Col>
-                  ) : (
-                    <Col> </Col>
-                  )}
-                  {this.props.routines[i]["end_day_and_time"] ? (
-                    <Col xs={6} style ={{fontSize: "12px", paddingLeft:"0px", paddingRight:"0px"}}>
-                      {"End Time: " +
-                        this.formatDateTime(
-                          this.props.routines[i]["end_day_and_time"]
-                        )}
-                    </Col>
-                  ) : (
-                    <Col> </Col>
-                  )}
+                {this.props.routines[i]["start_day_and_time"] ? (
+                  <Col
+                    style={{
+                      marginTop: "3px",
+                      fontSize: "12px",
+                      paddingRight: "0px",
+                      paddingLeft: "0px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {"Start Time: " +
+                      this.formatDateTime(
+                        this.props.routines[i]["start_day_and_time"]
+                      )}
+                  </Col>
+                ) : (
+                  <Col> </Col>
+                )}
+                {this.props.routines[i]["end_day_and_time"] ? (
+                  <Col
+                    xs={6}
+                    style={{
+                      fontSize: "12px",
+                      paddingLeft: "0px",
+                      paddingRight: "0px",
+                    }}
+                  >
+                    {"End Time: " +
+                      this.formatDateTime(
+                        this.props.routines[i]["end_day_and_time"]
+                      )}
+                  </Col>
+                ) : (
+                  <Col> </Col>
+                )}
               </Row>
 
               <Row>
-                  {(this.props.showRoutine  && (this.state.WentThroughATList[tempID] === false || this.state.WentThroughATList[tempID]=== undefined)) &&
+                {this.props.showRoutine &&
+                  (this.state.WentThroughATList[tempID] === false ||
+                    this.state.WentThroughATList[tempID] === undefined) &&
                   this.getATexpectedTime(tempID)}
 
-                <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
+                <Col
+                  style={{
+                    paddingRight: "0px",
+                    paddingLeft: "0px",
+                    marginLeft: "10px",
+                  }}
+                >
                   {this.showRoutineRepeatStatus(i)}
                 </Col>
-               
 
-                <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
-                  {this.thisTakesMeGivenVsSelected(i,tempID )}
-                </Col> 
+                <Col xs={6} style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+                  {this.thisTakesMeGivenVsSelected(i, tempID)}
+                </Col>
               </Row>
-
             </ListGroup.Item>
           </div>
         );
@@ -1076,30 +1101,23 @@ export default class FirebaseV2 extends React.Component {
     return displayRoutines;
   };
 
-
-
-  
-
   getATexpectedTime(id) {
     let ActionTaskArrayPath = firebase
-    .firestore()
-    .collection("users")
-    .doc(this.props.theCurrentUserID)
-    .collection("goals&routines")
-    .doc(id);
+      .firestore()
+      .collection("users")
+      .doc(this.props.theCurrentUserID)
+      .collection("goals&routines")
+      .doc(id);
 
-    ActionTaskArrayPath
-      .get()
+    ActionTaskArrayPath.get()
       .then((doc) => {
         if (doc.exists) {
-
           let ATExpTimeObj = this.state.AT_expected_completion_time;
           let ATGrabFromFB = this.state.WentThroughATList;
           let ATtimeCombines = 0;
           var x = doc.data()["actions&tasks"];
           if (x.length === 0) {
-            
-            ATExpTimeObj[id] =  "0";
+            ATExpTimeObj[id] = "0";
             ATGrabFromFB[id] = true;
             this.setState({
               AT_expected_completion_time: ATExpTimeObj,
@@ -1107,37 +1125,40 @@ export default class FirebaseV2 extends React.Component {
             });
             return;
           }
-          
-          for(let k = 0 ; k<x.length; k++){
-            ActionTaskArrayPath.collection("actions&tasks").doc( x[k]["id"])
-            .get()
-            .then((doc) => {
-              if (doc.exists) {
-                let InsStep = doc.data()["instructions&steps"];
-                if(InsStep.length === 0){
-                  ATtimeCombines += this.convertToMinutes(x[k]["expected_completion_time"]);
 
-                }else{
-                  for(let y = 0 ; y<InsStep.length ; y++){
-                    ATtimeCombines += this.convertToMinutes(InsStep[y]["expected_completion_time"]);
+          for (let k = 0; k < x.length; k++) {
+            ActionTaskArrayPath.collection("actions&tasks")
+              .doc(x[k]["id"])
+              .get()
+              .then((doc) => {
+                if (doc.exists) {
+                  let InsStep = doc.data()["instructions&steps"];
+                  if (InsStep.length === 0) {
+                    ATtimeCombines += this.convertToMinutes(
+                      x[k]["expected_completion_time"]
+                    );
+                  } else {
+                    for (let y = 0; y < InsStep.length; y++) {
+                      ATtimeCombines += this.convertToMinutes(
+                        InsStep[y]["expected_completion_time"]
+                      );
+                    }
                   }
+                } else {
+                  // doc.data() will be undefined in this case
+                  console.log("No Instruction/Step documents!");
                 }
-              } else {
-                // doc.data() will be undefined in this case
-                console.log("No Instruction/Step documents!");
-              }
-              if(k === x.length-1){
-                ATExpTimeObj[id] = ATtimeCombines
-                ATGrabFromFB[id] = true;
-            
-                this.setState({
-                  AT_expected_completion_time: ATExpTimeObj,
-                  WentThroughATList: ATGrabFromFB,
-                });
-              } 
-            })       
-          }  
+                if (k === x.length - 1) {
+                  ATExpTimeObj[id] = ATtimeCombines;
+                  ATGrabFromFB[id] = true;
 
+                  this.setState({
+                    AT_expected_completion_time: ATExpTimeObj,
+                    WentThroughATList: ATGrabFromFB,
+                  });
+                }
+              });
+          }
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -1149,30 +1170,28 @@ export default class FirebaseV2 extends React.Component {
   }
 
   thisTakesMeGivenVsSelected = (i, id) => {
-    if(this.state.AT_expected_completion_time[id] === "0"){
-      return(
-        <div style = {{fontSize: "12px"}}> 
+    if (this.state.AT_expected_completion_time[id] === "0") {
+      return (
+        <div style={{ fontSize: "12px" }}>
           {" "}
-          Takes {" "}
+          Takes{" "}
           {this.convertToMinutes(
             this.props.routines[i]["expected_completion_time"]
           )}{" "}
-          min {" "} 
+          min{" "}
         </div>
       );
-    }else{
-      return(
-        <div style = {{fontSize: "12px"}}>
+    } else {
+      return (
+        <div style={{ fontSize: "12px" }}>
           {" "}
-          Takes {" "}
+          Takes{" "}
           {this.convertToMinutes(
             this.props.routines[i]["expected_completion_time"]
           )}{" "}
-          min vs {" "} {this.state.AT_expected_completion_time[id]} 
-          {" "} (calc)
-         </div>
-      )
-      
+          min vs {this.state.AT_expected_completion_time[id]} (calc)
+        </div>
+      );
     }
   };
 
@@ -1186,15 +1205,15 @@ export default class FirebaseV2 extends React.Component {
 
   showRoutineRepeatStatus = (i) => {
     if (!this.props.routines[i]["repeat"]) {
-      return <div style = {{fontSize: "12px"}}> One time only </div>;
+      return <div style={{ fontSize: "12px" }}> One time only </div>;
     } else {
       switch (this.props.routines[i]["repeat_frequency"]) {
         case "DAY":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div style = {{fontSize: "12px"}}> Repeat daily </div>;
+            return <div style={{ fontSize: "12px" }}> Repeat daily </div>;
           } else {
             return (
-              <div style = {{fontSize: "12px"}}>
+              <div style={{ fontSize: "12px" }}>
                 {" "}
                 Repeat every {this.props.routines[i]["repeat_every"]} days{" "}
               </div>
@@ -1202,10 +1221,10 @@ export default class FirebaseV2 extends React.Component {
           }
         case "WEEK":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div style = {{fontSize: "12px"}}> Repeat weekly </div>;
+            return <div style={{ fontSize: "12px" }}> Repeat weekly </div>;
           } else {
             return (
-              <div style = {{fontSize: "12px"}}> 
+              <div style={{ fontSize: "12px" }}>
                 {" "}
                 Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
               </div>
@@ -1213,10 +1232,10 @@ export default class FirebaseV2 extends React.Component {
           }
         case "MONTH":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div style = {{fontSize: "12px"}}> Repeat monthly </div>;
+            return <div style={{ fontSize: "12px" }}> Repeat monthly </div>;
           } else {
             return (
-              <div style = {{fontSize: "12px"}}>
+              <div style={{ fontSize: "12px" }}>
                 {" "}
                 Repeat every {
                   this.props.routines[i]["repeat_every"]
@@ -1460,40 +1479,62 @@ export default class FirebaseV2 extends React.Component {
               )}
 
               <Row>
-                  {this.props.goals[i]["start_day_and_time"] ? (
-                    <Col style={{ marginTop: "3px",fontSize: "12px" , paddingRight:"0px",  paddingLeft:"0px", marginLeft:"10px"}}>
-                      {"Start Time: " +
-                        this.formatDateTime(
-                          this.props.goals[i]["start_day_and_time"]
-                        )}
-                    </Col>
-                  ) : (
-                    <Col> </Col>
-                  )}
-                  {this.props.goals[i]["end_day_and_time"] ? (
-                    <Col xs={6} style ={{fontSize: "12px", paddingLeft:"0px", paddingRight:"0px"}}>
-                      {"End Time: " +
-                        this.formatDateTime(
-                          this.props.goals[i]["end_day_and_time"]
-                        )}
-                    </Col>
-                  ) : (
-                    <Col> </Col>
-                  )}
+                {this.props.goals[i]["start_day_and_time"] ? (
+                  <Col
+                    style={{
+                      marginTop: "3px",
+                      fontSize: "12px",
+                      paddingRight: "0px",
+                      paddingLeft: "0px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {"Start Time: " +
+                      this.formatDateTime(
+                        this.props.goals[i]["start_day_and_time"]
+                      )}
+                  </Col>
+                ) : (
+                  <Col> </Col>
+                )}
+                {this.props.goals[i]["end_day_and_time"] ? (
+                  <Col
+                    xs={6}
+                    style={{
+                      fontSize: "12px",
+                      paddingLeft: "0px",
+                      paddingRight: "0px",
+                    }}
+                  >
+                    {"End Time: " +
+                      this.formatDateTime(
+                        this.props.goals[i]["end_day_and_time"]
+                      )}
+                  </Col>
+                ) : (
+                  <Col> </Col>
+                )}
               </Row>
 
               <Row>
-                  {(this.props.showGoal  && (this.state.WentThroughATList[tempID] === false || this.state.WentThroughATList[tempID] === undefined)) &&
+                {this.props.showGoal &&
+                  (this.state.WentThroughATList[tempID] === false ||
+                    this.state.WentThroughATList[tempID] === undefined) &&
                   this.getATexpectedTime(tempID)}
 
-                <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
+                <Col
+                  style={{
+                    paddingRight: "0px",
+                    paddingLeft: "0px",
+                    marginLeft: "10px",
+                  }}
+                >
                   {this.showGoalRepeatStatus(i)}
                 </Col>
-               
 
-                <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
-                  {this.thisTakesMeGivenVsSelectedGoals(i,tempID )}
-                </Col> 
+                <Col xs={6} style={{ paddingLeft: "0px", paddingRight: "0px" }}>
+                  {this.thisTakesMeGivenVsSelectedGoals(i, tempID)}
+                </Col>
               </Row>
             </ListGroup.Item>
           </div>
@@ -1504,30 +1545,28 @@ export default class FirebaseV2 extends React.Component {
   };
 
   thisTakesMeGivenVsSelectedGoals = (i, id) => {
-    if(this.state.AT_expected_completion_time[id] === "0"){
-      return(
-        <div style = {{fontSize: "12px"}}> 
+    if (this.state.AT_expected_completion_time[id] === "0") {
+      return (
+        <div style={{ fontSize: "12px" }}>
           {" "}
-          Takes {" "}
+          Takes{" "}
           {this.convertToMinutes(
             this.props.goals[i]["expected_completion_time"]
           )}{" "}
-          min {" "} 
+          min{" "}
         </div>
       );
-    }else{
-      return(
-        <div style = {{fontSize: "12px"}}>
+    } else {
+      return (
+        <div style={{ fontSize: "12px" }}>
           {" "}
-          Takes {" "}
+          Takes{" "}
           {this.convertToMinutes(
             this.props.goals[i]["expected_completion_time"]
           )}{" "}
-          min vs {" "} {this.state.AT_expected_completion_time[id]} 
-          {" "} (calc)
-         </div>
-      )
-      
+          min vs {this.state.AT_expected_completion_time[id]} (calc)
+        </div>
+      );
     }
   };
 
@@ -1610,20 +1649,26 @@ export default class FirebaseV2 extends React.Component {
               onClick={(e) => {
                 e.stopPropagation();
                 this.getHistoryData(this.props.goals[i]);
-                this.setState({ historyViewShow: true, historyViewShowObject: this.props.goals[i], isRoutine: false });
+                this.setState({
+                  historyViewShow: true,
+                  historyViewShowObject: this.props.goals[i],
+                  isRoutine: false,
+                });
               }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
                   <div className="fancytext">{tempTitle}</div>
                 </Col>
-                <div className="fancytext" style={{ position: "absolute", right: "15px", top: "21px" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  this.resetRoutinesGoals(this.props.goals[i]);
-                }}
+                <div
+                  className="fancytext"
+                  style={{ position: "absolute", right: "15px", top: "21px" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.resetRoutinesGoals(this.props.goals[i]);
+                  }}
                 >
-                Reset
+                  Reset
                 </div>
               </Row>
               <Row
@@ -1678,50 +1723,51 @@ export default class FirebaseV2 extends React.Component {
   resetRoutinesGoals = (gr_object) => {
     let db = firebase.firestore();
     console.log(gr_object);
-    db.collection("users").doc(this.props.theCurrentUserID).get()
-    .then(doc => {
-      let arrs = doc.data()["goals&routines"];
-      arrs.forEach(gr => {
-        if (gr.id == gr_object.id) {
-          gr_object["is_in_progress"] = false;
-          gr_object["is_complete"] = false  ;
-          gr['is_in_progress'] = false
-          gr['is_complete'] = false
-          Object.keys(gr['ta_notifications'])
-          .forEach( k => {
-            gr['ta_notifications'][k].is_set = false
-          });
-          Object.keys(gr['user_notifications'])
-          .forEach( k => {
-            gr['user_notifications'][k].is_set = false
-          });
-        }
-      });
-      db.collection("users")
+    db.collection("users")
       .doc(this.props.theCurrentUserID)
-      .update({ "goals&routines": arrs });
+      .get()
+      .then((doc) => {
+        let arrs = doc.data()["goals&routines"];
+        arrs.forEach((gr) => {
+          if (gr.id == gr_object.id) {
+            gr_object["is_in_progress"] = false;
+            gr_object["is_complete"] = false;
+            gr["is_in_progress"] = false;
+            gr["is_complete"] = false;
+            Object.keys(gr["ta_notifications"]).forEach((k) => {
+              gr["ta_notifications"][k].is_set = false;
+            });
+            Object.keys(gr["user_notifications"]).forEach((k) => {
+              gr["user_notifications"][k].is_set = false;
+            });
+          }
+        });
+        db.collection("users")
+          .doc(this.props.theCurrentUserID)
+          .update({ "goals&routines": arrs });
 
-      db.collection("users")
-      .doc(doc.id)
-      .collection("goals&routines").get()
-      .then((snapshot) => {
-        if (!snapshot.empty) {
-          snapshot.forEach((at_doc) => {
-            let at = at_doc.data();
-            at.completed = false
-            at.is_in_progress = false
-            db.collection("users")
-            .doc(doc.id)
-            .collection("goals&routines")
-            .doc(at_doc.id)
-            .update(at);
+        db.collection("users")
+          .doc(doc.id)
+          .collection("goals&routines")
+          .get()
+          .then((snapshot) => {
+            if (!snapshot.empty) {
+              snapshot.forEach((at_doc) => {
+                let at = at_doc.data();
+                at.completed = false;
+                at.is_in_progress = false;
+                db.collection("users")
+                  .doc(doc.id)
+                  .collection("goals&routines")
+                  .doc(at_doc.id)
+                  .update(at);
+              });
+            }
           });
-        }
+        this.setState({});
+        alert("Item is reset");
       });
-      this.setState({});
-      alert("Item is reset")
-    });
-  }
+  };
 
   getRoutinesStatus = () => {
     let displayRoutines = [];
@@ -1749,20 +1795,26 @@ export default class FirebaseV2 extends React.Component {
               onClick={(e) => {
                 e.stopPropagation();
                 this.getHistoryData(this.props.routines[i]);
-                this.setState({ historyViewShow: true, historyViewShowObject: this.props.routines[i], isRoutine: true });
+                this.setState({
+                  historyViewShow: true,
+                  historyViewShowObject: this.props.routines[i],
+                  isRoutine: true,
+                });
               }}
             >
               <Row style={{ margin: "0" }} className="d-flex flex-row-center">
                 <Col style={{ textAlign: "center", width: "100%" }}>
                   <div className="fancytext"> {tempTitle}</div>
                 </Col>
-                <div className="fancytext" style={{ position: "absolute", right: "15px", top: "21px" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  this.resetRoutinesGoals(this.props.routines[i]);
-                }}
+                <div
+                  className="fancytext"
+                  style={{ position: "absolute", right: "15px", top: "21px" }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.resetRoutinesGoals(this.props.routines[i]);
+                  }}
                 >
-                Reset
+                  Reset
                 </div>
               </Row>
               <Row
@@ -2095,36 +2147,36 @@ shows entire list of goals and routines
   };
 
   historyModel = (object) => {
-      return (
-        <ShowHistory
+    return (
+      <ShowHistory
         closeModal={() => {
           this.setState({ historyItems: [], historyViewShow: false });
         }}
         historyItems={this.state.historyItems}
         displayTitle={object.title}
-        />
-      );
+      />
+    );
   };
 
   getHistoryData = (object) => {
     let historyItems = [];
     const db = firebase.firestore();
     db.collection("history")
-    .doc(this.props.theCurrentUserID)
-    .collection("goals&routines")
-    .get().then(
-      (snapshot) => {
-        let logs = []
-        snapshot.forEach(log => {
-          log.data().log.forEach(gr => {
+      .doc(this.props.theCurrentUserID)
+      .collection("goals&routines")
+      .get()
+      .then((snapshot) => {
+        let logs = [];
+        snapshot.forEach((log) => {
+          log.data().log.forEach((gr) => {
             if (gr.id == object.id) {
               gr.date = log.data().date;
               logs.push(gr);
             }
-          })
+          });
         });
         for (let i = 0; i < logs.length; i++) {
-          let tempTitle =  logs[i]["date"] + "   -   " + logs[i]["title"];
+          let tempTitle = logs[i]["date"] + "   -   " + logs[i]["title"];
           let isComplete = logs[i]["is_complete"];
           let isInProgress = logs[i]["is_in_progress"];
           historyItems.push(
@@ -2189,7 +2241,7 @@ shows entire list of goals and routines
         }
         this.setState({ historyItems: historyItems });
       });
-  }
+  };
 
   /*
     abstractedInstructionsAndStepsList:
@@ -2236,7 +2288,6 @@ shows entire list of goals and routines
               </button>
             </div>
           </div>
-          
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2259,7 +2310,9 @@ shows entire list of goals and routines
                   }
                 }
                 width={this.state.modalWidth}
-                updateNewWentThroughATListObjIS={this.handleWentThroughATListObj}
+                updateNewWentThroughATListObjIS={
+                  this.handleWentThroughATListObj
+                }
               />
             ) : (
               <div></div>
@@ -2271,7 +2324,6 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-       
       </Modal.Dialog>
     );
   };
@@ -2402,7 +2454,7 @@ shows entire list of goals and routines
         <Modal.Header onHide={this.props.closeRoutineGoalModal} closeButton>
           <Modal.Title>
             {" "}
-              <h5 className="normalfancytext">Current Status</h5>{" "}
+            <h5 className="normalfancytext">Current Status</h5>{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -2437,7 +2489,9 @@ shows entire list of goals and routines
               left: "20px",
             }}
           >
-            {this.state.historyViewShow ? this.historyModel(this.state.historyViewShowObject) : ""}
+            {this.state.historyViewShow
+              ? this.historyModel(this.state.historyViewShowObject)
+              : ""}
           </div>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
