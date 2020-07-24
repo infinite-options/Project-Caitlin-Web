@@ -384,12 +384,12 @@ export default class AddNewISItem extends Component {
               />
             </div>
 
-            {this.state.itemToEdit.is_available && (
+            {/* {this.state.itemToEdit.is_available && (
               <ShowNotifications
                 itemToEditPassedIn={this.state.itemToEdit}
                 notificationChange={this.handleNotificationChange}
               />
-            )}
+            )} */}
           </div>
         </Modal.Body>
         <Modal.Footer>

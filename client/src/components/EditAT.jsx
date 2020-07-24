@@ -307,12 +307,12 @@ export default class editAT extends Component {
             }}
           />
         </div>
-        {this.state.itemToEdit.is_available && (
+        {/* {this.state.itemToEdit.is_available && (
           <ShowNotifications
             itemToEditPassedIn={this.state.itemToEdit}
             notificationChange={this.handleNotificationChange}
           />
-        )}
+        )} */}
         <Button
           variant="secondary"
           onClick={(e) => {

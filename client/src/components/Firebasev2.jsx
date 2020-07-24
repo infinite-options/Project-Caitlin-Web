@@ -382,7 +382,7 @@ export default class FirebaseV2 extends React.Component {
                     {tempAvailable ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -446,7 +446,7 @@ export default class FirebaseV2 extends React.Component {
                   {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
-                        title="Available to Cailin"
+                        title="Available to the user"
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -555,7 +555,7 @@ export default class FirebaseV2 extends React.Component {
                     {tempAvailable ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -606,7 +606,7 @@ export default class FirebaseV2 extends React.Component {
                   {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
-                        title="Available to Cailin"
+                        title="Available to the user"
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -857,7 +857,7 @@ export default class FirebaseV2 extends React.Component {
                         {this.props.routines[i]["is_available"] ? (
                           <div style={{ marginLeft: "5px" }}>
                             <FontAwesomeIcon
-                              title="Available to Cailin"
+                              title="Available to the user"
                               style={{
                                 color: this.state.availabilityColorCode,
                               }}
@@ -947,7 +947,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.props.routines[i]["is_available"] ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to user"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1284,7 +1284,7 @@ export default class FirebaseV2 extends React.Component {
                         {this.props.goals[i]["is_available"] ? (
                           <div style={{ marginLeft: "5px" }}>
                             <FontAwesomeIcon
-                              title="Available to Cailin"
+                              title="Available to the user"
                               style={{
                                 color: this.state.availabilityColorCode,
                               }}
@@ -1374,7 +1374,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.props.goals[i]["is_available"] ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
