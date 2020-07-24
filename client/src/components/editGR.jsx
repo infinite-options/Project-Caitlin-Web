@@ -218,6 +218,9 @@ export default class editGR extends Component {
 
   newInputSubmit = () => {
     status = this.newInputVerify();
+
+    
+
     if (status !== "") {
       alert(status);
       return;
@@ -967,7 +970,7 @@ export default class editGR extends Component {
               this.setState({ itemToEdit: temp });
             }}
           />
-        </div>
+        </div> 
 
         {this.state.itemToEdit.is_available && (
           <ShowNotifications
@@ -1303,17 +1306,11 @@ export default class editGR extends Component {
           e.stopPropagation();
         }}
       >
-        {/* {console.log("this is the s")} */}
-        {/* {this.state.showEditModal ? <div></div> : this.showIcon()} */}
-        {/* {this.updateStateWithFB} */}
-        {/* {(this.props.showModal && this.props.i === this.props.indexEditing  )? this.updateStateWithFB(): <div> </div>} */}
         {this.props.showModal && this.props.i === this.props.indexEditing ? (
           this.editGRForm()
         ) : (
           <div> </div>
         )}
-        {/* {this.editGRForm()} */}
-        {/* {this.state.showEditModal ? this.editGRForm() : <div> </div>} */}
         {this.state.showRepeatModal && this.repeatModal()}
       </div>
     );

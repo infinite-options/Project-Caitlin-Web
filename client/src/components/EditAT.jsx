@@ -14,18 +14,12 @@ import UploadImage from "./UploadImage";
 export default class editAT extends Component {
   constructor(props) {
     super(props);
-    console.log("Enter EditAT: ", this.props.timeSlot);
-    // console.log('editAT constructor');
-    // console.log('Edit index ' + this.props.i)
-    // console.log(this.props.FBPath)
-    // console.log(this.props.ATArray)
-
     this.state = {
       showEditModal: false,
       itemToEdit: this.props.ATArray[this.props.i],
     };
   }
-
+ 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.ATArray !== this.props.ATArray) {
       this.setState({ itemToEdit: this.props.ATArray[this.props.i] });
@@ -33,7 +27,7 @@ export default class editAT extends Component {
   }
 
   newInputSubmit = () => {
-    // console.log("submitting edited formed to firebase");
+    
     if (this.state.itemToEdit.title === "") {
       alert("Missing title");
       return "";
@@ -44,7 +38,8 @@ export default class editAT extends Component {
     }
 
     let newArr = this.props.ATArray;
-    console.log("EditAt: ", this.state.itemToEdit);
+    
+    // console.log("EditAt: ", this.state.itemToEdit);
 
     if (this.state.itemToEdit.photo === "") {
       this.state.itemToEdit.photo =
@@ -66,8 +61,11 @@ export default class editAT extends Component {
       newArr[this.props.i]["datetime_started"] =
         "Sun, 23 Feb 2020 00:08:43 GMT";
     }
+   
 
     this.props.FBPath.update({ "actions&tasks": newArr }).then((doc) => {
+      console.log("this is the path ", this.props.FBPath.path.split('/')[3]);
+      this.props.updateWentThroughATListObj(this.props.FBPath.path.split('/')[3]);
       // console.log('updateEntireArray Finished')
       // console.log(doc);
       if (this.props != null) {
@@ -289,7 +287,6 @@ export default class editAT extends Component {
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
-              // console.log(temp.is_timed)
               temp.is_timed = !temp.is_timed;
               this.setState({ itemToEdit: temp });
             }}
@@ -305,18 +302,17 @@ export default class editAT extends Component {
             onChange={(e) => {
               e.stopPropagation();
               let temp = this.state.itemToEdit;
-              // console.log(temp.is_available)
               temp.is_available = !temp.is_available;
               this.setState({ itemToEdit: temp });
             }}
           />
         </div>
-        {this.state.itemToEdit.is_available && (
+        {/* {this.state.itemToEdit.is_available && (
           <ShowNotifications
             itemToEditPassedIn={this.state.itemToEdit}
             notificationChange={this.handleNotificationChange}
           />
-        )}
+        )} */}
         <Button
           variant="secondary"
           onClick={(e) => {
@@ -335,7 +331,6 @@ export default class editAT extends Component {
         >
           Save changes
         </Button>
-        {/* </div> */}
       </Row>
     );
   };
@@ -364,7 +359,6 @@ export default class editAT extends Component {
 
   render() {
     return (
-      // <div style={{ marginLeft: "5px" }} onClick={(e) => { e.stopPropagation();}}>
       <div
         style={{ marginLeft: "5px" }}
         onClick={(e) => {
