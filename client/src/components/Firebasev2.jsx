@@ -33,7 +33,7 @@ import {
   faBookmark,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import moment from "moment";
+// import moment from "moment";
 
 /**
  * Notes from Tyler:
@@ -94,7 +94,6 @@ export default class FirebaseV2 extends React.Component {
       },
       singleATitemArr: [], //temp fix for my bad memory of forgetting to add this in singleGR
       singleISitemArr: [], //temp fix for my bad memory of forgetting to add this in singleAT
-      // modalWidth: "350px", //primary width size for all modals
       modalWidth: "390px",
 
       //Use to decided whether to show the respective modals
@@ -121,7 +120,8 @@ export default class FirebaseV2 extends React.Component {
 
       routine_completed: false,
 
-      AT_expected_completion_time: "10",
+      AT_expected_completion_time: {},
+      WentThroughATList: {},
     };
   }
   // state = {
@@ -198,8 +198,6 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   refreshATItem = (arr) => {
-    // console.log("refreshATItem was called");
-
     this.setState({ singleATitemArr: arr });
     let resArr = this.createListofAT(arr);
     let singleGR = this.state.singleGR;
@@ -218,8 +216,6 @@ export default class FirebaseV2 extends React.Component {
    * the one passed in.
    */
   refreshISItem = (arr) => {
-    // console.log("refreshISItem new arr");
-    // console.log(arr);
     this.setState({
       singleISitemArr: arr,
     });
@@ -229,12 +225,6 @@ export default class FirebaseV2 extends React.Component {
     this.setState({ singleAT: singleAt });
   };
 
-  // constructor(props) {
-  //   // serves almost no purpose currently
-  //   super(props);
-  //   // console.log("running Firebase 2");
-  //   // this.state = {date: new Date()};
-  // }
 
   componentDidMount() {
     //Grab the
@@ -254,7 +244,6 @@ export default class FirebaseV2 extends React.Component {
   };
 
   formatDateTime(str) {
-    //const formattedStr = str.replace(/\//g, "-");
     let newTime = new Date(str).toLocaleTimeString();
     newTime = newTime.substring(0, 5) + " " + newTime.slice(-2);
     return newTime;
@@ -265,33 +254,24 @@ export default class FirebaseV2 extends React.Component {
     */
   }
 
-  // onInputChange = (e) => {
-  //   const inputField = e.target.value;
-  //   // console.log("FirebaseV2.jsx :: onInputChange :: " + inputField);
-  // };
   //This function essentially grabs all action/tasks
   //for the routine or goal passed in and pops open the
   //modal for the action/task
   getATList = async (id, title, persist) => {
     const db = firebase.firestore();
-    console.log("getATList function with id : " + id);
     let docRef = db
       .collection("users")
       .doc(this.props.theCurrentUserID)
-      // .doc("7R6hAVmDrNutRkG3sVRy")
       .collection("goals&routines")
       .doc(id);
-    console.log("this is the goals and routines id ", id);
-    // console.log("this si the correct path", docRef);
     docRef
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log(doc.data());
+          // console.log(doc.data());
           var x = doc.data()["actions&tasks"];
-          console.log(x);
+          // console.log(x);
           if (x == null) {
-            // console.log("No actions&tasks array!");
             let singleGR = {
               //Variable to hold information about the parent Goal/ Routine
               show: true,
@@ -353,14 +333,11 @@ export default class FirebaseV2 extends React.Component {
   createListofAT = (A) => {
     let res = [];
     for (let i = 0; i < A.length; i++) {
-      // console.log(A[i]["title"]);
       if (!A[i]["id"] || !A[i]["title"]) {
-        // console.log("missing title, or id at index : " + i);
         return [];
       }
       let tempID = A[i]["id"];
       let tempPhoto = A[i]["photo"];
-      // console.log(tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
 
@@ -395,8 +372,6 @@ export default class FirebaseV2 extends React.Component {
                   <img
                     src={tempPhoto}
                     alt="Action/Task"
-                    // height={this.state.thumbnailHeight}
-                    // width={this.state.thumbnailWidth}
                     className="center"
                     height="80px"
                     width="auto"
@@ -407,7 +382,7 @@ export default class FirebaseV2 extends React.Component {
                     {tempAvailable ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -431,9 +406,6 @@ export default class FirebaseV2 extends React.Component {
                         />
                       </div>
                     )}
-                    {/* Index={this.findIndexByID(tempID)}
-                    Array={this.state.originalGoalsAndRoutineArr}
-                    Path={this.state.firebaseRootPath} */}
                     <ShowISList
                       Index={i}
                       Array={this.state.singleATitemArr}
@@ -463,6 +435,7 @@ export default class FirebaseV2 extends React.Component {
                       ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                       refresh={this.refreshATItem} //function to refresh AT data
+                      updateWentThroughATListObj={this.handleWentThroughATListObj}
                     />
                   </Row>
                 </Col>
@@ -473,7 +446,7 @@ export default class FirebaseV2 extends React.Component {
                   {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
-                        title="Available to Cailin"
+                        title="Available to the user"
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -520,6 +493,7 @@ export default class FirebaseV2 extends React.Component {
                     ATArray={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.singleGR.fbPath} //holds the path to the array data
                     refresh={this.refreshATItem} //function to refresh AT data
+                    updateWentThroughATListObj={this.handleWentThroughATListObj}
                   />
                 </Row>
               </div>
@@ -531,6 +505,12 @@ export default class FirebaseV2 extends React.Component {
     return res;
   };
 
+
+  handleWentThroughATListObj = (id) => {
+    let WentThroughOjt = this.state.WentThroughATList;
+    WentThroughOjt[id] = false;
+    this.setState({ WentThroughATList: WentThroughOjt });
+  };
   /**
    * takes the list of steps/instructions and returns
    * it in the form of a ListGroup for presentation
@@ -538,15 +518,7 @@ export default class FirebaseV2 extends React.Component {
   createListofIS = (A) => {
     let res = [];
     for (let i = 0; i < A.length; i++) {
-      // console.log(A[i]["title"]);
-      // console.log(A[i]["id"]);
-      /**
-       * TODO: notify jeremy of this issue:
-       * Some of these here don't have IDs, so we need to
-       * ignore it for now
-       */
       let tempPhoto = A[i]["photo"];
-      // console.log("IS index " + i + " photo url :" + tempPhoto);
       let tempTitle = A[i]["title"];
       let tempAvailable = A[i]["is_available"];
       res.push(
@@ -583,7 +555,7 @@ export default class FirebaseV2 extends React.Component {
                     {tempAvailable ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -607,7 +579,6 @@ export default class FirebaseV2 extends React.Component {
                         />
                       </div>
                     )}
-                    {/* <ShowATList /> */}
                   </Row>
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteISItem
@@ -624,6 +595,7 @@ export default class FirebaseV2 extends React.Component {
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                       refresh={this.refreshISItem} //function to refresh IS data
+                      updateWentThroughATListObjIS={this.handleWentThroughATListObj}
                     />
                   </Row>
                 </Col>
@@ -634,7 +606,7 @@ export default class FirebaseV2 extends React.Component {
                   {tempAvailable ? (
                     <div style={{ marginLeft: "5px" }}>
                       <FontAwesomeIcon
-                        title="Available to Cailin"
+                        title="Available to the user"
                         style={{ color: this.state.availabilityColorCode }}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -677,6 +649,7 @@ export default class FirebaseV2 extends React.Component {
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     FBPath={this.state.singleAT.fbPath} //holds the fbPath to arr to be updated
                     refresh={this.refreshISItem} //function to refresh IS data
+                    updateWentThroughATListObjIS={this.handleWentThroughATListObj}
                   />
                 </Row>
               </div>
@@ -706,7 +679,7 @@ export default class FirebaseV2 extends React.Component {
     let userGR = userData.data()["goals&routines"];
 
     userGR.forEach((doc) => {
-      console.log("This is from useGR: ", this.state.singleGR);
+      // console.log("This is from useGR: ", this.state.singleGR);
       if (doc.id === id) {
         //console.log("Time String From firebase: ", doc.start_day_and_time);
         let start_day_and_time = new Date(doc.start_day_and_time).toString();
@@ -729,7 +702,7 @@ export default class FirebaseV2 extends React.Component {
   GRonClickEvent = async (title, id, persist) => {
     await this.setTimeSlot(id);
     this.getATList(id, title, persist);
-    console.log("GRonClickEvent", id, title, persist);
+    // console.log("GRonClickEvent", id, title, persist);
   };
 
   /**
@@ -738,7 +711,6 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   ATonClickEvent = (title, id) => {
-    // let stepsInstructionArrayPath = this.state.firebaseRootPath
     let stepsInstructionArrayPath = firebase
       .firestore()
       .collection("users")
@@ -747,9 +719,6 @@ export default class FirebaseV2 extends React.Component {
       .doc(this.state.singleGR.id)
       .collection("actions&tasks")
       .doc(id);
-    // console.log("This is from ATonClieckEvent");
-    // console.log(this.state.singleGR.id);
-    // console.log("ATItem id & title: ", id, title);
 
     //setting timeSlot for IS according its parent AT time
     firebase
@@ -778,7 +747,6 @@ export default class FirebaseV2 extends React.Component {
       arr: [],
       fbPath: stepsInstructionArrayPath,
     };
-    console.log("this is the path", stepsInstructionArrayPath);
     stepsInstructionArrayPath
       .get()
       .then((doc) => {
@@ -792,7 +760,6 @@ export default class FirebaseV2 extends React.Component {
             this.setState({ singleAT: temp });
             return;
           }
-          // console.log(x);
           //Below is a fix for fbPath Null when we pass it
           //createListofIS and DeleteISItem.jsx, we need a path
           //to delete the item, so we set the path then create the
@@ -818,7 +785,6 @@ export default class FirebaseV2 extends React.Component {
    */
   findIndexByID = (id) => {
     let originalGoalsAndRoutineArr = this.props.originalGoalsAndRoutineArr;
-    // console.log("this is the originals Goals and routine from find index ", originalGoalsAndRoutineArr)
     for (let i = 0; i < originalGoalsAndRoutineArr.length; i++) {
       if (id === originalGoalsAndRoutineArr[i].id) {
         return i;
@@ -846,7 +812,6 @@ export default class FirebaseV2 extends React.Component {
 
   getRoutines = () => {
     let displayRoutines = [];
-    // console.log("props", this.props.routines);
     if (this.props.routines.length !== 0) {
       //Check to make sure routines exists
       for (let i = 0; i < this.props.routines.length; i++) {
@@ -859,11 +824,6 @@ export default class FirebaseV2 extends React.Component {
             <ListGroup.Item
               action
               onClick={() => {
-                // console.log("this si the id from display ROutine", tempID);
-                // console.log(
-                //   "this si the title from display ROutine",
-                //   tempTitle
-                // );
                 this.GRonClickEvent(tempTitle, tempID, tempPersist);
               }}
               variant="light"
@@ -897,7 +857,7 @@ export default class FirebaseV2 extends React.Component {
                         {this.props.routines[i]["is_available"] ? (
                           <div style={{ marginLeft: "5px" }}>
                             <FontAwesomeIcon
-                              title="Available to Cailin"
+                              title="Available to the user"
                               style={{
                                 color: this.state.availabilityColorCode,
                               }}
@@ -963,7 +923,6 @@ export default class FirebaseV2 extends React.Component {
                     </Col>
                   </Row>
                   <Row>
-                    {/* {console.log("this is the ATArray fron firbasev2 ",this.props.originalGoalsAndRoutineArr[this.findIndexByID(tempID)] )} */}
                     <EditGR
                       closeEditModal={() => {
                         this.setState({ showEditModal: false });
@@ -980,7 +939,6 @@ export default class FirebaseV2 extends React.Component {
                       refresh={this.grabFireBaseRoutinesGoalsData} //function to refresh IS data
                       // chnagePhoto = {this.changePhotoIcon()}
                     />
-                    {/* )} */}
                   </Row>
                 </div>
               ) : (
@@ -989,7 +947,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.props.routines[i]["is_available"] ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to user"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1016,7 +974,6 @@ export default class FirebaseV2 extends React.Component {
                     <ShowATList
                       Index={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr}
-                      // Path={this.state.firebaseRootPath}
                       Path={firebase
                         .firestore()
                         .collection("users")
@@ -1075,31 +1032,42 @@ export default class FirebaseV2 extends React.Component {
                 </div>
               )}
               <Row>
-                <div style={{ fontSize: "12px" }}>
                   {this.props.routines[i]["start_day_and_time"] ? (
-                    <div style={{ marginTop: "3px" }}>
+                    <Col style={{ marginTop: "3px",fontSize: "12px" , paddingRight:"0px",  paddingLeft:"0px", marginLeft:"10px"}}>
                       {"Start Time: " +
                         this.formatDateTime(
                           this.props.routines[i]["start_day_and_time"]
                         )}
-                    </div>
+                    </Col>
                   ) : (
-                    <div> </div>
+                    <Col> </Col>
                   )}
                   {this.props.routines[i]["end_day_and_time"] ? (
-                    <div>
+                    <Col xs={6} style ={{fontSize: "12px", paddingLeft:"0px", paddingRight:"0px"}}>
                       {"End Time: " +
                         this.formatDateTime(
                           this.props.routines[i]["end_day_and_time"]
                         )}
-                    </div>
+                    </Col>
                   ) : (
-                    <div> </div>
+                    <Col> </Col>
                   )}
-                  {this.showRoutineRepeatStatus(i)}
-                </div>
               </Row>
-              <Row>{/* {this.thisTakesMeGivenVsSelected(i)} */}</Row>
+
+              <Row>
+                  {(this.props.showRoutine  && (this.state.WentThroughATList[tempID] === false || this.state.WentThroughATList[tempID]=== undefined)) &&
+                  this.getATexpectedTime(tempID)}
+
+                <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
+                  {this.showRoutineRepeatStatus(i)}
+                </Col>
+               
+
+                <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
+                  {this.thisTakesMeGivenVsSelected(i,tempID )}
+                </Col> 
+              </Row>
+
             </ListGroup.Item>
           </div>
         );
@@ -1108,55 +1076,106 @@ export default class FirebaseV2 extends React.Component {
     return displayRoutines;
   };
 
-  getATexpectedTime(title, id, persist) {
-    // const db = firebase.firestore();
-    // // console.log("getATList function with id : " + id);
-    // let docRef = db
-    //   .collection("users")
-    //   .doc(this.props.theCurrentUserID)
-    //   // .doc("7R6hAVmDrNutRkG3sVRy")
-    //   .collection("goals&routines")
-    //   .doc(id);
-    // // console.log("this si the goals and routines", id);
-    // // console.log("this si the correct path", docRef);
-    // docRef
-    //   .get()
-    //   .then((doc) => {
-    //     if (doc.exists) {
-    //       // console.log(doc.data());
-    //       var x = doc.data()["actions&tasks"];
-    //       // console.log(x);
-    //       if (x == null) {
-    //         this.setState({
-    //           AT_expected_completion_time: "0",
-    //         });
-    //         return;
-    //       }
-    //       this.setState({
-    //         AT_expected_completion_time: x,
-    //       });
-    //     } else {
-    //       // doc.data() will be undefined in this case
-    //       console.log("No such document!");
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log("Error getting document:", error);
-    //   });
+
+
+  
+
+  getATexpectedTime(id) {
+    let ActionTaskArrayPath = firebase
+    .firestore()
+    .collection("users")
+    .doc(this.props.theCurrentUserID)
+    .collection("goals&routines")
+    .doc(id);
+
+    ActionTaskArrayPath
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+
+          let ATExpTimeObj = this.state.AT_expected_completion_time;
+          let ATGrabFromFB = this.state.WentThroughATList;
+          let ATtimeCombines = 0;
+          var x = doc.data()["actions&tasks"];
+          if (x.length === 0) {
+            
+            ATExpTimeObj[id] =  "0";
+            ATGrabFromFB[id] = true;
+            this.setState({
+              AT_expected_completion_time: ATExpTimeObj,
+              WentThroughATList: ATGrabFromFB,
+            });
+            return;
+          }
+          
+          for(let k = 0 ; k<x.length; k++){
+            ActionTaskArrayPath.collection("actions&tasks").doc( x[k]["id"])
+            .get()
+            .then((doc) => {
+              if (doc.exists) {
+                let InsStep = doc.data()["instructions&steps"];
+                if(InsStep.length === 0){
+                  ATtimeCombines += this.convertToMinutes(x[k]["expected_completion_time"]);
+
+                }else{
+                  for(let y = 0 ; y<InsStep.length ; y++){
+                    ATtimeCombines += this.convertToMinutes(InsStep[y]["expected_completion_time"]);
+                  }
+                }
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("No Instruction/Step documents!");
+              }
+              if(k === x.length-1){
+                ATExpTimeObj[id] = ATtimeCombines
+                ATGrabFromFB[id] = true;
+            
+                this.setState({
+                  AT_expected_completion_time: ATExpTimeObj,
+                  WentThroughATList: ATGrabFromFB,
+                });
+              } 
+            })       
+          }  
+
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      })
+      .catch(function (error) {
+        console.log("Error getting document:", error);
+      });
   }
 
-  thisTakesMeGivenVsSelected = (i) => {
-    return (
-      <div>
-        {" "}
-        This take me{" "}
-        {this.convertToMinutes(
-          this.props.routines[i]["expected_completion_time"]
-        )}{" "}
-        min (calc){" "}
-      </div>
-    );
+  thisTakesMeGivenVsSelected = (i, id) => {
+    if(this.state.AT_expected_completion_time[id] === "0"){
+      return(
+        <div style = {{fontSize: "12px"}}> 
+          {" "}
+          Takes {" "}
+          {this.convertToMinutes(
+            this.props.routines[i]["expected_completion_time"]
+          )}{" "}
+          min {" "} 
+        </div>
+      );
+    }else{
+      return(
+        <div style = {{fontSize: "12px"}}>
+          {" "}
+          Takes {" "}
+          {this.convertToMinutes(
+            this.props.routines[i]["expected_completion_time"]
+          )}{" "}
+          min vs {" "} {this.state.AT_expected_completion_time[id]} 
+          {" "} (calc)
+         </div>
+      )
+      
+    }
   };
+
   convertToMinutes = (time) => {
     let myStr = time.split(":");
     let hours = myStr[0];
@@ -1166,20 +1185,16 @@ export default class FirebaseV2 extends React.Component {
   };
 
   showRoutineRepeatStatus = (i) => {
-    // console.log(i,this.props.routines[i])
-    // console.log(this.props.routines[i]["repeat"]);
-    // console.log(this.props.routines[i]["repeat_frequency"]);
-    // console.log(this.props.routines[i]["repeat_every"]);
     if (!this.props.routines[i]["repeat"]) {
-      return <div> One time only </div>;
+      return <div style = {{fontSize: "12px"}}> One time only </div>;
     } else {
       switch (this.props.routines[i]["repeat_frequency"]) {
         case "DAY":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div> Repeat daily </div>;
+            return <div style = {{fontSize: "12px"}}> Repeat daily </div>;
           } else {
             return (
-              <div>
+              <div style = {{fontSize: "12px"}}>
                 {" "}
                 Repeat every {this.props.routines[i]["repeat_every"]} days{" "}
               </div>
@@ -1187,10 +1202,10 @@ export default class FirebaseV2 extends React.Component {
           }
         case "WEEK":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div> Repeat weekly </div>;
+            return <div style = {{fontSize: "12px"}}> Repeat weekly </div>;
           } else {
             return (
-              <div>
+              <div style = {{fontSize: "12px"}}> 
                 {" "}
                 Repeat every {this.props.routines[i]["repeat_every"]} weeks{" "}
               </div>
@@ -1198,10 +1213,10 @@ export default class FirebaseV2 extends React.Component {
           }
         case "MONTH":
           if (this.props.routines[i]["repeat_every"] === "1") {
-            return <div> Repeat monthly </div>;
+            return <div style = {{fontSize: "12px"}}> Repeat monthly </div>;
           } else {
             return (
-              <div>
+              <div style = {{fontSize: "12px"}}>
                 {" "}
                 Repeat every {
                   this.props.routines[i]["repeat_every"]
@@ -1269,7 +1284,7 @@ export default class FirebaseV2 extends React.Component {
                         {this.props.goals[i]["is_available"] ? (
                           <div style={{ marginLeft: "5px" }}>
                             <FontAwesomeIcon
-                              title="Available to Cailin"
+                              title="Available to the user"
                               style={{
                                 color: this.state.availabilityColorCode,
                               }}
@@ -1298,7 +1313,6 @@ export default class FirebaseV2 extends React.Component {
                         <ShowATList
                           Index={this.findIndexByID(tempID)}
                           Array={this.props.originalGoalsAndRoutineArr}
-                          // Path={this.state.firebaseRootPath}
                           Path={firebase
                             .firestore()
                             .collection("users")
@@ -1360,7 +1374,7 @@ export default class FirebaseV2 extends React.Component {
                     {this.props.goals[i]["is_available"] ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to Cailin"
+                          title="Available to the user"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1387,7 +1401,6 @@ export default class FirebaseV2 extends React.Component {
                     <ShowATList
                       Index={this.findIndexByID(tempID)}
                       Array={this.props.originalGoalsAndRoutineArr}
-                      // Path={this.state.firebaseRootPath}
                       Path={firebase
                         .firestore()
                         .collection("users")
@@ -1446,37 +1459,76 @@ export default class FirebaseV2 extends React.Component {
                 </div>
               )}
 
-              <div style={{ fontSize: "12px" }}>
-                {this.props.goals[i]["start_day_and_time"] ? (
-                  <div style={{ marginTop: "3px" }}>
-                    {"Start Time: " +
-                      this.formatDateTime(
-                        this.props.goals[i]["start_day_and_time"]
-                      )}
-                  </div>
-                ) : (
-                  <div> </div>
-                )}
+              <Row>
+                  {this.props.goals[i]["start_day_and_time"] ? (
+                    <Col style={{ marginTop: "3px",fontSize: "12px" , paddingRight:"0px",  paddingLeft:"0px", marginLeft:"10px"}}>
+                      {"Start Time: " +
+                        this.formatDateTime(
+                          this.props.goals[i]["start_day_and_time"]
+                        )}
+                    </Col>
+                  ) : (
+                    <Col> </Col>
+                  )}
+                  {this.props.goals[i]["end_day_and_time"] ? (
+                    <Col xs={6} style ={{fontSize: "12px", paddingLeft:"0px", paddingRight:"0px"}}>
+                      {"End Time: " +
+                        this.formatDateTime(
+                          this.props.goals[i]["end_day_and_time"]
+                        )}
+                    </Col>
+                  ) : (
+                    <Col> </Col>
+                  )}
+              </Row>
 
-                {this.props.goals[i]["end_day_and_time"] ? (
-                  <div>
-                    {"End Time: " +
-                      this.formatDateTime(
-                        this.props.goals[i]["end_day_and_time"]
-                      )}{" "}
-                  </div>
-                ) : (
-                  <div> </div>
-                )}
-                {this.showGoalRepeatStatus(i)}
-              </div>
+              <Row>
+                  {(this.props.showGoal  && (this.state.WentThroughATList[tempID] === false || this.state.WentThroughATList[tempID] === undefined)) &&
+                  this.getATexpectedTime(tempID)}
+
+                <Col style = {{paddingRight:"0px", paddingLeft:"0px", marginLeft:"10px"}}>
+                  {this.showGoalRepeatStatus(i)}
+                </Col>
+               
+
+                <Col  xs={6} style = {{paddingLeft:"0px", paddingRight:"0px"}}>
+                  {this.thisTakesMeGivenVsSelectedGoals(i,tempID )}
+                </Col> 
+              </Row>
             </ListGroup.Item>
           </div>
         );
       }
     }
-    //Can pass ['datetime_completed'] in datetime constructor? Eventually want Feb 3  7:30am
     return displayGoals;
+  };
+
+  thisTakesMeGivenVsSelectedGoals = (i, id) => {
+    if(this.state.AT_expected_completion_time[id] === "0"){
+      return(
+        <div style = {{fontSize: "12px"}}> 
+          {" "}
+          Takes {" "}
+          {this.convertToMinutes(
+            this.props.goals[i]["expected_completion_time"]
+          )}{" "}
+          min {" "} 
+        </div>
+      );
+    }else{
+      return(
+        <div style = {{fontSize: "12px"}}>
+          {" "}
+          Takes {" "}
+          {this.convertToMinutes(
+            this.props.goals[i]["expected_completion_time"]
+          )}{" "}
+          min vs {" "} {this.state.AT_expected_completion_time[id]} 
+          {" "} (calc)
+         </div>
+      )
+      
+    }
   };
 
   showGoalRepeatStatus = (i) => {
@@ -1586,8 +1638,6 @@ export default class FirebaseV2 extends React.Component {
                   <div>
                     <FontAwesomeIcon
                       title="Completed Item"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{ color: this.state.availabilityColorCode }}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -1601,8 +1651,6 @@ export default class FirebaseV2 extends React.Component {
                   <div>
                     <FontAwesomeIcon
                       title="Not Completed Item"
-                      // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                      // onMouseOut={event => { event.target.style.color = "#000000"; }}
                       style={{
                         color: isInProgress
                           ? this.state.availabilityColorCode
@@ -1768,7 +1816,6 @@ export default class FirebaseV2 extends React.Component {
   };
 
   render() {
-    // console.log("ran render firebasev2");
     var displayRoutines = this.getRoutines();
     var displayGoals = this.getGoals();
     var displayCompletedGoals = this.getGoalsStatus();
@@ -1776,7 +1823,6 @@ export default class FirebaseV2 extends React.Component {
 
     return (
       <div style={{ marginTop: "0" }}>
-        {/* <div style={{ marginTop: "40px" }}> */}
         {this.props.showRoutineGoalModal ? (
           <Col
             style={{
@@ -1883,7 +1929,6 @@ shows entire list of goals and routines
                 </button>
               </Col>
             </Row>
-            {/* <h5 className="normalfancytext">Goals</h5>{" "} */}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -1919,20 +1964,8 @@ shows entire list of goals and routines
             <div style={{ height: "650px", overflow: "scroll" }}>
               {displayGoals}
             </div>
-            {/* Button to add new Goal */}
           </ListGroup>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-info btn-md"
-            onClick={() => {
-              this.setState({ addNewGRModalShow: true, isRoutine: false });
-            }}
-          >
-            Add Goal
-          </button>
-        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -1969,9 +2002,6 @@ shows entire list of goals and routines
               </button>
             </Col>
           </Row>
-          {/* <Modal.Title>
-            <h5 className="normalfancytext">Routines</h5>
-          </Modal.Title> */}
         </Modal.Header>
 
         <Modal.Body>
@@ -2006,19 +2036,7 @@ shows entire list of goals and routines
               {displayRoutines}
             </div>
           </ListGroup>
-          {/* Button To add new Routine */}
         </Modal.Body>
-        {/* <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-info btn-md"
-            onClick={() => {
-              this.addRoutineOnClick();
-            }}
-          >
-            Add Routine
-          </button>
-        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -2037,7 +2055,7 @@ shows entire list of goals and routines
       newEnd.setHours(23, 59, 59, 59);
     }
 
-    console.log(newStart, newEnd, "newstart");
+    // console.log(newStart, newEnd, "newstart");
 
     this.setState({
       singleGR: {
@@ -2199,7 +2217,6 @@ shows entire list of goals and routines
             this.setState({ singleAT: { show: false } });
           }}
         >
-          {/* <Modal.Title> */}
           <div
             className="d-flex justify-content-between"
             style={{ width: "350px" }}
@@ -2219,40 +2236,7 @@ shows entire list of goals and routines
               </button>
             </div>
           </div>
-          {/* <Row>
-
-                type="button"
-                className="btn btn-info btn-md"
-                onClick={() => {
-                  this.setState({ addNewISModalShow: true });
-                }}
-              >
-                Add Step
-              </button>
-            </div>
-          </div>
-          {/* <Row>
-
-              <Col xs={6}>
-                <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "}
-              </Col>
-              <Col style = {{paddingRight:"0px"}}>
-                <button
-                  type="button"
-                  className="btn btn-info btn-md"
-                  onClick={() => {
-                    this.setState({ addNewISModalShow: true });
-                  }}
-                >
-                  Add Step
-                </button>
-              </Col>
-
-            </Row> */}
-
-          {/* <h5 className="normalfancytext">{this.state.singleAT.title}</h5>{" "} */}
-
-          {/* </Modal.Title> */}
+          
         </Modal.Header>
         <Modal.Body>
           <div
@@ -2275,6 +2259,7 @@ shows entire list of goals and routines
                   }
                 }
                 width={this.state.modalWidth}
+                updateNewWentThroughATListObjIS={this.handleWentThroughATListObj}
               />
             ) : (
               <div></div>
@@ -2286,17 +2271,7 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-info btn-md"
-            onClick={() => {
-              this.setState({ addNewISModalShow: true });
-            }}
-          >
-            Add Step
-          </button>
-        </Modal.Footer> */}
+       
       </Modal.Dialog>
     );
   };
@@ -2356,11 +2331,11 @@ shows entire list of goals and routines
                 refresh={this.refreshATItem} //refreshes the list of AT
                 ATArray={this.state.singleATitemArr}
                 ATItem={this.state.singleGR} //The parent item
-                //theCurrentUserID={this.props.theCurrentUserID}
                 hideNewATModal={() => {
                   this.setState({ addNewATModalShow: false });
                 }}
                 width={this.state.modalWidth}
+                updateNewWentThroughATListObj={this.handleWentThroughATListObj}
               />
             ) : (
               <div></div>
@@ -2388,17 +2363,6 @@ shows entire list of goals and routines
             </div>
           </ListGroup>
         </Modal.Body>
-        {/* <Modal.Footer>
-          <button
-            type="button"
-            className="btn btn-info btn-md"
-            onClick={() => {
-              this.setState({ addNewATModalShow: true });
-            }}
-          >
-            Add Action/Task
-          </button>
-        </Modal.Footer> */}
       </Modal.Dialog>
     );
   };
@@ -2443,6 +2407,10 @@ shows entire list of goals and routines
         </Modal.Header>
         <Modal.Body>
           <h2 className="normalfancytext">Routines:</h2>
+
+          {/**
+           * To allow for the Modals to pop up in front of one another
+           * I have inserted the IS and AT lists inside the RT Goal Modal */}
 
           <ListGroup style={{ height: "350px", overflow: "scroll" }}>
             {displayRoutines}
