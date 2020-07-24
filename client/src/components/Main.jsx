@@ -114,11 +114,13 @@ export default class MainPage extends React.Component {
 
       currentUserPicUrl: "",
       currentUserName: "",
+      currentUserTimeZone: "",
       currentUserId: "",
       currentAdvisorCandidateName: "",
       currentAdvisorCandidateId: "",
       // profileName: "",
       userIdAndNames: {},
+      userTimeZone: {},
       advisorIdAndNames: [],
       userPicsArray: [],
       enableNameDropDown: false,
@@ -355,16 +357,21 @@ export default class MainPage extends React.Component {
         .get()
         .then((advisorArray) => {
           let nameIdObject = {};
+          let timeZoneObject = {}
           let profilePicURLArray = [];
           let theCurrentUserName = "";
           let theCurrentUserPic = "";
           let theCurrentUserId = "";
+          let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
           for (let user of usersArray.docs) {
             // console.log("this is x before", user.id);
             let id = user.id;
             let x = user.data();
-
+            if (x.about_me != undefined && x.about_me.timeSettings != undefined && x.about_me.timeSettings.timeZone != "") {
+              theTimeZone = x.about_me.timeSettings.timeZone;
+            }
+            console.log(theTimeZone);
             var advisors = [];
             for (let advisor of advisorArray.docs) {
               this.state.advisorIdAndNames[advisor.id] = advisor.data();
@@ -399,6 +406,7 @@ export default class MainPage extends React.Component {
             //so have to change structure of whole thing.
             // console.log("this is the picURL", picURL);
             nameIdObject[id] = name;
+            timeZoneObject[id] = theTimeZone;
             // namePicObject[picURL] = name;
             // console.log(x["about_me"]  );
             // db.collection("users").doc(user.id).get()
@@ -418,12 +426,14 @@ export default class MainPage extends React.Component {
           this.setState(
             {
               userIdAndNames: nameIdObject,
+              userTimeZone: timeZoneObject,
               enableNameDropDown: true,
               // currentProfilePicUrl: Object.keys(nameIdObject)[0],
               userPicsArray: profilePicURLArray,
               currentUserPicUrl: theCurrentUserPic,
               currentUserId: theCurrentUserId,
               currentUserName: theCurrentUserName,
+              currentUserTimeZone: theTimeZone,
               // currentUserPicUrl: profilePicURLArray[0],
               // currentUserId: Object.keys(nameIdObject)[0],
               // currentUserName: nameIdObject[Object.keys(nameIdObject)[0]]
@@ -1363,11 +1373,11 @@ updates the google calendar based  on
     updatedEvent.description = this.state.newEventDescription;
     updatedEvent.start = {
       dateTime: this.state.newEventStart0.toISOString(),
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timeZone: this.state.currentUserTimeZone,
     };
     updatedEvent.end = {
       dateTime: this.state.newEventEnd0.toISOString(),
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timeZone: this.state.currentUserTimeZone,
     };
     updatedEvent.recurrence = this.state.repeatOption
       ? this.defineRecurrence()
@@ -1615,6 +1625,13 @@ calls the backend API to delete a item with a particular eventID
       });
   };
 
+
+  LocalDateToISOString = (date, timeZone) => {
+    let a = date.getTime()
+    let b = new Date(date.toLocaleString("en-US", {timeZone: this.state.currentUserTimeZone})).getTime();
+    return new Date(a - (b - a));
+  }
+
   /*
 createEvent:
 Basically creates a new event based on details given
@@ -1657,6 +1674,13 @@ Basically creates a new event based on details given
       minutesNotification = this.state.newEventNotification;
     }
 
+    let startDateTime = this.LocalDateToISOString(this.state.newEventStart0, this.state.currentUserTimeZone).toISOString();
+    let endDateTime = this.LocalDateToISOString(this.state.newEventEnd0, this.state.currentUserTimeZone).toISOString();
+
+    console.log(startDateTime);
+    console.log(endDateTime);
+    console.log("Events are created in timezone: " +this.state.currentUserTimeZone);
+
     let event = {
       summary: this.state.newEventName,
       location: this.state.newEventLocation,
@@ -1672,12 +1696,12 @@ Basically creates a new event based on details given
         ],
       },
       start: {
-        dateTime: this.state.newEventStart0.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        dateTime: startDateTime,
+        timeZone: this.state.currentUserTimeZone,
       },
       end: {
-        dateTime: this.state.newEventEnd0.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        dateTime: endDateTime,
+        timeZone: this.state.currentUserTimeZone,
       },
       recurrence: this.state.repeatOption && this.defineRecurrence(),
       attendees: formattedEmail,
@@ -1687,8 +1711,8 @@ Basically creates a new event based on details given
         newEvent: event,
         reminderTime: minutesNotification,
         title: newTitle,
-        start: this.state.newEventStart0.toISOString(),
-        end: this.state.newEventEnd0.toISOString(),
+        start: startDateTime,
+        end: endDateTime,
         username: this.state.currentUserName,
         id: this.state.currentUserId,
       })
@@ -2198,11 +2222,12 @@ this will close repeat modal.
     });
   };
 
-  changeUser = (id, index, name) => {
+  changeUser = (id, index, name, timezone) => {
     this.setState(
       {
         currentUserPicUrl: this.state.userPicsArray[index],
         currentUserName: name,
+        currentUserTimeZone: timezone,
         currentUserId: id,
         showAboutModal: false,
       },
@@ -2386,10 +2411,12 @@ this will close repeat modal.
                             <Dropdown.Item
                               key={keyName}
                               onClick={(e) => {
+                                console.log(this.state.userTimeZone, keyName, this.state.userTimeZone[keyName]);
                                 this.changeUser(
                                   keyName,
                                   keyIndex,
-                                  this.state.userIdAndNames[keyName]
+                                  this.state.userIdAndNames[keyName],
+                                  this.state.userTimeZone[keyName],
                                 );
                               }}
                             >
@@ -4122,6 +4149,7 @@ this will close repeat modal.
         type="text"
         selected={this.state.newEventStart0}
         onChange={(date) => {
+          console.log("miaomiao");
           this.setState(
             {
               newEventStart0: date,
@@ -4239,7 +4267,7 @@ this will close repeat modal.
         params: {
           start: start0.toString(),
           end: end0.toString(),
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
         },
@@ -4276,7 +4304,7 @@ this will close repeat modal.
         params: {
           start: startDate.toString(),
           end: endDate.toString(),
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          timeZone: this.state.currentUserTimeZone,
           name: this.state.currentUserName,
           id: this.state.currentUserId,
         },

@@ -1700,6 +1700,24 @@ export default class FirebaseV2 extends React.Component {
       db.collection("users")
       .doc(this.props.theCurrentUserID)
       .update({ "goals&routines": arrs });
+
+      db.collection("users")
+      .doc(doc.id)
+      .collection("goals&routines").get()
+      .then((snapshot) => {
+        if (!snapshot.empty) {
+          snapshot.forEach((at_doc) => {
+            let at = at_doc.data();
+            at.completed = false
+            at.is_in_progress = false
+            db.collection("users")
+            .doc(doc.id)
+            .collection("goals&routines")
+            .doc(at_doc.id)
+            .update(at);
+          });
+        }
+      });
       this.setState({});
       alert("Item is reset")
     });
