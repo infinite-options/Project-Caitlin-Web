@@ -110,15 +110,11 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.user_notifications.before.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
@@ -164,15 +160,11 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.ta_notifications.before.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
@@ -247,15 +239,10 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.user_notifications.during.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
@@ -301,15 +288,10 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.ta_notifications.during.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
@@ -384,15 +366,10 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.user_notifications.after.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
@@ -437,15 +414,10 @@ class ShowNotifications extends React.Component {
                     this.props.notificationChange(temp);
                   }}
                   //TEMP FIX for SPACE BAR TRIGGERING KEY PRESS
-                  onKeyDown={(e) => {
+                  onKeyUp={(e) => {
                     if (e.keyCode === 32) {
-                      let temp = this.props.itemToEditPassedIn;
-                      temp.ta_notifications.after.message =
-                        e.target.value + " ";
-                      // this.setState({ itemToEdit: temp })
-                      e.preventDefault();
                       e.stopPropagation();
-                      this.props.notificationChange(temp);
+                      e.preventDefault();
                     }
                   }}
                 />
