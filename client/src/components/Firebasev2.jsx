@@ -419,7 +419,7 @@ export default class FirebaseV2 extends React.Component {
                       Path={this.state.singleGR.fbPath}
                     />
                   </Row>
-
+ 
                   <Row style={{ marginTop: "15px", marginBottom: "10px" }}>
                     <DeleteAT
                       deleteIndex={i}
