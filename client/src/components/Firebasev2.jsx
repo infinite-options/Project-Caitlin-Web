@@ -427,7 +427,7 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshATItem}
-                    />
+                    /> 
                     <EditAT
                       marginLeftV="-170px"
                       i={i} //index to edit
