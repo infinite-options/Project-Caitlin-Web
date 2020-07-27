@@ -7,6 +7,7 @@ export default class ShowISList extends React.Component {
     super(props);
     this.state = {
       iconShow: true,
+      hasSteps: true,
     };
   }
 
@@ -22,12 +23,23 @@ export default class ShowISList extends React.Component {
       });
     }
   }
-  componentDidMount() {
+  async componentDidMount() {
     let items = [...this.props.Array];
+    await this.hasStepss();
     this.setState({
       iconShow: items[this.props.Index]["is_sublist_available"],
     });
   }
+
+  hasStepss = async () => {
+    const id = this.props.Array[this.props.Index].id;
+    const res = await this.props.Path.collection("actions&tasks").doc(id).get();
+    const steps = res.data()["instructions&steps"];
+    // console.log("this is steps:", steps);
+    if (steps.length === 0) {
+      this.setState({ hasSteps: false });
+    }
+  };
 
   editFirBaseFalse = (e) => {
     this.setState({ iconShow: false });
@@ -43,50 +55,59 @@ export default class ShowISList extends React.Component {
     this.props.Path.update({ "actions&tasks": items }).then((doc) => {});
   };
 
+  renderShowIcon = () => {
+    return (
+      <div>
+        <FontAwesomeIcon
+          icon={faList}
+          title="Show List Item"
+          style={{ color: "#D6A34C", marginLeft: "20px" }}
+          // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShow: false}); this.editFirBaseFalse()}}
+          onClick={(e) => {
+            e.stopPropagation();
+            this.editFirBaseFalse();
+          }}
+          size="lg"
+        />
+      </div>
+    );
+  };
+  renderNotShowIcon = () => {
+    return (
+      <div>
+        <span className="fa-layers fa-fw" style={{ marginLeft: "20px" }}>
+          <FontAwesomeIcon
+            style={{ color: "#000000" }}
+            icon={faList}
+            title="Don't Show List Item"
+            onClick={(e) => {
+              e.stopPropagation();
+              this.editFirBaseTrue();
+            }}
+            size="lg"
+          />
+          <FontAwesomeIcon
+            style={{ color: "#000000" }}
+            icon={faSlash}
+            title="Don't Show List Item"
+            onClick={(e) => {
+              e.stopPropagation();
+              this.editFirBaseTrue();
+            }}
+            size="lg"
+          />
+        </span>
+      </div>
+    );
+  };
+
   render() {
     return (
       <div>
-        {this.state.iconShow && (
-          <div>
-            <FontAwesomeIcon
-              icon={faList}
-              title="Show List Item"
-              style={{ color: "#D6A34C", marginLeft: "20px" }}
-              // onClick={(e)=>{ e.stopPropagation(); this.setState({iconShow: false}); this.editFirBaseFalse()}}
-              onClick={(e) => {
-                e.stopPropagation();
-                this.editFirBaseFalse();
-              }}
-              size="lg"
-            />
-          </div>
-        )}
-        {!this.state.iconShow && (
-          <div>
-            <span className="fa-layers fa-fw" style={{ marginLeft: "20px" }}>
-              <FontAwesomeIcon
-                style={{ color: "#000000" }}
-                icon={faList}
-                title="Don't Show List Item"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  this.editFirBaseTrue();
-                }}
-                size="lg"
-              />
-              <FontAwesomeIcon
-                style={{ color: "#000000" }}
-                icon={faSlash}
-                title="Don't Show List Item"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  this.editFirBaseTrue();
-                }}
-                size="lg"
-              />
-            </span>
-          </div>
-        )}
+        {this.state.iconShow && this.state.hasSteps && this.renderShowIcon()}
+        {!this.state.iconShow &&
+          this.state.hasSteps &&
+          this.renderNotShowIcon()}
       </div>
     );
   }

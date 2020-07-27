@@ -363,15 +363,10 @@ export default class MainPage extends React.Component {
           let theCurrentUserPic = "";
           let theCurrentUserId = "";
           let theTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
           for (let user of usersArray.docs) {
             // console.log("this is x before", user.id);
             let id = user.id;
             let x = user.data();
-            if (x.about_me != undefined && x.about_me.timeSettings != undefined && x.about_me.timeSettings.timeZone != "") {
-              theTimeZone = x.about_me.timeSettings.timeZone;
-            }
-            console.log(theTimeZone);
             var advisors = [];
             for (let advisor of advisorArray.docs) {
               this.state.advisorIdAndNames[advisor.id] = advisor.data();
@@ -380,6 +375,9 @@ export default class MainPage extends React.Component {
                   for (let u of advisor.data().users) {
                     if (u.User.id == id) {
                       advisors.push(u.User.id);
+                      if (x.about_me != undefined && x.about_me.timeSettings != undefined && x.about_me.timeSettings.timeZone != "") {
+                        theTimeZone = x.about_me.timeSettings.timeZone;
+                      }
                     }
                   }
                 }
@@ -423,6 +421,7 @@ export default class MainPage extends React.Component {
             // }
           }
           // console.log("this is the object for name and pic after",namePicObject);
+          console.log("why new york,", theTimeZone);
           this.setState(
             {
               userIdAndNames: nameIdObject,
@@ -1625,10 +1624,10 @@ calls the backend API to delete a item with a particular eventID
       });
   };
 
-
   LocalDateToISOString = (date, timeZone) => {
-    let a = date.getTime()
+    let a = date.getTime();
     let b = new Date(date.toLocaleString("en-US", {timeZone: this.state.currentUserTimeZone})).getTime();
+    console.log(a,  b);
     return new Date(a - (b - a));
   }
 

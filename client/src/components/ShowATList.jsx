@@ -25,9 +25,9 @@ export default class ShowATList extends React.Component {
 
   async componentDidMount() {
     let items = [...this.props.Array];
-    const id = items[this.props.Index].id;
-    await this.hasActions(id);
-    console.log(id, " did mount", this.state.hasAction);
+
+    await this.hasActions();
+
     // console.log("this si the for the person",items[this.props.Index] )
     // console.log("this is what it is supposed to be",items[this.props.Index]['is_sublist_available']);
     this.setState({
@@ -35,11 +35,12 @@ export default class ShowATList extends React.Component {
     });
   }
 
-  hasActions = async (id) => {
+  hasActions = async () => {
+    const id = this.props.Array[this.props.Index].id;
     const response = await this.props.Path.collection("goals&routines")
       .doc(id)
       .get();
-    const actions = await response.data()["actions&tasks"];
+    const actions = response.data()["actions&tasks"];
     if (actions.length === 0) {
       this.setState({ hasAction: false });
     }

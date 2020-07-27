@@ -1752,15 +1752,41 @@ export default class FirebaseV2 extends React.Component {
           .get()
           .then((snapshot) => {
             if (!snapshot.empty) {
-              snapshot.forEach((at_doc) => {
-                let at = at_doc.data();
-                at.completed = false;
-                at.is_in_progress = false;
+              snapshot.forEach((gr_doc) => {
+                let gr = gr_doc.data();
+                gr["actions&tasks"].forEach((at) => {
+                  at.is_complete = false;
+                  at.is_in_progress = false;
+                  db.collection("users")
+                    .doc(doc.id)
+                    .collection("goals&routines")
+                    .doc(gr_doc.id)
+                    .collection("actions&tasks")
+                    .get()
+                    .then((is_snapshot) => {
+                      if (!is_snapshot.empty) {
+                        is_snapshot.forEach((is_doc) => {
+                          let is = is_doc.data();
+                          is["instructions&steps"].forEach((x) => {
+                            x.is_complete = false;
+                            x.is_in_progress = false;
+                          });
+                          db.collection("users")
+                            .doc(doc.id)
+                            .collection("goals&routines")
+                            .doc(gr_doc.id)
+                            .collection("actions&tasks")
+                            .doc(is_doc.id)
+                            .update(is);
+                        });
+                      }
+                    });
+                });
                 db.collection("users")
                   .doc(doc.id)
                   .collection("goals&routines")
-                  .doc(at_doc.id)
-                  .update(at);
+                  .doc(gr_doc.id)
+                  .update(gr);
               });
             }
           });
