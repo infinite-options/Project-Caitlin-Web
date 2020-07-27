@@ -944,7 +944,7 @@ this will close repeat modal.
       marginLeft: "8px",
       background: "#F8F9FA",
       border: "none",
-      width: "70px",
+      width: "50px",
       borderRadius: "4px",
       marginRight: "8px",
     };
@@ -1169,7 +1169,7 @@ this will close repeat modal.
                       style={inputStyle}
                       className="input-exception"
                     />
-                    occurrence
+                    occurrence(s)
                   </span>
                 </Form.Check.Label>
               </Form.Check>

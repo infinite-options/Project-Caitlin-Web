@@ -357,7 +357,7 @@ export default class MainPage extends React.Component {
         .get()
         .then((advisorArray) => {
           let nameIdObject = {};
-          let timeZoneObject = {}
+          let timeZoneObject = {};
           let profilePicURLArray = [];
           let theCurrentUserName = "";
           let theCurrentUserPic = "";
@@ -375,7 +375,11 @@ export default class MainPage extends React.Component {
                   for (let u of advisor.data().users) {
                     if (u.User.id == id) {
                       advisors.push(u.User.id);
-                      if (x.about_me != undefined && x.about_me.timeSettings != undefined && x.about_me.timeSettings.timeZone != "") {
+                      if (
+                        x.about_me != undefined &&
+                        x.about_me.timeSettings != undefined &&
+                        x.about_me.timeSettings.timeZone != ""
+                      ) {
                         theTimeZone = x.about_me.timeSettings.timeZone;
                       }
                     }
@@ -1626,10 +1630,12 @@ calls the backend API to delete a item with a particular eventID
 
   LocalDateToISOString = (date, timeZone) => {
     let a = date.getTime();
-    let b = new Date(date.toLocaleString("en-US", {timeZone: this.state.currentUserTimeZone})).getTime();
-    console.log(a,  b);
+    let b = new Date(
+      date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
+    ).getTime();
+    console.log(a, b);
     return new Date(a - (b - a));
-  }
+  };
 
   /*
 createEvent:
@@ -1673,12 +1679,20 @@ Basically creates a new event based on details given
       minutesNotification = this.state.newEventNotification;
     }
 
-    let startDateTime = this.LocalDateToISOString(this.state.newEventStart0, this.state.currentUserTimeZone).toISOString();
-    let endDateTime = this.LocalDateToISOString(this.state.newEventEnd0, this.state.currentUserTimeZone).toISOString();
+    let startDateTime = this.LocalDateToISOString(
+      this.state.newEventStart0,
+      this.state.currentUserTimeZone
+    ).toISOString();
+    let endDateTime = this.LocalDateToISOString(
+      this.state.newEventEnd0,
+      this.state.currentUserTimeZone
+    ).toISOString();
 
     console.log(startDateTime);
     console.log(endDateTime);
-    console.log("Events are created in timezone: " +this.state.currentUserTimeZone);
+    console.log(
+      "Events are created in timezone: " + this.state.currentUserTimeZone
+    );
 
     let event = {
       summary: this.state.newEventName,
@@ -2410,12 +2424,16 @@ this will close repeat modal.
                             <Dropdown.Item
                               key={keyName}
                               onClick={(e) => {
-                                console.log(this.state.userTimeZone, keyName, this.state.userTimeZone[keyName]);
+                                console.log(
+                                  this.state.userTimeZone,
+                                  keyName,
+                                  this.state.userTimeZone[keyName]
+                                );
                                 this.changeUser(
                                   keyName,
                                   keyIndex,
                                   this.state.userIdAndNames[keyName],
-                                  this.state.userTimeZone[keyName],
+                                  this.state.userTimeZone[keyName]
                                 );
                               }}
                             >
@@ -3435,7 +3453,7 @@ this will close repeat modal.
                       style={inputStyle}
                       className="input-exception"
                     />
-                    occurrence
+                    occurrence(s)
                   </span>
                 </Form.Check.Label>
               </Form.Check>

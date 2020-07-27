@@ -3,7 +3,7 @@ import { Modal, Button, Dropdown, DropdownButton, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const RepeatModal = props => {
+const RepeatModal = (props) => {
   const [title, setTitle] = useState("DAY");
   const [monthly, setMonthly] = useState("Monthly on day 13");
   const [endDate, setEndDate] = useState(props.newEventStart0);
@@ -18,7 +18,7 @@ const RepeatModal = props => {
     left: "50%",
     top: "60%",
     transform: "translate(-50%, -50%)",
-    width: "400px"
+    width: "400px",
   };
 
   const inputStyle = {
@@ -28,24 +28,24 @@ const RepeatModal = props => {
     border: "none",
     width: "70px",
     borderRadius: "4px",
-    marginRight: "8px"
+    marginRight: "8px",
   };
 
   const selectStyle = {
-    display: "inline-block"
+    display: "inline-block",
   };
 
   const weekStyle = {
     display: "flex",
     alignItems: "center",
     textAlign: "center",
-    marginTop: "10px"
+    marginTop: "10px",
   };
 
   // const radioInputStyle = { display: "flex", alignItems: "center" };
 
   // onClick event handler for the circles
-  const selectedDot = e => {
+  const selectedDot = (e) => {
     let curClass = e.target.classList;
     curClass.contains("selected")
       ? curClass.remove("selected")
@@ -64,7 +64,7 @@ const RepeatModal = props => {
               className={
                 i === props.newEventStart0.getDay() ? "dot selected" : "dot"
               }
-              onClick={e => selectedDot(e)}
+              onClick={(e) => selectedDot(e)}
             >
               {day}
             </span>
@@ -83,13 +83,13 @@ const RepeatModal = props => {
     >
       <Dropdown.Item
         eventKey="Monthly on day 13"
-        onSelect={eventKey => setMonthly(eventKey)}
+        onSelect={(eventKey) => setMonthly(eventKey)}
       >
         Monthly on day 13
       </Dropdown.Item>
       <Dropdown.Item
         eventKey="Monthly on the second Friday"
-        onSelect={eventKey => setMonthly(eventKey)}
+        onSelect={(eventKey) => setMonthly(eventKey)}
       >
         Monthly on the second Friday
       </Dropdown.Item>
@@ -115,30 +115,30 @@ const RepeatModal = props => {
             max="10000"
             value={inputValue}
             style={inputStyle}
-            onChange={e => setInputValue(e.target.value)}
+            onChange={(e) => setInputValue(e.target.value)}
           />
           <DropdownButton title={title} style={selectStyle} variant="light">
             <Dropdown.Item
               eventKey="DAY"
-              onSelect={eventKey => setTitle(eventKey)}
+              onSelect={(eventKey) => setTitle(eventKey)}
             >
               day
             </Dropdown.Item>
             <Dropdown.Item
               eventKey="WEEK"
-              onSelect={eventKey => setTitle(eventKey)}
+              onSelect={(eventKey) => setTitle(eventKey)}
             >
               week
             </Dropdown.Item>
             <Dropdown.Item
               eventKey="MONTH"
-              onSelect={eventKey => setTitle(eventKey)}
+              onSelect={(eventKey) => setTitle(eventKey)}
             >
               month
             </Dropdown.Item>
             <Dropdown.Item
               eventKey="YEAR"
-              onSelect={eventKey => setTitle(eventKey)}
+              onSelect={(eventKey) => setTitle(eventKey)}
             >
               year
             </Dropdown.Item>
@@ -152,7 +152,7 @@ const RepeatModal = props => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            marginTop: "20px"
+            marginTop: "20px",
           }}
           className="repeat-form"
         >
@@ -176,7 +176,7 @@ const RepeatModal = props => {
               <DatePicker
                 className="date-picker-btn btn btn-light"
                 selected={endDate}
-                onChange={date => setEndDate(date)}
+                onChange={(date) => setEndDate(date)}
               ></DatePicker>
               {/* </Button> */}
             </Form.Check.Label>
@@ -198,7 +198,7 @@ const RepeatModal = props => {
                   style={inputStyle}
                   className="input-exception"
                 />
-                occurrence
+                occurrence(s)
               </span>
             </Form.Check.Label>
           </Form.Check>

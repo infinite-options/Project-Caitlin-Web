@@ -381,11 +381,11 @@ export default class FirebaseV2 extends React.Component {
                     {tempAvailable ? (
                       <div style={{ marginLeft: "5px" }}>
                         <FontAwesomeIcon
-                          title="Available to the user"
+                          title="Available to User"
                           style={{ color: this.state.availabilityColorCode }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is Availble to the user");
+                            alert("Item Is Availble to User");
                           }}
                           icon={faUser}
                           size="lg"
@@ -394,11 +394,11 @@ export default class FirebaseV2 extends React.Component {
                     ) : (
                       <div>
                         <FontAwesomeIcon
-                          title="Unavailable to the user"
+                          title="Unavailable to User"
                           style={{ color: "#000000" }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            alert("Item Is NOT Availble to the user");
+                            alert("Item Is NOT Availble to User");
                           }}
                           icon={faUserAltSlash}
                           size="lg"
