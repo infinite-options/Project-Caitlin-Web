@@ -10,5 +10,7 @@
 5. go to localhost
 
 ## Enable version number auto-increment
+## Please run all the command in root directory of your project
 
-0. `cp pre-commit-hook .\.git\hooks\pre-commit`
+0. `chmod +x .git/hooks/pre-commit`
+1. `cp pre-commit-hook .git/hooks/pre-commit`
