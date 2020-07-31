@@ -1311,6 +1311,7 @@ the user with a new form to create a event
   // submits the data to be passed up to be integrated into google calendar
 
   handleSubmit = (event) => {
+    console.log("HandleSubmit: ", event);
     if (this.state.start === "" || this.state.end === "") {
       console.log("invalid params");
       return;
@@ -3115,7 +3116,8 @@ this will close repeat modal.
         </Modal.Body>
         <Modal.Footer>
           <Container fluid>
-            <Row>
+            {/**
+             * <Row>
               <Col style={{ float: "right", marginBottom: "10px" }}>
                 <Button
                   variant="outline-primary"
@@ -3128,6 +3130,8 @@ this will close repeat modal.
                 </Button>
               </Col>
             </Row>
+             *  */}
+
             <Row>
               <Col style={this.state.isEvent ? { display: "none" } : {}} xs={4}>
                 <Button
