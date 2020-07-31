@@ -67,8 +67,12 @@ export default class MainPage extends React.Component {
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
-      dateContext: moment(), //Keep track of day and month
-      todayDateObject: moment(), //Remember today's date to create the circular effect over todays day
+      dateContext: moment(new Date(new Date().toLocaleString('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      }))), //Keep track of day and month
+      todayDateObject: moment(new Date(new Date().toLocaleString('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      }))), //Remember today's date to create the circular effect over todays day
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
@@ -114,7 +118,7 @@ export default class MainPage extends React.Component {
 
       currentUserPicUrl: "",
       currentUserName: "",
-      currentUserTimeZone: "",
+      currentUserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       currentUserId: "",
       currentAdvisorCandidateName: "",
       currentAdvisorCandidateId: "",
@@ -533,11 +537,19 @@ the current month's events
       newEventID: A.id,
       newEventRecurringID: A.recurringEventId,
       newEventStart0: A.start.dateTime
-        ? new Date(A.start.dateTime)
-        : new Date(A.start.date),
+        ? new Date(new Date(A.start.dateTime).toLocaleString('en-US', {
+          timeZone: this.state.currentUserTimeZone
+        }))
+        : new Date(new Date(A.start.date).toLocaleString('en-US', {
+          timeZone: this.state.currentUserTimeZone
+        })),
       newEventEnd0: A.end.dateTime
-        ? new Date(A.end.dateTime)
-        : new Date(A.end.date),
+        ? new Date(new Date(A.end.dateTime).toLocaleString('en-US', {
+          timeZone: this.state.currentUserTimeZone
+        }))
+        : new Date(new Date(A.end.date).toLocaleString('en-US', {
+          timeZone: this.state.currentUserTimeZone
+        })),
       newEventName: A.summary,
       newEventGuests: guestList,
       newEventLocation: A.location ? A.location : "",
@@ -1374,12 +1386,22 @@ updates the google calendar based  on
     updatedEvent.attendees = formattedEmail;
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
+
+    let startDateTime = this.LocalDateToISOString(
+      this.state.newEventStart0,
+      this.state.currentUserTimeZone
+    ).toISOString();
+    let endDateTime = this.LocalDateToISOString(
+      this.state.newEventEnd0,
+      this.state.currentUserTimeZone
+    ).toISOString();
+
     updatedEvent.start = {
-      dateTime: this.state.newEventStart0.toISOString(),
+      dateTime: startDateTime,
       timeZone: this.state.currentUserTimeZone,
     };
     updatedEvent.end = {
-      dateTime: this.state.newEventEnd0.toISOString(),
+      dateTime: endDateTime,
       timeZone: this.state.currentUserTimeZone,
     };
     updatedEvent.recurrence = this.state.repeatOption
@@ -1545,8 +1567,12 @@ updates the google calendar based  on
         this.setState({
           dayEventSelected: false,
           newEventName: "",
-          newEventStart0: new Date(),
-          newEventEnd0: new Date(),
+          newEventStart0: new Date(new Date().toLocaleString('en-US', {
+            timeZone: this.state.currentUserTimeZone
+          })),
+          newEventEnd0: new Date(new Date().toLocaleString('en-US', {
+            timeZone: this.state.currentUserTimeZone
+          })),
         });
 
         this.updateEventsArray();
@@ -1856,7 +1882,10 @@ updates the array if the month view changes to a different month.
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
-      this.getEventsByInterval(startDate.toString(), endDate.toString());
+      this.getEventsByInterval(
+        this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
+        this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
+      );
     } else if (this.state.calendarView === "Day") {
       let startObject = this.state.dateContext.clone();
       let endObject = this.state.dateContext.clone();
@@ -1867,8 +1896,8 @@ updates the array if the month view changes to a different month.
       startDate.setHours(0, 0, 0);
       endDate.setHours(23, 59, 59);
       this.getEventsByIntervalDayVersion(
-        startDate.toString(),
-        endDate.toString()
+        this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
+        this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
       );
     } else if (this.state.calendarView === "Week") {
       let startObject = this.state.dateContext.clone();
@@ -1877,9 +1906,11 @@ updates the array if the month view changes to a different month.
       let endDay = endObject.endOf("week");
       let startDate = new Date(startDay.format("MM/DD/YYYY"));
       let endDate = new Date(endDay.format("MM/DD/YYYY"));
+      startDate.setHours(0, 0, 0);
+      endDate.setHours(23, 59, 59);
       this.getEventsByIntervalWeekVersion(
-        startObject.toDate(),
-        endObject.toDate()
+        this.LocalDateToISOString(startDate, this.state.currentUserTimeZone),
+        this.LocalDateToISOString(endDate, this.state.currentUserTimeZone)
       );
     }
   };
@@ -2235,6 +2266,12 @@ this will close repeat modal.
     });
   };
 
+  updateTimeZone = (timeZone) => {
+    this.setState({
+      currentUserTimeZone: timeZone
+    });
+  };
+
   changeUser = (id, index, name, timezone) => {
     this.setState(
       {
@@ -2308,6 +2345,7 @@ this will close repeat modal.
           <AboutModal
             CameBackFalse={this.hideAboutForm}
             updateProfilePic={this.updatePic}
+            updateProfileTimeZone={this.updateTimeZone}
             // {console.log("this is the id is it undefined at first", )}
             theCurrentUserId={this.state.currentUserId}
           />
@@ -2688,9 +2726,14 @@ this will close repeat modal.
               className="bigfancytext"
             >
               <p>
-                {" "}
                 {this.state.dateContext.format("dddd")} {this.getDay()}{" "}
                 {this.getMonth()} {this.getYear()}{" "}
+              </p>
+              <p
+              style={{marginBottom: "0", height:"19.5px"}}
+              className="normalfancytext"
+              >
+              {this.state.currentUserTimeZone}
               </p>
             </Col>
             <Col>
@@ -2715,6 +2758,7 @@ this will close repeat modal.
             handleDateClick={this.handleDateClickOnDayView}
             dayEvents={this.state.dayEvents}
             getEventsByInterval={this.getEventsByIntervalDayVersion}
+            timeZone={this.state.currentUserTimeZone}
           />
           <DayRoutines
             dateContext={this.state.dateContext}
@@ -2776,6 +2820,12 @@ this will close repeat modal.
                 className="bigfancytext"
               >
                 <p> Week of {startWeek.format("D MMMM YYYY")} </p>
+                <p
+                style={{marginBottom: "0", height:"19.5px"}}
+                className="normalfancytext"
+                >
+                {this.state.currentUserTimeZone}
+                </p>
               </Col>
               <Col>
                 <FontAwesomeIcon
@@ -2797,6 +2847,7 @@ this will close repeat modal.
               dateContext={this.state.dateContext}
               eventClick={this.handleWeekEventClick}
               onDayClick={this.handleDateClickOnWeekView}
+              timeZone={this.state.currentUserTimeZone}
             />
           </Row>
           <Row>
@@ -2837,13 +2888,17 @@ this will close repeat modal.
     if (this.state.calendarView === "Month") {
       newStart = new Date();
       newStart.setHours(0, 0, 0, 0);
+      // newStart = new Date(this.LocalDateToISOString(newStart, this.state.currentUserTimeZone));
       newEnd = new Date();
       newEnd.setHours(23, 59, 59, 59);
+      // newEnd = new Date(this.LocalDateToISOString(newEnd, this.state.currentUserTimeZone));
     } else if (this.state.calendarView === "Day") {
       newStart = new Date(this.state.dateContext.toDate());
       newStart.setHours(0, 0, 0, 0);
+      // newStart = new Date(this.LocalDateToISOString(newStart, this.state.currentUserTimeZone));
       newEnd = new Date(this.state.dateContext.toDate());
       newEnd.setHours(23, 59, 59, 59);
+      // newEnd = new Date(this.LocalDateToISOString(newEnd, this.state.currentUserTimeZone));
     }
 
     this.setState({
@@ -2930,7 +2985,9 @@ this will close repeat modal.
           onClick={() => {
             this.setState(
               {
-                dateContext: moment(),
+                dateContext: moment(new Date(new Date().toLocaleString('en-US', {
+                  timeZone: this.state.currentUserTimeZone
+                }))),
               },
               this.updateEventsArray
             );
@@ -3043,6 +3100,12 @@ this will close repeat modal.
               <p>
                 {this.getMonth()} {this.getYear()}
               </p>
+              <p
+              style={{marginBottom: "0", height:"19.5px"}}
+              className="normalfancytext"
+              >
+              {this.state.currentUserTimeZone}
+              </p>
             </Col>
             <Col>
               <FontAwesomeIcon
@@ -3065,6 +3128,7 @@ this will close repeat modal.
           dateObject={this.state.todayDateObject}
           today={this.state.today}
           dateContext={this.state.dateContext}
+          timeZone={this.state.currentUserTimeZone}
           // selectedDay={this.state.selectedDay}
         />
       </div>
@@ -3200,8 +3264,6 @@ this will close repeat modal.
       "Friday",
       "Saturday",
     ];
-
-    const d = new Date();
 
     // Custom styles
     const modalStyle = {
@@ -4166,7 +4228,6 @@ this will close repeat modal.
         type="text"
         selected={this.state.newEventStart0}
         onChange={(date) => {
-          console.log("miaomiao");
           this.setState(
             {
               newEventStart0: date,
@@ -4329,11 +4390,7 @@ this will close repeat modal.
       .then((response) => {
         console.log("what are the events", response.data);
         var events = response.data;
-        // events.map((event) => {
-        //   console.log(new Date(event.start.dateTime).getHours());
-        //   event.start.dateTime = new Date(event.start.dateTime);
-        //   event.end.dateTime = new Date(event.end.dateTime);
-        // });
+
         this.setState(
           {
             dayEvents: events,

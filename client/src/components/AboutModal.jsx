@@ -42,22 +42,21 @@ class AboutModal extends React.Component{
             showTimeModal: false,
             saveButtonEnabled: true,
             enableDropDown: false
-            
         }
     }
 
     componentDidMount() {
         this.grabFireBaseAboutMeData();
-        this.grabFireBaseAllPeopleNames();  
+        this.grabFireBaseAllPeopleNames();
     }
 
     hideAboutForm = e => {
-        this.props.CameBackFalse();   
+        this.props.CameBackFalse();
     };
 
     handleFileSelected = event => {
-        event.preventDefault(); 
-        event.stopPropagation();                
+        event.preventDefault();
+        event.stopPropagation();
         const file = event.target.files[0];
         this.setState({
             saveButtonEnabled: false
@@ -65,18 +64,18 @@ class AboutModal extends React.Component{
             let targetFile = file
             if(targetFile !== null && Object.keys(this.state.aboutMeObject).length !== 0 ){
                 let temp = this.state.aboutMeObject;
-    
-                // Create a reference to the firebase storage. 
+
+                // Create a reference to the firebase storage.
                 var storageRef = storage.ref('Profile_Pics/' + targetFile.name);
                 //upload file to firebase storage
                 var task = storageRef.put(targetFile);
                 //check on the the upload progress
                 task.on('state_changed',
                     function progress(snapshot){
-                        //get percentage uplaoded 
+                        //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
                         console.log(percentage);
-    
+
                     },
                     function error(err){
                         console.log(err);
@@ -89,18 +88,18 @@ class AboutModal extends React.Component{
                             this.setState({
                                 aboutMeObject: temp,
                                 saveButtonEnabled: true
-                            }); 
+                            });
                         });
                     }
-                );     
-            }}); 
+                );
+            }});
     };
 
-  
+
 
     handleImpPeople1 = (event) =>{
-        event.preventDefault(); 
-        event.stopPropagation();                
+        event.preventDefault();
+        event.stopPropagation();
         const file2 = event.target.files[0];
         this.setState({
             saveButtonEnabled: false
@@ -108,18 +107,18 @@ class AboutModal extends React.Component{
             let targetFile = file2
             if(targetFile !== null && Object.keys(this.state.importantPeople1).length !== 0 ){
                 let temp = this.state.importantPeople1;
-    
-                // Create a reference to the firebase storage. 
+
+                // Create a reference to the firebase storage.
                 var storageRef = storage.ref('Important_People/' + targetFile.name);
                 //upload file to firebase storage
                 var task = storageRef.put(targetFile);
                 //check on the the upload progress
                 task.on('state_changed',
                     function progress(snapshot){
-                        //get percentage uplaoded 
+                        //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
                         console.log(percentage);
-    
+
                     },
                     function error(err){
                         console.log(err);
@@ -133,16 +132,16 @@ class AboutModal extends React.Component{
                             this.setState({
                                 importantPeople1: temp,
                                 saveButtonEnabled: true
-                            }); 
+                            });
                         });
                     }
-                );     
-            }}); 
+                );
+            }});
     }
 
     handleImpPeople2 = (event) =>{
-        event.preventDefault(); 
-        event.stopPropagation();                
+        event.preventDefault();
+        event.stopPropagation();
         const file3 = event.target.files[0];
         this.setState({
             saveButtonEnabled: false
@@ -150,18 +149,18 @@ class AboutModal extends React.Component{
             let targetFile = file3
             if(targetFile !== null && Object.keys(this.state.importantPeople2).length !== 0 ){
                 let temp = this.state.importantPeople2;
-    
-                // Create a reference to the firebase storage. 
+
+                // Create a reference to the firebase storage.
                 var storageRef = storage.ref('Important_People/' + targetFile.name);
                 //upload file to firebase storage
                 var task = storageRef.put(targetFile);
                 //check on the the upload progress
                 task.on('state_changed',
                     function progress(snapshot){
-                        //get percentage uplaoded 
+                        //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
                         console.log(percentage);
-    
+
                     },
                     function error(err){
                         console.log(err);
@@ -175,16 +174,16 @@ class AboutModal extends React.Component{
                             this.setState({
                                 importantPeople2: temp,
                                 saveButtonEnabled: true
-                            }); 
+                            });
                         });
                     }
-                );     
+                );
             }});
     }
 
     handleImpPeople3 = (event) =>{
-        event.preventDefault(); 
-        event.stopPropagation();                
+        event.preventDefault();
+        event.stopPropagation();
         const file4 = event.target.files[0];
         this.setState({
             saveButtonEnabled: false
@@ -192,18 +191,18 @@ class AboutModal extends React.Component{
             let targetFile = file4
             if(targetFile !== null && Object.keys(this.state.importantPeople3).length !== 0 ){
                 let temp = this.state.importantPeople3;
-    
-                // Create a reference to the firebase storage. 
+
+                // Create a reference to the firebase storage.
                 var storageRef = storage.ref('Important_People/' + targetFile.name);
                 //upload file to firebase storage
                 var task = storageRef.put(targetFile);
                 //check on the the upload progress
                 task.on('state_changed',
                     function progress(snapshot){
-                        //get percentage uplaoded 
+                        //get percentage uplaoded
                         var percentage = (snapshot.bytesTransfered/ snapshot.totalBytes) * 100;
                         console.log(percentage);
-    
+
                     },
                     function error(err){
                         console.log(err);
@@ -217,10 +216,10 @@ class AboutModal extends React.Component{
                             this.setState({
                                 importantPeople3: temp,
                                 saveButtonEnabled: true
-                            }); 
+                            });
                         });
                     }
-                );     
+                );
             }});
     }
 
@@ -250,7 +249,7 @@ class AboutModal extends React.Component{
                         if(importantPeopleArray.length >= 3){
                             this.setState({
                                 peopleNamesArray:test,
-                                enableDropDown: true, 
+                                enableDropDown: true,
                                 importantPoeplArrayLength: importantPeopleArray.length,
                                 importantPeople1: importantPeopleArray[0],
                                 importantPeople2: importantPeopleArray[1],
@@ -264,7 +263,7 @@ class AboutModal extends React.Component{
                             this.setState({
                                 peopleNamesArray:test,
                                 enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length, 
+                                importantPoeplArrayLength: importantPeopleArray.length,
                                 importantPeople1: importantPeopleArray[0],
                                 importantPeople2: importantPeopleArray[1],
                                 importantPeople1id: importantPeopleReferencid[0],
@@ -275,7 +274,7 @@ class AboutModal extends React.Component{
                             this.setState({
                                 peopleNamesArray:test,
                                 enableDropDown: true,
-                                importantPoeplArrayLength: importantPeopleArray.length, 
+                                importantPoeplArrayLength: importantPeopleArray.length,
                                 importantPeople1: importantPeopleArray[0],
                                 importantPeople1id: importantPeopleReferencid[0],
                             });
@@ -292,7 +291,7 @@ class AboutModal extends React.Component{
                 .catch((err) => {
                     console.log('Error getting documents', err);
                 })
-            }         
+            }
         })
         .catch((err) => {
             console.log('Error getting documents', err);
@@ -323,8 +322,8 @@ class AboutModal extends React.Component{
                     firstName:firstName, lastName:lastName
                 });
               }
-              
-              
+
+
             } else {
               console.log("No such document!");
             }
@@ -348,7 +347,7 @@ class AboutModal extends React.Component{
     updateTimeSetting = (time) =>{
         let temp = this.state.aboutMeObject;
         temp.timeSettings = time;
-    
+
         this.setState({ aboutMeObject: temp, showTimeModal: false  });
 
     }
@@ -359,7 +358,7 @@ class AboutModal extends React.Component{
         this.state.firebaseRootPath.collection('people').doc(Reference).get()
         .then((doc) => {
            let temp  = {};
-           let temp2 = {};    
+           let temp2 = {};
            temp = doc.data();
            temp.important = true;
            if(this.state.ImporPersonOneChange === false ){
@@ -381,7 +380,7 @@ class AboutModal extends React.Component{
         this.state.firebaseRootPath.collection('people').doc(Reference).get()
         .then((doc) => {
            let temp  = {};
-           let temp2 = {};      
+           let temp2 = {};
            temp = doc.data();
            temp.important = true;
            if(this.state.ImporPersonTwoChange === false ){
@@ -402,7 +401,7 @@ class AboutModal extends React.Component{
         this.state.firebaseRootPath.collection('people').doc(Reference).get()
         .then((doc) => {
            let temp  = {};
-           let temp2 = {};      
+           let temp2 = {};
            temp = doc.data();
            temp.important = true;
            if(this.state.ImporPersonThreeChange === false ){
@@ -431,7 +430,7 @@ class AboutModal extends React.Component{
             }
             else{
                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople1id).update(this.state.importantPeople1);
-            }        
+            }
         }
         if(this.state.importantPeople2.important === true){
             if(this.state.ImporPersonTwoChange === true){
@@ -444,7 +443,7 @@ class AboutModal extends React.Component{
             }
             else{
                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople2id).update(this.state.importantPeople2);
-            }  
+            }
         }
         if(this.state.importantPeople3.important === true){
             if(this.state.ImporPersonThreeChange === true){
@@ -457,8 +456,8 @@ class AboutModal extends React.Component{
             }
             else{
                 this.state.firebaseRootPath.collection('people').doc(this.state.importantPeople3id).update(this.state.importantPeople3);
-            } 
-        } 
+            }
+        }
         this.state.firebaseRootPath.update({'first_name': this.state.firstName});
         this.state.firebaseRootPath.update({'last_name': this.state.lastName});
         let newArr = this.state.aboutMeObject;
@@ -466,7 +465,8 @@ class AboutModal extends React.Component{
         this.state.firebaseRootPath.update({ 'about_me': newArr }).then(
            (doc) => {
                this.props.updateProfilePic(name, this.state.aboutMeObject.pic);
-               this.hideAboutForm();   
+               this.props.updateProfileTimeZone(this.state.aboutMeObject.timeSettings.timeZone);
+               this.hideAboutForm();
            }
        )
    }
@@ -528,13 +528,13 @@ class AboutModal extends React.Component{
                                 />
                             </Col>
                         </Row>
-                        
+
                     </Form.Group>
                     <Row>
-                        <Col> 
-                            {(this.state.aboutMeObject.have_pic === false  ? 
-                            <FontAwesomeIcon icon={faImage} size="6x"/> : 
-                            <img style = 
+                        <Col>
+                            {(this.state.aboutMeObject.have_pic === false  ?
+                            <FontAwesomeIcon icon={faImage} size="6x"/> :
+                            <img style =
                                 {{display: "block",
                                 marginLeft: "auto",
                                 marginRight:"auto" ,
@@ -549,7 +549,7 @@ class AboutModal extends React.Component{
                         <Col xs={8}>
                         <label >Upload A New Image</label>
                         <input
-                            style = {{color: "transparent"}} 
+                            style = {{color: "transparent"}}
                             accept="image/*"
                             type="file"
                             onChange={this.handleFileSelected}
@@ -557,7 +557,7 @@ class AboutModal extends React.Component{
                         />
                         </Col>
                     </Row>
-                    
+
                     <Form.Group controlId="AboutMessage" style={{ marginTop: "10px" }}>
                         <Form.Label>Message (My Day):</Form.Label>
                         <Form.Control
@@ -584,47 +584,47 @@ class AboutModal extends React.Component{
                        }
                         />
                     </Form.Group>
-                    
+
                     <Form.Group >
                         <Form.Label>Important People</Form.Label>
-                       
+
                         <Row>
                             <Col>
-                                {(this.state.importantPeople1.have_pic === false ? 
+                                {(this.state.importantPeople1.have_pic === false ?
                                 <div >
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} />
                                     {(this.state.importantPeople1.important === false ?
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         disabled/>:
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         onChange={this.handleImpPeople1}
                                     />
                                     )}
-                                </div>: 
+                                </div>:
                                 <div>
-                                    <img style = 
+                                    <img style =
                                         {{display: "block",
                                          width: "80%",
                                          height:"70px",
                                          marginTop:"10px",
                                          marginLeft:"5px"
                                         }}
-                                        src={this.state.importantPeople1.pic } 
+                                        src={this.state.importantPeople1.pic }
                                         alt="Important Person 1"
-                                    /> 
-                                     <input 
+                                    />
+                                     <input
                                       style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
                                       // style = {{color: "transparent", marginTop:"10px"}}
-                                      type= "file" accept="image/*" 
+                                      type= "file" accept="image/*"
                                       onChange={this.handleImpPeople1}
                                     />
-                                </div>)} 
+                                </div>)}
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
                                 <div className="d-flex flex-row">
@@ -646,11 +646,11 @@ class AboutModal extends React.Component{
                                             }
                                         />
                                     )}
-                                    {this.state.enableDropDown === false? 
+                                    {this.state.enableDropDown === false?
                                     <DropdownButton
                                         style={{ display:"inline-block" }}
                                         title=""
-                                        disabled>       
+                                        disabled>
                                     </DropdownButton>:
                                         <DropdownButton
                                         title=""
@@ -669,79 +669,79 @@ class AboutModal extends React.Component{
                                 </div>
                                 {this.state.importantPeople1.important === false?
                                     <div>
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Relationship"
                                             value = ""
                                             disabled
                                         />
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Phone Number"
                                             value = ""
                                             disabled
                                         />
                                     </div>:
                                     <div>
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Relationship"
                                             value = {this.state.importantPeople1.relationship || ''}
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.relationship = e.target.value; this.setState({ importantPeople1: temp }) }
-                                            } 
+                                            }
                                         />
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Phone Number"
                                             value = {this.state.importantPeople1.phone_number || ''}
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople1; temp.phone_number = e.target.value; this.setState({ importantPeople1: temp }) }
-                                            } 
+                                            }
                                         />
                                     </div>
-                                } 
+                                }
                             </Col>
                             {this.state.importantPeople1.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
-                                {(this.state.importantPeople2.have_pic === false ? 
+                                {(this.state.importantPeople2.have_pic === false ?
                                 <div>
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} />
                                     {(this.state.importantPeople2.important === false ?
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         disabled/>:
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         onChange={this.handleImpPeople2}
                                     />
-                                    )} 
-                                </div>: 
+                                    )}
+                                </div>:
                                 <div>
-                                    <img style = 
+                                    <img style =
                                         {{display: "block",
                                         width: "80%",
                                         height:"70px",
                                         marginTop:"10px",
                                         marginLeft:"5px"
                                        }}
-                                        src={this.state.importantPeople2.pic } 
+                                        src={this.state.importantPeople2.pic }
                                         alt="Important People 2"
                                     />
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
+                                        type= "file"
                                         accept="image/*"
                                         onChange={this.handleImpPeople2}
-                                    /> 
+                                    />
                                 </div>)}
-                                
+
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
                                 <div className="d-flex flex-row">
@@ -763,12 +763,12 @@ class AboutModal extends React.Component{
                                             }
                                         />
                                     )}
-                                   
-                                    {this.state.enableDropDown === false? 
+
+                                    {this.state.enableDropDown === false?
                                     <DropdownButton
                                         style={{ display:"inline-block" }}
                                         title=""
-                                        disabled>       
+                                        disabled>
                                     </DropdownButton>:
                                         <DropdownButton
                                         title=""
@@ -787,78 +787,78 @@ class AboutModal extends React.Component{
                                 </div>
                                 {(this.state.importantPeople2.important === false?
                                     <div>
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Relationship"
                                             value = ""
                                             disabled
                                         />
-                                        <Form.Control 
-                                            type="text" 
-                                            placeholder="Phone Number" 
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Phone Number"
                                             value = ""
                                             disabled
                                         />
                                     </div>:
                                     <div>
-                                        <Form.Control 
-                                            type="text" 
+                                        <Form.Control
+                                            type="text"
                                             placeholder="Relationship"
                                             value = {this.state.importantPeople2.relationship || ''}
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.relationship = e.target.value; this.setState({ importantPeople2: temp }) }
                                             }
                                         />
-                                        <Form.Control 
-                                            type="text" 
-                                            placeholder="Phone Number" 
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Phone Number"
                                             value = {this.state.importantPeople2.phone_number || ''}
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople2; temp.phone_number = e.target.value; this.setState({ importantPeople2: temp }) }
                                             }
                                         />
                                     </div>
-                                )}   
+                                )}
                             </Col>
                             {this.state.importantPeople2.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
                         </Row>
                         <Row style={{ marginTop: "20px" }}>
                             <Col>
-                                {(this.state.importantPeople3.have_pic === false ? 
+                                {(this.state.importantPeople3.have_pic === false ?
                                 <div>
-                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} /> 
+                                    <FontAwesomeIcon icon={faImage} size="6x" style = {{marginLeft:"5px"}} />
                                     {(this.state.importantPeople3.important === false ?
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         disabled/>:
-                                    <input 
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         onChange={this.handleImpPeople3}
                                     />
-                                    )}     
-                                </div>: 
+                                    )}
+                                </div>:
                                 <div>
-                                    <img style = 
+                                    <img style =
                                         {{display: "block",
                                         width: "80%",
                                         height:"70px",
                                         marginTop:"10px",
                                         marginLeft:"5px"
                                        }}
-                                        src={this.state.importantPeople3.pic } 
+                                        src={this.state.importantPeople3.pic }
                                         alt="Important People 3"
-                                    /> 
-                                    <input 
+                                    />
+                                    <input
                                         style = {{color: "transparent", marginTop:"15px", width:"100px", overflow:"hidden"}}
-                                        type= "file" 
-                                        accept="image/*" 
+                                        type= "file"
+                                        accept="image/*"
                                         onChange={this.handleImpPeople3}
-                                    />  
-                                </div>)} 
+                                    />
+                                </div>)}
                             </Col>
                             <Col xs={7} style = {{paddingLeft:"0px", marginTop:"10px"}}>
                                 <div className="d-flex flex-row">
@@ -878,14 +878,14 @@ class AboutModal extends React.Component{
                                         onChange={
                                             (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.name = e.target.value; this.setState({ importantPeople3: temp }) }
                                         }
-                                    /> 
+                                    />
                                     )}
-                                    
-                                    {this.state.enableDropDown === false? 
+
+                                    {this.state.enableDropDown === false?
                                     <DropdownButton
                                         style={{ display:"inline-block" }}
                                         title=""
-                                        disabled>       
+                                        disabled>
                                     </DropdownButton>:
                                         <DropdownButton
                                             title=""
@@ -904,49 +904,49 @@ class AboutModal extends React.Component{
                                 </div>
                                 {(this.state.importantPeople3.important === false?
                                     <div>
-                                        <Form.Control 
-                                            type="text" 
-                                            placeholder="Relationship" 
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Relationship"
                                             value = ""
                                             disabled
                                         />
-                                        <Form.Control 
-                                            type="text" 
-                                            placeholder="Phone Number" 
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Phone Number"
                                             value = ""
                                             disabled
                                         />
                                     </div>:
                                     <div>
-                                        <Form.Control 
-                                        type="text" 
-                                        placeholder="Relationship" 
+                                        <Form.Control
+                                        type="text"
+                                        placeholder="Relationship"
                                         value = {this.state.importantPeople3.relationship || ''}
                                         onChange={
                                             (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.relationship = e.target.value; this.setState({ importantPeople3: temp }) }
                                         }
                                         />
-                                        <Form.Control 
-                                            type="text" 
-                                            placeholder="Phone Number" 
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Phone Number"
                                             value = {this.state.importantPeople3.phone_number || ''}
                                             onChange={
                                                 (e) => { e.stopPropagation(); let temp = this.state.importantPeople3; temp.phone_number = e.target.value; this.setState({ importantPeople3: temp }) }
                                             }
                                         />
                                     </div>
-                                )}  
+                                )}
                             </Col>
                             {this.state.importantPeople3.important === false && <p style = {{fontSize:"0.9em", marginLeft:"20px"}}> Choose a person or add a new one</p>}
-                        </Row>     
+                        </Row>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Container fluid>
-                        <Row> 
+                        <Row>
                         {/* style={{ display: "inline-block", margin: "10px", marginBottom: "0" }} */}
-          
-                            <Button variant="outline-primary" 
+
+                            <Button variant="outline-primary"
                                     style={{ display: "inline-block", marginLeft: "15px", marginBottom: "10px"}}
                                     onClick={() => {
                                         this.setState(
@@ -960,10 +960,10 @@ class AboutModal extends React.Component{
                         </Row>
                         <Row>
                             <Col xs={3}>
-                            {((this.state.saveButtonEnabled === false || this.state.showAddNewPeopleModal === true)  ? 
+                            {((this.state.saveButtonEnabled === false || this.state.showAddNewPeopleModal === true)  ?
                             <Button variant="info" type="submit" disabled>
                             Save
-                            </Button>: 
+                            </Button>:
                             <Button variant="info" type="submit" onClick={(e) => {e.stopPropagation(); this.newInputSubmit()}}>
                             Save
                             </Button>)}
@@ -978,15 +978,15 @@ class AboutModal extends React.Component{
                                 Add People
                                 </Button>
                             </Col>
-                            
+
                         </Row>
                     </Container>
                 </Modal.Footer>
             </Modal.Dialog>
             {this.state.showAddNewPeopleModal && <AddNewPeople closeModal= {this.hidePeopleModal} newPersonAdded = {this.updatePeopleArray} currentUserId={this.props.theCurrentUserId}/>}
-             {(this.state.showTimeModal && !this.state.showAddNewPeopleModal) && 
-                <SettingPage  
-                    closeTimeModal = {this.hideTimeModal} 
+             {(this.state.showTimeModal && !this.state.showAddNewPeopleModal) &&
+                <SettingPage
+                    closeTimeModal = {this.hideTimeModal}
                     currentTimeSetting= {this.state.aboutMeObject.timeSettings || {}}
                     newTimeSetting = {this.updateTimeSetting}
                 />}

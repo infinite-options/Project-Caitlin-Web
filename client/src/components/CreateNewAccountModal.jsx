@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from "./firebase";
-import { Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstrap";
+import {Button, Modal, Row, Col, DropdownButton, Dropdown} from "react-bootstrap";
+import TimezonePicker from 'react-bootstrap-timezone-picker';
 
 export default class AddNewPeople extends Component {
   constructor(props) {
@@ -19,9 +20,8 @@ export default class AddNewPeople extends Component {
     unique_id: "",
     UserDocsPath: firebase
     .firestore()
-    .collection("users")
-    // .doc("7R6hAVmDrNutRkG3sVRy")
-    // .doc(this.props.theCurrentUserId)
+    .collection("users"),
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   };
 
   newUserInputSubmit = ()=> {
@@ -35,7 +35,10 @@ export default class AddNewPeople extends Component {
           .update({
             first_name: this.state.itemToEdit.first_name,
             last_name: this.state.itemToEdit.last_name,
+            about_me: {have_pic: false, message_card: "", message_day: "", pic: "",
+            "timeSettings": {afternoon: "", dayEnd: "", dayStart: "", evening: "", morning: "", night: "", timeZone: this.state.timeZone}}
           });
+          console.log(this.props.loggedInEmail)
           advisors.where( 'email_id', '==', this.props.loggedInEmail ).get()
           .then(
             ( snapshot ) => {
@@ -67,45 +70,14 @@ export default class AddNewPeople extends Component {
       );
     }
 
-    // updateWithId = (id ) => {
-    //   console.log("this is the id",id);
-    //   // console.log("this is th old id", this.state.itemToEdit.unique_id)
-    //     console.log("this is the itemtoedit ", this.state.itemToEdit);
-    //     this.state.UserDocsPath.doc(id).update(this.state.itemToEdit).then(
-    //         (doc) => {
-    //             console.log("it should be going in here");
-    //             if(this.state.copy_from_user != ""){
-    //               const url = "https://us-central1-project-caitlin-c71a9.cloudfunctions.net/CopyUserData";
-    //               const Data = {
-    //                   data : {
-    //                     "copy_from_user" : this.state.copy_from_user,
-    //                     "copy_to_user" : id
-    //                   }
-    //               };
-    //               const param = {
-    //                 headers:{
-    //                     //"content-type":"application/json; charset=UTF-8"
-    //                     "content-type": "application/json"
-    //                 },
-    //                 body: JSON.stringify(Data),
-    //                 method: "POST"
-    //               };
-    //
-    //               fetch(url, param)
-    //               .then((response) => response.json())
-    //               .then((result) => { console.log(result); } )
-    //               .catch((error) => { console.error(error); });
-    //
-    //            }
-    //             this.props.newUserAdded();
-    //         }
-    //     )
-    // }
-
+    handleTimeZoneChange = (e) => {
+      console.log(e);
+      this.setState({ timeZone : e });
+    }
 
     render() {
       return (
-        <Modal.Dialog style={{marginLeft:"10px", width:"600px", paddingLeft:"0px", marginTop:"10px"}}>
+        <Modal.Dialog style={{marginLeft:"10px", width:"500px", paddingLeft:"0px", marginTop:"10px"}}>
         {/* <Modal.Header closeButton onHide={this.props.closeModal} >
         <Modal.Title>
         <h5 className="normalfancytext">
@@ -163,28 +135,14 @@ export default class AddNewPeople extends Component {
         </Row>
         <Row>
         <Col xs={5}>
-        <DropdownButton
-        title= {this.state.copy_from_user_name}
-        style = {{}}
-        >
-        {Object.keys(this.props.userNamesAndId).map(
-          (keyName, keyIndex) => (
-            // use keyName to get current key's name
-            // and a[keyName] to get its value
-            //keyName is the user id
-            //keyIndex will help me find the user pic
-            //this.state.userIdAndName[keyName] gives me the name of current user
-            <Dropdown.Item
-            key={keyName}
-            onClick={(e) => {
-              this.setState({copy_from_user: keyName, copy_from_user_name:this.props.userNamesAndId[keyName]});
-            }}
-            >
-            {this.props.userNamesAndId[keyName] || ""}
-            </Dropdown.Item>
-          )
-        )}
-        </DropdownButton>
+        <TimezonePicker
+          value = {this.state.timeZone}
+          absolute      = {true}
+          // defaultValue  = "Europe/Moscow"
+          placeholder   = "Select timezone..."
+          onChange      = {this.handleTimeZoneChange}
+          style = {{width:"220px", fontSize: 16, border: "1px solid #666"}}
+        />
         </Col>
         <Col xs={3}>
         <Button style = {{marginLeft:"30px"}} variant="secondary" onClick = {this.props.closeModal}>

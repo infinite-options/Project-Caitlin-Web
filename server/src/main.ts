@@ -528,6 +528,7 @@ Given the event's id, it look send it up to google calendar API
 and delete it.
 */
 app.post( '/deleteEvent', function ( req, result ) {
+	console.log(req.body);
 	console.log( 'deleteEvent',req.body.username, req.body.userId, req.body.eventId );
 	var id = req.body.userId;
 	setUpAuthById(id,(auth) => {
@@ -556,6 +557,7 @@ app.delete( '/deleteRecurringEvent', ( req, result ) => {
 			eventId:    req.query.eventId
 		},
 		( err, res ) => {
+			console.log(err, res);
 			//CallBack
 			if ( err ) {
 				return result.send( 'The delete request returned an error: ' + err );
