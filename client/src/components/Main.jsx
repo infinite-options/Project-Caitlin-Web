@@ -501,8 +501,9 @@ the current month's events
   };
 
   handleDayEventClick = (A) => {
+    console.log("Enter handleDayEventClick");
     var guestList = "";
-    console.log(A, "handleDayEventClick");
+    console.log("handleDayEventClick , A :", A);
     if (A.recurringEventId) {
       axios
         .get("/getRecurringRules", {
@@ -1325,8 +1326,11 @@ the user with a new form to create a event
   };
 
   updateEventClick = (event) => {
+    console.log("updateEventClick ");
     event.preventDefault();
     let eventList = this.state.originalEvents;
+    console.log("eventList: ", eventList);
+
     if (this.state.calendarView === "Day") {
       eventList = this.state.dayEvents;
     } else if (this.state.calendarView === "Week") {
@@ -1613,7 +1617,7 @@ calls the backend API to delete a item with a particular eventID
     }
     axios
       .post("/deleteEvent", {
-        username: this.state.currentUserName,
+        //username: this.state.currentUserName,
         userId: this.state.currentUserId,
         eventId: this.state.newEventID,
       })
@@ -3525,12 +3529,16 @@ this will close repeat modal.
           },
         })
         .then((res) => {
+          //console.log("res.data.length: ", res.data.length);
+          //console.log("res.data[0]: ", res.data[0]);
           if (res.data[0].id === this.state.newEvent.id) {
             axios
               .post("/deleteEvent", {
-                ID: newEventRecurringID,
+                userId: this.state.currentUserId,
+                eventId: newEventRecurringID,
               })
               .then((response) => {
+                console.log("response: ", response);
                 this.setState({
                   dayEventSelected: false,
                   showDeleteRecurringModal: false,
@@ -3657,9 +3665,14 @@ this will close repeat modal.
           console.log(error);
         });
     } else if (deleteRecurringOption === "All events") {
+      console.log("newEventRecurringID, : ", newEventRecurringID);
+      console.log("this.state.newEventID : ", this.state.newEventID);
       axios
         .post("/deleteEvent", {
-          ID: newEventRecurringID,
+          //ID: newEventRecurringID,
+          username: this.state.currentUserName,
+          userId: this.state.currentUserId,
+          eventId: this.state.newEventRecurringID,
         })
         .then((response) => {
           this.setState({
