@@ -52,8 +52,13 @@ export default class TylersCalendarv1 extends React.Component {
       if (this.props.originalEvents[j].start.dateTime) {
         tempStart = this.props.originalEvents[j].start.dateTime;
         tempEnd = this.props.originalEvents[j].end.dateTime;
-        let startDate = new Date(tempStart).getDate();
-        let endDate = new Date(tempEnd).getDate();
+        let startDate = new Date(new Date(tempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        })).getDate();
+        let endDate = new Date(new Date(tempEnd).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        })).getDate();
+
         // console.log(startDate)
         if (i >= startDate && i <= endDate) {
           res.push(<div key={'event' + j}><button
@@ -74,8 +79,12 @@ export default class TylersCalendarv1 extends React.Component {
         // console.log('start date');
         // console.log(this.props.originalEvents[j].start.date);
         tempEnd = this.props.originalEvents[j].end.date;
-        let startDate = new Date(tempStart).getDate();
-        let endDate = new Date(tempEnd).getDate();
+        let startDate = new Date(new Date(tempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        })).getDate();
+        let endDate = new Date(new Date(tempEnd).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        })).getDate();
         // console.log(startDate)
         if (i > startDate && i <= endDate) {
           // console.log('sss' + i, startDate, endDate);

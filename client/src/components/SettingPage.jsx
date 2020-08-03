@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Modal, Row, Col } from "react-bootstrap";
 import { storage } from "./firebase";
-import TimeField from "react-simple-timefield"; 
+import TimeField from "react-simple-timefield";
 import TimezonePicker from 'react-bootstrap-timezone-picker';
 import 'react-bootstrap-timezone-picker/dist/react-bootstrap-timezone-picker.min.css';
 
@@ -37,8 +37,6 @@ export default class SettingPage extends Component {
       this.props.newTimeSetting(time);
   }
 
-
-
   render() {
     return (
 
@@ -61,12 +59,11 @@ export default class SettingPage extends Component {
                   placeholder   = "Select timezone..."
                   onChange      = {this.handleTimeZoneChange}
                   style = {{width:"320px", fontSize: 16,border: "1px solid #666"}}
-                
                 />
               </Row>
                 <Row>
               <Col style = {{paddingRight:"0px"}}>
-                <label>   
+                <label>
                     Morning Time
                 </label>
                 <br />
@@ -185,7 +182,7 @@ export default class SettingPage extends Component {
             </Button>
             {/* <Button variant="primary" onClick={this.props.newTimeSetting(this.state)}> */}
             <Button variant="primary" onClick={(e) => {e.stopPropagation(); this.newTimeSubmit()}}>
-                
+
               Submit
             </Button>
           </Modal.Footer>

@@ -64,11 +64,13 @@ export default class DayEvents extends Component {
       if(!arr[i].start) break;
       tempStart = arr[i].start.dateTime;
       tempEnd = arr[i].end.dateTime;
-      /**
-       * TODO: add the case where arr[i].start.dateTime doesn't exists
-       */ 
-      let tempStartTime = new Date(tempStart);
-      let tempEndTime = new Date(tempEnd);
+
+      let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+     		timeZone: this.props.timeZone
+     	}));
+      let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+     		timeZone: this.props.timeZone
+     	}));
       let curDate = this.props.dateContext.get("date");
       // console.log("this is the events for date",tempStartTime.getDate());
       // console.log("this is the events for hour",tempStartTime.getHours());
@@ -150,8 +152,12 @@ export default class DayEvents extends Component {
             for (let i = 0; i < arr.length; i++) {
               tempStart = arr[i].start.dateTime;
               tempEnd = arr[i].end.dateTime;
-              let tempStartTime = new Date(tempStart);
-              let tempEndTime = new Date(tempEnd);
+              let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+             		timeZone: this.props.timeZone
+             	}));
+              let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+             		timeZone: this.props.timeZone
+             	}));
               if (
                 tempStartTime.getHours() < hour &&
                 tempEndTime.getHours() > hour

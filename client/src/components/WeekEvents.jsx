@@ -18,10 +18,12 @@ export default class WeekEvents extends Component {
       this.hourDisplay = React.createRef();
   }
 
-  componentDidMount  () {
+  componentDidMount() {
     // Set top most time to be current hour
     // Browser scrolls to the bottom if hour >= 18 (tested with Chrome and Firefox)
-    let curHour = new Date().getHours();
+    let curHour = new Date(new Date().toLocaleString('en-US', {
+      timeZone: this.props.timeZone
+    })).getHours();
     this.hourDisplay.current.scrollTop = this.state.pxPerHourForConversion * curHour;
   }
 
@@ -112,7 +114,7 @@ export default class WeekEvents extends Component {
   }
 
   getEventItem = (day, hour) => {
-      
+
       let startObject = this.props.dateContext.clone();
       let startDay = startObject.startOf("week");
       let curDate = startDay.clone();
@@ -131,8 +133,12 @@ export default class WeekEvents extends Component {
           /**
            * TODO: add the case where arr[i].start.dateTime doesn't exists
           */
-          let tempStartTime = new Date(tempStart);
-          let tempEndTime = new Date(tempEnd);
+          let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+            timeZone: this.props.timeZone
+          }));
+          let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+            timeZone: this.props.timeZone
+          }));
           let startDate = moment(tempStartTime);
           let endDate = moment(tempEndTime)
           if(curDate.isSameOrAfter(startDate,'day') && curDate.isSameOrBefore(endDate,'day')) {
@@ -151,8 +157,12 @@ export default class WeekEvents extends Component {
                             for (let i = 0; i < arr.length; i++) {
                                 tempStart = arr[i].start.dateTime;
                                 tempEnd = arr[i].end.dateTime;
-                                let tempStartTime = new Date(tempStart);
-                                let tempEndTime = new Date(tempEnd);
+                                let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+                                  timeZone: this.props.timeZone
+                                }));
+                                let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+                                  timeZone: this.props.timeZone
+                                }));
                                 if (tempStartTime.getHours() < hour && tempEndTime.getHours() > hour) {
                                     addmarginLeft += 20;
                                     itemWidth = itemWidth - 20;
