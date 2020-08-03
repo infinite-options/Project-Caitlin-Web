@@ -585,7 +585,6 @@ Delete ROUTE:
 Given the event's id, it look send it up to google calendar API
 and delete it.
 */
-<<<<<<< HEAD
 app.post("/deleteEvent", function (req, result) {
   console.log("deleteEvent", req.body.eventId);
   var id = req.body.userId;
@@ -624,47 +623,6 @@ app.delete("/deleteRecurringEvent", (req, result) => {
     }
   );
 });
-=======
-app.post( '/deleteEvent', function ( req, result ) {
-	console.log(req.body);
-	console.log( 'deleteEvent',req.body.username, req.body.userId, req.body.eventId );
-	var id = req.body.userId;
-	setUpAuthById(id,(auth) => {
-		calendar = google.calendar( { version: 'v3', auth } );
-		calendar.events.delete(
-			{ auth: auth, calendarId: 'primary', eventId: req.body.eventId },
-			req.body.eventId,
-			( err, res ) => {
-				//CallBack
-				if ( err ) {
-					console.log('delete error',err);
-					return result.send( 'The post request returned an error: ' + err );
-				}
-				console.log('delete successful');
-				result.send( 'delete' );
-			}
-		);
-	})
-} );
-
-app.delete( '/deleteRecurringEvent', ( req, result ) => {
-	console.log( req.query.eventId, 'deleteRecurringEvent' );
-	calendar.events.delete(
-		{
-			calendarId: calendarID,
-			eventId:    req.query.eventId
-		},
-		( err, res ) => {
-			console.log(err, res);
-			//CallBack
-			if ( err ) {
-				return result.send( 'The delete request returned an error: ' + err );
-			}
-			result.send( 'delete' );
-		}
-	);
-} );
->>>>>>> 4f26689259dd32bad2fd8d0b915c354976305486
 
 /*
 getEventsByInterval:
