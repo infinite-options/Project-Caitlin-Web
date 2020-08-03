@@ -308,10 +308,10 @@ export default class AddNewGRItem extends Component {
               );
               temp.start_day_and_time = new Date(
                 this.state.itemToEdit.start_day_and_time
-              ).toUTCString();
+              ).toLocaleString();
               temp.end_day_and_time = new Date(
                 this.state.itemToEdit.end_day_and_time
-              ).toUTCString();
+              ).toLocaleString();
 
               // temp.repeat_ends_on = this.state.itemToEdit.repeat_ends_on.toUTCString();
               // temp.start_day_and_time= String(this.state.itemToEdit.start_day_and_time);
