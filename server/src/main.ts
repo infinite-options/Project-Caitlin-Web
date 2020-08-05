@@ -124,7 +124,7 @@ const TOKEN_PATH = 'token.json';
 fullCalByInterval:
 Given start and end parameters from request, it will return all events from
 the google calendar BUT convert it to the format that is accepted by Full Calendar
-*/
+*/ 
 
 app.get( '/fullCalByInterval', function ( req, result ) {
 	console.log( 'server get fullCalByInterval' );
@@ -422,6 +422,7 @@ app.get( '/getRecurringRules', ( req, result ) => {
 } );
 
 app.get( '/getRecurringEventInstances', ( req, result ) => {
+	
 	console.log(
 		req.query.timeMin,
 		'getRecurringEventInstances',
