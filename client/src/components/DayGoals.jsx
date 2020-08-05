@@ -92,12 +92,12 @@ export default class DayGoals extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            //const initDate = start_day_and_time[1];
+            //const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initYear = start_day_and_time[3];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            let initFullDate = start_day_and_time;
             //var startdate = "20-03-2014";
             let new_date = moment(initFullDate, "MM/DD/YYYY");
             //var thing = new_date.add(5, "days").format("L");
@@ -123,10 +123,10 @@ export default class DayGoals extends Component {
           } else if (arr[i].repeat_ends === "On") {
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const startDate = start_day_and_time[1];
-            const startMonth = getMonthNumber(start_day_and_time[2]);
-            const startYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            //const startDate = start_day_and_time[1];
+            //const startMonth = getMonthNumber(start_day_and_time[2]);
+            //const startYear = start_day_and_time[3];
 
             const end_day_and_time = arr[i].repeat_ends_on.split(" ");
 
@@ -134,7 +134,7 @@ export default class DayGoals extends Component {
             const endMonth = getMonthNumber(end_day_and_time[1]);
             const endYear = end_day_and_time[3];
 
-            let startFullDate = startMonth + "/" + startDate + "/" + startYear;
+            let startFullDate = start_day_and_time;
             let endFullDate = endMonth + "/" + endDate + "/" + endYear;
 
             let curFullDateString = new Date(curYear, curMonth, curDate);
@@ -164,12 +164,12 @@ export default class DayGoals extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            //const initDate = start_day_and_time[1];
+            //const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initYear = start_day_and_time[3];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            let initFullDate = start_day_and_time;
             let curFullDateString = new Date(curYear, curMonth, curDate);
             let curFullDate = getFormattedDate(curFullDateString);
 
@@ -197,12 +197,12 @@ export default class DayGoals extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            // const initDate = start_day_and_time[1];
+            //const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initYear = start_day_and_time[3];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            let initFullDate = start_day_and_time;
             //var startdate = "20-03-2014";
             var new_date = moment(initFullDate, "MM/DD/YYYY");
             //var thing = new_date.add(5, "days").format("L");
@@ -793,14 +793,13 @@ export default class DayGoals extends Component {
           //   .doc(this.props.theCurrentUserId)
           //   .update({ "goals&routines": newArr });
         }
-      }
-      else {
-         if(arr[i].is_displayed_today === (true || "1")){
-          arr[i].is_displayed_today =  false;
+      } else {
+        if (arr[i].is_displayed_today === (true || "1")) {
+          arr[i].is_displayed_today = false;
           let newArr = this.props.originalGoalsAndRoutineArr;
           newArr[this.props.goal_ids[i]].is_displayed_today = false;
           // firebase.firestore().collection("users").doc(this.props.theCurrentUserId).update({ "goals&routines": newArr });
-         }
+        }
       }
 
       /**

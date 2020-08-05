@@ -61,6 +61,7 @@ export default class DayRoutines extends Component {
 
       let tempStartTime = new Date(tempStart);
       let tempEndTime = new Date(tempEnd);
+
       let curDate = this.props.dateContext.get("date");
       let curMonth = this.props.dateContext.get("month");
       let curYear = this.props.dateContext.get("year");
@@ -94,14 +95,15 @@ export default class DayRoutines extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            //console.log("start_day_and_time: ", start_day_and_time);
+            // const initDate = start_day_and_time[1];
+            // const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initYear = start_day_and_time[3];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            //let initFullDate = initMonth + "/" + initDate + "/" + initYear;
             //var startdate = "20-03-2014";
-            let new_date = moment(initFullDate, "MM/DD/YYYY");
+            let new_date = moment(start_day_and_time, "MM/DD/YYYY");
             //var thing = new_date.add(5, "days").format("L");
             for (let i = 0; i < occurences; i++) {
               let date = new_date
@@ -126,18 +128,22 @@ export default class DayRoutines extends Component {
             /** TODO: account for ends on a different month > 1 . Also account for event span multiple days.  */
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const startDate = start_day_and_time[1];
-            const startMonth = getMonthNumber(start_day_and_time[2]);
-            const startYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" "[0]);
+            //console.log("new format: ", arr[i].start_day_and_time);
+            //const startDate = start_day_and_time[1];
+            //const startMonth = getMonthNumber(start_day_and_time[2]);
+            //const startYear = start_day_and_time[3];
 
             const end_day_and_time = arr[i].repeat_ends_on.split(" ");
+            //console.log("old format: ", arr[i].repeat_ends_on);
 
             const endDate = end_day_and_time[2];
             const endMonth = getMonthNumber(end_day_and_time[1]);
             const endYear = end_day_and_time[3];
 
-            let startFullDate = startMonth + "/" + startDate + "/" + startYear;
+            //let startFullDate = startMonth + "/" + startDate + "/" + startYear;
+            let startFullDate = start_day_and_time;
+
             let endFullDate = endMonth + "/" + endDate + "/" + endYear;
 
             let curFullDateString = new Date(curYear, curMonth, curDate);
@@ -167,12 +173,16 @@ export default class DayRoutines extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            //console.log("start_day_and_time: ", start_day_and_time);
+            //const initDate = start_day_and_time[1];
+            // const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initMonth = start_day_and_time[0];
+            //const initYear = start_day_and_time[2];
+
+            //let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            let initFullDate = start_day_and_time;
             let curFullDateString = new Date(curYear, curMonth, curDate);
             let curFullDate = getFormattedDate(curFullDateString);
 
@@ -199,14 +209,14 @@ export default class DayRoutines extends Component {
             const occurences = parseInt(arr[i].repeat_occurences);
             const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ");
-            const initDate = start_day_and_time[1];
-            const initMonth = getMonthNumber(start_day_and_time[2]);
-            const initYear = start_day_and_time[3];
+            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+            //const initDate = start_day_and_time[1];
+            //const initMonth = getMonthNumber(start_day_and_time[2]);
+            //const initYear = start_day_and_time[3];
 
-            let initFullDate = initMonth + "/" + initDate + "/" + initYear;
+            //let initFullDate = initMonth + "/" + initDate + "/" + initYear;
             //var startdate = "20-03-2014";
-            var new_date = moment(initFullDate, "MM/DD/YYYY");
+            var new_date = moment(start_day_and_time, "MM/DD/YYYY");
             //var thing = new_date.add(5, "days").format("L");
 
             for (const day in arr[i].repeat_week_days) {
@@ -217,7 +227,7 @@ export default class DayRoutines extends Component {
 
             if (week_days_arr.length === 0) {
               for (let i = 0; i < occurences; i++) {
-                let moment_init_date = moment(initFullDate);
+                let moment_init_date = moment(start_day_and_time);
                 let date = moment_init_date
                   .add(i * repeat_every, "weeks")
                   .format("L");
