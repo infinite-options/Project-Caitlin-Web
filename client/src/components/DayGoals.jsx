@@ -7,6 +7,7 @@ import { Container, Row, Col } from "react-bootstrap";
 export default class DayGoals extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       pxPerHour: "30px", //preset size for all columns
       pxPerHourForConversion: 30, // if pxPerHour is change, this should change to reflect it
@@ -44,6 +45,7 @@ export default class DayGoals extends Component {
    *
    */
   getEventItem = (hour) => {
+    updateGRIsDisplayed();
     var res = [];
     var tempStart = null;
     var tempEnd = null;
@@ -52,6 +54,7 @@ export default class DayGoals extends Component {
     let itemWidth = this.state.eventBoxSize;
     var addmarginLeft = 0;
     var fontSize = 10;
+    //this.updateGRIsDisplayed()
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start_day_and_time;
       tempEnd = arr[i].end_day_and_time;
@@ -84,666 +87,667 @@ export default class DayGoals extends Component {
       /**
        * Dealing with repeating Goals
        */
-      if (arr[i].repeat === true || arr[i].repeat === "1") {
-        if (arr[i].repeat_frequency === "DAY") {
-          /*** TODO fix if event goes to another month.  */
-          if (arr[i].repeat_ends === "After") {
-            let occurence_dates = [];
-            const occurences = parseInt(arr[i].repeat_occurences);
-            const repeat_every = parseInt(arr[i].repeat_every);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
-            //const initDate = start_day_and_time[1];
-            //const initMonth = getMonthNumber(start_day_and_time[2]);
-            //const initYear = start_day_and_time[3];
+      // if (arr[i].repeat === true || arr[i].repeat === "1") {
+      //   if (arr[i].repeat_frequency === "DAY") {
+      //     /*** TODO fix if event goes to another month.  */
+      //     if (arr[i].repeat_ends === "After") {
+      //       let occurence_dates = [];
+      //       const occurences = parseInt(arr[i].repeat_occurences);
+      //       const repeat_every = parseInt(arr[i].repeat_every);
 
-            let initFullDate = start_day_and_time;
-            //var startdate = "20-03-2014";
-            let new_date = moment(initFullDate, "MM/DD/YYYY");
-            //var thing = new_date.add(5, "days").format("L");
-            for (let i = 0; i < occurences; i++) {
-              let date = new_date
-                .clone()
-                .add(i * repeat_every, "days")
-                .format("L");
-              occurence_dates.push(date);
-            }
+      //       const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+      //       //const initDate = start_day_and_time[1];
+      //       //const initMonth = getMonthNumber(start_day_and_time[2]);
+      //       //const initYear = start_day_and_time[3];
 
-            let today_date_object = new Date(curYear, curMonth, curDate);
-            let today = getFormattedDate(today_date_object);
+      //       let initFullDate = start_day_and_time;
+      //       //var startdate = "20-03-2014";
+      //       let new_date = moment(initFullDate, "MM/DD/YYYY");
+      //       //var thing = new_date.add(5, "days").format("L");
+      //       for (let i = 0; i < occurences; i++) {
+      //         let date = new_date
+      //           .clone()
+      //           .add(i * repeat_every, "days")
+      //           .format("L");
+      //         occurence_dates.push(date);
+      //       }
 
-            if (occurence_dates.includes(today)) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            }
-          } else if (arr[i].repeat_ends === "On") {
-            const repeat_every = parseInt(arr[i].repeat_every);
+      //       let today_date_object = new Date(curYear, curMonth, curDate);
+      //       let today = getFormattedDate(today_date_object);
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
-            //const startDate = start_day_and_time[1];
-            //const startMonth = getMonthNumber(start_day_and_time[2]);
-            //const startYear = start_day_and_time[3];
+      //       if (occurence_dates.includes(today)) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //         tempStartTime.setDate(curDate);
+      //         tempEndTime.setDate(curDate);
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       }
+      //     } else if (arr[i].repeat_ends === "On") {
+      //       const repeat_every = parseInt(arr[i].repeat_every);
 
-            const end_day_and_time = arr[i].repeat_ends_on.split(" ");
+      //       const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+      //       //const startDate = start_day_and_time[1];
+      //       //const startMonth = getMonthNumber(start_day_and_time[2]);
+      //       //const startYear = start_day_and_time[3];
 
-            const endDate = end_day_and_time[2];
-            const endMonth = getMonthNumber(end_day_and_time[1]);
-            const endYear = end_day_and_time[3];
+      //       const end_day_and_time = arr[i].repeat_ends_on.split(" ");
 
-            let startFullDate = start_day_and_time;
-            let endFullDate = endMonth + "/" + endDate + "/" + endYear;
+      //       const endDate = end_day_and_time[2];
+      //       const endMonth = getMonthNumber(end_day_and_time[1]);
+      //       const endYear = end_day_and_time[3];
 
-            let curFullDateString = new Date(curYear, curMonth, curDate);
-            let curFullDate = getFormattedDate(curFullDateString);
+      //       let startFullDate = start_day_and_time;
+      //       let endFullDate = endMonth + "/" + endDate + "/" + endYear;
 
-            let endMomentDate = moment(endFullDate, "MM/DD/YYYY");
+      //       let curFullDateString = new Date(curYear, curMonth, curDate);
+      //       let curFullDate = getFormattedDate(curFullDateString);
 
-            let startMomentDate = moment(startFullDate, "MM/DD/YYYY");
-            let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
+      //       let endMomentDate = moment(endFullDate, "MM/DD/YYYY");
 
-            let diffDays = curMomentDate.diff(startMomentDate, "days");
-            let daysFromCurToEnd = endMomentDate.diff(curMomentDate, "days");
+      //       let startMomentDate = moment(startFullDate, "MM/DD/YYYY");
+      //       let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
 
-            if (
-              diffDays % repeat_every === 0 &&
-              diffDays >= 0 &&
-              daysFromCurToEnd >= 0
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            }
-          } else if (arr[i].repeat_ends === "Never") {
-            const occurences = parseInt(arr[i].repeat_occurences);
-            const repeat_every = parseInt(arr[i].repeat_every);
+      //       let diffDays = curMomentDate.diff(startMomentDate, "days");
+      //       let daysFromCurToEnd = endMomentDate.diff(curMomentDate, "days");
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
-            //const initDate = start_day_and_time[1];
-            //const initMonth = getMonthNumber(start_day_and_time[2]);
-            //const initYear = start_day_and_time[3];
+      //       if (
+      //         diffDays % repeat_every === 0 &&
+      //         diffDays >= 0 &&
+      //         daysFromCurToEnd >= 0
+      //       ) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //         tempStartTime.setDate(curDate);
+      //         tempEndTime.setDate(curDate);
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       }
+      //     } else if (arr[i].repeat_ends === "Never") {
+      //       const occurences = parseInt(arr[i].repeat_occurences);
+      //       const repeat_every = parseInt(arr[i].repeat_every);
 
-            let initFullDate = start_day_and_time;
-            let curFullDateString = new Date(curYear, curMonth, curDate);
-            let curFullDate = getFormattedDate(curFullDateString);
+      //       const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+      //       //const initDate = start_day_and_time[1];
+      //       //const initMonth = getMonthNumber(start_day_and_time[2]);
+      //       //const initYear = start_day_and_time[3];
 
-            let initMomentDate = moment(initFullDate, "MM/DD/YYYY");
-            let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
+      //       let initFullDate = start_day_and_time;
+      //       let curFullDateString = new Date(curYear, curMonth, curDate);
+      //       let curFullDate = getFormattedDate(curFullDateString);
 
-            let diffDays = curMomentDate.diff(initMomentDate, "days");
+      //       let initMomentDate = moment(initFullDate, "MM/DD/YYYY");
+      //       let curMomentDate = moment(curFullDate, "MM/DD/YYYY");
 
-            if (diffDays % repeat_every === 0 && diffDays >= 0) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            }
-          }
-        }
+      //       let diffDays = curMomentDate.diff(initMomentDate, "days");
 
-        /***   Repeat WEEK */
-        if (arr[i].repeat_frequency === "WEEK") {
-          if (arr[i].repeat_ends === "After") {
-            let occurence_dates = [];
-            let week_days_arr = [];
-            const occurences = parseInt(arr[i].repeat_occurences);
-            const repeat_every = parseInt(arr[i].repeat_every);
+      //       if (diffDays % repeat_every === 0 && diffDays >= 0) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //         tempStartTime.setDate(curDate);
+      //         tempEndTime.setDate(curDate);
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       }
+      //     }
+      //   }
 
-            const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
-            // const initDate = start_day_and_time[1];
-            //const initMonth = getMonthNumber(start_day_and_time[2]);
-            //const initYear = start_day_and_time[3];
+      //   /***   Repeat WEEK */
+      //   if (arr[i].repeat_frequency === "WEEK") {
+      //     if (arr[i].repeat_ends === "After") {
+      //       let occurence_dates = [];
+      //       let week_days_arr = [];
+      //       const occurences = parseInt(arr[i].repeat_occurences);
+      //       const repeat_every = parseInt(arr[i].repeat_every);
 
-            let initFullDate = start_day_and_time;
-            //var startdate = "20-03-2014";
-            var new_date = moment(initFullDate, "MM/DD/YYYY");
-            //var thing = new_date.add(5, "days").format("L");
+      //       const start_day_and_time = arr[i].start_day_and_time.split(" ")[0];
+      //       // const initDate = start_day_and_time[1];
+      //       //const initMonth = getMonthNumber(start_day_and_time[2]);
+      //       //const initYear = start_day_and_time[3];
 
-            for (const day in arr[i].repeat_week_days) {
-              if (arr[i].repeat_week_days[day] !== "") {
-                week_days_arr.push(day);
-              }
-            }
+      //       let initFullDate = start_day_and_time;
+      //       //var startdate = "20-03-2014";
+      //       var new_date = moment(initFullDate, "MM/DD/YYYY");
+      //       //var thing = new_date.add(5, "days").format("L");
 
-            if (week_days_arr.length === 0) {
-              for (let i = 0; i < occurences; i++) {
-                let moment_init_date = moment(initFullDate);
-                let date = moment_init_date
-                  .add(i * repeat_every, "weeks")
-                  .format("L");
-                occurence_dates.push(date);
-              }
-            } else {
-              for (let j = 0; j < week_days_arr.length; j++) {
-                let nextDayOfTheWeek = getNextDayOfTheWeek(
-                  week_days_arr[j],
-                  new_date
-                );
-                for (let i = 0; i < occurences; i++) {
-                  let date = nextDayOfTheWeek
-                    .clone()
-                    .add(i * repeat_every, "weeks")
-                    .format("L");
-                  occurence_dates.push(date);
-                }
-              }
-            }
+      //       for (const day in arr[i].repeat_week_days) {
+      //         if (arr[i].repeat_week_days[day] !== "") {
+      //           week_days_arr.push(day);
+      //         }
+      //       }
 
-            //console.log("occurence_dates: ", occurence_dates);
+      //       if (week_days_arr.length === 0) {
+      //         for (let i = 0; i < occurences; i++) {
+      //           let moment_init_date = moment(initFullDate);
+      //           let date = moment_init_date
+      //             .add(i * repeat_every, "weeks")
+      //             .format("L");
+      //           occurence_dates.push(date);
+      //         }
+      //       } else {
+      //         for (let j = 0; j < week_days_arr.length; j++) {
+      //           let nextDayOfTheWeek = getNextDayOfTheWeek(
+      //             week_days_arr[j],
+      //             new_date
+      //           );
+      //           for (let i = 0; i < occurences; i++) {
+      //             let date = nextDayOfTheWeek
+      //               .clone()
+      //               .add(i * repeat_every, "weeks")
+      //               .format("L");
+      //             occurence_dates.push(date);
+      //           }
+      //         }
+      //       }
 
-            let today_date_object = new Date(curYear, curMonth, curDate);
-            let today = getFormattedDate(today_date_object);
+      //       //console.log("occurence_dates: ", occurence_dates);
 
-            if (occurence_dates.includes(today)) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setDate(curDate);
-              tempEndTime.setDate(curDate);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            }
+      //       let today_date_object = new Date(curYear, curMonth, curDate);
+      //       let today = getFormattedDate(today_date_object);
 
-            ///
+      //       if (occurence_dates.includes(today)) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //         tempStartTime.setDate(curDate);
+      //         tempEndTime.setDate(curDate);
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       }
 
-            ///
-          } else if (arr[i].repeat_ends === "On") {
-            let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
-            let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
-            let initialEndOnYear = new Date(
-              arr[i].repeat_ends_on
-            ).getFullYear();
-            let initialDayCorrect = false;
-            let startWeek = new Date(
-              initialStartYear,
-              initialStartMonth,
-              initialStartDate
-            );
-            let weekStart = ISO8601_week_no(startWeek);
-            let weekNow = new Date(curYear, curMonth, curDate);
-            let curWeek = ISO8601_week_no(weekNow);
+      //       ///
 
-            if (
-              (curYear < initialEndOnYear &&
-                curYear > initialStartYear &&
-                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
-              (curYear === initialEndOnYear &&
-                curYear !== initialStartYear &&
-                curMonth < endsOnMonth &&
-                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
-              (curYear < initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                arr[i].repeat_every === "1") ||
-              (curYear < initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear < initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curDate >= initialStartDate &&
-                arr[i].repeat_every === "1") ||
-              (curYear < initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curDate >= initialStartDate &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth < endsOnMonth &&
-                curMonth > initialStartMonth &&
-                arr[i].repeat_every === "1") ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth < endsOnMonth &&
-                curMonth > initialStartMonth &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === endsOnMonth &&
-                curMonth === initialStartMonth &&
-                curDate >= initialStartDate &&
-                curDate <= endsOnDate &&
-                arr[i].repeat_every === "1") ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === endsOnMonth &&
-                curMonth === initialStartMonth &&
-                curDate >= initialStartDate &&
-                curDate <= endsOnDate &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === endsOnMonth &&
-                curMonth !== initialStartMonth &&
-                curDate <= endsOnDate &&
-                arr[i].repeat_every === "1") ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === endsOnMonth &&
-                curMonth !== initialStartMonth &&
-                curDate <= endsOnDate &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curMonth !== endsOnMonth &&
-                curDate >= initialStartDate &&
-                arr[i].repeat_every === "1") ||
-              (curYear === initialEndOnYear &&
-                curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curMonth !== endsOnMonth &&
-                curDate >= initialStartDate &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0)
-            ) {
-              Object.keys(arr[i].repeat_week_days).forEach((key) => {
-                if (
-                  curDate === initialStartDate &&
-                  curMonth === initialStartMonth &&
-                  curYear === initialStartYear
-                ) {
-                  if (
-                    (arr[i].repeat_week_days[key] === "Sunday" &&
-                      new Date(this.props.dateContext).getDay() === 0) ||
-                    (arr[i].repeat_week_days[key] === "Monday" &&
-                      new Date(this.props.dateContext).getDay() === 1) ||
-                    (arr[i].repeat_week_days[key] === "Tuesday" &&
-                      new Date(this.props.dateContext).getDay() === 2) ||
-                    (arr[i].repeat_week_days[key] === "Wednesday" &&
-                      new Date(this.props.dateContext).getDay() === 3) ||
-                    (arr[i].repeat_week_days[key] === "Thursday" &&
-                      new Date(this.props.dateContext).getDay() === 4) ||
-                    (arr[i].repeat_week_days[key] === "Friday" &&
-                      new Date(this.props.dateContext).getDay() === 5) ||
-                    (arr[i].repeat_week_days[key] === "Saturday" &&
-                      new Date(this.props.dateContext).getDay() == 6)
-                  ) {
-                    initialDayCorrect = true;
-                  }
-                }
+      //       ///
+      //     } else if (arr[i].repeat_ends === "On") {
+      //       let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
+      //       let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
+      //       let initialEndOnYear = new Date(
+      //         arr[i].repeat_ends_on
+      //       ).getFullYear();
+      //       let initialDayCorrect = false;
+      //       let startWeek = new Date(
+      //         initialStartYear,
+      //         initialStartMonth,
+      //         initialStartDate
+      //       );
+      //       let weekStart = ISO8601_week_no(startWeek);
+      //       let weekNow = new Date(curYear, curMonth, curDate);
+      //       let curWeek = ISO8601_week_no(weekNow);
 
-                if (
-                  (arr[i].repeat_week_days[key] === "Sunday" &&
-                    new Date(this.props.dateContext).getDay() === 0) ||
-                  (arr[i].repeat_week_days[key] === "Monday" &&
-                    new Date(this.props.dateContext).getDay() === 1) ||
-                  (arr[i].repeat_week_days[key] === "Tuesday" &&
-                    new Date(this.props.dateContext).getDay() === 2) ||
-                  (arr[i].repeat_week_days[key] === "Wednesday" &&
-                    new Date(this.props.dateContext).getDay() === 3) ||
-                  (arr[i].repeat_week_days[key] === "Thursday" &&
-                    new Date(this.props.dateContext).getDay() === 4) ||
-                  (arr[i].repeat_week_days[key] === "Friday" &&
-                    new Date(this.props.dateContext).getDay() === 5) ||
-                  (arr[i].repeat_week_days[key] === "Saturday" &&
-                    new Date(this.props.dateContext).getDay() === 6)
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              });
+      //       if (
+      //         (curYear < initialEndOnYear &&
+      //           curYear > initialStartYear &&
+      //           (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
+      //         (curYear === initialEndOnYear &&
+      //           curYear !== initialStartYear &&
+      //           curMonth < endsOnMonth &&
+      //           (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || // needs work
+      //         (curYear < initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth > initialStartMonth &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear < initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth > initialStartMonth &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear < initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === initialStartMonth &&
+      //           curDate >= initialStartDate &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear < initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === initialStartMonth &&
+      //           curDate >= initialStartDate &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth < endsOnMonth &&
+      //           curMonth > initialStartMonth &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth < endsOnMonth &&
+      //           curMonth > initialStartMonth &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === endsOnMonth &&
+      //           curMonth === initialStartMonth &&
+      //           curDate >= initialStartDate &&
+      //           curDate <= endsOnDate &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === endsOnMonth &&
+      //           curMonth === initialStartMonth &&
+      //           curDate >= initialStartDate &&
+      //           curDate <= endsOnDate &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === endsOnMonth &&
+      //           curMonth !== initialStartMonth &&
+      //           curDate <= endsOnDate &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === endsOnMonth &&
+      //           curMonth !== initialStartMonth &&
+      //           curDate <= endsOnDate &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === initialStartMonth &&
+      //           curMonth !== endsOnMonth &&
+      //           curDate >= initialStartDate &&
+      //           arr[i].repeat_every === "1") ||
+      //         (curYear === initialEndOnYear &&
+      //           curYear === initialStartYear &&
+      //           curMonth === initialStartMonth &&
+      //           curMonth !== endsOnMonth &&
+      //           curDate >= initialStartDate &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0)
+      //       ) {
+      //         Object.keys(arr[i].repeat_week_days).forEach((key) => {
+      //           if (
+      //             curDate === initialStartDate &&
+      //             curMonth === initialStartMonth &&
+      //             curYear === initialStartYear
+      //           ) {
+      //             if (
+      //               (arr[i].repeat_week_days[key] === "Sunday" &&
+      //                 new Date(this.props.dateContext).getDay() === 0) ||
+      //               (arr[i].repeat_week_days[key] === "Monday" &&
+      //                 new Date(this.props.dateContext).getDay() === 1) ||
+      //               (arr[i].repeat_week_days[key] === "Tuesday" &&
+      //                 new Date(this.props.dateContext).getDay() === 2) ||
+      //               (arr[i].repeat_week_days[key] === "Wednesday" &&
+      //                 new Date(this.props.dateContext).getDay() === 3) ||
+      //               (arr[i].repeat_week_days[key] === "Thursday" &&
+      //                 new Date(this.props.dateContext).getDay() === 4) ||
+      //               (arr[i].repeat_week_days[key] === "Friday" &&
+      //                 new Date(this.props.dateContext).getDay() === 5) ||
+      //               (arr[i].repeat_week_days[key] === "Saturday" &&
+      //                 new Date(this.props.dateContext).getDay() == 6)
+      //             ) {
+      //               initialDayCorrect = true;
+      //             }
+      //           }
 
-              if (
-                !initialDayCorrect &&
-                curDate === initialStartDate &&
-                curMonth === initialStartMonth &&
-                curYear === initialStartYear
-              ) {
-                tempStartTime.setDate(curDate + 1);
-                tempEndTime.setDate(curDate + 1);
-              }
-            }
-          } else if (arr[i].repeat_ends === "Never") {
-            //week starts with each monday
-            let initialDayCorrect = false;
-            let startWeek = new Date(
-              initialStartYear,
-              initialStartMonth,
-              initialStartDate
-            );
-            let weekStart = ISO8601_week_no(startWeek);
-            let weekNow = new Date(curYear, curMonth, curDate);
-            let curWeek = ISO8601_week_no(weekNow);
+      //           if (
+      //             (arr[i].repeat_week_days[key] === "Sunday" &&
+      //               new Date(this.props.dateContext).getDay() === 0) ||
+      //             (arr[i].repeat_week_days[key] === "Monday" &&
+      //               new Date(this.props.dateContext).getDay() === 1) ||
+      //             (arr[i].repeat_week_days[key] === "Tuesday" &&
+      //               new Date(this.props.dateContext).getDay() === 2) ||
+      //             (arr[i].repeat_week_days[key] === "Wednesday" &&
+      //               new Date(this.props.dateContext).getDay() === 3) ||
+      //             (arr[i].repeat_week_days[key] === "Thursday" &&
+      //               new Date(this.props.dateContext).getDay() === 4) ||
+      //             (arr[i].repeat_week_days[key] === "Friday" &&
+      //               new Date(this.props.dateContext).getDay() === 5) ||
+      //             (arr[i].repeat_week_days[key] === "Saturday" &&
+      //               new Date(this.props.dateContext).getDay() === 6)
+      //           ) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setDate(curDate);
+      //             tempEndTime.setDate(curDate);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         });
 
-            if (
-              (curYear > initialStartYear && arr[i].repeat_every === "1") ||
-              (curYear - initialStartYear === 1 &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) ||
-              (curYear - initialStartYear > 1 &&
-                arr[i].repeat_every > 1 &&
-                (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || //might need fixing
-              (curYear === initialStartYear &&
-                curMonth > initialStartMonth &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0) ||
-              (curYear === initialStartYear &&
-                curMonth === initialStartMonth &&
-                curDate >= initialStartDate &&
-                (curWeek - weekStart) % arr[i].repeat_every === 0)
-            ) {
-              Object.keys(arr[i].repeat_week_days).forEach((key) => {
-                if (
-                  curDate === initialStartDate &&
-                  curMonth === initialStartMonth &&
-                  curYear === initialStartYear
-                ) {
-                  if (
-                    (arr[i].repeat_week_days[key] === "Sunday" &&
-                      new Date(this.props.dateContext).getDay() === 0) ||
-                    (arr[i].repeat_week_days[key] === "Monday" &&
-                      new Date(this.props.dateContext).getDay() === 1) ||
-                    (arr[i].repeat_week_days[key] === "Tuesday" &&
-                      new Date(this.props.dateContext).getDay() === 2) ||
-                    (arr[i].repeat_week_days[key] === "Wednesday" &&
-                      new Date(this.props.dateContext).getDay() === 3) ||
-                    (arr[i].repeat_week_days[key] === "Thursday" &&
-                      new Date(this.props.dateContext).getDay() === 4) ||
-                    (arr[i].repeat_week_days[key] === "Friday" &&
-                      new Date(this.props.dateContext).getDay() === 5) ||
-                    (arr[i].repeat_week_days[key] === "Saturday" &&
-                      new Date(this.props.dateContext).getDay() == 6)
-                  ) {
-                    initialDayCorrect = true;
-                  }
-                }
+      //         if (
+      //           !initialDayCorrect &&
+      //           curDate === initialStartDate &&
+      //           curMonth === initialStartMonth &&
+      //           curYear === initialStartYear
+      //         ) {
+      //           tempStartTime.setDate(curDate + 1);
+      //           tempEndTime.setDate(curDate + 1);
+      //         }
+      //       }
+      //     } else if (arr[i].repeat_ends === "Never") {
+      //       //week starts with each monday
+      //       let initialDayCorrect = false;
+      //       let startWeek = new Date(
+      //         initialStartYear,
+      //         initialStartMonth,
+      //         initialStartDate
+      //       );
+      //       let weekStart = ISO8601_week_no(startWeek);
+      //       let weekNow = new Date(curYear, curMonth, curDate);
+      //       let curWeek = ISO8601_week_no(weekNow);
 
-                if (
-                  (arr[i].repeat_week_days[key] === "Sunday" &&
-                    new Date(this.props.dateContext).getDay() === 0) ||
-                  (arr[i].repeat_week_days[key] === "Monday" &&
-                    new Date(this.props.dateContext).getDay() === 1) ||
-                  (arr[i].repeat_week_days[key] === "Tuesday" &&
-                    new Date(this.props.dateContext).getDay() === 2) ||
-                  (arr[i].repeat_week_days[key] === "Wednesday" &&
-                    new Date(this.props.dateContext).getDay() === 3) ||
-                  (arr[i].repeat_week_days[key] === "Thursday" &&
-                    new Date(this.props.dateContext).getDay() === 4) ||
-                  (arr[i].repeat_week_days[key] === "Friday" &&
-                    new Date(this.props.dateContext).getDay() === 5) ||
-                  (arr[i].repeat_week_days[key] === "Saturday" &&
-                    new Date(this.props.dateContext).getDay() === 6)
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setDate(curDate);
-                  tempEndTime.setDate(curDate);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              });
-              if (
-                !initialDayCorrect &&
-                curDate === initialStartDate &&
-                curMonth === initialStartMonth &&
-                curYear === initialStartYear
-              ) {
-                tempStartTime.setDate(curDate + 1);
-                tempEndTime.setDate(curDate + 1);
-              }
-            }
-          }
-        }
-        /** REPEAT MONTH */
-        if (arr[i].repeat_frequency === "MONTH") {
-          /*** TODO fix if routine goes past 2 years.  */
-          if (arr[i].repeat_ends === "After") {
-            for (let j = 1; j < arr[i].repeat_occurences; j++) {
-              if (
-                curDate >= initialStartDate &&
-                curDate <= initialEndDate &&
-                tempStartTime.getMonth() + j * arr[i].repeat_every ===
-                  curMonth &&
-                (curMonth - initialStartMonth) % arr[i].repeat_every === 0 &&
-                initialStartYear === curYear
-              ) {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-              }
-            }
-            if (
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear > initialStartYear &&
-              curYear - initialStartYear === 1 &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              for (
-                let k = 0;
-                k <
-                arr[i].repeat_occurences -
-                  Math.floor(
-                    (12 - tempStartTime.getMonth()) / arr[i].repeat_every
-                  );
-                k++
-              ) {
-                if (
-                  k * arr[i].repeat_every -
-                    ((12 - tempStartTime.getMonth()) % arr[i].repeat_every) ===
-                  curMonth
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              }
-            } else if (
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear - initialStartYear === 2 &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              for (
-                let k = 0;
-                k <
-                arr[i].repeat_occurences -
-                  Math.floor(
-                    (12 - tempStartTime.getMonth()) / arr[i].repeat_every
-                  ) -
-                  Math.floor(12 / arr[i].repeat_every);
-                k++
-              ) {
-                if (
-                  k * arr[i].repeat_every -
-                    (12 % arr[i].repeat_every) -
-                    ((12 - tempStartTime.getMonth()) % arr[i].repeat_every) ===
-                  curMonth
-                ) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              }
-            }
-          } else if (arr[i].repeat_ends === "On") {
-            let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
-            let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
-            let initialEndOnYear = new Date(
-              arr[i].repeat_ends_on
-            ).getFullYear();
-            if (
-              initialStartYear === initialEndOnYear &&
-              curMonth <= endsOnMonth &&
-              curMonth > initialStartMonth &&
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear === initialStartYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              if (endsOnMonth === curMonth) {
-                if (endsOnDate >= initialStartDate) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                }
-              } else {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-              }
-            } else if (
-              initialStartYear !== initialEndOnYear &&
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear > initialStartYear &&
-              curYear < initialEndOnYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              if (endsOnMonth === curMonth) {
-                if (endsOnDate >= initialStartDate) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              } else {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-                tempStartTime.setFullYear(curYear);
-                tempEndTime.setFullYear(curYear);
-              }
-            } else if (
-              initialStartYear !== initialEndOnYear &&
-              curMonth <= endsOnMonth &&
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear === initialEndOnYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              if (endsOnMonth === curMonth) {
-                if (endsOnDate >= initialStartDate) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              } else {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-                tempStartTime.setFullYear(curYear);
-                tempEndTime.setFullYear(curYear);
-              }
-            } else if (
-              initialStartYear !== initialEndOnYear &&
-              curMonth > initialStartMonth &&
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear === initialStartYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              if (endsOnMonth === curMonth) {
-                if (endsOnDate >= initialStartDate) {
-                  tempStartTime.setMonth(curMonth);
-                  tempEndTime.setMonth(curMonth);
-                }
-              } else {
-                tempStartTime.setMonth(curMonth);
-                tempEndTime.setMonth(curMonth);
-              }
-            }
-          } else if (arr[i].repeat_ends === "Never") {
-            if (
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curYear > initialStartYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            } else if (
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curMonth > initialStartMonth &&
-              curYear === initialStartYear &&
-              (curMonth - initialStartMonth) % arr[i].repeat_every === 0
-            ) {
-              tempStartTime.setMonth(curMonth);
-              tempEndTime.setMonth(curMonth);
-            }
-          }
-        }
+      //       if (
+      //         (curYear > initialStartYear && arr[i].repeat_every === "1") ||
+      //         (curYear - initialStartYear === 1 &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) ||
+      //         (curYear - initialStartYear > 1 &&
+      //           arr[i].repeat_every > 1 &&
+      //           (curWeek - (53 - weekStart)) % arr[i].repeat_every === 0) || //might need fixing
+      //         (curYear === initialStartYear &&
+      //           curMonth > initialStartMonth &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0) ||
+      //         (curYear === initialStartYear &&
+      //           curMonth === initialStartMonth &&
+      //           curDate >= initialStartDate &&
+      //           (curWeek - weekStart) % arr[i].repeat_every === 0)
+      //       ) {
+      //         Object.keys(arr[i].repeat_week_days).forEach((key) => {
+      //           if (
+      //             curDate === initialStartDate &&
+      //             curMonth === initialStartMonth &&
+      //             curYear === initialStartYear
+      //           ) {
+      //             if (
+      //               (arr[i].repeat_week_days[key] === "Sunday" &&
+      //                 new Date(this.props.dateContext).getDay() === 0) ||
+      //               (arr[i].repeat_week_days[key] === "Monday" &&
+      //                 new Date(this.props.dateContext).getDay() === 1) ||
+      //               (arr[i].repeat_week_days[key] === "Tuesday" &&
+      //                 new Date(this.props.dateContext).getDay() === 2) ||
+      //               (arr[i].repeat_week_days[key] === "Wednesday" &&
+      //                 new Date(this.props.dateContext).getDay() === 3) ||
+      //               (arr[i].repeat_week_days[key] === "Thursday" &&
+      //                 new Date(this.props.dateContext).getDay() === 4) ||
+      //               (arr[i].repeat_week_days[key] === "Friday" &&
+      //                 new Date(this.props.dateContext).getDay() === 5) ||
+      //               (arr[i].repeat_week_days[key] === "Saturday" &&
+      //                 new Date(this.props.dateContext).getDay() == 6)
+      //             ) {
+      //               initialDayCorrect = true;
+      //             }
+      //           }
 
-        /** REPEAT YEAR */
-        if (arr[i].repeat_frequency === "YEAR") {
-          if (arr[i].repeat_ends === "After") {
-            for (let j = 1; j < arr[i].repeat_occurences; j++) {
-              if (
-                curDate >= initialStartDate &&
-                curDate <= initialEndDate &&
-                curMonth >= tempStartTime.getMonth() &&
-                curMonth <= tempEndTime.getMonth() &&
-                tempStartTime.getFullYear() + j * arr[i].repeat_every ===
-                  curYear &&
-                (curYear - initialStartYear) % arr[i].repeat_every === 0
-              ) {
-                tempStartTime.setFullYear(curYear);
-                tempEndTime.setFullYear(curYear);
-              }
-            }
-          }
-          if (arr[i].repeat_ends === "On") {
-            let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
-            let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
-            let initialEndOnYear = new Date(
-              arr[i].repeat_ends_on
-            ).getFullYear();
-            if (
-              curYear <= initialEndOnYear &&
-              curYear > initialStartYear &&
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curMonth === initialStartMonth &&
-              (curYear - initialStartYear) % arr[i].repeat_every === 0
-            ) {
-              if (initialEndOnYear === curYear) {
-                if (endsOnMonth === initialStartMonth) {
-                  if (endsOnDate >= initialStartDate) {
-                    tempStartTime.setFullYear(curYear);
-                    tempEndTime.setFullYear(curYear);
-                  }
-                } else if (endsOnMonth > initialStartMonth) {
-                  tempStartTime.setFullYear(curYear);
-                  tempEndTime.setFullYear(curYear);
-                }
-              } else {
-                tempStartTime.setFullYear(curYear);
-                tempEndTime.setFullYear(curYear);
-              }
-            }
-          } else if (arr[i].repeat_ends === "Never") {
-            if (
-              curDate >= initialStartDate &&
-              curDate <= initialEndDate &&
-              curMonth === initialStartMonth &&
-              curYear > initialStartYear &&
-              (curYear - initialStartYear) % arr[i].repeat_every === 0
-            ) {
-              tempStartTime.setFullYear(curYear);
-              tempEndTime.setFullYear(curYear);
-            }
-          }
-        }
-      }
+      //           if (
+      //             (arr[i].repeat_week_days[key] === "Sunday" &&
+      //               new Date(this.props.dateContext).getDay() === 0) ||
+      //             (arr[i].repeat_week_days[key] === "Monday" &&
+      //               new Date(this.props.dateContext).getDay() === 1) ||
+      //             (arr[i].repeat_week_days[key] === "Tuesday" &&
+      //               new Date(this.props.dateContext).getDay() === 2) ||
+      //             (arr[i].repeat_week_days[key] === "Wednesday" &&
+      //               new Date(this.props.dateContext).getDay() === 3) ||
+      //             (arr[i].repeat_week_days[key] === "Thursday" &&
+      //               new Date(this.props.dateContext).getDay() === 4) ||
+      //             (arr[i].repeat_week_days[key] === "Friday" &&
+      //               new Date(this.props.dateContext).getDay() === 5) ||
+      //             (arr[i].repeat_week_days[key] === "Saturday" &&
+      //               new Date(this.props.dateContext).getDay() === 6)
+      //           ) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setDate(curDate);
+      //             tempEndTime.setDate(curDate);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         });
+      //         if (
+      //           !initialDayCorrect &&
+      //           curDate === initialStartDate &&
+      //           curMonth === initialStartMonth &&
+      //           curYear === initialStartYear
+      //         ) {
+      //           tempStartTime.setDate(curDate + 1);
+      //           tempEndTime.setDate(curDate + 1);
+      //         }
+      //       }
+      //     }
+      //   }
+      //   /** REPEAT MONTH */
+      //   if (arr[i].repeat_frequency === "MONTH") {
+      //     /*** TODO fix if routine goes past 2 years.  */
+      //     if (arr[i].repeat_ends === "After") {
+      //       for (let j = 1; j < arr[i].repeat_occurences; j++) {
+      //         if (
+      //           curDate >= initialStartDate &&
+      //           curDate <= initialEndDate &&
+      //           tempStartTime.getMonth() + j * arr[i].repeat_every ===
+      //             curMonth &&
+      //           (curMonth - initialStartMonth) % arr[i].repeat_every === 0 &&
+      //           initialStartYear === curYear
+      //         ) {
+      //           tempStartTime.setMonth(curMonth);
+      //           tempEndTime.setMonth(curMonth);
+      //         }
+      //       }
+      //       if (
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear > initialStartYear &&
+      //         curYear - initialStartYear === 1 &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         for (
+      //           let k = 0;
+      //           k <
+      //           arr[i].repeat_occurences -
+      //             Math.floor(
+      //               (12 - tempStartTime.getMonth()) / arr[i].repeat_every
+      //             );
+      //           k++
+      //         ) {
+      //           if (
+      //             k * arr[i].repeat_every -
+      //               ((12 - tempStartTime.getMonth()) % arr[i].repeat_every) ===
+      //             curMonth
+      //           ) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         }
+      //       } else if (
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear - initialStartYear === 2 &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         for (
+      //           let k = 0;
+      //           k <
+      //           arr[i].repeat_occurences -
+      //             Math.floor(
+      //               (12 - tempStartTime.getMonth()) / arr[i].repeat_every
+      //             ) -
+      //             Math.floor(12 / arr[i].repeat_every);
+      //           k++
+      //         ) {
+      //           if (
+      //             k * arr[i].repeat_every -
+      //               (12 % arr[i].repeat_every) -
+      //               ((12 - tempStartTime.getMonth()) % arr[i].repeat_every) ===
+      //             curMonth
+      //           ) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         }
+      //       }
+      //     } else if (arr[i].repeat_ends === "On") {
+      //       let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
+      //       let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
+      //       let initialEndOnYear = new Date(
+      //         arr[i].repeat_ends_on
+      //       ).getFullYear();
+      //       if (
+      //         initialStartYear === initialEndOnYear &&
+      //         curMonth <= endsOnMonth &&
+      //         curMonth > initialStartMonth &&
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear === initialStartYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         if (endsOnMonth === curMonth) {
+      //           if (endsOnDate >= initialStartDate) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //           }
+      //         } else {
+      //           tempStartTime.setMonth(curMonth);
+      //           tempEndTime.setMonth(curMonth);
+      //         }
+      //       } else if (
+      //         initialStartYear !== initialEndOnYear &&
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear > initialStartYear &&
+      //         curYear < initialEndOnYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         if (endsOnMonth === curMonth) {
+      //           if (endsOnDate >= initialStartDate) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         } else {
+      //           tempStartTime.setMonth(curMonth);
+      //           tempEndTime.setMonth(curMonth);
+      //           tempStartTime.setFullYear(curYear);
+      //           tempEndTime.setFullYear(curYear);
+      //         }
+      //       } else if (
+      //         initialStartYear !== initialEndOnYear &&
+      //         curMonth <= endsOnMonth &&
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear === initialEndOnYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         if (endsOnMonth === curMonth) {
+      //           if (endsOnDate >= initialStartDate) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         } else {
+      //           tempStartTime.setMonth(curMonth);
+      //           tempEndTime.setMonth(curMonth);
+      //           tempStartTime.setFullYear(curYear);
+      //           tempEndTime.setFullYear(curYear);
+      //         }
+      //       } else if (
+      //         initialStartYear !== initialEndOnYear &&
+      //         curMonth > initialStartMonth &&
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear === initialStartYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         if (endsOnMonth === curMonth) {
+      //           if (endsOnDate >= initialStartDate) {
+      //             tempStartTime.setMonth(curMonth);
+      //             tempEndTime.setMonth(curMonth);
+      //           }
+      //         } else {
+      //           tempStartTime.setMonth(curMonth);
+      //           tempEndTime.setMonth(curMonth);
+      //         }
+      //       }
+      //     } else if (arr[i].repeat_ends === "Never") {
+      //       if (
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curYear > initialStartYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       } else if (
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curMonth > initialStartMonth &&
+      //         curYear === initialStartYear &&
+      //         (curMonth - initialStartMonth) % arr[i].repeat_every === 0
+      //       ) {
+      //         tempStartTime.setMonth(curMonth);
+      //         tempEndTime.setMonth(curMonth);
+      //       }
+      //     }
+      //   }
+
+      //   /** REPEAT YEAR */
+      //   if (arr[i].repeat_frequency === "YEAR") {
+      //     if (arr[i].repeat_ends === "After") {
+      //       for (let j = 1; j < arr[i].repeat_occurences; j++) {
+      //         if (
+      //           curDate >= initialStartDate &&
+      //           curDate <= initialEndDate &&
+      //           curMonth >= tempStartTime.getMonth() &&
+      //           curMonth <= tempEndTime.getMonth() &&
+      //           tempStartTime.getFullYear() + j * arr[i].repeat_every ===
+      //             curYear &&
+      //           (curYear - initialStartYear) % arr[i].repeat_every === 0
+      //         ) {
+      //           tempStartTime.setFullYear(curYear);
+      //           tempEndTime.setFullYear(curYear);
+      //         }
+      //       }
+      //     }
+      //     if (arr[i].repeat_ends === "On") {
+      //       let endsOnDate = new Date(arr[i].repeat_ends_on).getDate();
+      //       let endsOnMonth = new Date(arr[i].repeat_ends_on).getMonth();
+      //       let initialEndOnYear = new Date(
+      //         arr[i].repeat_ends_on
+      //       ).getFullYear();
+      //       if (
+      //         curYear <= initialEndOnYear &&
+      //         curYear > initialStartYear &&
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curMonth === initialStartMonth &&
+      //         (curYear - initialStartYear) % arr[i].repeat_every === 0
+      //       ) {
+      //         if (initialEndOnYear === curYear) {
+      //           if (endsOnMonth === initialStartMonth) {
+      //             if (endsOnDate >= initialStartDate) {
+      //               tempStartTime.setFullYear(curYear);
+      //               tempEndTime.setFullYear(curYear);
+      //             }
+      //           } else if (endsOnMonth > initialStartMonth) {
+      //             tempStartTime.setFullYear(curYear);
+      //             tempEndTime.setFullYear(curYear);
+      //           }
+      //         } else {
+      //           tempStartTime.setFullYear(curYear);
+      //           tempEndTime.setFullYear(curYear);
+      //         }
+      //       }
+      //     } else if (arr[i].repeat_ends === "Never") {
+      //       if (
+      //         curDate >= initialStartDate &&
+      //         curDate <= initialEndDate &&
+      //         curMonth === initialStartMonth &&
+      //         curYear > initialStartYear &&
+      //         (curYear - initialStartYear) % arr[i].repeat_every === 0
+      //       ) {
+      //         tempStartTime.setFullYear(curYear);
+      //         tempEndTime.setFullYear(curYear);
+      //       }
+      //     }
+      //   }
+      // }
 
       //***   Firbase boolean varibale to help mobile side know if to display goal */
       let checkCurDate = moment();
@@ -1183,4 +1187,125 @@ function getMonthNumber(str) {
       console.log("can't change the month");
       return "";
   }
+}
+function updateGRIsDisplayed() {
+  const db = firebase.firestore();
+  let CurrentDate = new Date(
+    new Date().toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+  );
+  CurrentDate.setHours(0, 0, 0, 0);
+
+  let grs = [];
+  db.collection("users")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        if (doc.data()["goals&routines"] != null) {
+          let arrs = doc.data()["goals&routines"];
+          arrs.forEach((gr) => {
+            console.log("Gr: ", gr["start_day_and_time"]);
+            let startDate = new Date(
+              new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
+                timeZone: "America/Los_Angeles",
+              })
+            );
+            startDate.setHours(0, 0, 0, 0);
+            let isDisplayedTodayCalculated = false;
+            let repeatOccurences = parseInt(gr["repeat_occurences"]);
+            let repeatEvery = parseInt(gr["repeat_every"]);
+            let repeatEnds = gr["repeat_ends"];
+            let repeatEndsOn = new Date(
+              new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
+                timeZone: "America/Los_Angeles",
+              })
+            );
+            repeatEndsOn.setHours(0, 0, 0, 0);
+            let repeatFrequency = gr["repeat_frequency"];
+            let repeatWeekDays = [];
+            if (gr["repeat_week_days"] != null) {
+              Object.keys(gr["repeat_week_days"]).forEach((k) => {
+                if (gr["repeat_week_days"][k] != "") {
+                  repeatWeekDays.push(parseInt(k));
+                }
+              });
+            }
+            if (!gr.repeat) {
+              isDisplayedTodayCalculated =
+                CurrentDate.getTime() - startDate.getTime() == 0;
+            } else {
+              if (CurrentDate >= startDate) {
+                if (repeatEnds == "On") {
+                } else if (repeatEnds == "After") {
+                  if (repeatFrequency == "DAY") {
+                    repeatEndsOn = new Date(startDate);
+                    repeatEndsOn.setDate(
+                      startDate.getDate() + (repeatOccurences - 1) * repeatEvery
+                    );
+                  } else if (repeatFrequency == "WEEK") {
+                    repeatEndsOn = new Date(startDate);
+                    repeatEndsOn.setDate(
+                      startDate.getDate() +
+                        (repeatOccurences - 1) * 7 * repeatEvery
+                    );
+                  } else if (repeatFrequency == "MONTH") {
+                    repeatEndsOn = new Date(startDate);
+                    repeatEndsOn.setMonth(
+                      startDate.getMonth() +
+                        (repeatOccurences - 1) * repeatEvery
+                    );
+                  } else if (repeatFrequency == "YEAR") {
+                    repeatEndsOn = new Date(startDate);
+                    repeatEndsOn.setFullYear(
+                      startDate.getFullYear() +
+                        (repeatOccurences - 1) * repeatEvery
+                    );
+                  }
+                } else if (repeatEnds == "Never") {
+                  repeatEndsOn = CurrentDate;
+                }
+                if (CurrentDate <= repeatEndsOn) {
+                  if (repeatFrequency == "DAY") {
+                    isDisplayedTodayCalculated =
+                      Math.floor(
+                        (CurrentDate.getTime() - startDate.getTime()) /
+                          (24 * 3600 * 1000)
+                      ) %
+                        repeatEvery ==
+                      0;
+                  } else if (repeatFrequency == "WEEK") {
+                    isDisplayedTodayCalculated =
+                      repeatWeekDays.includes(CurrentDate.getDay()) &&
+                      Math.floor(
+                        (CurrentDate.getTime() - startDate.getTime()) /
+                          (7 * 24 * 3600 * 1000)
+                      ) %
+                        repeatEvery ==
+                        0;
+                  } else if (repeatFrequency == "MONTH") {
+                    isDisplayedTodayCalculated =
+                      CurrentDate.getDate() == startDate.getDate() &&
+                      ((CurrentDate.getFullYear() - startDate.getFullYear()) *
+                        12 +
+                        CurrentDate.getMonth() -
+                        startDate.getMonth()) %
+                        repeatEvery ==
+                        0;
+                  } else if (repeatFrequency == "YEAR") {
+                    isDisplayedTodayCalculated =
+                      startDate.getDate() == CurrentDate.getDate() &&
+                      CurrentDate.getMonth() == startDate.getMonth() &&
+                      (CurrentDate.getFullYear() - startDate.getFullYear()) %
+                        repeatEvery ==
+                        0;
+                  }
+                  console.log("Day goals: ", isDisplayedTodayCalculated);
+                }
+              }
+            }
+          });
+        }
+      });
+    });
 }
