@@ -2793,6 +2793,7 @@ this will close repeat modal.
             theCurrentUserId={this.state.currentUserId}
             originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
           />
+
           <DayGoals
             TimeZone={this.state.currentUserTimeZone}
             dateContext={this.state.dateContext}

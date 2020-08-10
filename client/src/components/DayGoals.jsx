@@ -132,6 +132,12 @@ export default class DayGoals extends Component {
               );
             } else if (repeatFrequency == "WEEK") {
               repeatEndsOn = new Date(startDate);
+              repeatEndsOn.setDate(
+                startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
+              );
+
+              /*
+              repeatEndsOn = new Date(startDate);
               let dow = repeatWeekDays[repeatWeekDays.length - 1];
               let nextDayOftheWeek = new Date(
                 repeatEndsOn.setDate(
@@ -149,6 +155,7 @@ export default class DayGoals extends Component {
                 //startDate.getDate() + repeatOccurences * 7 * repeatEvery
               );
               //console.log("WEEK: repeatEndsOn:", repeatEndsOn);
+              */
             } else if (repeatFrequency == "MONTH") {
               repeatEndsOn = new Date(startDate);
               repeatEndsOn.setMonth(
@@ -202,6 +209,7 @@ export default class DayGoals extends Component {
         }
       }
 
+      console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
       if (isDisplayedTodayCalculated) {
         //console.log("today is the day");
         tempStartTime.setMonth(curMonth);
@@ -968,50 +976,52 @@ export default class DayGoals extends Component {
             let height =
               (hourDiff + minDiff) * this.state.pxPerHourForConversion;
             sameTimeEventCount++;
-            let newElement = (
-              <div key={"event" + i}>
-                <div
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  title={
-                    arr[i].title +
-                    "\nStart: " +
-                    tempStartTime +
-                    "\nEnd: " +
-                    tempEndTime
-                  }
-                  onMouseOver={(e) => {
-                    e.target.style.color = "#FFFFFF";
-                    e.target.style.background = "RebeccaPurple";
-                    e.target.style.zIndex = "2";
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.zIndex = "1";
-                    e.target.style.color = "#000000";
-                    e.target.style.background = color;
-                  }}
-                  key={i}
-                  onClick={this.GoalClicked}
-                  style={{
-                    zIndex: this.state.zIndex,
-                    marginTop: minsToMarginTop + "px",
-                    padding: "5px",
-                    fontSize: fontSize + "px",
-                    border: "1px lightgray solid ",
-                    float: "left",
-                    borderRadius: "5px",
-                    background: color,
-                    width: itemWidth + "px",
-                    position: "absolute",
-                    height: height + "px",
-                    marginLeft: addmarginLeft + "px",
-                  }}
-                >
-                  {arr[i].title}
+            if (isDisplayedTodayCalculated) {
+              let newElement = (
+                <div key={"event" + i}>
+                  <div
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title={
+                      arr[i].title +
+                      "\nStart: " +
+                      tempStartTime +
+                      "\nEnd: " +
+                      tempEndTime
+                    }
+                    onMouseOver={(e) => {
+                      e.target.style.color = "#FFFFFF";
+                      e.target.style.background = "RebeccaPurple";
+                      e.target.style.zIndex = "2";
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.zIndex = "1";
+                      e.target.style.color = "#000000";
+                      e.target.style.background = color;
+                    }}
+                    key={i}
+                    onClick={this.GoalClicked}
+                    style={{
+                      zIndex: this.state.zIndex,
+                      marginTop: minsToMarginTop + "px",
+                      padding: "5px",
+                      fontSize: fontSize + "px",
+                      border: "1px lightgray solid ",
+                      float: "left",
+                      borderRadius: "5px",
+                      background: color,
+                      width: itemWidth + "px",
+                      position: "absolute",
+                      height: height + "px",
+                      marginLeft: addmarginLeft + "px",
+                    }}
+                  >
+                    {arr[i].title}
+                  </div>
                 </div>
-              </div>
-            );
-            res.push(newElement);
+              );
+              res.push(newElement);
+            }
           } else {
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
@@ -1055,9 +1065,71 @@ export default class DayGoals extends Component {
             } else {
               color = "blue";
             }
-            let newElement = (
+            if (isDisplayedTodayCalculated) {
+              let newElement = (
+                <div
+                  key={"dayRoutineItem" + i}
+                  data-toggle="tooltip"
+                  data-placement="right"
+                  title={
+                    arr[i].title +
+                    "\nStart: " +
+                    tempStartTime +
+                    "\nEnd: " +
+                    tempEndTime
+                  }
+                  onMouseOver={(e) => {
+                    e.target.style.color = "#FFFFFF";
+                    e.target.style.background = "RebeccaPurple";
+                    e.target.style.zIndex = "2";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.zIndex = "1";
+                    e.target.style.color = "#000000";
+                    e.target.style.border = "1px lightgray solid";
+                    e.target.style.background = color;
+                  }}
+                  onClick={this.GoalClicked}
+                  style={{
+                    zIndex: this.state.zIndex,
+                    marginTop: minsToMarginTop + "px",
+                    padding: "5px",
+                    border: "1px lightgray solid ",
+                    borderRadius: "5px",
+                    position: "absolute",
+                    height: height + "px",
+                    fontSize: fontSize + "px",
+                    background: color,
+                    width: itemWidth + "px",
+                    marginLeft: addmarginLeft + "px",
+                  }}
+                >
+                  {arr[i].title}
+                </div>
+              );
+              res.push(newElement);
+            }
+          }
+        }
+      } else if (
+        hour === 0 &&
+        tempEndTime.getDate() === curDate &&
+        curMonth <= tempEndTime.getMonth() &&
+        curMonth >= tempStartTime.getMonth() &&
+        curYear <= tempEndTime.getFullYear() &&
+        curYear >= tempStartTime.getFullYear()
+      ) {
+        let minsToMarginTop = 0;
+        let hourDiff = tempEndTime.getHours();
+        let minDiff = tempEndTime.getMinutes() / 60;
+        let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
+        let color = "lavender";
+        sameTimeEventCount++;
+        if (isDisplayedTodayCalculated) {
+          console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
+          let newElement = (
+            <div key={"event" + i}>
               <div
-                key={"dayRoutineItem" + i}
                 data-toggle="tooltip"
                 data-placement="right"
                 title={
@@ -1075,88 +1147,31 @@ export default class DayGoals extends Component {
                 onMouseOut={(e) => {
                   e.target.style.zIndex = "1";
                   e.target.style.color = "#000000";
-                  e.target.style.border = "1px lightgray solid";
                   e.target.style.background = color;
                 }}
+                key={i}
                 onClick={this.GoalClicked}
                 style={{
                   zIndex: this.state.zIndex,
                   marginTop: minsToMarginTop + "px",
                   padding: "5px",
-                  border: "1px lightgray solid ",
-                  borderRadius: "5px",
-                  position: "absolute",
-                  height: height + "px",
                   fontSize: fontSize + "px",
+                  border: "1px lightgray solid ",
+                  float: "left",
+                  borderRadius: "5px",
                   background: color,
                   width: itemWidth + "px",
+                  position: "absolute",
+                  height: height + "px",
                   marginLeft: addmarginLeft + "px",
                 }}
               >
                 {arr[i].title}
               </div>
-            );
-            res.push(newElement);
-          }
-        }
-      } else if (
-        hour === 0 &&
-        tempEndTime.getDate() === curDate &&
-        curMonth <= tempEndTime.getMonth() &&
-        curMonth >= tempStartTime.getMonth() &&
-        curYear <= tempEndTime.getFullYear() &&
-        curYear >= tempStartTime.getFullYear()
-      ) {
-        let minsToMarginTop = 0;
-        let hourDiff = tempEndTime.getHours();
-        let minDiff = tempEndTime.getMinutes() / 60;
-        let height = (hourDiff + minDiff) * this.state.pxPerHourForConversion;
-        let color = "lavender";
-        sameTimeEventCount++;
-        let newElement = (
-          <div key={"event" + i}>
-            <div
-              data-toggle="tooltip"
-              data-placement="right"
-              title={
-                arr[i].title +
-                "\nStart: " +
-                tempStartTime +
-                "\nEnd: " +
-                tempEndTime
-              }
-              onMouseOver={(e) => {
-                e.target.style.color = "#FFFFFF";
-                e.target.style.background = "RebeccaPurple";
-                e.target.style.zIndex = "2";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.zIndex = "1";
-                e.target.style.color = "#000000";
-                e.target.style.background = color;
-              }}
-              key={i}
-              onClick={this.GoalClicked}
-              style={{
-                zIndex: this.state.zIndex,
-                marginTop: minsToMarginTop + "px",
-                padding: "5px",
-                fontSize: fontSize + "px",
-                border: "1px lightgray solid ",
-                float: "left",
-                borderRadius: "5px",
-                background: color,
-                width: itemWidth + "px",
-                position: "absolute",
-                height: height + "px",
-                marginLeft: addmarginLeft + "px",
-              }}
-            >
-              {arr[i].title}
             </div>
-          </div>
-        );
-        res.push(newElement);
+          );
+          res.push(newElement);
+        }
       } else if (
         hour === 0 &&
         tempStartTime.getDate() < curDate &&
@@ -1171,50 +1186,52 @@ export default class DayGoals extends Component {
         let height = hourDiff * this.state.pxPerHourForConversion;
         let color = "lavender";
         sameTimeEventCount++;
-        let newElement = (
-          <div key={"event" + i}>
-            <div
-              data-toggle="tooltip"
-              data-placement="right"
-              title={
-                arr[i].title +
-                "\nStart: " +
-                tempStartTime +
-                "\nEnd: " +
-                tempEndTime
-              }
-              onMouseOver={(e) => {
-                e.target.style.color = "#FFFFFF";
-                e.target.style.background = "RebeccaPurple";
-                e.target.style.zIndex = "2";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.zIndex = "1";
-                e.target.style.color = "#000000";
-                e.target.style.background = color;
-              }}
-              key={i}
-              onClick={this.GoalClicked}
-              style={{
-                zIndex: this.state.zIndex,
-                marginTop: minsToMarginTop + "px",
-                padding: "5px",
-                fontSize: fontSize + "px",
-                border: "1px lightgray solid ",
-                float: "left",
-                borderRadius: "5px",
-                background: color,
-                width: itemWidth + "px",
-                position: "absolute",
-                height: height + "px",
-                marginLeft: addmarginLeft + "px",
-              }}
-            >
-              {arr[i].title}
+        if (isDisplayedTodayCalculated) {
+          let newElement = (
+            <div key={"event" + i}>
+              <div
+                data-toggle="tooltip"
+                data-placement="right"
+                title={
+                  arr[i].title +
+                  "\nStart: " +
+                  tempStartTime +
+                  "\nEnd: " +
+                  tempEndTime
+                }
+                onMouseOver={(e) => {
+                  e.target.style.color = "#FFFFFF";
+                  e.target.style.background = "RebeccaPurple";
+                  e.target.style.zIndex = "2";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.zIndex = "1";
+                  e.target.style.color = "#000000";
+                  e.target.style.background = color;
+                }}
+                key={i}
+                onClick={this.GoalClicked}
+                style={{
+                  zIndex: this.state.zIndex,
+                  marginTop: minsToMarginTop + "px",
+                  padding: "5px",
+                  fontSize: fontSize + "px",
+                  border: "1px lightgray solid ",
+                  float: "left",
+                  borderRadius: "5px",
+                  background: color,
+                  width: itemWidth + "px",
+                  position: "absolute",
+                  height: height + "px",
+                  marginLeft: addmarginLeft + "px",
+                }}
+              >
+                {arr[i].title}
+              </div>
             </div>
-          </div>
-        );
-        res.push(newElement);
+          );
+          res.push(newElement);
+        }
       }
     }
     return res;
