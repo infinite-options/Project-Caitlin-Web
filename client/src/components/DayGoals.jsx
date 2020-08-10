@@ -45,7 +45,9 @@ export default class DayGoals extends Component {
    *
    */
   getEventItem = (hour) => {
-    updateGRIsDisplayed();
+    //console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    //updateGRIsDisplayed();
+    //console.log("TimeZone", this.props.TimeZone);
     var res = [];
     var tempStart = null;
     var tempEnd = null;
@@ -54,6 +56,8 @@ export default class DayGoals extends Component {
     let itemWidth = this.state.eventBoxSize;
     var addmarginLeft = 0;
     var fontSize = 10;
+    //console.log("this.props.dateContext", this.props.dateContext);
+
     //this.updateGRIsDisplayed()
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start_day_and_time;
@@ -65,11 +69,148 @@ export default class DayGoals extends Component {
       let curMonth = this.props.dateContext.get("month");
       let curYear = this.props.dateContext.get("year");
 
-      let initialStartDate = tempStartTime.getDate();
-      let initialEndDate = tempEndTime.getDate();
-      let initialStartMonth = tempStartTime.getMonth();
-      let initialStartYear = tempStartTime.getFullYear();
-      let initialEndYear = tempEndTime.getFullYear();
+      let CurrentDate = new Date(
+        new Date(curYear, curMonth, curDate).toLocaleString("en-US", {
+          timeZone: this.props.TimeZone,
+        })
+      );
+      CurrentDate.setHours(0, 0, 0, 0);
+
+      let startDate = new Date(
+        new Date(arr[i].start_day_and_time).toLocaleString("en-US", {
+          timeZone: this.props.TimeZone,
+        })
+      );
+      startDate.setHours(0, 0, 0, 0);
+      let isDisplayedTodayCalculated = false;
+
+      let repeatOccurences = parseInt(arr[i].repeat_occurences);
+
+      let repeatEvery = parseInt(arr[i].repeat_every);
+
+      let repeatEnds = arr[i].repeat_ends;
+
+      let repeatEndsOn = new Date(
+        new Date(arr[i].repeat_ends_on).toLocaleString("en-US", {
+          timeZone: this.props.TimeZone,
+        })
+      );
+      repeatEndsOn.setHours(0, 0, 0, 0);
+
+      let repeatFrequency = arr[i].repeat_frequency;
+
+      let repeatWeekDays = [];
+      if (arr[i].repeat_week_days != null) {
+        Object.keys(arr[i].repeat_week_days).forEach((k) => {
+          if (arr[i].repeat_week_days[k] != "") {
+            repeatWeekDays.push(parseInt(k));
+          }
+        });
+      }
+      // console.log("CurrentDate: ", CurrentDate);
+      // console.log("startDate: ", startDate);
+      // console.log("isDisplayToday: ", isDisplayedTodayCalculated);
+      // console.log("repeatOccurences:", repeatOccurences);
+      // console.log("repeatEvery:", repeatEvery);
+      // console.log("repeatEvery:", repeatEvery);
+      //console.log("repeatWeekDays: ", repeatWeekDays);
+      //console.log("repeatFrequency: ", repeatFrequency);
+      // console.log("repeatEnds: ", repeatEnds);
+      // console.log("repeatEndsOn: ", repeatEndsOn);
+
+      if (!arr[i].repeat) {
+        isDisplayedTodayCalculated =
+          CurrentDate.getTime() - startDate.getTime() == 0;
+      } else {
+        if (CurrentDate >= startDate) {
+          if (repeatEnds == "On") {
+          } else if (repeatEnds == "After") {
+            if (repeatFrequency == "DAY") {
+              repeatEndsOn = new Date(startDate);
+              repeatEndsOn.setDate(
+                startDate.getDate() + (repeatOccurences - 1) * repeatEvery
+              );
+            } else if (repeatFrequency == "WEEK") {
+              repeatEndsOn = new Date(startDate);
+              let dow = repeatWeekDays[repeatWeekDays.length - 1];
+              let nextDayOftheWeek = new Date(
+                repeatEndsOn.setDate(
+                  repeatEndsOn.getDate() +
+                    ((dow + (7 - repeatEndsOn.getDay())) % 7)
+                )
+              );
+              //console.log("nextDayOftheWeek: ", nextDayOftheWeek);
+              //let repeatEndsOn_moment = moment(startDate).format("LLL");
+              //console.log("repeatEndsOn_moment: ", repeatEndsOn_moment);
+              let lastEndDay = new Date();
+              repeatEndsOn.setDate(
+                nextDayOftheWeek.getDate() +
+                  (repeatOccurences - 1) * 7 * repeatEvery
+                //startDate.getDate() + repeatOccurences * 7 * repeatEvery
+              );
+              //console.log("WEEK: repeatEndsOn:", repeatEndsOn);
+            } else if (repeatFrequency == "MONTH") {
+              repeatEndsOn = new Date(startDate);
+              repeatEndsOn.setMonth(
+                startDate.getMonth() + (repeatOccurences - 1) * repeatEvery
+              );
+            } else if (repeatFrequency == "YEAR") {
+              repeatEndsOn = new Date(startDate);
+              repeatEndsOn.setFullYear(
+                startDate.getFullYear() + (repeatOccurences - 1) * repeatEvery
+              );
+            }
+          } else if (repeatEnds == "Never") {
+            repeatEndsOn = CurrentDate;
+          }
+
+          if (CurrentDate <= repeatEndsOn) {
+            if (repeatFrequency == "DAY") {
+              isDisplayedTodayCalculated =
+                Math.floor(
+                  (CurrentDate.getTime() - startDate.getTime()) /
+                    (24 * 3600 * 1000)
+                ) %
+                  repeatEvery ==
+                0;
+            } else if (repeatFrequency == "WEEK") {
+              isDisplayedTodayCalculated =
+                repeatWeekDays.includes(CurrentDate.getDay()) &&
+                Math.floor(
+                  (CurrentDate.getTime() - startDate.getTime()) /
+                    (7 * 24 * 3600 * 1000)
+                ) %
+                  repeatEvery ==
+                  0;
+            } else if (repeatFrequency == "MONTH") {
+              isDisplayedTodayCalculated =
+                CurrentDate.getDate() == startDate.getDate() &&
+                ((CurrentDate.getFullYear() - startDate.getFullYear()) * 12 +
+                  CurrentDate.getMonth() -
+                  startDate.getMonth()) %
+                  repeatEvery ==
+                  0;
+            } else if (repeatFrequency == "YEAR") {
+              isDisplayedTodayCalculated =
+                startDate.getDate() == CurrentDate.getDate() &&
+                CurrentDate.getMonth() == startDate.getMonth() &&
+                (CurrentDate.getFullYear() - startDate.getFullYear()) %
+                  repeatEvery ==
+                  0;
+            }
+          }
+        }
+      }
+
+      if (isDisplayedTodayCalculated) {
+        //console.log("today is the day");
+        tempStartTime.setMonth(curMonth);
+        tempEndTime.setMonth(curMonth);
+        tempStartTime.setDate(curDate);
+        tempEndTime.setDate(curDate);
+        tempStartTime.setFullYear(curYear);
+        tempEndTime.setFullYear(curYear);
+      }
 
       /** This function takes in the date and gives back the week number it is in for that year */
       function ISO8601_week_no(dt) {
@@ -1140,20 +1281,27 @@ function getFormattedDate(date) {
   return month + "/" + day + "/" + year;
 }
 
+/*
 function getNextDayOfTheWeek(day, date) {
   const dayINeed = day; // for Thursday
-  const today = date.isoWeekday();
+  const today = moment(date).isoWeekday();
+  console.log("date: ", date);
+  console.log("today: ", today);
+  console.log("datIneed: ", dayINeed + 1);
   //console.log("DayINeed, today", dayINeed, today);
 
   // if we haven't yet passed the day of the week that I need:
   if (today <= dayINeed) {
     // then just give me this week's instance of that day
-    var nextDayOfTheWeek = date.day(dayINeed);
+    var nextDayOfTheWeek = moment(date).day(dayINeed).format("LLL");
     return nextDayOfTheWeek;
   } else {
     // otherwise, give me *next week's* instance of that same day
-    var nextDayOfTheWeek = date.add(1, "weeks").day(dayINeed);
-    // console.log("from getNextday", nextDayOfTheWeek.format("L"));
+    var nextDayOfTheWeek = moment(date)
+      .add(1, "weeks")
+      .day(dayINeed)
+      .format("LLL");
+    console.log("from getNextday", nextDayOfTheWeek);
     return nextDayOfTheWeek;
   }
 }
@@ -1188,8 +1336,10 @@ function getMonthNumber(str) {
       return "";
   }
 }
+
+/** 
 function updateGRIsDisplayed() {
-  const db = firebase.firestore();
+  //const db = firebase.firestore();
   let CurrentDate = new Date(
     new Date().toLocaleString("en-US", {
       timeZone: "America/Los_Angeles",
@@ -1197,115 +1347,100 @@ function updateGRIsDisplayed() {
   );
   CurrentDate.setHours(0, 0, 0, 0);
 
-  let grs = [];
-  db.collection("users")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        if (doc.data()["goals&routines"] != null) {
-          let arrs = doc.data()["goals&routines"];
-          arrs.forEach((gr) => {
-            console.log("Gr: ", gr["start_day_and_time"]);
-            let startDate = new Date(
-              new Date(gr["start_day_and_time"]).toLocaleString("en-US", {
-                timeZone: "America/Los_Angeles",
-              })
-            );
-            startDate.setHours(0, 0, 0, 0);
-            let isDisplayedTodayCalculated = false;
-            let repeatOccurences = parseInt(gr["repeat_occurences"]);
-            let repeatEvery = parseInt(gr["repeat_every"]);
-            let repeatEnds = gr["repeat_ends"];
-            let repeatEndsOn = new Date(
-              new Date(gr["repeat_ends_on"]).toLocaleString("en-US", {
-                timeZone: "America/Los_Angeles",
-              })
-            );
-            repeatEndsOn.setHours(0, 0, 0, 0);
-            let repeatFrequency = gr["repeat_frequency"];
-            let repeatWeekDays = [];
-            if (gr["repeat_week_days"] != null) {
-              Object.keys(gr["repeat_week_days"]).forEach((k) => {
-                if (gr["repeat_week_days"][k] != "") {
-                  repeatWeekDays.push(parseInt(k));
-                }
-              });
-            }
-            if (!gr.repeat) {
-              isDisplayedTodayCalculated =
-                CurrentDate.getTime() - startDate.getTime() == 0;
-            } else {
-              if (CurrentDate >= startDate) {
-                if (repeatEnds == "On") {
-                } else if (repeatEnds == "After") {
-                  if (repeatFrequency == "DAY") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setDate(
-                      startDate.getDate() + (repeatOccurences - 1) * repeatEvery
-                    );
-                  } else if (repeatFrequency == "WEEK") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setDate(
-                      startDate.getDate() +
-                        (repeatOccurences - 1) * 7 * repeatEvery
-                    );
-                  } else if (repeatFrequency == "MONTH") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setMonth(
-                      startDate.getMonth() +
-                        (repeatOccurences - 1) * repeatEvery
-                    );
-                  } else if (repeatFrequency == "YEAR") {
-                    repeatEndsOn = new Date(startDate);
-                    repeatEndsOn.setFullYear(
-                      startDate.getFullYear() +
-                        (repeatOccurences - 1) * repeatEvery
-                    );
-                  }
-                } else if (repeatEnds == "Never") {
-                  repeatEndsOn = CurrentDate;
-                }
-                if (CurrentDate <= repeatEndsOn) {
-                  if (repeatFrequency == "DAY") {
-                    isDisplayedTodayCalculated =
-                      Math.floor(
-                        (CurrentDate.getTime() - startDate.getTime()) /
-                          (24 * 3600 * 1000)
-                      ) %
-                        repeatEvery ==
-                      0;
-                  } else if (repeatFrequency == "WEEK") {
-                    isDisplayedTodayCalculated =
-                      repeatWeekDays.includes(CurrentDate.getDay()) &&
-                      Math.floor(
-                        (CurrentDate.getTime() - startDate.getTime()) /
-                          (7 * 24 * 3600 * 1000)
-                      ) %
-                        repeatEvery ==
-                        0;
-                  } else if (repeatFrequency == "MONTH") {
-                    isDisplayedTodayCalculated =
-                      CurrentDate.getDate() == startDate.getDate() &&
-                      ((CurrentDate.getFullYear() - startDate.getFullYear()) *
-                        12 +
-                        CurrentDate.getMonth() -
-                        startDate.getMonth()) %
-                        repeatEvery ==
-                        0;
-                  } else if (repeatFrequency == "YEAR") {
-                    isDisplayedTodayCalculated =
-                      startDate.getDate() == CurrentDate.getDate() &&
-                      CurrentDate.getMonth() == startDate.getMonth() &&
-                      (CurrentDate.getFullYear() - startDate.getFullYear()) %
-                        repeatEvery ==
-                        0;
-                  }
-                  console.log("Day goals: ", isDisplayedTodayCalculated);
-                }
-              }
-            }
-          });
-        }
-      });
+  let startDate = new Date(
+    new Date(arr[i].start_day_and_time).toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+  );
+  startDate.setHours(0, 0, 0, 0);
+  let isDisplayedTodayCalculated = false;
+
+  let repeatOccurences = parseInt(arr[i].repeat_occurences);
+  let repeatEvery = parseInt(arr[i].repeat_every);
+  let repeatEnds = parseInt(arr[i].repeat_ends);
+  let repeatEndsOn = new Date(
+    new Date(arr[i].repeat_ends_on).toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+  );
+  repeatEndsOn.setHours(0, 0, 0, 0);
+
+  let repeatFrequency = arr[i].repeat_frequency;
+  let repeatWeekDays = [];
+  if (arr[i].repeat_week_days != null) {
+    Object.keys(arr[i].repeat_week_days).forEach((k) => {
+      if (arr[i].repeat_week_days[k] != "") {
+        repeatWeekDays.push(parseInt(k));
+      }
     });
+  }
+  if (!arr[i].repeat) {
+    isDisplayedTodayCalculated =
+      CurrentDate.getTime() - startDate.getTime() == 0;
+  } else {
+    if (CurrentDate >= startDate) {
+      if (repeatEnds == "On") {
+      } else if (repeatEnds == "After") {
+        if (repeatFrequency == "DAY") {
+          repeatEndsOn = new Date(startDate);
+          repeatEndsOn.setDate(
+            startDate.getDate() + (repeatOccurences - 1) * repeatEvery
+          );
+        } else if (repeatFrequency == "WEEK") {
+          repeatEndsOn = new Date(startDate);
+          repeatEndsOn.setDate(
+            startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
+          );
+        } else if (repeatFrequency == "MONTH") {
+          repeatEndsOn = new Date(startDate);
+          repeatEndsOn.setMonth(
+            startDate.getMonth() + (repeatOccurences - 1) * repeatEvery
+          );
+        } else if (repeatFrequency == "YEAR") {
+          repeatEndsOn = new Date(startDate);
+          repeatEndsOn.setFullYear(
+            startDate.getFullYear() + (repeatOccurences - 1) * repeatEvery
+          );
+        }
+      } else if (repeatEnds == "Never") {
+        repeatEndsOn = CurrentDate;
+      }
+      if (CurrentDate <= repeatEndsOn) {
+        if (repeatFrequency == "DAY") {
+          isDisplayedTodayCalculated =
+            Math.floor(
+              (CurrentDate.getTime() - startDate.getTime()) / (24 * 3600 * 1000)
+            ) %
+              repeatEvery ==
+            0;
+        } else if (repeatFrequency == "WEEK") {
+          isDisplayedTodayCalculated =
+            repeatWeekDays.includes(CurrentDate.getDay()) &&
+            Math.floor(
+              (CurrentDate.getTime() - startDate.getTime()) /
+                (7 * 24 * 3600 * 1000)
+            ) %
+              repeatEvery ==
+              0;
+        } else if (repeatFrequency == "MONTH") {
+          isDisplayedTodayCalculated =
+            CurrentDate.getDate() == startDate.getDate() &&
+            ((CurrentDate.getFullYear() - startDate.getFullYear()) * 12 +
+              CurrentDate.getMonth() -
+              startDate.getMonth()) %
+              repeatEvery ==
+              0;
+        } else if (repeatFrequency == "YEAR") {
+          isDisplayedTodayCalculated =
+            startDate.getDate() == CurrentDate.getDate() &&
+            CurrentDate.getMonth() == startDate.getMonth() &&
+            (CurrentDate.getFullYear() - startDate.getFullYear()) %
+              repeatEvery ==
+              0;
+        }
+        console.log("Day goals: ", isDisplayedTodayCalculated);
+      }
+    }
+  }
 }
+*/

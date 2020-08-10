@@ -67,12 +67,20 @@ export default class MainPage extends React.Component {
       newEventEnd0: new Date(), //start and end for a event... it's currently set to today
       isEvent: false, // use to check whether we clicked on a event and populate extra buttons in event form
       //////////New additions for new calendar
-      dateContext: moment(new Date(new Date().toLocaleString('en-US', {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      }))), //Keep track of day and month
-      todayDateObject: moment(new Date(new Date().toLocaleString('en-US', {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-      }))), //Remember today's date to create the circular effect over todays day
+      dateContext: moment(
+        new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          })
+        )
+      ), //Keep track of day and month
+      todayDateObject: moment(
+        new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          })
+        )
+      ), //Remember today's date to create the circular effect over todays day
       calendarView: "Day", // decides which type of calendar to display
       showRepeatModal: false,
       repeatOption: false,
@@ -538,19 +546,27 @@ the current month's events
       newEventID: A.id,
       newEventRecurringID: A.recurringEventId,
       newEventStart0: A.start.dateTime
-        ? new Date(new Date(A.start.dateTime).toLocaleString('en-US', {
-          timeZone: this.state.currentUserTimeZone
-        }))
-        : new Date(new Date(A.start.date).toLocaleString('en-US', {
-          timeZone: this.state.currentUserTimeZone
-        })),
+        ? new Date(
+            new Date(A.start.dateTime).toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          )
+        : new Date(
+            new Date(A.start.date).toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
       newEventEnd0: A.end.dateTime
-        ? new Date(new Date(A.end.dateTime).toLocaleString('en-US', {
-          timeZone: this.state.currentUserTimeZone
-        }))
-        : new Date(new Date(A.end.date).toLocaleString('en-US', {
-          timeZone: this.state.currentUserTimeZone
-        })),
+        ? new Date(
+            new Date(A.end.dateTime).toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          )
+        : new Date(
+            new Date(A.end.date).toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
       newEventName: A.summary,
       newEventGuests: guestList,
       newEventLocation: A.location ? A.location : "",
@@ -1572,12 +1588,16 @@ updates the google calendar based  on
         this.setState({
           dayEventSelected: false,
           newEventName: "",
-          newEventStart0: new Date(new Date().toLocaleString('en-US', {
-            timeZone: this.state.currentUserTimeZone
-          })),
-          newEventEnd0: new Date(new Date().toLocaleString('en-US', {
-            timeZone: this.state.currentUserTimeZone
-          })),
+          newEventStart0: new Date(
+            new Date().toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
+          newEventEnd0: new Date(
+            new Date().toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
         });
 
         this.updateEventsArray();
@@ -2273,7 +2293,7 @@ this will close repeat modal.
 
   updateTimeZone = (timeZone) => {
     this.setState({
-      currentUserTimeZone: timeZone
+      currentUserTimeZone: timeZone,
     });
   };
 
@@ -2735,10 +2755,10 @@ this will close repeat modal.
                 {this.getMonth()} {this.getYear()}{" "}
               </p>
               <p
-              style={{marginBottom: "0", height:"19.5px"}}
-              className="normalfancytext"
+                style={{ marginBottom: "0", height: "19.5px" }}
+                className="normalfancytext"
               >
-              {this.state.currentUserTimeZone}
+                {this.state.currentUserTimeZone}
               </p>
             </Col>
             <Col>
@@ -2774,6 +2794,7 @@ this will close repeat modal.
             originalGoalsAndRoutineArr={this.state.originalGoalsAndRoutineArr}
           />
           <DayGoals
+            TimeZone={this.state.currentUserTimeZone}
             dateContext={this.state.dateContext}
             goal_ids={this.state.goal_ids}
             goals={this.state.goals}
@@ -2826,10 +2847,10 @@ this will close repeat modal.
               >
                 <p> Week of {startWeek.format("D MMMM YYYY")} </p>
                 <p
-                style={{marginBottom: "0", height:"19.5px"}}
-                className="normalfancytext"
+                  style={{ marginBottom: "0", height: "19.5px" }}
+                  className="normalfancytext"
                 >
-                {this.state.currentUserTimeZone}
+                  {this.state.currentUserTimeZone}
                 </p>
               </Col>
               <Col>
@@ -2990,9 +3011,13 @@ this will close repeat modal.
           onClick={() => {
             this.setState(
               {
-                dateContext: moment(new Date(new Date().toLocaleString('en-US', {
-                  timeZone: this.state.currentUserTimeZone
-                }))),
+                dateContext: moment(
+                  new Date(
+                    new Date().toLocaleString("en-US", {
+                      timeZone: this.state.currentUserTimeZone,
+                    })
+                  )
+                ),
               },
               this.updateEventsArray
             );
@@ -3106,10 +3131,10 @@ this will close repeat modal.
                 {this.getMonth()} {this.getYear()}
               </p>
               <p
-              style={{marginBottom: "0", height:"19.5px"}}
-              className="normalfancytext"
+                style={{ marginBottom: "0", height: "19.5px" }}
+                className="normalfancytext"
               >
-              {this.state.currentUserTimeZone}
+                {this.state.currentUserTimeZone}
               </p>
             </Col>
             <Col>
