@@ -25,8 +25,12 @@ export default class showHistory extends Component {
   render() {
     console.log(this.props.historyItems);
     return (
-      <Modal.Dialog style={{ margin: "0",
-      width: "340px" }}>
+      <Modal.Dialog
+      style={{
+        margin:"0",
+        width:"fit-content",
+        maxWidth:"1000px"
+      }}>
         <Modal.Header closeButton onHide={this.props.closeModal}>
           <Modal.Title>
             <h5 className="normalfancytext">
@@ -36,7 +40,7 @@ export default class showHistory extends Component {
         </Modal.Header>
         <Modal.Body>
         <ListGroup>
-          <div style={{ height: "650px", overflow: "scroll" }}>
+          <div style={{ width: "auto", height: "auto", overflow: "scroll" }}>
             {this.props.historyItems}
           </div>
           {/* Button to add new Goal */}

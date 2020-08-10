@@ -138,6 +138,8 @@ export default class MainPage extends React.Component {
       enableNameDropDown: false,
       showNewAccountmodal: false,
       showAllowTAmodel: false,
+
+      versionNumber: this.getVersionNumber(),
     };
   }
 
@@ -2689,7 +2691,7 @@ this will close repeat modal.
                 }
               >
                 {this.showCalendarView()}
-                <div>V1.3</div>
+                <div>V1.47.{this.state.versionNumber}</div>
                 <div
                   style={{ marginTop: "50px", textAlign: "center" }}
                   className="fancytext"
@@ -2703,6 +2705,16 @@ this will close repeat modal.
       );
     }
   }
+
+  getVersionNumber = () => {
+    axios
+      .get("/buildNumber", {
+      }).then((response) => {
+        this.setState({
+           versionNumber: response.data
+        })
+      });
+  };
 
   googleLogIn = () => {
     axios
