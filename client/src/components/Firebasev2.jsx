@@ -9,6 +9,7 @@ import {
   Modal,
   InputGroup,
   FormControl,
+  Table
 } from "react-bootstrap";
 import AddNewGRItem from "./addNewGRItem.jsx";
 import AddNewATItem from "./addNewATItem.jsx";
@@ -1132,7 +1133,7 @@ export default class FirebaseV2 extends React.Component {
             return;
           }
 
-          
+
           for (let k = 0; k < x.length; k++) {
             console.log("this is k ", k);
             ActionTaskArrayPath.collection("actions&tasks")
@@ -1167,7 +1168,7 @@ export default class FirebaseV2 extends React.Component {
                 // }
               });
           }
-         
+
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -2210,70 +2211,104 @@ shows entire list of goals and routines
             }
           });
         });
-        for (let i = 0; i < logs.length; i++) {
-          let tempTitle = logs[i]["date"] + "   -   " + logs[i]["title"];
-          let isComplete = logs[i]["is_complete"];
-          let isInProgress = logs[i]["is_in_progress"];
-          historyItems.push(
-            <div key={"goalStatus" + i}>
-              <ListGroup.Item
-                action
-                variant="light"
-                style={{ width: "100%", marginBottom: "3px" }}
-              >
-                <Row style={{ margin: "0" }} className="d-flex flex-row-center">
-                  <Col style={{ textAlign: "center", width: "100%" }}>
-                    <div className="fancytext">{tempTitle}</div>
-                  </Col>
-                </Row>
-                <Row
-                  style={{
-                    margin: "0",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {isComplete ? (
-                    <div>
-                      <FontAwesomeIcon
-                        title="Completed Item"
-                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                        style={{ color: this.state.availabilityColorCode }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alert("Item Is Completed");
-                        }}
-                        icon={faTrophy}
-                        size="lg"
-                      />{" "}
-                    </div>
-                  ) : (
-                    <div>
-                      <FontAwesomeIcon
-                        title="Not Completed Item"
-                        // onMouseOver={event => { event.target.style.color = "#48D6D2"; }}
-                        // onMouseOut={event => { event.target.style.color = "#000000"; }}
-                        style={{
-                          color: isInProgress
-                            ? this.state.availabilityColorCode
-                            : "black",
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alert("Item Is Not Completed");
-                        }}
-                        icon={faRunning}
-                        size="lg"
-                      />
-                    </div>
-                  )}
-                </Row>
-              </ListGroup.Item>
-            </div>
-          );
+        let list = [];
+        let headers = [<th key={"history_header_title:"} style={{width:"400px"}}></th>];
+        for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+          headers.push(
+            <th key={"history_header:" + logs[i].date} style={{width:"80px", textAlign:"center"}}>
+            {logs[i].date.split("_").slice(1).join("/")}
+            </th>);
         }
+
+        let rows_objects = {};
+        for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+          let gr = logs[i];
+          let date = logs[i].date
+          if (rows_objects["gr:"+gr.title] == undefined) {
+            rows_objects["gr:"+gr.title] = {}
+          }
+          rows_objects["gr:"+gr.title][date] = {
+            is_in_progress: gr.is_in_progress,
+            is_complete: gr.is_complete,
+            title: gr.title
+          }
+          console.log(logs[i]);
+          if (gr["actions&tasks"] != undefined) {
+            gr["actions&tasks"].forEach(at => {
+              if (rows_objects["gr:"+gr.title+","+"at:"+at.title] == undefined) {
+                rows_objects["gr:"+gr.title+","+"at:"+at.title] = {}
+              }
+              rows_objects["gr:"+gr.title+","+"at:"+at.title][date] = {
+                is_in_progress: at.is_in_progress,
+                is_complete: at.is_complete,
+                title: at.title
+              }
+              if (at["instructions&steps"] != undefined) {
+                at["instructions&steps"].forEach(is => {
+                  if (rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title] == undefined) {
+                    rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title] = {}
+                  }
+                  rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title][date] = is;
+                });
+              }
+            });
+          }
+        }
+
+        Object.keys(rows_objects).forEach((key, index) => {
+          console.log(key, rows_objects[key]);
+          let row = [];
+          let cells = [];
+          let title_left = "";
+          let fontSize = "22px";
+          let paddingLeft = "10px";
+          if (key.includes("is:")){
+            fontSize = "14x";
+            paddingLeft = "50px";
+          } else if (key.includes("at:")) {
+            fontSize = "18px";
+            paddingLeft = "30px";
+          }
+          for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+            if (rows_objects[key][logs[i].date] == undefined) {
+              cells.push(
+                <td style={{width:"80px", textAlign:"center"}}
+                key={"history:" + key + logs[i].date}>
+                </td>);
+            } else {
+            let title = rows_objects[key][logs[i].date]["title"];
+            let isComplete = rows_objects[key][logs[i].date]["is_complete"];
+            let isInProgress = rows_objects[key][logs[i].date]["is_in_progress"];
+            title_left = title;
+            cells.push(
+              <td style={{width:"80px", textAlign:"center"}}
+              key={"history:" + key + logs[i].date}>
+              <FontAwesomeIcon
+              style={{ color: isComplete || isInProgress ? this.state.availabilityColorCode : "black" }}
+              icon={isComplete?faTrophy:faRunning}
+              size="lg"
+              />
+              </td>);
+            }
+          }
+          row.push(<tr key={"history_title_row:" + key}>
+            <td style={{ paddingLeft: paddingLeft, fontSize: fontSize }}
+            key={"history_title_left:" + key}>{title_left}</td>
+            {cells}
+            </tr>)
+          list.push(row);
+        });
+
+        historyItems.push(
+          <Table key={"goalStatus" + object.id} style={{tableLayout: "fixed", width: "fit-content"}} striped bordered hover>
+          <thead>
+          <tr>
+          {headers}
+          </tr>
+          </thead>
+          <tbody key="history-body">{list}</tbody>
+          </Table>
+        );
         this.setState({ historyItems: historyItems });
       });
   };
