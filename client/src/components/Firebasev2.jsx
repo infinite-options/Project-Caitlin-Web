@@ -1109,11 +1109,17 @@ export default class FirebaseV2 extends React.Component {
       .collection("goals&routines")
       .doc(id);
 
+      let ATGrabFromFB = this.state.WentThroughATList;
+      ATGrabFromFB[id] = true;
+          this.setState({
+            WentThroughATList: ATGrabFromFB,
+          });
+
     ActionTaskArrayPath.get()
       .then((doc) => {
         if (doc.exists) {
           let ATExpTimeObj = this.state.AT_expected_completion_time;
-          let ATGrabFromFB = this.state.WentThroughATList;
+          // let ATGrabFromFB = this.state.WentThroughATList;
           let ATtimeCombines = 0;
           var x = doc.data()["actions&tasks"];
           if (x.length === 0) {
@@ -1126,7 +1132,9 @@ export default class FirebaseV2 extends React.Component {
             return;
           }
 
+          
           for (let k = 0; k < x.length; k++) {
+            console.log("this is k ", k);
             ActionTaskArrayPath.collection("actions&tasks")
               .doc(x[k]["id"])
               .get()
@@ -1148,7 +1156,7 @@ export default class FirebaseV2 extends React.Component {
                   // doc.data() will be undefined in this case
                   console.log("No Instruction/Step documents!");
                 }
-                if (k === x.length - 1) {
+                // if (k === x.length - 1) {
                   ATExpTimeObj[id] = ATtimeCombines;
                   ATGrabFromFB[id] = true;
 
@@ -1156,9 +1164,10 @@ export default class FirebaseV2 extends React.Component {
                     AT_expected_completion_time: ATExpTimeObj,
                     WentThroughATList: ATGrabFromFB,
                   });
-                }
+                // }
               });
           }
+         
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
