@@ -1148,7 +1148,7 @@ export default class FirebaseV2 extends React.Component {
                   // doc.data() will be undefined in this case
                   console.log("No Instruction/Step documents!");
                 }
-                if (k === x.length - 1) {
+                // if (k === x.length - 1) {
                   ATExpTimeObj[id] = ATtimeCombines;
                   ATGrabFromFB[id] = true;
 
@@ -1156,7 +1156,7 @@ export default class FirebaseV2 extends React.Component {
                     AT_expected_completion_time: ATExpTimeObj,
                     WentThroughATList: ATGrabFromFB,
                   });
-                }
+                // }
               });
           }
         } else {
