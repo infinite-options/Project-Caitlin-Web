@@ -135,6 +135,7 @@ export default class DayGoals extends Component {
               repeatEndsOn.setDate(
                 startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
               );
+              console.log("WEEK: repeatEndsOn:", repeatEndsOn);
 
               /*
               repeatEndsOn = new Date(startDate);
@@ -154,7 +155,7 @@ export default class DayGoals extends Component {
                   (repeatOccurences - 1) * 7 * repeatEvery
                 //startDate.getDate() + repeatOccurences * 7 * repeatEvery
               );
-              //console.log("WEEK: repeatEndsOn:", repeatEndsOn);
+              
               */
             } else if (repeatFrequency == "MONTH") {
               repeatEndsOn = new Date(startDate);
@@ -209,7 +210,7 @@ export default class DayGoals extends Component {
         }
       }
 
-      console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
+      //console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
       if (isDisplayedTodayCalculated) {
         //console.log("today is the day");
         tempStartTime.setMonth(curMonth);
