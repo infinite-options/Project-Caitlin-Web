@@ -196,22 +196,22 @@ export default class DayGoals extends Component {
               let numberOfWeek = 0;
 
               let index = repeatWeekDays.indexOf(0);
-              console.log("index ", index);
+
               if (index !== -1) {
                 repeatWeekDays.splice(index, 1);
                 repeatWeekDays.push(7);
               }
-              console.log("repeatWeekDays", repeatWeekDays);
+
               const d = moment(initFullDate, "MM/DD/YYYY");
               const today_day = d.isoWeekday();
               const result = repeatWeekDays.filter((day) => day < today_day);
               if (result.length > 0) {
                 var new_week = repeatWeekDays.slice(result.length);
-                console.log("new_week 1", new_week);
+
                 result.forEach((day) => {
                   new_week.push(day);
                 });
-                console.log("new_week", new_week);
+
                 repeatWeekDays = new_week;
               }
 
@@ -305,17 +305,17 @@ export default class DayGoals extends Component {
       }
 
       /** This function takes in the date and gives back the week number it is in for that year */
-      function ISO8601_week_no(dt) {
-        var tdt = new Date(dt.valueOf());
-        var dayn = (dt.getDay() + 6) % 7;
-        tdt.setDate(tdt.getDate() - dayn + 3);
-        var firstThursday = tdt.valueOf();
-        tdt.setMonth(0, 1);
-        if (tdt.getDay() !== 4) {
-          tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
-        }
-        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
-      }
+      // function ISO8601_week_no(dt) {
+      //   var tdt = new Date(dt.valueOf());
+      //   var dayn = (dt.getDay() + 6) % 7;
+      //   tdt.setDate(tdt.getDate() - dayn + 3);
+      //   var firstThursday = tdt.valueOf();
+      //   tdt.setMonth(0, 1);
+      //   if (tdt.getDay() !== 4) {
+      //     tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
+      //   }
+      //   return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+      // }
 
       /**
        * Dealing with repeating Goals
@@ -1051,7 +1051,6 @@ export default class DayGoals extends Component {
       ) {
         if (tempStartTime.getHours() === hour) {
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
-            console.log("Enter 1");
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
               this.state.pxPerHourForConversion;
@@ -1108,7 +1107,6 @@ export default class DayGoals extends Component {
               res.push(newElement);
             }
           } else {
-            console.log("Enter 2");
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
               this.state.pxPerHourForConversion;
@@ -1152,7 +1150,6 @@ export default class DayGoals extends Component {
               color = "blue";
             }
             if (isDisplayedTodayCalculated) {
-              console.log("Enter 3");
               let newElement = (
                 <div
                   key={"dayRoutineItem" + i}
@@ -1213,8 +1210,6 @@ export default class DayGoals extends Component {
         let color = "lavender";
         sameTimeEventCount++;
         if (isDisplayedTodayCalculated) {
-          console.log("Enter 4");
-          console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
           let newElement = (
             <div key={"event" + i}>
               <div
@@ -1275,7 +1270,6 @@ export default class DayGoals extends Component {
         let color = "lavender";
         sameTimeEventCount++;
         if (isDisplayedTodayCalculated) {
-          console.log("Enter 5");
           let newElement = (
             <div key={"event" + i}>
               <div
@@ -1553,7 +1547,7 @@ function updateGRIsDisplayed() {
 function getNextDayOfTheWeek(day, date) {
   const dayINeed = day; // for Thursday
   const today = date.isoWeekday();
-  console.log("DayINeed, today", dayINeed, today);
+  // console.log("DayINeed, today", dayINeed, today);
 
   // if we haven't yet passed the day of the week that I need:
   if (today <= dayINeed) {
