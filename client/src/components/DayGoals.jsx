@@ -82,6 +82,7 @@ export default class DayGoals extends Component {
         })
       );
       startDate.setHours(0, 0, 0, 0);
+
       let isDisplayedTodayCalculated = false;
 
       let repeatOccurences = parseInt(arr[i].repeat_occurences);
@@ -131,15 +132,37 @@ export default class DayGoals extends Component {
                 startDate.getDate() + (repeatOccurences - 1) * repeatEvery
               );
             } else if (repeatFrequency == "WEEK") {
-              repeatEndsOn = new Date(startDate);
-              repeatEndsOn.setDate(
-                startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
-              );
-              console.log("WEEK: repeatEndsOn:", repeatEndsOn);
-
               /*
               repeatEndsOn = new Date(startDate);
+              repeatEndsOn.setDate(
+                startDate.getDate() +
+                  Math.ceil((repeatOccurences - 1) / repeatWeekDays.length) *
+                    7 *
+                    repeatEvery
+              );
+              console.log("ends on: ", repeatEndsOn);
+              */
+              /*
+              repeatEndsOn = new Date(startDate);
+              let dates = [];
+              console.log("repeatWeekDays", repeatWeekDays);
               let dow = repeatWeekDays[repeatWeekDays.length - 1];
+              let numberOfWeek = 1;
+              let date = moment(startDate);
+              for (let i = 0; i < repeatOccurences; i++) {
+                dow = repeatWeekDays[i];
+                if (i >= repeatWeekDays.length) {
+                  numberOfWeek = i / repeatWeekDays.length + 1;
+                  dow = repeatWeekDays[i % repeatWeekDays.length];
+                }
+
+                let newDate = getNextDayOfTheWeek(dow, date, numberOfWeek);
+                dates.push(newDate.format("LLL"));
+                //date = newDate;
+              }
+              console.log("dow", dow);
+              console.log("dates ", dates);
+
               let nextDayOftheWeek = new Date(
                 repeatEndsOn.setDate(
                   repeatEndsOn.getDate() +
@@ -149,14 +172,88 @@ export default class DayGoals extends Component {
               //console.log("nextDayOftheWeek: ", nextDayOftheWeek);
               //let repeatEndsOn_moment = moment(startDate).format("LLL");
               //console.log("repeatEndsOn_moment: ", repeatEndsOn_moment);
-              let lastEndDay = new Date();
+              console.log("weekOfDays: ", repeatWeekDays);
+
               repeatEndsOn.setDate(
                 nextDayOftheWeek.getDate() +
-                  (repeatOccurences - 1) * 7 * repeatEvery
+                  Math.ceil((repeatOccurences - 1) / repeatWeekDays.length) *
+                    7 *
+                    repeatEvery
                 //startDate.getDate() + repeatOccurences * 7 * repeatEvery
               );
-              
-              */
+              console.log("ends on: ", repeatEndsOn);*/
+              let occurence_dates = [];
+              let week_days_arr = [];
+              const occurences = parseInt(arr[i].repeat_occurences);
+              console.log("orcc", occurences);
+              const repeat_every = parseInt(arr[i].repeat_every);
+
+              const start_day_and_time = arr[i].start_day_and_time.split(
+                " "
+              )[0];
+              // const initDate = start_day_and_time[1];
+              //const initMonth = getMonthNumber(start_day_and_time[2]);
+              //const initYear = start_day_and_time[3];
+
+              let initFullDate = start_day_and_time;
+              //var startdate = "20-03-2014";
+
+              //var thing = new_date.add(5, "days").format("L");
+
+              for (const day in arr[i].repeat_week_days) {
+                if (arr[i].repeat_week_days[day] !== "") {
+                  week_days_arr.push(day);
+                }
+              }
+
+              let numberOfWeek = 0;
+
+              let index = repeatWeekDays.indexOf(0);
+              console.log("index ", index);
+              if (index !== -1) {
+                repeatWeekDays.splice(index, 1);
+                repeatWeekDays.push(7);
+              }
+              console.log("repeatWeekDays", repeatWeekDays);
+              const d = moment(initFullDate, "MM/DD/YYYY");
+              const today_day = d.isoWeekday();
+              const result = repeatWeekDays.filter((day) => day < today_day);
+              if (result.length > 0) {
+                var new_week = repeatWeekDays.slice(result.length);
+                console.log("new_week 1", new_week);
+                result.forEach((day) => {
+                  new_week.push(day);
+                });
+                console.log("new_week", new_week);
+                repeatWeekDays = new_week;
+              }
+
+              for (let i = 0; i < occurences; i++) {
+                let dow = repeatWeekDays[i];
+                if (i >= repeatWeekDays.length) {
+                  numberOfWeek = Math.floor(i / repeatWeekDays.length);
+                  dow = repeatWeekDays[i % repeatWeekDays.length];
+                }
+                const new_date = moment(initFullDate, "MM/DD/YYYY");
+                const nextDayOfTheWeek = getNextDayOfTheWeek(dow, new_date);
+                //console.log("NextDayOfWeek: ", nextDayOfTheWeek.format("L"));
+                //console.log("numberOfWeeks: ", numberOfWeek);
+                const date = nextDayOfTheWeek
+                  .clone()
+                  .add(numberOfWeek * repeat_every, "weeks")
+                  .format("L");
+                occurence_dates.push(date);
+              }
+
+              console.log("occurence_dates: ", occurence_dates);
+
+              let today_date_object = new Date(curYear, curMonth, curDate);
+              let today = getFormattedDate(today_date_object);
+              console.log("today: ", today);
+
+              if (occurence_dates.includes(today)) {
+                isDisplayedTodayCalculated = true;
+              }
             } else if (repeatFrequency == "MONTH") {
               repeatEndsOn = new Date(startDate);
               repeatEndsOn.setMonth(
@@ -968,6 +1065,7 @@ export default class DayGoals extends Component {
       ) {
         if (tempStartTime.getHours() === hour) {
           if (tempStartTime.getDate() !== tempEndTime.getDate()) {
+            console.log("Enter 1");
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
               this.state.pxPerHourForConversion;
@@ -1024,6 +1122,7 @@ export default class DayGoals extends Component {
               res.push(newElement);
             }
           } else {
+            console.log("Enter 2");
             let minsToMarginTop =
               (tempStartTime.getMinutes() / 60) *
               this.state.pxPerHourForConversion;
@@ -1067,6 +1166,7 @@ export default class DayGoals extends Component {
               color = "blue";
             }
             if (isDisplayedTodayCalculated) {
+              console.log("Enter 3");
               let newElement = (
                 <div
                   key={"dayRoutineItem" + i}
@@ -1127,6 +1227,7 @@ export default class DayGoals extends Component {
         let color = "lavender";
         sameTimeEventCount++;
         if (isDisplayedTodayCalculated) {
+          console.log("Enter 4");
           console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
           let newElement = (
             <div key={"event" + i}>
@@ -1188,6 +1289,7 @@ export default class DayGoals extends Component {
         let color = "lavender";
         sameTimeEventCount++;
         if (isDisplayedTodayCalculated) {
+          console.log("Enter 5");
           let newElement = (
             <div key={"event" + i}>
               <div
@@ -1462,3 +1564,20 @@ function updateGRIsDisplayed() {
   }
 }
 */
+function getNextDayOfTheWeek(day, date) {
+  const dayINeed = day; // for Thursday
+  const today = date.isoWeekday();
+  console.log("DayINeed, today", dayINeed, today);
+
+  // if we haven't yet passed the day of the week that I need:
+  if (today <= dayINeed) {
+    // then just give me this week's instance of that day
+    var nextDayOfTheWeek = date.day(dayINeed);
+    return nextDayOfTheWeek;
+  } else {
+    // otherwise, give me *next week's* instance of that same day
+    var nextDayOfTheWeek = date.add(1, "weeks").day(dayINeed);
+    // console.log("from getNextday", nextDayOfTheWeek.format("L"));
+    return nextDayOfTheWeek;
+  }
+}
