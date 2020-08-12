@@ -2707,13 +2707,11 @@ this will close repeat modal.
   }
 
   getVersionNumber = () => {
-    axios
-      .get("/buildNumber", {
-      }).then((response) => {
-        this.setState({
-           versionNumber: response.data
-        })
+    axios.get("/buildNumber", {}).then((response) => {
+      this.setState({
+        versionNumber: response.data,
       });
+    });
   };
 
   googleLogIn = () => {
@@ -2798,6 +2796,7 @@ this will close repeat modal.
             timeZone={this.state.currentUserTimeZone}
           />
           <DayRoutines
+            timeZone={this.state.currentUserTimeZone}
             dateContext={this.state.dateContext}
             routine_ids={this.state.routine_ids}
             routines={this.state.routines}
@@ -2891,12 +2890,14 @@ this will close repeat modal.
           </Row>
           <Row>
             <WeekGoals
+              timeZone={this.state.currentUserTimeZone}
               dateContext={this.state.dateContext}
               goals={this.state.goals}
             />
           </Row>
           <Row>
             <WeekRoutines
+              timeZone={this.state.currentUserTimeZone}
               routines={this.state.routines}
               dateContext={this.state.dateContext}
             />
