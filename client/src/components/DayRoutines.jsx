@@ -147,11 +147,64 @@ export default class DayRoutines extends Component {
                 startDate.getDate() + (repeatOccurences - 1) * repeatEvery
               );
             } else if (repeatFrequency == "WEEK") {
-              repeatEndsOn = new Date(startDate);
-              repeatEndsOn.setDate(
-                startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
-              );
+              let occurence_dates = [];
 
+              const start_day_and_time = arr[i].start_day_and_time.split(
+                " "
+              )[0];
+              // const initDate = start_day_and_time[1];
+              //const initMonth = getMonthNumber(start_day_and_time[2]);
+              //const initYear = start_day_and_time[3];
+
+              let initFullDate = start_day_and_time;
+
+              let numberOfWeek = 0;
+
+              let index = repeatWeekDays.indexOf(0);
+              console.log("index ", index);
+              if (index !== -1) {
+                repeatWeekDays.splice(index, 1);
+                repeatWeekDays.push(7);
+              }
+              console.log("repeatWeekDays", repeatWeekDays);
+              const d = moment(initFullDate, "MM/DD/YYYY");
+              const today_day = d.isoWeekday();
+              const result = repeatWeekDays.filter((day) => day < today_day);
+              if (result.length > 0) {
+                var new_week = repeatWeekDays.slice(result.length);
+                console.log("new_week 1", new_week);
+                result.forEach((day) => {
+                  new_week.push(day);
+                });
+                console.log("new_week", new_week);
+                repeatWeekDays = new_week;
+              }
+
+              for (let i = 0; i < repeatOccurences; i++) {
+                let dow = repeatWeekDays[i];
+                if (i >= repeatWeekDays.length) {
+                  numberOfWeek = Math.floor(i / repeatWeekDays.length);
+                  dow = repeatWeekDays[i % repeatWeekDays.length];
+                }
+                const new_date = moment(initFullDate, "MM/DD/YYYY");
+                const nextDayOfTheWeek = getNextDayOfTheWeek(dow, new_date);
+                //console.log("NextDayOfWeek: ", nextDayOfTheWeek.format("L"));
+                //console.log("numberOfWeeks: ", numberOfWeek);
+                const date = nextDayOfTheWeek
+                  .clone()
+                  .add(numberOfWeek * repeatEvery, "weeks")
+                  .format("L");
+                occurence_dates.push(date);
+              }
+
+              //console.log("occurence_dates: ", occurence_dates);
+
+              let today_date_object = new Date(curYear, curMonth, curDate);
+              let today = getFormattedDate(today_date_object);
+
+              if (occurence_dates.includes(today)) {
+                isDisplayedTodayCalculated = true;
+              }
               /*
               repeatEndsOn = new Date(startDate);
               let dow = repeatWeekDays[repeatWeekDays.length - 1];

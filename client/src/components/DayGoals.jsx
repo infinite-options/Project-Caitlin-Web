@@ -183,10 +183,6 @@ export default class DayGoals extends Component {
               );
               console.log("ends on: ", repeatEndsOn);*/
               let occurence_dates = [];
-              let week_days_arr = [];
-              const occurences = parseInt(arr[i].repeat_occurences);
-              console.log("orcc", occurences);
-              const repeat_every = parseInt(arr[i].repeat_every);
 
               const start_day_and_time = arr[i].start_day_and_time.split(
                 " "
@@ -196,15 +192,6 @@ export default class DayGoals extends Component {
               //const initYear = start_day_and_time[3];
 
               let initFullDate = start_day_and_time;
-              //var startdate = "20-03-2014";
-
-              //var thing = new_date.add(5, "days").format("L");
-
-              for (const day in arr[i].repeat_week_days) {
-                if (arr[i].repeat_week_days[day] !== "") {
-                  week_days_arr.push(day);
-                }
-              }
 
               let numberOfWeek = 0;
 
@@ -228,7 +215,7 @@ export default class DayGoals extends Component {
                 repeatWeekDays = new_week;
               }
 
-              for (let i = 0; i < occurences; i++) {
+              for (let i = 0; i < repeatOccurences; i++) {
                 let dow = repeatWeekDays[i];
                 if (i >= repeatWeekDays.length) {
                   numberOfWeek = Math.floor(i / repeatWeekDays.length);
@@ -240,16 +227,15 @@ export default class DayGoals extends Component {
                 //console.log("numberOfWeeks: ", numberOfWeek);
                 const date = nextDayOfTheWeek
                   .clone()
-                  .add(numberOfWeek * repeat_every, "weeks")
+                  .add(numberOfWeek * repeatEvery, "weeks")
                   .format("L");
                 occurence_dates.push(date);
               }
 
-              console.log("occurence_dates: ", occurence_dates);
+              //console.log("occurence_dates: ", occurence_dates);
 
               let today_date_object = new Date(curYear, curMonth, curDate);
               let today = getFormattedDate(today_date_object);
-              console.log("today: ", today);
 
               if (occurence_dates.includes(today)) {
                 isDisplayedTodayCalculated = true;
