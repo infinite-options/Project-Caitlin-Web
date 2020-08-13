@@ -41,7 +41,7 @@ export default class MustDoAT extends React.Component {
   render() {
     return (
       <div>
-        {this.state.iconShow && (
+        {this.state.iconShow ? (
           <div>
             <FontAwesomeIcon
               icon={faBookmark}
@@ -55,8 +55,7 @@ export default class MustDoAT extends React.Component {
               size="lg"
             />
           </div>
-        )}
-        {!this.state.iconShow && (
+        ) : (
           <div>
             <span className="fa-layers fa-fw" style={{ marginLeft: "20px" }}>
               <FontAwesomeIcon
