@@ -104,7 +104,9 @@ export default class ShowISList extends React.Component {
   render() {
     return (
       <div>
-        {this.state.iconShow && this.state.hasSteps && this.renderShowIcon()}
+        {this.state.iconShow && this.state.hasSteps
+          ? this.renderShowIcon()
+          : null}
         {!this.state.iconShow && this.state.hasSteps
           ? this.renderNotShowIcon()
           : null}
