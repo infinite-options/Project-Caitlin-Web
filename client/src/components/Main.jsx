@@ -698,7 +698,7 @@ the current month's events
     if (untilIndex !== -1) {
       untilSubString = recurrenceRule.substring(untilIndex);
     }
-    console.log(untilSubString);
+    //console.log(untilSubString);
 
     if (untilSubString.includes(";")) {
       let endUntilIndex = untilSubString.indexOf(";");
@@ -709,7 +709,7 @@ the current month's events
       console.log(moment("20200406T065959Z").format("LL"));
       untilSubString = moment(untilSubString.substring(6, 14)).format("LL");
     }
-    console.log(untilSubString);
+    //console.log(untilSubString);
 
     let countSubString = "";
     let countIndex = recurrenceRule.indexOf("COUNT");
@@ -723,7 +723,7 @@ the current month's events
       countSubString = countSubString.substring(6);
     }
 
-    console.log(countSubString, "countSubString");
+    //console.log(countSubString, "countSubString");
 
     let intervalSubString = "";
     let intervalIndex = recurrenceRule.indexOf("INTERVAL");
@@ -743,7 +743,7 @@ the current month's events
     if (byDayIndex !== -1) {
       byDaySubString = recurrenceRule.substring(byDayIndex);
     }
-    console.log(byDaySubString);
+    // console.log(byDaySubString);
 
     if (byDaySubString.includes(";")) {
       let endByDayIndex = byDaySubString.indexOf(";");
@@ -753,7 +753,7 @@ the current month's events
     }
 
     byDayArray = byDaySubString.split(",");
-    console.log(byDayArray);
+    //console.log(byDayArray);
 
     // If freq is daily in rrule
     if (recurrenceRule.includes("FREQ=DAILY")) {
@@ -1359,13 +1359,13 @@ the user with a new form to create a event
     console.log("updateEventClick ");
     event.preventDefault();
     let eventList = this.state.originalEvents;
-    console.log("eventList: ", eventList);
 
     if (this.state.calendarView === "Day") {
       eventList = this.state.dayEvents;
     } else if (this.state.calendarView === "Week") {
       eventList = this.state.weekEvents;
     }
+    console.log("eventList: ", eventList);
     const isValid = this.validate();
     if (isValid) {
       if (this.state.newEventID === "") {
@@ -1385,6 +1385,7 @@ updateRequest:
 updates the google calendar based  on
 */
   updateRequest = async (eventList, index) => {
+    console.log("Enter updateRequest");
     const guests = this.state.newEventGuests;
     var formattedEmail = null;
     const emailList = guests.match(
@@ -1409,7 +1410,7 @@ updates the google calendar based  on
     updatedEvent.attendees = formattedEmail;
     updatedEvent.location = this.state.newEventLocation;
     updatedEvent.description = this.state.newEventDescription;
-
+    //console.log(" this.state.newEventStart0: ", this.state.newEventStart0);
     let startDateTime = this.LocalDateToISOString(
       this.state.newEventStart0,
       this.state.currentUserTimeZone
@@ -1418,15 +1419,18 @@ updates the google calendar based  on
       this.state.newEventEnd0,
       this.state.currentUserTimeZone
     ).toISOString();
+    //console.log(" this.state.newEventEnd0: ", this.state.newEventEnd0);
 
     updatedEvent.start = {
       dateTime: startDateTime,
       timeZone: this.state.currentUserTimeZone,
     };
+    //console.log("startDateTime: ", startDateTime);
     updatedEvent.end = {
       dateTime: endDateTime,
       timeZone: this.state.currentUserTimeZone,
     };
+    //console.log("endDateTime: ", endDateTime);
     updatedEvent.recurrence = this.state.repeatOption
       ? this.defineRecurrence()
       : [this.state.recurrenceRule];
@@ -1454,11 +1458,14 @@ updates the google calendar based  on
       reminders: updatedEvent.reminders,
     };
 
-    updatedEvent.recurringEventId ? console.log("true") : console.log("false");
+    updatedEvent.recurringEventId
+      ? console.log("it is a recurring event")
+      : console.log("it is not a recurring event");
 
     let ID = "";
     if (this.state.editRecurringOption === "All events") {
       ID = updatedEvent.recurringEventId;
+      console.log("ID: ", ID);
       console.log("All events");
 
       await axios
@@ -1468,8 +1475,9 @@ updates the google calendar based  on
           },
         })
         .then((res) => {
-          event.start = res.data[0].start;
-          event.end = res.data[0].end;
+          //console.log("/getRecurringEventInstances: ", res.data);
+          //event.start = res.data[0].start;
+          //event.end = res.data[0].end;
         });
     } else if (this.state.editRecurringOption === "This event") {
       ID = this.state.newEventID;
@@ -1539,8 +1547,8 @@ updates the google calendar based  on
           },
         })
         .then((res) => {
-          newEvent.start = res.data[0].start;
-          newEvent.end = res.data[0].end;
+          newEvent.start = updatedEvent.start;
+          newEvent.end = updatedEvent.end;
           newEvent.recurrence = [newRecurrenceRule];
           newEvent.summary = res.data[0].summary;
           let start = moment(newEvent.start.dateTime);
@@ -1578,7 +1586,7 @@ updates the google calendar based  on
           console.log(error);
         });
     }
-
+    //console.log("event: ",event)
     axios
       .put("/updateEvent", {
         extra: event,
@@ -1686,7 +1694,7 @@ calls the backend API to delete a item with a particular eventID
     let b = new Date(
       date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
     ).getTime();
-    console.log(a, b);
+    //console.log(a, b);
     return new Date(a - (b - a));
   };
 
@@ -3583,7 +3591,7 @@ this will close repeat modal.
   };
 
   openEditRecurringModal = () => {
-    console.log("openeditrecurringmodal called");
+    //console.log("openeditrecurringmodal called");
     this.setState((prevState) => {
       return { showEditRecurringModal: !prevState.showEditRecurringModal };
     });
@@ -4418,7 +4426,7 @@ this will close repeat modal.
             originalEvents: events,
           },
           () => {
-            console.log("New Events Arrived", events);
+            //console.log("New Events Arrived", events);
           }
         );
       })
@@ -4444,7 +4452,7 @@ this will close repeat modal.
         },
       })
       .then((response) => {
-        console.log("what are the events", response.data);
+        // console.log("what are the events", response.data);
         var events = response.data;
 
         this.setState(
@@ -4452,7 +4460,7 @@ this will close repeat modal.
             dayEvents: events,
           },
           () => {
-            console.log("New Events Arrived", events);
+            // console.log("New Events Arrived", events);
           }
         );
       })

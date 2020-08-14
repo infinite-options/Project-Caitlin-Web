@@ -673,11 +673,7 @@ app.put("/updateEvent", function (req, result) {
     req.body.eventId,
     req.body.extra
   );
-  console.log(
-    "req.body.username, req.body.id : ",
-    req.body.username,
-    req.body.id
-  );
+
   let newEvent = req.body.extra;
   let id = req.body.id;
   setUpAuthById(id, (auth) => {

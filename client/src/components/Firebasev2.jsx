@@ -9,7 +9,7 @@ import {
   Modal,
   InputGroup,
   FormControl,
-  Table
+  Table,
 } from "react-bootstrap";
 import AddNewGRItem from "./addNewGRItem.jsx";
 import AddNewATItem from "./addNewATItem.jsx";
@@ -54,10 +54,7 @@ import {
 export default class FirebaseV2 extends React.Component {
   constructor(props) {
     super(props);
-    console.log(
-      "this is the prop original goal ",
-      this.props.originalGoalsAndRoutineArr
-    );
+
     this.state = {
       firebaseRootPath: firebase
         .firestore()
@@ -1112,11 +1109,11 @@ export default class FirebaseV2 extends React.Component {
       .collection("goals&routines")
       .doc(id);
 
-      let ATGrabFromFB = this.state.WentThroughATList;
-      ATGrabFromFB[id] = true;
-          this.setState({
-            WentThroughATList: ATGrabFromFB,
-          });
+    let ATGrabFromFB = this.state.WentThroughATList;
+    ATGrabFromFB[id] = true;
+    this.setState({
+      WentThroughATList: ATGrabFromFB,
+    });
 
     ActionTaskArrayPath.get()
       .then((doc) => {
@@ -1134,7 +1131,6 @@ export default class FirebaseV2 extends React.Component {
             });
             return;
           }
-
 
           for (let k = 0; k < x.length; k++) {
             console.log("this is k ", k);
@@ -1160,17 +1156,16 @@ export default class FirebaseV2 extends React.Component {
                   console.log("No Instruction/Step documents!");
                 }
                 // if (k === x.length - 1) {
-                  ATExpTimeObj[id] = ATtimeCombines;
-                  ATGrabFromFB[id] = true;
+                ATExpTimeObj[id] = ATtimeCombines;
+                ATGrabFromFB[id] = true;
 
-                  this.setState({
-                    AT_expected_completion_time: ATExpTimeObj,
-                    WentThroughATList: ATGrabFromFB,
-                  });
+                this.setState({
+                  AT_expected_completion_time: ATExpTimeObj,
+                  WentThroughATList: ATGrabFromFB,
+                });
                 // }
               });
           }
-
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -2215,8 +2210,14 @@ shows entire list of goals and routines
 
         // push data for current date
         let date = new Date();
-        let date_string = date.getFullYear() + "_" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' +
-        (date.getMonth() + 1))) + '_' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()));
+        let date_string =
+          date.getFullYear() +
+          "_" +
+          (date.getMonth() > 8
+            ? date.getMonth() + 1
+            : "0" + (date.getMonth() + 1)) +
+          "_" +
+          (date.getDate() > 9 ? date.getDate() : "0" + date.getDate());
         date_string = "_Today";
         let currentDateHistory = {
           date: date_string,
@@ -2225,72 +2226,117 @@ shows entire list of goals and routines
           is_complete: object.is_complete,
         };
 
-        await db.collection("users")
-              .doc(this.props.theCurrentUserID)
-              .collection("goals&routines")
-              .doc(object.id)
-              .get()
-              .then((ats) => {
-                console.log(ats.data()["actions&tasks"]);
-                currentDateHistory["actions&tasks"] = ats.data()["actions&tasks"] != undefined ? ats.data()["actions&tasks"] : [];
-              });
-
-        for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
-          let at = currentDateHistory["actions&tasks"][i];
-          await db.collection("users")
+        await db
+          .collection("users")
           .doc(this.props.theCurrentUserID)
           .collection("goals&routines")
           .doc(object.id)
-          .collection("actions&tasks")
-          .doc(at.id)
           .get()
-          .then((singleAT) => {
-            if (singleAT.data()["instructions&steps"] != undefined) {
-              currentDateHistory["actions&tasks"][i]["instructions&steps"] = singleAT.data()["instructions&steps"];
-            }
+          .then((ats) => {
+            console.log(ats.data()["actions&tasks"]);
+            currentDateHistory["actions&tasks"] =
+              ats.data()["actions&tasks"] != undefined
+                ? ats.data()["actions&tasks"]
+                : [];
           });
+
+        for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
+          let at = currentDateHistory["actions&tasks"][i];
+          await db
+            .collection("users")
+            .doc(this.props.theCurrentUserID)
+            .collection("goals&routines")
+            .doc(object.id)
+            .collection("actions&tasks")
+            .doc(at.id)
+            .get()
+            .then((singleAT) => {
+              if (singleAT.data()["instructions&steps"] != undefined) {
+                currentDateHistory["actions&tasks"][i][
+                  "instructions&steps"
+                ] = singleAT.data()["instructions&steps"];
+              }
+            });
         }
 
         logs.push(currentDateHistory);
 
         let list = [];
         console.log(currentDateHistory, logs);
-        let headers = [<th key={"history_header_title:"} style={{width:"400px"}}></th>];
-        for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+        let headers = [
+          <th key={"history_header_title:"} style={{ width: "400px" }}></th>,
+        ];
+        for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
           headers.push(
-            <th key={"history_header:" + logs[i].date} style={{width:"80px", textAlign:"center"}}>
-            {logs[i].date.split("_").slice(1).join("/")}
-            </th>);
+            <th
+              key={"history_header:" + logs[i].date}
+              style={{ width: "80px", textAlign: "center" }}
+            >
+              {logs[i].date.split("_").slice(1).join("/")}
+            </th>
+          );
         }
 
         let rows_objects = {};
-        for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+        for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
           let gr = logs[i];
-          let date = logs[i].date
-          if (rows_objects["gr:"+gr.title] == undefined) {
-            rows_objects["gr:"+gr.title] = {}
+          let date = logs[i].date;
+          if (rows_objects["gr:" + gr.title] == undefined) {
+            rows_objects["gr:" + gr.title] = {};
           }
-          rows_objects["gr:"+gr.title][date] = {
+          rows_objects["gr:" + gr.title][date] = {
             is_in_progress: gr.is_in_progress,
             is_complete: gr.is_complete,
-            title: gr.title
-          }
+            title: gr.title,
+          };
           if (gr["actions&tasks"] != undefined) {
-            gr["actions&tasks"].forEach(at => {
-              if (rows_objects["gr:"+gr.title+","+"at:"+at.title] == undefined) {
-                rows_objects["gr:"+gr.title+","+"at:"+at.title] = {}
+            gr["actions&tasks"].forEach((at) => {
+              if (
+                rows_objects["gr:" + gr.title + "," + "at:" + at.title] ==
+                undefined
+              ) {
+                rows_objects["gr:" + gr.title + "," + "at:" + at.title] = {};
               }
-              rows_objects["gr:"+gr.title+","+"at:"+at.title][date] = {
+              rows_objects["gr:" + gr.title + "," + "at:" + at.title][date] = {
                 is_in_progress: at.is_in_progress,
                 is_complete: at.is_complete,
-                title: at.title
-              }
+                title: at.title,
+              };
               if (at["instructions&steps"] != undefined) {
-                at["instructions&steps"].forEach(is => {
-                  if (rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title] == undefined) {
-                    rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title] = {}
+                at["instructions&steps"].forEach((is) => {
+                  if (
+                    rows_objects[
+                      "gr:" +
+                        gr.title +
+                        "," +
+                        "at:" +
+                        at.title +
+                        "," +
+                        "is:" +
+                        is.title
+                    ] == undefined
+                  ) {
+                    rows_objects[
+                      "gr:" +
+                        gr.title +
+                        "," +
+                        "at:" +
+                        at.title +
+                        "," +
+                        "is:" +
+                        is.title
+                    ] = {};
                   }
-                  rows_objects["gr:"+gr.title+","+"at:"+at.title+","+"is:"+is.title][date] = is;
+                  rows_objects[
+                    "gr:" +
+                      gr.title +
+                      "," +
+                      "at:" +
+                      at.title +
+                      "," +
+                      "is:" +
+                      is.title
+                  ][date] = is;
                 });
               }
             });
@@ -2303,51 +2349,72 @@ shows entire list of goals and routines
           let title_left = "";
           let fontSize = "22px";
           let paddingLeft = "10px";
-          if (key.includes("is:")){
+          if (key.includes("is:")) {
             fontSize = "14x";
             paddingLeft = "50px";
           } else if (key.includes("at:")) {
             fontSize = "18px";
             paddingLeft = "30px";
           }
-          for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
+          for (let i = Math.max(logs.length - 7, 0); i < logs.length; i++) {
             if (rows_objects[key][logs[i].date] == undefined) {
               cells.push(
-                <td style={{width:"80px", textAlign:"center"}}
-                key={"history:" + key + logs[i].date}>
-                </td>);
+                <td
+                  style={{ width: "80px", textAlign: "center" }}
+                  key={"history:" + key + logs[i].date}
+                ></td>
+              );
             } else {
-            let title = rows_objects[key][logs[i].date]["title"];
-            let isComplete = rows_objects[key][logs[i].date]["is_complete"];
-            let isInProgress = rows_objects[key][logs[i].date]["is_in_progress"];
-            title_left = title;
-            cells.push(
-              <td style={{width:"80px", textAlign:"center"}}
-              key={"history:" + key + logs[i].date}>
-              <FontAwesomeIcon
-              style={{ color: isComplete || isInProgress ? this.state.availabilityColorCode : "black" }}
-              icon={isComplete?faTrophy:faRunning}
-              size="lg"
-              />
-              </td>);
+              let title = rows_objects[key][logs[i].date]["title"];
+              let isComplete = rows_objects[key][logs[i].date]["is_complete"];
+              let isInProgress =
+                rows_objects[key][logs[i].date]["is_in_progress"];
+              title_left = title;
+              cells.push(
+                <td
+                  style={{ width: "80px", textAlign: "center" }}
+                  key={"history:" + key + logs[i].date}
+                >
+                  <FontAwesomeIcon
+                    style={{
+                      color:
+                        isComplete || isInProgress
+                          ? this.state.availabilityColorCode
+                          : "black",
+                    }}
+                    icon={isComplete ? faTrophy : faRunning}
+                    size="lg"
+                  />
+                </td>
+              );
             }
           }
-          row.push(<tr key={"history_title_row:" + key}>
-            <td style={{ paddingLeft: paddingLeft, fontSize: fontSize }}
-            key={"history_title_left:" + key}>{title_left}</td>
-            {cells}
-            </tr>)
+          row.push(
+            <tr key={"history_title_row:" + key}>
+              <td
+                style={{ paddingLeft: paddingLeft, fontSize: fontSize }}
+                key={"history_title_left:" + key}
+              >
+                {title_left}
+              </td>
+              {cells}
+            </tr>
+          );
           list.push(row);
         });
 
         historyItems.push(
-          <Table key={"goalStatus" + object.id} style={{tableLayout: "fixed", width: "fit-content"}} striped bordered hover>
-          <thead>
-          <tr>
-          {headers}
-          </tr>
-          </thead>
-          <tbody key="history-body">{list}</tbody>
+          <Table
+            key={"goalStatus" + object.id}
+            style={{ tableLayout: "fixed", width: "fit-content" }}
+            striped
+            bordered
+            hover
+          >
+            <thead>
+              <tr>{headers}</tr>
+            </thead>
+            <tbody key="history-body">{list}</tbody>
           </Table>
         );
         this.setState({ historyItems: historyItems });
