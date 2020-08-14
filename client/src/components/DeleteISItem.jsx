@@ -60,6 +60,7 @@ export default class DeleteISItem extends Component {
                 // console.log('updateEntireArray Finished')
                 // console.log(doc);
                 if (this.props != null) {
+                    this.props.updateNewWentThroughISDelete(this.props.ISItem.fbPath.path.split('/')[3]);
                     // console.log("refreshing FireBasev2 from delete ISItem");
                     this.props.refresh(newArr);
                 }

@@ -16,6 +16,7 @@ export default class MainPage extends React.Component {
       socialSignUpModal: false,
       newEmail: "",
       newPassword: "",
+      newPhoneNumber: "",
       newFName: "",
       newLName: "",
       newEmployer: "",
@@ -210,6 +211,20 @@ export default class MainPage extends React.Component {
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="formEltMargin">
+            <Form.Label column sm="4">
+              Phone Number
+            </Form.Label>
+            <Col sm="8">
+              <Form.Control
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                placeholder="123-4567-8901"
+                value={this.state.newPhoneNumber}
+                onChange={this.handleNewPhoneNumberChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="formEltMargin">
             <Form.Label column sm="2">
               First Name
             </Form.Label>
@@ -282,6 +297,20 @@ export default class MainPage extends React.Component {
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="formEltMargin">
+            <Form.Label column sm="4">
+              Phone Number
+            </Form.Label>
+            <Col sm="8">
+               <Form.Control
+                  type="tel"
+                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                  placeholder="123-4567-8901"
+                  value={this.state.newPhoneNumber}
+                  onChange={this.handleNewPhoneNumberChange}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="formEltMargin">
             <Form.Label column sm="2">
               First Name
             </Form.Label>
@@ -344,6 +373,7 @@ export default class MainPage extends React.Component {
       socialSignUpModal: false,
       newEmail: "",
       newPassword: "",
+      newPhoneNumber: "",
       newFName: "",
       newLName: "",
       newEmployer: "",
@@ -357,6 +387,10 @@ export default class MainPage extends React.Component {
 
   handleNewPasswordChange = (event) => {
     this.setState({ newPassword: event.target.value });
+  };
+
+  handleNewPhoneNumberChange = (event) => {
+    this.setState({ newPhoneNumber: event.target.value });
   };
 
   handleNewFNameChange = (event) => {
@@ -376,6 +410,7 @@ export default class MainPage extends React.Component {
       .post("/TASignUp", {
         username: this.state.newEmail,
         password: this.state.newPassword,
+        phoneNumber: this.state.newPhoneNumber,
         fName: this.state.newFName,
         lName: this.state.newLName,
         employer: this.state.newEmployer,
@@ -385,6 +420,7 @@ export default class MainPage extends React.Component {
         this.hideSignUp();
       })
       .catch((error) => {
+        console.log("its in landing page");
         console.log(error);
       });
   };
@@ -393,6 +429,7 @@ export default class MainPage extends React.Component {
     axios
       .post("/TASocialSignUp", {
         username: this.state.newEmail,
+        phoneNumber: this.state.newPhoneNumber,
         fName: this.state.newFName,
         lName: this.state.newLName,
         employer: this.state.newEmployer,
