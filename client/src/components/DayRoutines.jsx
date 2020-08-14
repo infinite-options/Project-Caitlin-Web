@@ -73,17 +73,17 @@ export default class DayRoutines extends Component {
       // let initialEndYear = tempEndTime.getFullYear();
 
       /** This function takes in the date and gives back the week number it is in for that year */
-      function ISO8601_week_no(dt) {
-        var tdt = new Date(dt.valueOf());
-        var dayn = (dt.getDay() + 6) % 7;
-        tdt.setDate(tdt.getDate() - dayn + 3);
-        var firstThursday = tdt.valueOf();
-        tdt.setMonth(0, 1);
-        if (tdt.getDay() !== 4) {
-          tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
-        }
-        return 1 + Math.ceil((firstThursday - tdt) / 604800000);
-      }
+      // function ISO8601_week_no(dt) {
+      //   var tdt = new Date(dt.valueOf());
+      //   var dayn = (dt.getDay() + 6) % 7;
+      //   tdt.setDate(tdt.getDate() - dayn + 3);
+      //   var firstThursday = tdt.valueOf();
+      //   tdt.setMonth(0, 1);
+      //   if (tdt.getDay() !== 4) {
+      //     tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
+      //   }
+      //   return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+      // }
 
       let CurrentDate = new Date(
         new Date(curYear, curMonth, curDate).toLocaleString("en-US", {
@@ -147,11 +147,64 @@ export default class DayRoutines extends Component {
                 startDate.getDate() + (repeatOccurences - 1) * repeatEvery
               );
             } else if (repeatFrequency == "WEEK") {
-              repeatEndsOn = new Date(startDate);
-              repeatEndsOn.setDate(
-                startDate.getDate() + (repeatOccurences - 1) * 7 * repeatEvery
-              );
+              let occurence_dates = [];
 
+              const start_day_and_time = arr[i].start_day_and_time.split(
+                " "
+              )[0];
+              // const initDate = start_day_and_time[1];
+              //const initMonth = getMonthNumber(start_day_and_time[2]);
+              //const initYear = start_day_and_time[3];
+
+              let initFullDate = start_day_and_time;
+
+              let numberOfWeek = 0;
+
+              let index = repeatWeekDays.indexOf(0);
+
+              if (index !== -1) {
+                repeatWeekDays.splice(index, 1);
+                repeatWeekDays.push(7);
+              }
+
+              const d = moment(initFullDate, "MM/DD/YYYY");
+              const today_day = d.isoWeekday();
+              const result = repeatWeekDays.filter((day) => day < today_day);
+              if (result.length > 0) {
+                var new_week = repeatWeekDays.slice(result.length);
+
+                result.forEach((day) => {
+                  new_week.push(day);
+                });
+
+                repeatWeekDays = new_week;
+              }
+
+              for (let i = 0; i < repeatOccurences; i++) {
+                let dow = repeatWeekDays[i];
+                if (i >= repeatWeekDays.length) {
+                  numberOfWeek = Math.floor(i / repeatWeekDays.length);
+                  dow = repeatWeekDays[i % repeatWeekDays.length];
+                }
+                const new_date = moment(initFullDate, "MM/DD/YYYY");
+                const nextDayOfTheWeek = getNextDayOfTheWeek(dow, new_date);
+                //console.log("NextDayOfWeek: ", nextDayOfTheWeek.format("L"));
+                //console.log("numberOfWeeks: ", numberOfWeek);
+                const date = nextDayOfTheWeek
+                  .clone()
+                  .add(numberOfWeek * repeatEvery, "weeks")
+                  .format("L");
+                occurence_dates.push(date);
+              }
+
+              //console.log("occurence_dates: ", occurence_dates);
+
+              let today_date_object = new Date(curYear, curMonth, curDate);
+              let today = getFormattedDate(today_date_object);
+
+              if (occurence_dates.includes(today)) {
+                isDisplayedTodayCalculated = true;
+              }
               /*
               repeatEndsOn = new Date(startDate);
               let dow = repeatWeekDays[repeatWeekDays.length - 1];

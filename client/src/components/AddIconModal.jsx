@@ -62,6 +62,33 @@ export default class AddIconModal extends Component {
                 ></img>
               </button>
 
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/toothbrush.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/toothbrush.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/toothpaste-2.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/toothpaste-2.png"
+                  ></img>
+                </button>
+
               <button //shower
                 onClick={(e) =>
                   this.onPhotoClick(
@@ -159,6 +186,58 @@ export default class AddIconModal extends Component {
                   src="https://img.icons8.com/plasticine/100/000000/smiling-mouth.png"
                 ></img>
               </button>
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/bath.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/bath.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/broom-dustpan.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/broom-dustpan.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/shower-bath.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/shower-bath.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/wash-hands.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/wash-hands.png"
+                  ></img>
+                </button>
             </div>
             <div>
               <div>Clothing</div>
@@ -217,8 +296,85 @@ export default class AddIconModal extends Component {
                   src="https://img.icons8.com/officel/80/000000/womens-pajama.png"
                 ></img>
               </button>
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-laundry.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-laundry.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/hooded-sweatshirt.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/hooded-sweatshirt.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/laundry.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/laundry.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/socks.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/socks.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/mittens.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/mittens.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/winter-hat.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/winter-hat.png"
+                  ></img>
+                </button>
             </div>
-
             <div>
               <div>Workout</div>
 
@@ -235,6 +391,19 @@ export default class AddIconModal extends Component {
                   src="https://img.icons8.com/ios/100/000000/treadmill.png"
                 ></img>
               </button>
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/push-ups.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/push-ups.png"
+                  ></img>
+                </button>
 
               <button
                 onClick={(e) =>
@@ -280,6 +449,20 @@ export default class AddIconModal extends Component {
                   src="https://img.icons8.com/color/96/000000/breakfast.png"
                 ></img>
               </button>
+
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/dessert.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/dessert.png"
+                  ></img>
+                </button>
 
               <button
                 onClick={(e) =>
@@ -378,6 +561,71 @@ export default class AddIconModal extends Component {
                   src="https://static.thenounproject.com/png/2034609-200.png"
                 ></img>
               </button>
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/apple.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/apple.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/bag-lunch.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/bag-lunch.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/breakfast.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/breakfast.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/fruits.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/fruits.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/rice.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/rice.png"
+                  ></img>
+                </button>
             </div>
 
             <div>
@@ -395,6 +643,99 @@ export default class AddIconModal extends Component {
                   src="https://img.icons8.com/color/96/000000/goal--v1.png"
                 ></img>
               </button>
+
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-couch.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-couch.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-dishes.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-dishes.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-dishes2.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-dishes2.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-ears.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-ears.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/clean-kitchen.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/clean-kitchen.png"
+                  ></img>
+                </button>
+
+              <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/boiling-pot.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/boiling-pot.png"
+                  ></img>
+                </button>
+                <button
+                  onClick={(e) =>
+                    this.onPhotoClick(
+                      "icons/boiling-pot copy.png"
+                    )
+                  }
+                >
+                  <img
+                    height="70px"
+                    width="auto"
+                    src="icons/boiling-pot copy.png"
+                  ></img>
+                </button>
 
               <button
                 onClick={(e) =>
@@ -623,19 +964,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/apple.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/apple.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/audio.png"
                     )
                   }
@@ -662,19 +990,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/bag-lunch.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/bag-lunch.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/bandages.png"
                     )
                   }
@@ -683,19 +998,6 @@ export default class AddIconModal extends Component {
                     height="70px"
                     width="auto"
                     src="icons/bandages.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/bath.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/bath.png"
                   ></img>
                 </button>
                 <button
@@ -789,58 +1091,7 @@ export default class AddIconModal extends Component {
                     src="icons/blender2.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/boiling-pot.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/boiling-pot.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/boiling-pot copy.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/boiling-pot copy.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/breakfast.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/breakfast.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/broom-dustpan.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/broom-dustpan.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -945,84 +1196,7 @@ export default class AddIconModal extends Component {
                     src="icons/chess-rook.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-couch.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-couch.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-dishes.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-dishes.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-dishes2.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-dishes2.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-ears.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-ears.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-kitchen.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-kitchen.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/clean-laundry.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/clean-laundry.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -1140,19 +1314,7 @@ export default class AddIconModal extends Component {
                     src="icons/desert-road.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/dessert.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/dessert.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -1465,19 +1627,7 @@ export default class AddIconModal extends Component {
                     src="icons/folded-towels.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/fruits.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/fruits.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -1637,19 +1787,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/hooded-sweatshirt.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/hooded-sweatshirt.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/hot-kettle.png"
                     )
                   }
@@ -1793,19 +1930,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/laundry.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/laundry.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/laundry-soap.png"
                     )
                   }
@@ -1905,19 +2029,6 @@ export default class AddIconModal extends Component {
                     height="70px"
                     width="auto"
                     src="icons/microwave.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/mittens.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/mittens.png"
                   ></img>
                 </button>
                 <button
@@ -2131,19 +2242,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/push-ups.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/push-ups.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/puzzle.png"
                     )
                   }
@@ -2248,19 +2346,6 @@ export default class AddIconModal extends Component {
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
-                      "icons/rice.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/rice.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
                       "icons/scooter.png"
                     )
                   }
@@ -2295,19 +2380,6 @@ export default class AddIconModal extends Component {
                     height="70px"
                     width="auto"
                     src="icons/shooting-stars.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/shower-bath.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/shower-bath.png"
                   ></img>
                 </button>
                 <button
@@ -2360,19 +2432,6 @@ export default class AddIconModal extends Component {
                     height="70px"
                     width="auto"
                     src="icons/sneakers.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/socks.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/socks.png"
                   ></img>
                 </button>
                 <button
@@ -2531,32 +2590,7 @@ export default class AddIconModal extends Component {
                     src="icons/tools.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/toothbrush.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/toothbrush.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/toothpaste-2.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/toothpaste-2.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -2635,19 +2669,7 @@ export default class AddIconModal extends Component {
                     src="icons/wallet.png"
                   ></img>
                 </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/wash-hands.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/wash-hands.png"
-                  ></img>
-                </button>
+                
                 <button
                   onClick={(e) =>
                     this.onPhotoClick(
@@ -2698,19 +2720,6 @@ export default class AddIconModal extends Component {
                     height="70px"
                     width="auto"
                     src="icons/weight-scale.png"
-                  ></img>
-                </button>
-                <button
-                  onClick={(e) =>
-                    this.onPhotoClick(
-                      "icons/winter-hat.png"
-                    )
-                  }
-                >
-                  <img
-                    height="70px"
-                    width="auto"
-                    src="icons/winter-hat.png"
                   ></img>
                 </button>
                 <button

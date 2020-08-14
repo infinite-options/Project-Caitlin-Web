@@ -278,6 +278,8 @@ export default class FirebaseV2 extends React.Component {
               type: persist ? "Routine" : "Goal",
               title: title,
               id: id,
+              is_complete: doc.data().is_complete,
+              is_in_progress: doc.data().is_in_progress,
               arr: [],
               fbPath: docRef,
             };
@@ -302,7 +304,6 @@ export default class FirebaseV2 extends React.Component {
             singleGR: singleGR,
             singleATitemArr: x,
           });
-
           let resArr = this.createListofAT(x);
           //assemble singleGR template here:
 
@@ -318,6 +319,7 @@ export default class FirebaseV2 extends React.Component {
           this.setState({
             singleGR: singleGR,
           });
+          console.log(this.state.singleATitemArr);
         } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -1737,7 +1739,6 @@ export default class FirebaseV2 extends React.Component {
 
   resetRoutinesGoals = (gr_object) => {
     let db = firebase.firestore();
-    console.log(gr_object);
     db.collection("users")
       .doc(this.props.theCurrentUserID)
       .get()
@@ -2206,7 +2207,7 @@ shows entire list of goals and routines
       .doc(this.props.theCurrentUserID)
       .collection("goals&routines")
       .get()
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         let logs = [];
         snapshot.forEach((log) => {
           log.data().log.forEach((gr) => {
@@ -2216,7 +2217,49 @@ shows entire list of goals and routines
             }
           });
         });
+
+        // push data for current date
+        let date = new Date();
+        let date_string = date.getFullYear() + "_" + ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' +
+        (date.getMonth() + 1))) + '_' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()));
+        date_string = "_Today";
+        let currentDateHistory = {
+          date: date_string,
+          title: object.title,
+          is_in_progress: object.is_in_progress,
+          is_complete: object.is_complete,
+        };
+
+        await db.collection("users")
+              .doc(this.props.theCurrentUserID)
+              .collection("goals&routines")
+              .doc(object.id)
+              .get()
+              .then((ats) => {
+                console.log(ats.data()["actions&tasks"]);
+                currentDateHistory["actions&tasks"] = ats.data()["actions&tasks"] != undefined ? ats.data()["actions&tasks"] : [];
+              });
+
+        for (let i = 0; i < currentDateHistory["actions&tasks"].length; i++) {
+          let at = currentDateHistory["actions&tasks"][i];
+          await db.collection("users")
+          .doc(this.props.theCurrentUserID)
+          .collection("goals&routines")
+          .doc(object.id)
+          .collection("actions&tasks")
+          .doc(at.id)
+          .get()
+          .then((singleAT) => {
+            if (singleAT.data()["instructions&steps"] != undefined) {
+              currentDateHistory["actions&tasks"][i]["instructions&steps"] = singleAT.data()["instructions&steps"];
+            }
+          });
+        }
+
+        logs.push(currentDateHistory);
+
         let list = [];
+        console.log(currentDateHistory, logs);
         let headers = [<th key={"history_header_title:"} style={{width:"400px"}}></th>];
         for (let i = Math.max(logs.length-7, 0); i < logs.length; i++) {
           headers.push(
@@ -2237,7 +2280,6 @@ shows entire list of goals and routines
             is_complete: gr.is_complete,
             title: gr.title
           }
-          console.log(logs[i]);
           if (gr["actions&tasks"] != undefined) {
             gr["actions&tasks"].forEach(at => {
               if (rows_objects["gr:"+gr.title+","+"at:"+at.title] == undefined) {
@@ -2261,7 +2303,6 @@ shows entire list of goals and routines
         }
 
         Object.keys(rows_objects).forEach((key, index) => {
-          console.log(key, rows_objects[key]);
           let row = [];
           let cells = [];
           let title_left = "";
