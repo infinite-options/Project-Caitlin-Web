@@ -427,6 +427,7 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshATItem}
+                      updateNewWentThroughATDelete={this.handleWentThroughATListObj}
                     />
                     <EditAT
                       marginLeftV="-170px"
@@ -488,6 +489,7 @@ export default class FirebaseV2 extends React.Component {
                     Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                     Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshATItem}
+                    updateNewWentThroughATDelete={this.handleWentThroughATListObj}
                   />
                   <EditAT
                     marginLeftV="-130px"
@@ -587,6 +589,8 @@ export default class FirebaseV2 extends React.Component {
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshISItem}
+                      updateNewWentThroughISDelete={this.handleWentThroughATListObj}
+                      
                     />
 
                     <EditIS
@@ -644,6 +648,7 @@ export default class FirebaseV2 extends React.Component {
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshISItem}
+                    updateNewWentThroughISDelete={this.handleWentThroughATListObj}
                   />
 
                   <EditIS
@@ -1135,7 +1140,7 @@ export default class FirebaseV2 extends React.Component {
 
 
           for (let k = 0; k < x.length; k++) {
-            console.log("this is k ", k);
+            // console.log("this is k ", k);
             ActionTaskArrayPath.collection("actions&tasks")
               .doc(x[k]["id"])
               .get()

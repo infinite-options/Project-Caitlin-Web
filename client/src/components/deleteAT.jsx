@@ -12,6 +12,7 @@ export default class deleteAT extends Component {
    * delete the stupid AT
    */
   submitRequest = () => {
+    
     if (this.props.deleteIndex < 0) {
       console.log("deleteAT index error");
       return;
@@ -87,6 +88,8 @@ export default class deleteAT extends Component {
       // console.log('updateEntireArray Finished')
       // console.log(doc);
       if (this.props != null) {
+        console.log("this si the path deleting ", this.props.Item.fbPath.path.split('/')[3])
+        this.props.updateNewWentThroughATDelete(this.props.Item.fbPath.path.split('/')[3]);
         // console.log("refreshing FireBasev2 from delete ISItem");
         this.props.refresh(newArr);
       } else {
