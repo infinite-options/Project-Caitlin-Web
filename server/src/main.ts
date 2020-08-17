@@ -661,6 +661,26 @@ app.post("/getEventsByInterval", function (req, result) {
   );
 });
 
+app.get("/getAllRecur", function (req, result) {
+  setUpAuthById(req.body.id, (auth) => {
+    calendar = google.calendar({ version: "v3", auth });
+    calendar.events.instances(
+      {
+        calendarId: "primary",
+        eventId: req.body.eventId,
+      },
+      (err, res) => {
+        console.log("/getAllRecr: ", res);
+        //CallBack
+        if (err) {
+          return result.send("The get request returned an error: " + err);
+        }
+        result.send("update");
+      }
+    );
+  });
+});
+
 /*
 UPDATE ROUTE:
 Given the event's id, it look send it up to google calendar API
