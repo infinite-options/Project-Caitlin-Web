@@ -1784,10 +1784,6 @@ calls the backend API to delete a item with a particular eventID
     let b = new Date(
       date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
     ).getTime();
-<<<<<<< HEAD
-    //console.log(a, b);
-=======
->>>>>>> 53ac466e3a1e01beeea0af42f59746ab5d123928
     return new Date(a - (b - a));
   };
 
@@ -1954,7 +1950,7 @@ this will toggle show hide of the firebase modal currently
       {
         dateContext: dateContext,
         dayEvents: [],
-      },
+      }
       // this.updateEventsArray
     );
   };
