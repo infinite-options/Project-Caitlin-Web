@@ -1471,11 +1471,10 @@ updates the google calendar based  on
     let ID = "";
     var firstEventCount = -1;
     var secondEventCount = -1;
-    var wantedEventIndex = 0;
-    var wantedEvent = {};
+    var parentEventIndex = 0;
+    var parentEvent = {};
     var eventLength = -1;
-    var firstEventStart;
-    var firstEventEnd;
+
     if (this.state.editRecurringOption === "All events") {
       ID = updatedEvent.recurringEventId;
       console.log("All event: ", ID);
@@ -1487,19 +1486,19 @@ updates the google calendar based  on
         })
         .then((res) => {
           console.log("/getRecurringEventInstances: ", res.data);
-          wantedEvent = res.data[0];
+          parentEvent = res.data[0];
           // extract the date
           let startHour = this.state.newEventStart0.getHours();
           let startMin = this.state.newEventStart0.getMinutes();
           let endHour = this.state.newEventEnd0.getHours();
           let endMin = this.state.newEventEnd0.getMinutes();
 
-          let time3 = new Date(wantedEvent.start["dateTime"]).setHours(
+          let time3 = new Date(parentEvent.start["dateTime"]).setHours(
             startHour
           );
           time3 = new Date(time3).setMinutes(startMin);
 
-          let time4 = new Date(wantedEvent.end["dateTime"]).setHours(endHour);
+          let time4 = new Date(parentEvent.end["dateTime"]).setHours(endHour);
           time4 = new Date(time4).setMinutes(endMin);
 
           const time1 = new Date(time3).toISOString();
@@ -1507,11 +1506,11 @@ updates the google calendar based  on
 
           event.start = {
             dateTime: time1,
-            timeZone: wantedEvent.start["timeZone"],
+            timeZone: parentEvent.start["timeZone"],
           };
           event.end = {
             dateTime: time2,
-            timeZone: wantedEvent.end["timeZone"],
+            timeZone: parentEvent.end["timeZone"],
           };
 
           for (let i = 0; i < res.data.length; i++) {
@@ -1533,34 +1532,34 @@ updates the google calendar based  on
         })
         .then((res) => {
           console.log("/getRecurringEventInstances: ", res.data);
-          wantedEvent = res.data[0];
-
-          //console.log("wantedEvent.start: ", wantedEvent.start)
-          eventLength = res.data.length;
+          parentEvent = res.data[0];
+          (ID = parentEvent.recurringEventId),
+            //console.log("parentEvent.start: ", parentEvent.start)
+            (eventLength = res.data.length);
           for (let i = 0; i < res.data.length; i++) {
             if (res.data[i].id === this.state.newEventID) {
-              wantedEventIndex = i;
+              parentEventIndex = i;
 
               break;
             }
           }
 
-          let time1 = new Date(wantedEvent.start["dateTime"]).toISOString();
+          let time1 = new Date(parentEvent.start["dateTime"]).toISOString();
 
-          let time2 = new Date(wantedEvent.end["dateTime"]).toISOString();
+          let time2 = new Date(parentEvent.end["dateTime"]).toISOString();
 
           event.start = {
             dateTime: time1,
-            timeZone: wantedEvent.start["timeZone"],
+            timeZone: parentEvent.start["timeZone"],
           };
           event.end = {
             dateTime: time2,
-            timeZone: wantedEvent.end["timeZone"],
+            timeZone: parentEvent.end["timeZone"],
           };
 
-          event.summary = wantedEvent.summary;
-          firstEventCount = wantedEventIndex;
-          secondEventCount = eventLength - wantedEventIndex;
+          event.summary = parentEvent.summary;
+          firstEventCount = parentEventIndex;
+          secondEventCount = eventLength - parentEventIndex;
 
           console.log("firstEventCount: ", firstEventCount);
           console.log("secondEventCount: ", secondEventCount);
@@ -1594,9 +1593,6 @@ updates the google calendar based  on
         countSubString = countSubString.substring(6);
         // console.log("countSubString 3", countSubString);
       }
-
-      // console.log("countSubString 4:", countSubString);
-      // console.log("firstEventCount: ", firstEventCount);
 
       if (newRecurrenceRule.includes("UNTIL")) {
         let untilSubString = "";
@@ -1637,63 +1633,30 @@ updates the google calendar based  on
       event.recurrence = [event.recurrence];
       console.log("event.recurrence changed", event.recurrence);
 
-      await axios
-        .get("/getRecurringEventInstances", {
-          params: {
-            recurringEventId: updatedEvent.recurringEventId,
-          },
-        })
-        .then((res) => {
-          newEvent.start = updatedEvent.start;
-          newEvent.end = updatedEvent.end;
-          newEvent.recurrence = [newRecurrenceRule];
-          console.log("newEvent.recurrence", newEvent.recurrence);
-          newEvent.summary = this.state.newEventName;
-          //console.log("newEvent.summary: ", newEvent.summary);
-          // let start = moment(newEvent.start.dateTime);
-          // let end = moment(this.state.newEventStart0);
-          // let diff = countSubString - moment.duration(end.diff(start)).asDays();
-          //console.log(start.format("YYMMDD"), "diff");
+      newEvent.start = updatedEvent.start;
+      newEvent.end = updatedEvent.end;
+      newEvent.recurrence = [newRecurrenceRule];
+      console.log("newEvent.recurrence", newEvent.recurrence);
+      newEvent.summary = this.state.newEventName;
 
-          // if (start.format("YYYYMMDD") === newUntilSubString) {
-          //   throw new Error("first recurring event");
-
-          // }
-          console.log("event.recurrence: ", event.recurrence);
-          console.log("!this.state.repeatOption", !this.state.repeatOption);
-          //console.log("firstEventCount: ", firstEventCount);
-          // if (event.recurrence.includes("COUNT") && !this.state.repeatOption) {
-          //   event.recurrence = event.recurrence.replace(
-          //     countSubString,
-          //     firstEventCount
-          //     //);
-          //     //`COUNT=${countSubString}`,
-          //     //`COUNT=${firstEventCount}`
-          //   );
-          //   console.log("event.recurrence: ", event.recurrence);
-          // }
-          if (secondEventCount !== 0) {
-            axios
-              .post("/createNewEvent", {
-                newEvent: newEvent,
-                username: this.state.currentUserName,
-                id: this.state.currentUserId,
-              })
-              .then((res) => {
-                console.log("createnewevent", res.data);
-                this.setState({
-                  dayEventSelected: false,
-                });
-                this.updateEventsArray();
-              })
-              .catch(function (error) {
-                console.log("/createNewEvent error", error);
-              });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (secondEventCount !== 0) {
+        axios
+          .post("/createNewEvent", {
+            newEvent: newEvent,
+            username: this.state.currentUserName,
+            id: this.state.currentUserId,
+          })
+          .then((res) => {
+            console.log("createnewevent", res.data);
+            this.setState({
+              dayEventSelected: false,
+            });
+            this.updateEventsArray();
+          })
+          .catch(function (error) {
+            console.log("/createNewEvent error", error);
+          });
+      }
     }
     //console.log("event: ",event)
     console.log(
@@ -1703,10 +1666,10 @@ updates the google calendar based  on
     console.log("ID: ", ID);
     console.log(" this.state.newEventID :", this.state.newEventID);
 
-    //event.start = new Date(wantedEvent.start).toISOString();
-    //event.end = new Date(wantedEvent.end).toISOString();
+    //event.start = new Date(parentEvent.start).toISOString();
+    //event.end = new Date(parentEvent.end).toISOString();
 
-    console.log("wantedEvent: ", wantedEvent);
+    console.log("parentEvent: ", parentEvent);
     //console.log("event.start: ", event.start);
     //console.log("event.start", new Date(event.start).toLocaleTimeString());
     console.log("event before /updateEvent: ", event);
@@ -1716,7 +1679,7 @@ updates the google calendar based  on
         .post("/deleteEvent", {
           //username: this.state.currentUserName,
           userId: this.state.currentUserId,
-          eventId: wantedEvent.recurringEventId,
+          eventId: ID,
         })
         .then((response) => {
           this.setState({
@@ -1732,7 +1695,7 @@ updates the google calendar based  on
       axios
         .put("/updateEvent", {
           extra: event,
-          eventId: wantedEvent.recurringEventId,
+          eventId: ID,
           username: this.state.currentUserName,
           id: this.state.currentUserId,
         })
