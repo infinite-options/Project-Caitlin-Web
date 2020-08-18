@@ -16,7 +16,8 @@ import { storage } from './firebase';
         pic: "",
         relationship: "",
         speaker_id:"",
-        unique_id: ""
+        unique_id: "",
+        email: ""
       }, 
       saveChangesButtonEnabled: true,
       peopleDocsPath: firebase
@@ -145,6 +146,20 @@ import { storage } from './firebase';
                     e.stopPropagation();
                     let temp = this.state.itemToEdit;
                     temp.phone_number = e.target.value;
+                    this.setState({ itemToEdit: temp });
+                  }}
+                />
+              </div>
+              <label>Email</label>
+              <div className="input-group mb-3">
+                <input
+                  style={{ width: "200px" }}
+                  placeholder="Enter Email Address"
+                  value={this.state.itemToEdit.email}
+                  onChange={e => {
+                    e.stopPropagation();
+                    let temp = this.state.itemToEdit;
+                    temp.email = e.target.value;
                     this.setState({ itemToEdit: temp });
                   }}
                 />
