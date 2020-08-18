@@ -592,7 +592,7 @@ export default class FirebaseV2 extends React.Component {
                       ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshISItem}
                       updateNewWentThroughISDelete={this.handleWentThroughATListObj}
-                      
+
                     />
 
                     <EditIS
@@ -1650,12 +1650,14 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.goals[i]["title"];
         // let tempID = this.state.goals[i]["id"];
         let isComplete = this.props.goals[i]["is_complete"];
+
         if (
           !this.props.goals[i]["is_available"] ||
           !this.props.goals[i]["is_displayed_today"]
         ) {
           continue; //skip if not available
         }
+
         let isInProgress = this.props.goals[i]["is_in_progress"];
         displayGoals.push(
           <div key={"goalStatus" + i}>
@@ -1828,6 +1830,7 @@ export default class FirebaseV2 extends React.Component {
         ) {
           continue; //skip if not available
         }
+
         displayRoutines.push(
           <div key={"goalStatus" + i}>
             <ListGroup.Item

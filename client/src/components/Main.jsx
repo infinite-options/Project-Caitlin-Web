@@ -216,6 +216,8 @@ export default class MainPage extends React.Component {
                 routines: routine,
               });
             }
+
+            console.log(goal);
           } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -225,25 +227,6 @@ export default class MainPage extends React.Component {
           console.log("Error getting document:", error);
         });
     }
-
-    // const docRef2 = firebase
-    //   .firestore()
-    //   .collection("users")
-    //   .doc(this.state.currentUserId)
-    //   .collection("goals&routines");
-    // docRef2
-    //   .get()
-    //   .then((doc2) => {
-    //     if (doc2.exists) {
-    //       console.log("it went here and this is the doc ", doc2.data());
-    //     } else {
-    //       // doc.data() will be undefined in this case
-    //       console.log("No such document!");
-    //     }
-    //   })
-    //   .catch(function (error) {
-    //     console.log("Error getting document:", error);
-    //   });
   };
 
   handleRepeatDropDown = (eventKey, week_days) => {
@@ -1686,7 +1669,6 @@ calls the backend API to delete a item with a particular eventID
     let b = new Date(
       date.toLocaleString("en-US", { timeZone: this.state.currentUserTimeZone })
     ).getTime();
-    console.log(a, b);
     return new Date(a - (b - a));
   };
 
@@ -1853,7 +1835,7 @@ this will toggle show hide of the firebase modal currently
         dateContext: dateContext,
         dayEvents: [],
       },
-      this.updateEventsArray
+      // this.updateEventsArray
     );
   };
 
