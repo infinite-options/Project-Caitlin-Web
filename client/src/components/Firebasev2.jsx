@@ -426,6 +426,7 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshATItem}
+                      updateNewWentThroughATDelete={this.handleWentThroughATListObj}
                     />
                     <EditAT
                       marginLeftV="-170px"
@@ -487,6 +488,7 @@ export default class FirebaseV2 extends React.Component {
                     Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                     Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshATItem}
+                    updateNewWentThroughATDelete={this.handleWentThroughATListObj}
                   />
                   <EditAT
                     marginLeftV="-130px"
@@ -586,6 +588,8 @@ export default class FirebaseV2 extends React.Component {
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshISItem}
+                      updateNewWentThroughISDelete={this.handleWentThroughATListObj}
+
                     />
 
                     <EditIS
@@ -643,6 +647,7 @@ export default class FirebaseV2 extends React.Component {
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshISItem}
+                    updateNewWentThroughISDelete={this.handleWentThroughATListObj}
                   />
 
                   <EditIS
@@ -1133,7 +1138,7 @@ export default class FirebaseV2 extends React.Component {
           }
 
           for (let k = 0; k < x.length; k++) {
-            console.log("this is k ", k);
+            // console.log("this is k ", k);
             ActionTaskArrayPath.collection("actions&tasks")
               .doc(x[k]["id"])
               .get()
@@ -1640,12 +1645,14 @@ export default class FirebaseV2 extends React.Component {
         let tempTitle = this.props.goals[i]["title"];
         // let tempID = this.state.goals[i]["id"];
         let isComplete = this.props.goals[i]["is_complete"];
+
         if (
           !this.props.goals[i]["is_available"] ||
           !this.props.goals[i]["is_displayed_today"]
         ) {
           continue; //skip if not available
         }
+
         let isInProgress = this.props.goals[i]["is_in_progress"];
         displayGoals.push(
           <div key={"goalStatus" + i}>
@@ -1818,6 +1825,7 @@ export default class FirebaseV2 extends React.Component {
         ) {
           continue; //skip if not available
         }
+
         displayRoutines.push(
           <div key={"goalStatus" + i}>
             <ListGroup.Item

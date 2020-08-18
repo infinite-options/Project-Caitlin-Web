@@ -839,6 +839,7 @@ app.post("/TASignUp", function (req, result) {
     .set({
       email_id: formatEmail(req.body.username),
       password_key: req.body.password,
+      phone_number: req.body.phoneNumber,
       first_name: req.body.fName,
       last_name: req.body.lName,
       employer: req.body.employer,
@@ -864,6 +865,7 @@ app.post("/TASocialSignUp", function (req, result) {
   newTARef
     .set({
       email_id: formatEmail(req.body.username),
+      phone_number: req.body.phoneNumber,
       first_name: req.body.fName,
       last_name: req.body.lName,
       employer: req.body.employer,
