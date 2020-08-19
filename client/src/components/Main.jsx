@@ -1950,8 +1950,8 @@ this will toggle show hide of the firebase modal currently
       {
         dateContext: dateContext,
         dayEvents: [],
-      }
-      // this.updateEventsArray
+      },
+      this.updateEventsArray
     );
   };
 
