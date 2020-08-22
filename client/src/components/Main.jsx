@@ -1423,7 +1423,7 @@ updates the google calendar based  on
     //console.log("endDateTime: ", endDateTime);
     updatedEvent.recurrence = this.state.repeatOption
       ? this.defineRecurrence()
-      : [this.state.recurrenceRule];
+      : this.state.recurrenceRule;
     updatedEvent.reminders = {
       overrides: [
         {
@@ -1456,14 +1456,15 @@ updates the google calendar based  on
     var clickedEventIndex = 0;
     var parentEvent = {};
     var isNeverEnds = false;
-    var isRecurrentEvent = false;
     eventId = this.state.newEventID;
-    if (updatedEvent.recurringEventId) {
-      isRecurrentEvent = true;
-    }
+    console.log(
+      "this.state.editRecurringOption: ",
+      this.state.editRecurringOption
+    );
 
     if (this.state.editRecurringOption === "All events") {
       eventId = updatedEvent.recurringEventId;
+      event.recurrence = [event.recurrence];
       console.log("All event: ", eventId);
       await axios
         .get("/getRecurringEventInstances", {
@@ -1625,16 +1626,18 @@ updates the google calendar based  on
         isNeverEnds = true;
       }
 
-      event.recurrence = [event.recurrence];
-
       newEvent.summary = this.state.newEventName;
       newEvent.start = updatedEvent.start;
       newEvent.end = updatedEvent.end;
-      newEvent.recurrence = [newRecurrenceRule];
+
+      console.log("Before isNeverEnds calls: event:  ", event);
+      console.log("Before isNeverEnds calls: newEvent:  ", newEvent);
       if (isNeverEnds) {
-        let eventRecurringRule = newEvent.recurrence;
-        newEvent.recurrence = event.recurrence;
-        event.recurrence = eventRecurringRule;
+        newEvent.recurrence = [event.recurrence];
+        event.recurrence = [newRecurrenceRule];
+      } else {
+        event.recurrence = [event.recurrence];
+        newEvent.recurrence = [newRecurrenceRule];
       }
 
       console.log("Before axios calls: event:  ", event);
