@@ -1397,12 +1397,14 @@ updates the google calendar based  on
     updatedEvent.description = this.state.newEventDescription;
     console.log(" this.state.newEventStart0: ", this.state.newEventStart0);
 
+    // format new start time
     let startDateTime = this.LocalDateToISOString(
       this.state.newEventStart0,
       this.state.currentUserTimeZone
     ).toISOString();
     console.log("startDateTime ISO:", startDateTime);
 
+    // format new end time
     let endDateTime = this.LocalDateToISOString(
       this.state.newEventEnd0,
       this.state.currentUserTimeZone
@@ -1433,6 +1435,8 @@ updates the google calendar based  on
       sequence: 0,
     };
 
+    console.log("updateEvent: ", updatedEvent);
+
     let event = {
       summary: updatedEvent.summary,
       attendees: updatedEvent.attendees,
@@ -1446,22 +1450,21 @@ updates the google calendar based  on
       reminders: updatedEvent.reminders,
     };
     console.log("event: ", event);
-
-    updatedEvent.recurringEventId
-      ? console.log("it is a recurring event")
-      : console.log("it is not a recurring event");
-
-    let ID = "";
+    let eventId = "";
     var firstEventCount = -1;
     var secondEventCount = -1;
     var clickedEventIndex = 0;
     var parentEvent = {};
-    var eventLength = -1;
-    var lastEvent = {};
+    var isNeverEnds = false;
+    var isRecurrentEvent = false;
+    eventId = this.state.newEventID;
+    if (updatedEvent.recurringEventId) {
+      isRecurrentEvent = true;
+    }
 
     if (this.state.editRecurringOption === "All events") {
-      ID = updatedEvent.recurringEventId;
-      console.log("All event: ", ID);
+      eventId = updatedEvent.recurringEventId;
+      console.log("All event: ", eventId);
       await axios
         .get("/getRecurringEventInstances", {
           params: {
@@ -1498,9 +1501,12 @@ updates the google calendar based  on
           };
         });
     } else if (this.state.editRecurringOption === "This event") {
-      ID = this.state.newEventID;
+      eventId = this.state.newEventID;
+      console.log("This event/ID: ", eventId);
+
       event.recurrence = null;
     } else if (this.state.editRecurringOption === "This and following events") {
+      eventId = updatedEvent.recurringEventId;
       await axios
         .get("/getRecurringEventInstances", {
           params: {
@@ -1510,9 +1516,8 @@ updates the google calendar based  on
         .then((res) => {
           console.log("/getRecurringEventInstances: ", res.data);
           parentEvent = res.data[0];
-          lastEvent = res.data[res.data.length - 1];
+
           event.summary = parentEvent.summary;
-          (ID = parentEvent.recurringEventId), (eventLength = res.data.length);
 
           for (let i = 0; i < res.data.length; i++) {
             if (res.data[i].id === this.state.newEventID) {
@@ -1539,11 +1544,11 @@ updates the google calendar based  on
           };
 
           firstEventCount = clickedEventIndex;
-          secondEventCount = eventLength - clickedEventIndex;
+          secondEventCount = res.data.length - clickedEventIndex;
           console.log("firstEventCount: ", firstEventCount);
           console.log("secondEventCount: ", secondEventCount);
         });
-      ID = updatedEvent.recurringEventId;
+
       let newEvent = {
         reminders: this.state.newEvent.reminders,
         creator: this.state.newEvent.creator,
@@ -1552,13 +1557,15 @@ updates the google calendar based  on
         sequence: this.state.newEvent.sequence,
         status: this.state.newEvent.status,
       };
+
+      //generate new recurrence rule
       let newRecurrenceRule = this.state.recurrenceRule;
       // console.log("newRecurrenceRule", newRecurrenceRule);
 
-      let newUntilSubString = `${moment(this.state.newEventStart0).format(
+      let currentDateString = `${moment(this.state.newEventStart0).format(
         "YYYYMMDD"
       )}`;
-      console.log("newUntilSubString", newUntilSubString);
+      console.log("currentDateString", currentDateString);
 
       //find countSubString if the recurrece rule is COUNT
       let countSubString = "";
@@ -1590,16 +1597,14 @@ updates the google calendar based  on
           untilSubString = untilSubString = untilSubString.substring(6);
         }
         console.log("UNTIL, newRecyrrenceRule: ", newRecurrenceRule);
-        // replace by the new calculated newUntilSubString
+        // replace by the new calculated currentDateString
         event.recurrence = newRecurrenceRule.replace(
           untilSubString,
-          newUntilSubString
+          currentDateString
         );
-        console.log("newUntilSubString: ", newUntilSubString);
+        console.log("currentDateString: ", currentDateString);
         console.log("newRecurrenceRule: ", newRecurrenceRule);
       } else if (newRecurrenceRule.includes("COUNT")) {
-        // console.log("event.recurrence before", event.recurrence);
-        // console.log("countSubString: ", countSubString);
         event.recurrence = newRecurrenceRule.replace(
           `COUNT=${countSubString}`,
           `COUNT=${firstEventCount}`
@@ -1608,106 +1613,120 @@ updates the google calendar based  on
           `COUNT=${countSubString}`,
           `COUNT=${secondEventCount}`
         );
+
+        console.log("event.recurrence changed", event.recurrence);
       } else {
+        // recurrence rule === never ends
         newRecurrenceRule = newRecurrenceRule.concat(
-          `;UNTIL=${newUntilSubString}`
+          `;UNTIL=${currentDateString}`
         );
         console.log("entered the useless else statement");
+        console.log("newRecurrenceRule: ", newRecurrenceRule);
+        isNeverEnds = true;
       }
 
       event.recurrence = [event.recurrence];
-      console.log("event.recurrence changed", event.recurrence);
 
+      newEvent.summary = this.state.newEventName;
       newEvent.start = updatedEvent.start;
       newEvent.end = updatedEvent.end;
       newEvent.recurrence = [newRecurrenceRule];
-      console.log("newEvent.recurrence", newEvent.recurrence);
-      newEvent.summary = this.state.newEventName;
-      console.log("befre /createNewEvent, newEvent:", newEvent);
+      if (isNeverEnds) {
+        let eventRecurringRule = newEvent.recurrence;
+        newEvent.recurrence = event.recurrence;
+        event.recurrence = eventRecurringRule;
+      }
+
+      console.log("Before axios calls: event:  ", event);
+      console.log("Before axios calls: newEvent:  ", newEvent);
+
       if (secondEventCount !== 0) {
-        axios
-          .post("/createNewEvent", {
-            newEvent: newEvent,
-            username: this.state.currentUserName,
-            id: this.state.currentUserId,
-          })
-          .then((res) => {
-            console.log("createnewevent", res.data);
-            this.setState({
-              dayEventSelected: false,
-            });
-            this.updateEventsArray();
-          })
-          .catch(function (error) {
-            console.log("/createNewEvent error", error);
-          });
+        console.log("Before createEvent/newEvent: ", newEvent);
+        this.axiosCreateEvent(newEvent, this.state.currentUserId);
       }
     }
-    //console.log("event: ",event)
-    console.log(
-      "updatedEvent.recurringEventId: ",
-      updatedEvent.recurringEventId
-    );
-    console.log("ID: ", ID);
-    console.log(" this.state.newEventID :", this.state.newEventID);
-
-    //event.start = new Date(parentEvent.start).toISOString();
-    //event.end = new Date(parentEvent.end).toISOString();
-
-    console.log("parentEvent: ", parentEvent);
-    //console.log("event.start: ", event.start);
-    //console.log("event.start", new Date(event.start).toLocaleTimeString());
-    console.log("event before /updateEvent: ", event);
 
     if (firstEventCount === 0) {
-      axios
-        .post("/deleteEvent", {
-          //username: this.state.currentUserName,
-          userId: this.state.currentUserId,
-          eventId: ID,
-        })
-        .then((response) => {
-          this.setState({
-            dayEventSelected: false,
-            showDeleteRecurringModal: false,
-          });
-          this.updateEventsArray();
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      console.log("Before deleteEvent/eventId: ", eventId);
+      this.axiosDeleteEvent(eventId, this.state.currentUserId);
     } else {
-      axios
-        .put("/updateEvent", {
-          extra: event,
-          eventId: ID,
-          username: this.state.currentUserName,
-          id: this.state.currentUserId,
-        })
-        .then((response) => {
-          console.log("/updateEvent, response: ", response);
-          this.setState({
-            dayEventSelected: false,
-            newEventName: "",
-            newEventStart0: new Date(
-              new Date().toLocaleString("en-US", {
-                timeZone: this.state.currentUserTimeZone,
-              })
-            ),
-            newEventEnd0: new Date(
-              new Date().toLocaleString("en-US", {
-                timeZone: this.state.currentUserTimeZone,
-              })
-            ),
-          });
-
-          this.updateEventsArray();
-        })
-
-        .catch(function (error) {
-          console.log(error);
-        });
+      console.log("Before updateEvent: ");
+      console.log("event: ", event);
+      console.log("eventId: ", eventId);
+      this.axiosUpdateEvent(event, eventId, this.state.currentUserId);
     }
+  };
+
+  axiosDeleteEvent = (eventId, userId) => {
+    axios
+      .post("/deleteEvent", {
+        //username: this.state.currentUserName,
+        userId: userId,
+        eventId: eventId,
+      })
+      .then((response) => {
+        console.log("deleted event with eventId: ", eventId);
+        this.setState({
+          dayEventSelected: false,
+          showDeleteRecurringModal: false,
+        });
+        this.updateEventsArray();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  axiosUpdateEvent = (event, eventId, userId) => {
+    axios
+      .put("/updateEvent", {
+        extra: event,
+        eventId: eventId,
+        username: userId,
+        id: this.state.currentUserId,
+      })
+      .then((response) => {
+        console.log("/updateEvent, response: ", response);
+        this.setState({
+          dayEventSelected: false,
+          newEventName: "",
+          newEventStart0: new Date(
+            new Date().toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
+          newEventEnd0: new Date(
+            new Date().toLocaleString("en-US", {
+              timeZone: this.state.currentUserTimeZone,
+            })
+          ),
+        });
+
+        this.updateEventsArray();
+      })
+
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  axiosCreateEvent = (event, userId) => {
+    axios
+      .post("/createNewEvent", {
+        newEvent: event,
+        //username: this.state.currentUserName,
+        id: userId,
+      })
+      .then((res) => {
+        console.log("createnewevent", res.data);
+        this.setState({
+          dayEventSelected: false,
+        });
+        this.updateEventsArray();
+      })
+      .catch(function (error) {
+        console.log("/createNewEvent error", error);
+      });
   };
 
   defineRecurrence = () => {
