@@ -241,6 +241,7 @@ export default class DayRoutines extends Component {
       }
 
       let checkCurDate = moment();
+      arr[i].is_displayed_today = isDisplayedTodayCalculated;
 
       if (
         tempStartTime.getDate() === curDate &&
