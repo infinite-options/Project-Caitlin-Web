@@ -181,10 +181,13 @@ export default class MainPage extends React.Component {
               x = x["goals&routines"];
               // console.log("this is the goals and routines", x);
               x.sort((a, b) => {
-                let timeA = new Date(a["start_day_and_time"]);
-                let timeB = new Date(b["start_day_and_time"]);
-                return timeA.getTime() - timeB.getTime();
+                let datetimeA = new Date(a["start_day_and_time"]);
+                let datetimeB = new Date(b["start_day_and_time"]);
+                let timeA = new Date(datetimeA).getHours()*60 + new Date(datetimeA).getMinutes();
+                let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
+                return timeA - timeB;
               });
+              console.log(x);
               // console.log("sorted goals and routines", x);
               for (let i = 0; i < x.length; ++i) {
                 if (x[i]["is_persistent"]) {
