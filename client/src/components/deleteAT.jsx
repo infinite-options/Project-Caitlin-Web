@@ -24,24 +24,11 @@ export default class deleteAT extends Component {
     this.tempdeleteArrPortion();
   };
 
-<<<<<<< HEAD
-  /**
-   *
-   * tempdeleteArrPortion :
-   * this function will delete that action document from the collection actions&tasks.
-   */
-
-  tempdeleteArrPortion = () => {
-    //Delete from the firebase
-    let arr = [...this.props.Array];
-    var id = arr[this.props.deleteIndex]["id"];
-=======
   tempdeleteArrPortion = () => {
     //Delete from the firebase
     let arr = [...this.props.Array];
     let j = this.props.deleteIndex;
     var id = arr[j]["id"];
->>>>>>> Sagar/Fix-GRATIS
     const url =
       "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
     const Data = {
