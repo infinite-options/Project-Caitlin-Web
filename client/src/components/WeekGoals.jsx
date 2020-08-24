@@ -285,6 +285,8 @@ export default class WeekGoals extends Component {
         }
       }
 
+      arr[i].is_displayed_today = arr[i].is_displayed_today || isDisplayedTodayCalculated;
+
       //console.log("isDisplayedTodayCalculated", isDisplayedTodayCalculated);
       if (isDisplayedTodayCalculated) {
         //console.log("today is the day");
@@ -602,6 +604,10 @@ export default class WeekGoals extends Component {
   weekViewItems = () => {
     // this creates the events adjusting their div size to reflecting the time it's slotted for
     var res = [];
+    var arr = this.props.goals;
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].is_displayed_today = false;
+    }
     for (let i = 0; i < 7; ++i) {
       var arr = [];
       for (let j = 0; j < 24; ++j) {

@@ -243,6 +243,7 @@ export default class DayGoals extends Component {
 
       //***   Firbase boolean varibale to help mobile side know if to display goal */
       let checkCurDate = moment();
+      arr[i].is_displayed_today = isDisplayedTodayCalculated;
 
       /**
        * TODO: add the case where arr[i].start.dateTime doesn't exists
