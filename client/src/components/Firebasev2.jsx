@@ -196,10 +196,13 @@ export default class FirebaseV2 extends React.Component {
    *
    */
   refreshATItem = (arr) => {
+    console.log("AT items after delete", arr);
     this.setState({ singleATitemArr: arr });
     let resArr = this.createListofAT(arr);
     let singleGR = this.state.singleGR;
+    console.log("singleGR", singleGR.title, singleGR.arr);
     singleGR.arr = resArr;
+    console.log("After delete singleGR", singleGR.arr);
     this.setState({ singleGR: singleGR });
   };
 
@@ -214,12 +217,15 @@ export default class FirebaseV2 extends React.Component {
    * the one passed in.
    */
   refreshISItem = (arr) => {
+    console.log("IS items after delete", arr);
     this.setState({
       singleISitemArr: arr,
     });
     let resArr = this.createListofIS(arr);
     let singleAt = this.state.singleAT;
+    console.log("Before delete singleAt", singleAt.title, singleAt.arr);
     singleAt.arr = resArr;
+    console.log("After delete singleAt", singleAt.arr);
     this.setState({ singleAT: singleAt });
   };
 
@@ -426,7 +432,9 @@ export default class FirebaseV2 extends React.Component {
                       Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                       Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshATItem}
-                      updateNewWentThroughATDelete={this.handleWentThroughATListObj}
+                      updateNewWentThroughATDelete={
+                        this.handleWentThroughATListObj
+                      }
                     />
                     <EditAT
                       marginLeftV="-170px"
@@ -488,7 +496,9 @@ export default class FirebaseV2 extends React.Component {
                     Array={this.state.singleATitemArr} //Holds the raw data for all the is in the single action
                     Item={this.state.singleGR} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshATItem}
-                    updateNewWentThroughATDelete={this.handleWentThroughATListObj}
+                    updateNewWentThroughATDelete={
+                      this.handleWentThroughATListObj
+                    }
                   />
                   <EditAT
                     marginLeftV="-130px"
@@ -588,8 +598,9 @@ export default class FirebaseV2 extends React.Component {
                       ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                       ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                       refresh={this.refreshISItem}
-                      updateNewWentThroughISDelete={this.handleWentThroughATListObj}
-
+                      updateNewWentThroughISDelete={
+                        this.handleWentThroughATListObj
+                      }
                     />
 
                     <EditIS
@@ -647,7 +658,9 @@ export default class FirebaseV2 extends React.Component {
                     ISArray={this.state.singleISitemArr} //Holds the raw data for all the is in the single action
                     ISItem={this.state.singleAT} //holds complete data for action task: fbPath, title, etc
                     refresh={this.refreshISItem}
-                    updateNewWentThroughISDelete={this.handleWentThroughATListObj}
+                    updateNewWentThroughISDelete={
+                      this.handleWentThroughATListObj
+                    }
                   />
 
                   <EditIS

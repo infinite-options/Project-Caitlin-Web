@@ -20,6 +20,7 @@ import UploadImage from "./UploadImage";
 export default class AddNewISItem extends Component {
   constructor(props) {
     super(props);
+    console.log("in addNewISItem", this.props);
   }
 
   state = {
@@ -41,7 +42,7 @@ export default class AddNewISItem extends Component {
       audio: "",
       is_timed: false,
       expected_completion_time: "00:05:00",
-      is_in_progress:false,
+      is_in_progress: false,
       ta_notifications: {
         before: {
           is_enabled: false,
@@ -195,7 +196,9 @@ export default class AddNewISItem extends Component {
       .update({ "instructions&steps": newArr })
       .then((doc) => {
         // console.log(this.props.ISItem.fbPath.path.split('/')[3]);
-        this.props.updateNewWentThroughATListObjIS(this.props.ISItem.fbPath.path.split('/')[3]);
+        this.props.updateNewWentThroughATListObjIS(
+          this.props.ISItem.fbPath.path.split("/")[3]
+        );
         // console.log("updateEntireArray Finished");
         // console.log(doc);
         if (this.props != null) {

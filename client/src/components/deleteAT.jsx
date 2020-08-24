@@ -5,6 +5,11 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 export default class deleteAT extends Component {
   constructor(props) {
     super(props);
+    console.log("in deleteAT", this.props);
+  }
+
+  componentDidMount() {
+    // console.log('DeleteAT did mount');
   }
 
   /**
@@ -12,62 +17,52 @@ export default class deleteAT extends Component {
    * delete the stupid AT
    */
   submitRequest = () => {
-    
     if (this.props.deleteIndex < 0) {
       console.log("deleteAT index error");
       return;
     }
-    this.deleteArrPortion();
+    this.tempdeleteArrPortion();
   };
 
-  /*
-    tempdeleteArrPortion = () => {
-        
-        //Delete from the firebase
-        let arr = [...this.props.Array];
-        let j = this.props.deleteIndex;
-        var id = arr[j]['id']
-        const url = "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
-        const Data = {
-            data : {
-                "path" : this.props.Item.fbPath.path + "/" + this.props.type + "/" + id//<<<<< Entire path of the document to delete
-            }
-        };
-        console.log("path " +  this.props.Item.fbPath.path);
-        
-        const param = {
-            headers:{
-                //"content-type":"application/json; charset=UTF-8"
-                "content-type": "application/json"
-            },
-            body: JSON.stringify(Data),
-            method: "POST"
-        };
-        
-        fetch(url, param)
-        .then((response) => response.json())
-        .then((result) => { console.log(result); } )
-        .catch((error) => { console.error(error); });
-        
-        // console.log("request was made to delete this index " + this.props.deleteIndex);
-        let items = [...this.props.Array];
-        let i = this.props.deleteIndex;
-        //items[i]['deleted'] = true;
-        const newArr = items.slice(0, i).concat(items.slice(i + 1, items.length));
-        this.props.Item.fbPath.update({ 'actions&tasks': newArr }).then(
-            (doc) => {
-                // console.log('updateEntireArray Finished')
-                // console.log(doc);
-                if (this.props != null) {
-                    this.props.refresh(items);
-                }
-                else {
-                    console.log("delete failure");
-                }
-            }
-        )
-    }
-    */
+  /**
+   *
+   * tempdeleteArrPortion :
+   * this function will delete that action document from the collection actions&tasks.
+   */
+
+  tempdeleteArrPortion = () => {
+    //Delete from the firebase
+    let arr = [...this.props.Array];
+    var id = arr[this.props.deleteIndex]["id"];
+    const url =
+      "https://cors-anywhere.herokuapp.com/https://us-central1-project-caitlin-c71a9.cloudfunctions.net/RecursiveDelete";
+    const Data = {
+      data: {
+        path: this.props.Item.fbPath.path + "/" + this.props.type + "/" + id, //<<<<< Entire path of the document to delete
+      },
+    };
+    console.log("path " + this.props.Item.fbPath.path);
+
+    const param = {
+      headers: {
+        //"content-type":"application/json; charset=UTF-8"
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(Data),
+      method: "POST",
+    };
+
+    fetch(url, param)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    this.deleteArrPortion();
+  };
 
   /**
    *
@@ -88,8 +83,13 @@ export default class deleteAT extends Component {
       // console.log('updateEntireArray Finished')
       // console.log(doc);
       if (this.props != null) {
-        console.log("this si the path deleting ", this.props.Item.fbPath.path.split('/')[3])
-        this.props.updateNewWentThroughATDelete(this.props.Item.fbPath.path.split('/')[3]);
+        console.log(
+          "this si the path deleting ",
+          this.props.Item.fbPath.path.split("/")[3]
+        );
+        this.props.updateNewWentThroughATDelete(
+          this.props.Item.fbPath.path.split("/")[3]
+        );
         // console.log("refreshing FireBasev2 from delete ISItem");
         this.props.refresh(newArr);
       } else {

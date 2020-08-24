@@ -14,7 +14,7 @@ import UploadImage from "./UploadImage";
 export default class AddNewATItem extends Component {
   constructor(props) {
     super(props);
-
+    console.log("In addNewATItem", this.props);
     this.state = {
       AT_arr: [], // Actions & Tasks array
       newActionTitle: "", //Old delete Later
@@ -34,7 +34,7 @@ export default class AddNewATItem extends Component {
         is_timed: false,
         expected_completion_time: "00:10:00",
         is_sublist_available: true,
-        is_in_progress:false,
+        is_in_progress: false,
         ta_notifications: {
           before: {
             is_enabled: false,
@@ -82,7 +82,6 @@ export default class AddNewATItem extends Component {
   componentDidMount() {}
 
   newInputSubmit = () => {
-   
     if (this.state.itemToEdit.title === "") {
       alert("Missing title");
       return;
@@ -144,7 +143,6 @@ export default class AddNewATItem extends Component {
   };
 
   addNewDoc = () => {
-    
     this.props.ATItem.fbPath
       .get()
       .then((doc) => {
@@ -155,6 +153,7 @@ export default class AddNewATItem extends Component {
             this.setState({
               AT_arr: x,
             });
+
             this.props.ATItem.fbPath
               .collection("actions&tasks")
               .add({
@@ -191,10 +190,12 @@ export default class AddNewATItem extends Component {
   updateEntireArray = (newArr) => {
     // 2. update adds to the document
     this.props.ATItem.fbPath.update({ "actions&tasks": newArr }).then((doc) => {
-      console.log(this.props.ATItem.fbPath.path.split('/')[3]);
-      this.props.updateNewWentThroughATListObj(this.props.ATItem.fbPath.path.split('/')[3]);
+      console.log(this.props.ATItem.fbPath.path.split("/")[3]);
+      this.props.updateNewWentThroughATListObj(
+        this.props.ATItem.fbPath.path.split("/")[3]
+      );
       console.log("updateEntireArray Finished");
-      console.log(doc);
+      // console.log(doc);
       if (this.props != null) {
         this.props.hideNewATModal();
         console.log("refreshing FireBasev2 from AddNewATItem");

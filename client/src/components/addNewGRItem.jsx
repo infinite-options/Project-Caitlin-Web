@@ -192,7 +192,7 @@ export default class AddNewGRItem extends Component {
       })
       .catch(function (error) {
         console.log("Error getting document:", error);
-        alert("Error getting document:", error);
+        alert("Error getting document");
       });
   };
 
@@ -345,11 +345,11 @@ export default class AddNewGRItem extends Component {
       })
       .catch(function (error) {
         console.log("Error getting document:", error);
-        alert("Error getting document:", error);
+        alert("Error getting document:");
       });
   };
 
-  //This function will below will essentially take in a array and have a key map to it
+  //This function below will essentially take in a array and have a key map to it
   updateEntireArray = (newArr) => {
     // 2. update adds to the document
     let db = this.state.arrPath;
