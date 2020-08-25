@@ -39,7 +39,7 @@ export default class showHistory extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <ListGroup>
+        <ListGroup id="current_history_table">
           <div style={{ width: "auto", height: "auto", overflow: "scroll" }}>
             {this.props.historyItems}
           </div>
@@ -47,9 +47,22 @@ export default class showHistory extends Component {
         </ListGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={this.props.closeModal}>
-            Close
-          </Button>
+        <Button
+        style={{}}
+        onClick={(e) => {
+          console.log(document.getElementById('current_history_table').innerHTML)
+          var link = "mailto:me@example.com"
+          + "?cc=myCCaddress@example.com"
+          + "&subject=" + encodeURIComponent("This is my subject")
+          + "&body=" + "<table border=1> <tr><td>blabla</td></tr> </table>";
+          window.location.href = link;
+        }}
+        >
+        Send Email
+        </Button>
+        <Button variant="secondary" onClick={this.props.closeModal}>
+        Close
+        </Button>
         </Modal.Footer>
       </Modal.Dialog>
     );

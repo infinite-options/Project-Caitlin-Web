@@ -425,7 +425,6 @@ export default class MainPage extends React.Component {
             // }
           }
           // console.log("this is the object for name and pic after",namePicObject);
-          console.log("why new york,", theTimeZone);
           this.setState(
             {
               userIdAndNames: nameIdObject,
@@ -2646,7 +2645,6 @@ this will close repeat modal.
                   >
                     Create New User
                   </Button>
-
                   {/* <Col>
           {this.state.showNewAccountmodal && <CreateNewAccountModal closeModal = {this.hideNewAccountForm}/>}
           </Col> */}
