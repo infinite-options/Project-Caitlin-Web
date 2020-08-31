@@ -351,7 +351,8 @@ export default class FirebaseV2 extends React.Component {
           <ListGroup.Item
             action
             onClick={() => {
-              this.ATonClickEvent(tempTitle, tempID);
+              // Disable IS layer
+              // this.ATonClickEvent(tempTitle, tempID);
             }}
             variant="light"
             style={{ marginBottom: "3px" }}
