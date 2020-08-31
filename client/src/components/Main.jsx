@@ -1423,9 +1423,7 @@ updates the google calendar based  on
       timeZone: this.state.currentUserTimeZone,
     };
     //console.log("endDateTime: ", endDateTime);
-    updatedEvent.recurrence = this.state.repeatOption
-      ? this.defineRecurrence()
-      : this.state.recurrenceRule;
+    updatedEvent.recurrence = this.defineRecurrence();
     updatedEvent.reminders = {
       overrides: [
         {
@@ -1446,9 +1444,7 @@ updates the google calendar based  on
       description: updatedEvent.description,
       start: updatedEvent.start,
       end: updatedEvent.end,
-      recurrence: updatedEvent.recurringEventId
-        ? updatedEvent.recurrence
-        : false,
+      recurrence: updatedEvent.recurrence,
       reminders: updatedEvent.reminders,
     };
     console.log("event: ", event);
@@ -1466,7 +1462,7 @@ updates the google calendar based  on
 
     if (this.state.editRecurringOption === "All events") {
       eventId = updatedEvent.recurringEventId;
-      event.recurrence = [event.recurrence];
+      // event.recurrence = [event.recurrence];
       console.log("All event: ", eventId);
       await axios
         .get("/getRecurringEventInstances", {
