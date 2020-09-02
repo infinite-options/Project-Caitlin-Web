@@ -1422,7 +1422,6 @@ updates the google calendar based  on
       dateTime: endDateTime,
       timeZone: this.state.currentUserTimeZone,
     };
-    //console.log("endDateTime: ", endDateTime);
     updatedEvent.recurrence = this.defineRecurrence();
     updatedEvent.reminders = {
       overrides: [
@@ -1444,7 +1443,9 @@ updates the google calendar based  on
       description: updatedEvent.description,
       start: updatedEvent.start,
       end: updatedEvent.end,
-      recurrence: updatedEvent.recurrence,
+      recurrence: this.state.repeatOption
+      ? this.defineRecurrence()
+      : false,
       reminders: updatedEvent.reminders,
     };
     console.log("event: ", event);
@@ -3956,8 +3957,7 @@ this will close repeat modal.
                 }
               }}
             >
-              {this.state.newEvent.summary !== this.state.newEventName &&
-                !this.state.repeatOption && (
+              {(
                   <Form.Check type="radio">
                     <Form.Check.Label style={{ marginLeft: "5px" }}>
                       <Form.Check.Input
