@@ -187,8 +187,6 @@ export default class MainPage extends React.Component {
                 let timeB = new Date(datetimeB).getHours()*60 + new Date(datetimeB).getMinutes();
                 return timeA - timeB;
               });
-              console.log(x);
-              // console.log("sorted goals and routines", x);
               for (let i = 0; i < x.length; ++i) {
                 if (x[i]["is_persistent"]) {
                   // console.log("routine " + x[i]["title"]);
@@ -219,8 +217,6 @@ export default class MainPage extends React.Component {
                 routines: routine,
               });
             }
-
-            console.log(goal);
           } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
@@ -4551,6 +4547,7 @@ this will close repeat modal.
    * gets exactly the days worth of events from the google calendar
    */
   getEventsByIntervalDayVersion = (startDate, endDate) => {
+    var start_call = +new Date();
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -4565,13 +4562,13 @@ this will close repeat modal.
       .then((response) => {
         // console.log("what are the events", response.data);
         var events = response.data;
-
+        var end_call = +new Date();
+        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
         this.setState(
           {
             dayEvents: events,
           },
           () => {
-            // console.log("New Events Arrived", events);
           }
         );
       })
@@ -4582,7 +4579,8 @@ this will close repeat modal.
 
   //Get and store events by week, take first and last day of the week as parameters as date object
   getEventsByIntervalWeekVersion = (start0, end0) => {
-    axios
+    var start_call = +new Date();
+      axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
         params: {
@@ -4594,14 +4592,14 @@ this will close repeat modal.
       })
       .then((response) => {
         var events = response.data;
+        var end_call = +new Date();
+        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
         this.setState(
           {
             weekEvents: events,
+          },
+          () => {
           }
-          // () => {
-          //   console.log("New Events Arrived");
-          //   console.log(this.state.weekEvents)
-          // }
         );
       })
       .catch((error) => {

@@ -22,11 +22,32 @@ export default class WeekGoals extends Component {
       this.state.pxPerHourForConversion * curHour;
   }
 
+  sortGoals = () => {
+    var arr = this.props.goals;
+    var dic = {}
+    for (let i = 0; i < arr.length; i++) {
+        let tempStart = arr[i].start_day_and_time;
+        let tempEnd = arr[i].end_day_and_time;
+        let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+        let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+        let key = tempStartTime.getDay()+"_"+tempStartTime.getHours();
+        if (dic[key] == null) {
+          dic[key] = [];
+        }
+        dic[key].push(arr[i]);
+    }
+    return dic;
+  }
+
   /**
    * getEventItem: given an hour, this will return all events that was started during that hour
    *
    */
-  getEventItem = (day, hour) => {
+  getGoalItemFromDic = (day, hour, dic) => {
     let startObject = this.props.dateContext.clone();
     let startDay = startObject.startOf("week");
     let curDate2 = startDay.clone();
@@ -34,11 +55,14 @@ export default class WeekGoals extends Component {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-    var arr = this.props.goals;
+    var arr = dic[day+"_"+hour];
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
     var fontSize = 10;
+    if (arr == null) {
+      return;
+    }
     for (let i = 0; i < arr.length; i++) {
       tempStart = arr[i].start_day_and_time;
       tempEnd = arr[i].end_day_and_time;
@@ -602,6 +626,7 @@ export default class WeekGoals extends Component {
   };
 
   weekViewItems = () => {
+    let dic = this.sortGoals();
     // this creates the events adjusting their div size to reflecting the time it's slotted for
     var res = [];
     var arr = this.props.goals;
@@ -622,7 +647,7 @@ export default class WeekGoals extends Component {
                   height: this.state.pxPerHour,
                 }}
               >
-                {this.getEventItem(i, j)}
+                {this.getGoalItemFromDic(i, j, dic)}
               </Col>
             </Row>
           </Container>

@@ -530,7 +530,6 @@ export default class DayGoals extends Component {
    * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
    */
   dayViewItems = () => {
-    // this creates the events adjusting their div size to reflecting the time it's slotted for
     var arr = [];
     for (let i = 0; i < 24; ++i) {
       arr.push(

@@ -45,21 +45,41 @@ export default class DayEvents extends Component {
     this.props.eventClickDayView(arr[i]);
   };
 
+  sortEvents = () => {
+    var arr = this.props.dayEvents;
+    var dic = {}
+    for (let i = 0; i < arr.length; i++) {
+        let tempStart = arr[i].start.dateTime;
+        let tempEnd = arr[i].end.dateTime;
+        let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+        let key = tempStartTime.getHours();
+        if (dic[key] == null) {
+          dic[key] = [];
+        }
+        dic[key].push(arr[i]);
+    }
+    return dic;
+  }
+
   /*
    * TODO: events spanning multiple days
    * getEventItem: given an hour, this will return all events that was started during that hour
    *
    */
-  getEventItem = (hour) => {
+  getEventItemFromDic = (hour, dic) => {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-    var arr = this.props.dayEvents;
+    var arr = dic[hour];
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
     var fontSize = 10;
-
+    if (arr == null) {
+      return;
+    }
     for (let i = 0; i < arr.length; i++) {
       if(!arr[i].start) break;
       tempStart = arr[i].start.dateTime;
@@ -149,23 +169,23 @@ export default class DayEvents extends Component {
               (hourDiff + minDiff) * this.state.pxPerHourForConversion;
             sameTimeEventCount++;
             //check if there is already an event there overlapping from another hour
-            for (let i = 0; i < arr.length; i++) {
-              tempStart = arr[i].start.dateTime;
-              tempEnd = arr[i].end.dateTime;
-              let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
-             		timeZone: this.props.timeZone
-             	}));
-              let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
-             		timeZone: this.props.timeZone
-             	}));
-              if (
-                tempStartTime.getHours() < hour &&
-                tempEndTime.getHours() > hour
-              ) {
-                addmarginLeft += 20;
-                itemWidth = itemWidth - 20;
-              }
-            }
+            // for (let i = 0; i < arr.length; i++) {
+            //   tempStart = arr[i].start.dateTime;
+            //   tempEnd = arr[i].end.dateTime;
+            //   let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+            //  		timeZone: this.props.timeZone
+            //  	}));
+            //   let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
+            //  		timeZone: this.props.timeZone
+            //  	}));
+            //   if (
+            //     tempStartTime.getHours() < hour &&
+            //     tempEndTime.getHours() > hour
+            //   ) {
+            //     addmarginLeft += 20;
+            //     itemWidth = itemWidth - 20;
+            //   }
+            // }
 
             if (sameTimeEventCount > 1) {
               // console.log("add 20 in day");
@@ -378,7 +398,7 @@ export default class DayEvents extends Component {
    * dayViewItems: goes through hours 0 to 24, and calling getEventItem for each hour
    */
   dayViewItems = () => {
-    // this creates the events adjusting their div size to reflecting the time it's slotted for
+    let dic = this.sortEvents();
     var arr = [];
     for (let i = 0; i < 24; ++i) {
       arr.push(
@@ -393,7 +413,7 @@ export default class DayEvents extends Component {
             }}
             onClick={(e) => this.onDayClick(e, i)}
           >
-            {this.getEventItem(i)}
+            {this.getEventItemFromDic(i, dic)}
           </Col>
         </Row>
       );
