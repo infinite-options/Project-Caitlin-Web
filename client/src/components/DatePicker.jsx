@@ -6,6 +6,7 @@ export default class DatePicker extends React.Component {
   constructor(props) {
     super(props);
 
+
     const todayString = this.formatDefaultTime();
     console.log("todayString", todayString);
     //let todayString = this.formatDateAndTime(today);

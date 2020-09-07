@@ -48,7 +48,9 @@ export default class DayEvents extends Component {
   sortEvents = () => {
     var arr = this.props.dayEvents;
     var dic = {}
+    console.log(arr)
     for (let i = 0; i < arr.length; i++) {
+        console.log(i, arr[i]);
         let tempStart = arr[i].start.dateTime;
         let tempEnd = arr[i].end.dateTime;
         let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
