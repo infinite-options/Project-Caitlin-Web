@@ -2838,7 +2838,7 @@ this will close repeat modal.
         window.location.href = response.data;
       })
       .catch((error) => {
-        alert("Error Occurred " + error);
+        console.log("Error Occurred " + error);
       });
   };
 
@@ -4538,7 +4538,7 @@ this will close repeat modal.
         );
       })
       .catch((error) => {
-        alert("Error Occurred " + error);
+        console.log("Error Occurred " + error);
       });
   };
 
@@ -4573,7 +4573,7 @@ this will close repeat modal.
         );
       })
       .catch((error) => {
-        alert("Error Occurred " + error);
+        console.log("Error Occurred " + error);
       });
   };
 
@@ -4603,7 +4603,7 @@ this will close repeat modal.
         );
       })
       .catch((error) => {
-        alert("Error Occurred " + error);
+        console.log("Error Occurred " + error);
       });
   };
 }
