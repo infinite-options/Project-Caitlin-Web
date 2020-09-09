@@ -26,20 +26,103 @@ export default class WeekRoutines extends Component {
   sortRoutines = () => {
     var arr = this.props.routines;
     var dic = {}
+    let startObject = this.props.dateContext.clone();
+    let endObject = this.props.dateContext.clone();
+    let startDay = startObject.startOf("week");
+    let endDay = endObject.endOf("week");
+    let startDate = new Date(startDay.format("MM/DD/YYYY"));
+    let endDate = new Date(endDay.format("MM/DD/YYYY"));
+    startDate.setHours(0, 0, 0);
+    endDate.setHours(23, 59, 59);
     for (let i = 0; i < arr.length; i++) {
-        let tempStart = arr[i].start_day_and_time;
-        let tempEnd = arr[i].end_day_and_time;
-        let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
-          timeZone: this.props.timeZone
-        }));
-        let tempEndTime = new Date(new Date(tempEnd).toLocaleString('en-US', {
-          timeZone: this.props.timeZone
-        }));
-        let key = tempStartTime.getDay()+"_"+tempStartTime.getHours();
-        if (dic[key] == null) {
-          dic[key] = [];
+      let tempStart = arr[i].start_day_and_time;
+      let tempEnd = arr[i].end_day_and_time;
+      let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+        timeZone: this.props.timeZone
+      }));
+      let repeatOccurences = parseInt(arr[i]["repeat_occurences"]);
+      let repeatEvery = parseInt(arr[i]["repeat_every"]);
+      let repeatEnds = arr[i]["repeat_ends"];
+      let repeatEndsOn = new Date(new Date(arr[i]["repeat_ends_on"]).toLocaleString('en-US', {
+        timeZone: this.props.timeZone
+      }));
+      repeatEndsOn.setHours(0,0,0,0);
+      let repeatFrequency = arr[i]["repeat_frequency"];
+      let repeatWeekDays = [];
+      if (arr[i]["repeat_week_days"] != null) {
+        Object.keys(arr[i]["repeat_week_days"])
+        .forEach( (k) => {
+          if (arr[i]["repeat_week_days"][k] != "") {
+            repeatWeekDays.push(parseInt(k));
+          }
+        });
+      }
+      // console.log(
+      //   arr[i].repeat, repeatOccurences, repeatEvery, repeatEnds, repeatEndsOn, repeatFrequency, repeatWeekDays
+      // )
+      if (!arr[i].repeat){
+        if (tempStartTime >= startDate && tempStartTime <= endDate) {
+          let key = tempStartTime.getDay()+"_"+tempStartTime.getHours();
+          if (dic[key] == null) {
+            dic[key] = [];
+          }
+          dic[key].push(arr[i]);
         }
-        dic[key].push(arr[i]);
+      } else {
+        for (let j=0; j<7; j++) {
+          let CurrentDate = new Date(startDate);
+          let isDisplayedTodayCalculated = false;
+
+          CurrentDate.setDate(CurrentDate.getDate()+j);
+          if (CurrentDate >= startDate) {
+            if (repeatEnds == "On") {
+            } else if (repeatEnds == "After") {
+              if (repeatFrequency == "DAY") {
+                repeatEndsOn = new Date(startDate);
+                repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*repeatEvery);
+              } else if (repeatFrequency == "WEEK"){
+                repeatEndsOn = new Date(startDate);
+                repeatEndsOn.setDate(startDate.getDate() + (repeatOccurences-1)*7*repeatEvery);
+              } else if (repeatFrequency == "MONTH"){
+                repeatEndsOn = new Date(startDate);
+                repeatEndsOn.setMonth(startDate.getMonth() + (repeatOccurences-1)*repeatEvery);
+              } else if (repeatFrequency == "YEAR"){
+                repeatEndsOn = new Date(startDate);
+                repeatEndsOn.setFullYear(startDate.getFullYear() + (repeatOccurences-1)*repeatEvery);
+              }
+            } else if (repeatEnds == "Never") {
+              repeatEndsOn = CurrentDate;
+            }
+
+            if (CurrentDate <= repeatEndsOn) {
+              if (repeatFrequency == "DAY") {
+                isDisplayedTodayCalculated = Math.floor((CurrentDate.getTime() - startDate.getTime())/(24*3600*1000)) % repeatEvery == 0;
+              } else if (repeatFrequency == "WEEK"){
+                // isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) && Math.floor((CurrentDate.getTime() - startDate.getTime())/(7*24*3600*1000)) % repeatEvery == 0;
+                isDisplayedTodayCalculated = repeatWeekDays.includes(CurrentDate.getDay()) &&
+                Math.floor(
+                  (CurrentDate.getTime() - startDate.getTime()) /
+                  (7 * 24 * 3600 * 1000)
+                ) % repeatEvery == 0;
+              } else if (repeatFrequency == "MONTH"){
+                isDisplayedTodayCalculated = (CurrentDate.getDate() == startDate.getDate()) &&
+                ((CurrentDate.getFullYear() - startDate.getFullYear())*12 + CurrentDate.getMonth() - startDate.getMonth()) % repeatEvery == 0;
+              } else if (repeatFrequency == "YEAR"){
+                isDisplayedTodayCalculated = (startDate.getDate() == CurrentDate.getDate()) &&
+                (CurrentDate.getMonth() == startDate.getMonth()) &&
+                (CurrentDate.getFullYear() - startDate.getFullYear()) % repeatEvery == 0;
+              }
+            }
+          }
+          if (isDisplayedTodayCalculated) {
+            let key = j+"_"+tempStartTime.getHours();
+            if (dic[key] == null) {
+              dic[key] = [];
+            }
+            dic[key].push(arr[i]);
+          }
+        }
+      }
     }
     return dic;
   }
@@ -52,7 +135,7 @@ export default class WeekRoutines extends Component {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-    var arr = dic[day+"_"+hour];
+    var arr = dic[day+'_'+hour];
     var sameTimeEventCount = 0;
     var addmarginLeft = 0;
     let itemWidth = this.state.eventBoxSize;
@@ -560,10 +643,10 @@ export default class WeekRoutines extends Component {
   };
 
   weekViewItems = () => {
-    let dic = this.sortRoutines();
     // this creates the events adjusting their div size to reflecting the time it's slotted for
     var res = [];
     var arr = this.props.routines;
+    let dic = this.sortRoutines();
     for (let i = 0; i < arr.length; i++) {
       arr[i].is_displayed_today = false;
     }
