@@ -1117,7 +1117,7 @@ errorHandler(app);
 const debugLog = debug("server:server");
 
 var options = {};
-if (process.env.SUDO_USER == "iodevcalendar") {
+if (process.env.SUDO_USER != undefined) {
   //console.log("Prod Host");
   options["key"] = fs.readFileSync(key_url);
   options["cert"] = fs.readFileSync(cert_url);
