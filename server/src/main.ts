@@ -168,7 +168,7 @@ app.get("/fullCalByInterval", function (req, result) {
     (err, res) => {
       //CallBack
       if (err) {
-        return result.send(401, "The request returned an error: " + err);
+        return result.send(401);
       }
 
       const A = []; //The resultant Array
@@ -571,7 +571,7 @@ app.get("/getEventsByInterval", function (req, result) {
         //console.log(res);
         //CallBack
         if (err) {
-          return result.send(401, "The request returned an error: " + err);
+          return result.send(401);
         }
         //console.log(res.data, "geteventsbyinterval");
         result.json(res.data.items);
@@ -597,7 +597,7 @@ app.post("/deleteEvent", function (req, result) {
         //CallBack
         if (err) {
           console.log("delete error", err);
-          return result.send(401, "post request returned an error: " + err);
+          return result.send(401);
         }
         console.log("delete successful");
         result.send("delete");
@@ -654,7 +654,7 @@ app.post("/getEventsByInterval", function (req, result) {
     (err, res) => {
       //CallBack
       if (err) {
-        return result.send(401, "The request returned an error: " + err);
+        return result.send(401);
       }
       result.json(res.data.items);
     }
@@ -691,7 +691,7 @@ app.put("/updateEvent", function (req, result) {
       (err, res) => {
         //CallBack
         if (err) {
-          return result.send(401, "The request returned an error: " + err);
+          return result.send(401);
         }
         result.send("update");
       }
