@@ -39,19 +39,36 @@ export default class TylersCalendarv1 extends React.Component {
   //Returns a dense populated set of icons to be pushed onto a day i
   //into the table
 
-  getEventsforDay = (i) => {
+  sortEvents = () => {
+    var arr = this.props.originalEvents;
+    var dic = {}
+    for (let i = 0; i < arr.length; i++) {
+        let tempStart = arr[i].start.dateTime;
+        let tempStartTime = new Date(new Date(tempStart).toLocaleString('en-US', {
+          timeZone: this.props.timeZone
+        }));
+        let key = tempStartTime.getDate()+"_";
+        if (dic[key] == null) {
+          dic[key] = [];
+        }
+        dic[key].push(arr[i]);
+    }
+    return dic;
+  }
 
+  getEventsforDay = (i, dic) => {
     var res = [];
     var tempStart = null;
     var tempEnd = null;
-    if (this.props.originalEvents == null) {
+    var arr = dic[i+"_"];
+    if (arr == null) {
       return []
     }
     // console.log(this.props.originalEvents);
-    for (let j = 0; j < this.props.originalEvents.length; ++j) {
-      if (this.props.originalEvents[j].start.dateTime) {
-        tempStart = this.props.originalEvents[j].start.dateTime;
-        tempEnd = this.props.originalEvents[j].end.dateTime;
+    for (let j = 0; j < arr.length; ++j) {
+      if (arr[j].start.dateTime) {
+        tempStart = arr[j].start.dateTime;
+        tempEnd = arr[j].end.dateTime;
         let startDate = new Date(new Date(tempStart).toLocaleString('en-US', {
           timeZone: this.props.timeZone
         })).getDate();
@@ -71,14 +88,14 @@ export default class TylersCalendarv1 extends React.Component {
               fontSize: '9px', color: "white",
               borderRadius: '4px', background: "#42B8DD",
               textShadow: "0 1px 1px rgba(0, 0, 0, 0.2)", marginBottom: "3px"
-            }} >{this.props.originalEvents[j].summary}</button><br /></div>);
+            }} >{arr[j].summary}</button><br /></div>);
         }
       }
       else {
-        tempStart = this.props.originalEvents[j].start.date;
+        tempStart = arr[j].start.date;
         // console.log('start date');
         // console.log(this.props.originalEvents[j].start.date);
-        tempEnd = this.props.originalEvents[j].end.date;
+        tempEnd = arr[j].end.date;
         let startDate = new Date(new Date(tempStart).toLocaleString('en-US', {
           timeZone: this.props.timeZone
         })).getDate();
@@ -98,7 +115,7 @@ export default class TylersCalendarv1 extends React.Component {
               fontSize: '9px', color: "white",
               borderRadius: '3px', background: "CornflowerBlue",
               textShadow: "0 1px 1px rgba(0, 0, 0, 0.2), ", marginBottom: "3px"
-            }} >{this.props.originalEvents[j].summary}</button><br /></div>);
+            }} >{arr[j].summary}</button><br /></div>);
         }
       }
 
@@ -139,10 +156,7 @@ export default class TylersCalendarv1 extends React.Component {
 
     // console.log(this.props.dateObject.format("DD/MM/YYYY") + "  == " + this.props.dateContext.format("DD/MM/YYYY"));
     for (var d = 1; d <= this.daysInMonth(); d++) {
-      // let currentDay = d == this.currentDay() ? "today" : "";
-
-      // const todayStyle = { boxShadow: '4px 4px 8px 4px rgba(0, 0, 0, 0.2)' };
-
+      let dic = this.sortEvents();
       daysInMonth.push(
         <td key={d} onClick={this.onDayClick.bind(this, d)}>
           <div style={{ padding: '0', margin: '0', height: '110px', width: "100px", overflow: 'auto' }}>
@@ -152,7 +166,7 @@ export default class TylersCalendarv1 extends React.Component {
               <div className={(sameDate && (d === parseInt(this.currentDay(), 10))) ? "numberCircleCurrent" : "numberCircle"} onClick={this.onExpandClick.bind(this, d)}>
                 <a className="fancytext"> {d} </a>
               </div>
-            {this.getEventsforDay(d)}
+            {this.getEventsforDay(d, dic)}
           </div>
         </td>
       );
