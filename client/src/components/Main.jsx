@@ -4510,6 +4510,7 @@ this will close repeat modal.
       *
       */
   getEventsByInterval = (start0, end0) => {
+    var start_call = +new Date();
     axios
       .get("/getEventsByInterval", {
         //get normal google calendar data for possible future use
@@ -4524,6 +4525,8 @@ this will close repeat modal.
       .then((response) => {
         var events = response.data;
         console.log(events);
+        var end_call = +new Date();
+        console.log("Retrieve " + response.data.length + " items in: ", end_call - start_call, "ms");
         this.setState(
           {
             newEventID: "",
